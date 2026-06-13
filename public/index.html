@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Substack Automation — AI-Powered Post Publisher</title>
+  <meta name="description" content="Generate and publish Substack posts with AI. Supports Groq, Gemini, and OpenAI." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='80' height='80' x='10' y='10' rx='15' fill='%2327272a'/><path d='M35 40 h30 M35 50 h30 M35 60 h20' stroke='%23fafafa' stroke-width='6' stroke-linecap='round'/></svg>" />
+</head>
+<body>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <div class="app-container fade-in">
+
+    <!-- ─── Header ─── -->
+    <header class="app-header">
+      <div class="app-logo">
+        <button class="btn-sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Toggle Settings">
+          <i data-lucide="sidebar"></i>
+        </button>
+        <div class="app-logo-icon"><i data-lucide="pen-tool"></i></div>
+        <h1>Substack<span>Auto</span></h1>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="app-nav">
+        <button class="nav-btn active" id="tab-posts" onclick="switchTab('posts')">
+          <i data-lucide="file-text"></i> Posts
+        </button>
+        <button class="nav-btn" id="tab-comments" onclick="switchTab('comments')">
+          <i data-lucide="message-square"></i> Comments
+        </button>
+        <button class="nav-btn" id="tab-newsletters" onclick="switchTab('newsletters')">
+          <i data-lucide="mail"></i> Newsletters
+        </button>
+      </nav>
+
+      <div class="connection-badge disconnected" id="connectionBadge">
+        <span class="status-dot"></span>
+        <span id="connectionText">Not connected</span>
+      </div>
+    </header>
+
+    <!-- ─── Main Grid ─── -->
+    <div class="main-grid">
+
+      <!-- ─── Left: Settings Panel ─── -->
+      <aside class="card">
+        <div class="card-header">
+          <h2><i data-lucide="sliders-horizontal" class="header-icon"></i> Settings</h2>
+        </div>
+        <div class="card-body">
+
+          <!-- Substack Connection -->
+          <div class="settings-section">
+            <div class="settings-section-title">Substack Account</div>
+
+            <div class="form-group">
+              <label for="sid">Session ID (substack.sid)</label>
+              <input type="password" id="sid" placeholder="Paste your cookie value…" autocomplete="off" />
+            </div>
+
+            <div class="form-group">
+              <label for="pubUrl">Publication URL</label>
+              <input type="text" id="pubUrl" placeholder="yoursite.substack.com" />
+            </div>
+
+            <div class="form-group">
+              <button class="btn btn-primary btn-full" id="connectBtn" onclick="handleConnect()">
+                Connect
+              </button>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- AI Provider -->
+          <div class="settings-section">
+            <div class="settings-section-title">AI Provider</div>
+
+            <div class="form-group">
+              <label for="provider">Provider</label>
+              <select id="provider" onchange="updateModelOptions()">
+                <option value="groq">Groq</option>
+                <option value="gemini">Gemini</option>
+                <option value="openai">OpenAI</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="model">Model</label>
+              <select id="model"></select>
+            </div>
+
+            <div class="form-group">
+              <label for="aiKey">API Key</label>
+              <input type="password" id="aiKey" placeholder="Paste your API key…" autocomplete="off" />
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- System Prompt Section -->
+          <div class="settings-section">
+            <details class="prompt-details" id="promptDetails">
+              <summary class="settings-section-title prompt-summary">
+                <span>System Prompt</span>
+                <i data-lucide="chevron-down" class="chevron-icon"></i>
+              </summary>
+              <div class="form-group" style="margin-top: 12px; display: flex; flex-direction: column;">
+                <textarea id="systemPrompt" class="prompt-textarea" placeholder="AI writing instructions..."></textarea>
+                <button class="btn btn-secondary btn-sm" style="margin-top: 8px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px;" onclick="resetSystemPrompt()">
+                  <i data-lucide="rotate-ccw"></i> Reset to Default
+                </button>
+              </div>
+            </details>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- ─── Right: Compose Panel ─── -->
+      <main>
+        <!-- ─── Tab View: Posts (Compose) ─── -->
+        <div id="view-posts" class="tab-view active">
+          <div class="card">
+            <div class="card-header">
+              <h2><i data-lucide="file-text" class="header-icon"></i> Compose</h2>
+            </div>
+            <div class="card-body">
+              <!-- Topic + Generate -->
+              <div class="topic-row">
+                <input type="text" id="topic" placeholder="Enter a topic… e.g. '5 ways AI is changing writing'" />
+                <button class="btn btn-secondary" id="generateBtn" onclick="handleGenerate()">
+                  <i data-lucide="sparkles"></i> Generate
+                </button>
+              </div>
+
+              <!-- Title + Subtitle -->
+              <div class="post-meta">
+                <div class="form-group">
+                  <label for="postTitle">Title</label>
+                  <input type="text" id="postTitle" placeholder="Post title" />
+                </div>
+                <div class="form-group">
+                  <label for="postSubtitle">Subtitle</label>
+                  <input type="text" id="postSubtitle" placeholder="Brief subtitle (optional)" />
+                </div>
+              </div>
+
+              <!-- Editor + Preview -->
+              <div class="editor-container">
+                <div class="editor-pane">
+                  <div class="editor-pane-header">Markdown</div>
+                  <textarea class="editor-textarea" id="editor" placeholder="Write your post in Markdown…" oninput="updatePreview()"></textarea>
+                </div>
+                <div class="editor-pane">
+                  <div class="editor-pane-header">Preview</div>
+                  <div class="preview-content" id="preview">
+                    <div class="preview-placeholder">Preview will appear here…</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Publish Bar -->
+              <div class="publish-bar">
+                <div class="draft-toggle">
+                  <input type="checkbox" class="toggle" id="draftToggle" />
+                  <label for="draftToggle" style="margin-bottom: 0; cursor: pointer;">Save as Draft</label>
+                </div>
+                <button class="btn btn-success btn-lg" id="publishBtn" onclick="handlePublish()" disabled>
+                  <i data-lucide="send"></i> Publish to Substack
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom: Publish History Panel -->
+          <div class="card" style="margin-top: 32px;">
+            <div class="card-header">
+              <h2><i data-lucide="history" class="header-icon"></i> Publish History</h2>
+            </div>
+            <div class="card-body">
+              <div class="history-list" id="historyList">
+                <div class="history-empty">No posts published yet.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── Tab View: Comments (Automation) ─── -->
+        <div id="view-comments" class="tab-view" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <h2><i data-lucide="message-square" class="header-icon"></i> Comment Automation</h2>
+            </div>
+            <div class="card-body">
+              <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 0.9rem;">
+                Scan another Substack user profile or publication for posts matching a keyword/phrase, then write a context-aware comment using AI.
+              </p>
+
+              <div class="post-meta" style="margin-bottom: 16px;">
+                <div class="form-group">
+                  <label for="commentTarget">Target Account (ID, slug, or URL)</label>
+                  <input type="text" id="commentTarget" placeholder="e.g. @username, 1234567, or name.substack.com" />
+                </div>
+                <div class="form-group">
+                  <label for="commentKeyword">Keyword / Match Phrase</label>
+                  <input type="text" id="commentKeyword" placeholder="e.g. AI writing, startup advice" />
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 24px;">
+                <label for="commentPrompt">Comment Generation Instructions (Optional)</label>
+                <textarea id="commentPrompt" style="min-height: 80px;" placeholder="Instructions for the AI, e.g. 'Congratulate them, keep it casual, and ask a relevant question.'"></textarea>
+              </div>
+
+              <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 24px;">
+                <button class="btn btn-primary" id="runCommentAutoBtn" onclick="runCommentAutomation()">
+                  <i data-lucide="play"></i> Run Automation
+                </button>
+                <button class="btn btn-secondary" id="stopCommentAutoBtn" onclick="stopCommentAutomation()" disabled>
+                  <i data-lucide="square"></i> Stop
+                </button>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="settings-section-title" style="margin-top: 24px;">Automation Logs</div>
+              <div id="commentLogs" class="console-box">Ready to start automation logs...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── Tab View: Newsletters ─── -->
+        <div id="view-newsletters" class="tab-view" style="display: none;">
+          <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <h2><i data-lucide="mail" class="header-icon"></i> Newsletters</h2>
+              <button class="btn btn-secondary btn-sm" id="loadNewslettersBtn" onclick="loadNewsletters()">
+                <i data-lucide="rotate-ccw"></i> Fetch Newsletters
+              </button>
+            </div>
+            <div class="card-body">
+              <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 0.9rem;">
+                List and view the newsletters and drafts on your connected Substack publication.
+              </p>
+
+              <div id="newsletterList" class="history-list">
+                <div class="history-empty">Click "Fetch Newsletters" to retrieve your publication posts.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Marked.js from CDN for markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

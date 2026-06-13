@@ -1,0 +1,20 @@
+{
+  "name": "substack-automation",
+  "version": "1.0.0",
+  "description": "Automate Substack posts with AI-powered content generation",
+  "type": "module",
+  "scripts": {
+    "dev": "npx tsx watch src/server.ts"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "marked": "^15.0.0",
+    "substack-api": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
