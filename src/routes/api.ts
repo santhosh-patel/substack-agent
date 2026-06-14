@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { Marked } from 'marked';
-import { generatePost, SYSTEM_PROMPT, analyzeAndGenerateComment } from '../ai/generate.js';
+import { generatePost, SYSTEM_PROMPT, analyzeAndGenerateComment, generateNote, NOTE_SYSTEM_PROMPT } from '../ai/generate.js';
 
 const router = Router();
 const marked = new Marked();
@@ -19,6 +19,7 @@ router.get('/config', (_req: Request, res: Response) => {
     geminiApiKey: process.env.GEMINI_API_KEY || '',
     openaiApiKey: process.env.OPENAI_API_KEY || '',
     defaultSystemPrompt: SYSTEM_PROMPT,
+    defaultNoteSystemPrompt: NOTE_SYSTEM_PROMPT,
   });
 });
 
@@ -427,6 +428,110 @@ router.get('/newsletters', async (_req: Request, res: Response) => {
   } catch (err: any) {
     console.error('Newsletters error:', err);
     res.status(500).json({ error: err.message || 'Failed to fetch newsletters' });
+  }
+});
+
+// ─── POST /api/notes/generate ───
+router.post('/notes/generate', async (req: Request, res: Response) => {
+  try {
+    let { topic, provider, model, apiKey, systemPrompt } = req.body;
+
+    if (!topic) {
+      res.status(400).json({ error: 'Topic is required' });
+      return;
+    }
+    if (!provider || !model) {
+      res.status(400).json({ error: 'Provider and model are required' });
+      return;
+    }
+    if (!apiKey) {
+      if (provider === 'groq') apiKey = process.env.GROQ_API_KEY;
+      else if (provider === 'gemini') apiKey = process.env.GEMINI_API_KEY;
+      else if (provider === 'openai') apiKey = process.env.OPENAI_API_KEY;
+    }
+
+    if (!apiKey) {
+      res.status(400).json({ error: 'API key is required' });
+      return;
+    }
+
+    const note = await generateNote({ topic, provider, model, apiKey, systemPrompt });
+    res.json({ success: true, note });
+  } catch (err: any) {
+    console.error('Generate note error:', err);
+    res.status(500).json({ error: err.message || 'Failed to generate note' });
+  }
+});
+
+// ─── POST /api/notes/publish ───
+router.post('/notes/publish', async (req: Request, res: Response) => {
+  try {
+    if (!ownProfile || !substackClient) {
+      res.status(401).json({ error: 'Not connected. Call /api/connect first.' });
+      return;
+    }
+
+    const { body, link } = req.body;
+
+    if (!body) {
+      res.status(400).json({ error: 'Body is required' });
+      return;
+    }
+
+    let response;
+    if (link) {
+      response = await ownProfile.newNoteWithLink(link).paragraph().text(body).publish();
+    } else {
+      response = await ownProfile.newNote().paragraph().text(body).publish();
+    }
+
+    if (!response || !response.id) {
+      throw new Error('Failed to create note on Substack');
+    }
+
+    const noteUrl = ownProfile.slug ? `https://substack.com/@${ownProfile.slug}/note/c-${response.id}` : 'https://substack.com/notes';
+
+    res.json({
+      success: true,
+      note: {
+        id: response.id,
+        body: body,
+        url: noteUrl
+      }
+    });
+  } catch (err: any) {
+    console.error('Publish note error:', err);
+    res.status(500).json({ error: err.message || 'Failed to publish note' });
+  }
+});
+
+// ─── GET /api/notes ───
+router.get('/notes', async (_req: Request, res: Response) => {
+  try {
+    if (!ownProfile || !substackClient) {
+      res.status(401).json({ error: 'Not connected. Call /api/connect first.' });
+      return;
+    }
+
+    const notes: any[] = [];
+    for await (const note of ownProfile.notes({ limit: 25 })) {
+      notes.push({
+        id: note.id,
+        body: note.body,
+        likesCount: note.likesCount,
+        publishedAt: note.publishedAt,
+        author: note.author,
+        url: ownProfile.slug ? `https://substack.com/@${ownProfile.slug}/note/c-${note.id}` : 'https://substack.com/notes'
+      });
+    }
+
+    res.json({
+      success: true,
+      notes
+    });
+  } catch (err: any) {
+    console.error('Fetch notes error:', err);
+    res.status(500).json({ error: err.message || 'Failed to fetch notes' });
   }
 });
 

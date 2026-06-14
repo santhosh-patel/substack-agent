@@ -32,6 +32,9 @@
         <button class="nav-btn" id="tab-comments" onclick="switchTab('comments')">
           <i data-lucide="message-square"></i> Comments
         </button>
+        <button class="nav-btn" id="tab-notes" onclick="switchTab('notes')">
+          <i data-lucide="sticky-note"></i> Notes
+        </button>
         <button class="nav-btn" id="tab-archive" onclick="switchTab('archive')">
           <i data-lucide="archive"></i> Archive
         </button>
@@ -230,6 +233,66 @@
 
               <div class="settings-section-title" style="margin-top: 24px;">Automation Logs</div>
               <div id="commentLogs" class="console-box">Ready to start automation logs...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── Tab View: Notes ─── -->
+        <div id="view-notes" class="tab-view" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <h2><i data-lucide="sticky-note" class="header-icon"></i> Compose Note</h2>
+            </div>
+            <div class="card-body">
+              <!-- Topic + Generate -->
+              <div class="topic-row">
+                <input type="text" id="noteTopic" placeholder="Enter a topic… e.g. 'Writing advice for beginners'" />
+                <button class="btn btn-secondary" id="generateNoteBtn" onclick="handleGenerateNote()">
+                  <i data-lucide="sparkles"></i> Generate
+                </button>
+              </div>
+
+              <!-- Note Body + Attachment URL -->
+              <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 16px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label for="noteBody">Note Body</label>
+                  <textarea class="editor-textarea" id="noteBody" style="min-height: 120px;" placeholder="Write your Substack Note here… (under 500 chars is recommended)" oninput="updateNotePreview()"></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label for="noteLink">Link Attachment (Optional)</label>
+                  <input type="text" id="noteLink" placeholder="https://example.com/some-link" />
+                </div>
+              </div>
+
+              <!-- Preview -->
+              <div style="margin-top: 16px;">
+                <div class="editor-pane-header">Note Preview</div>
+                <div class="preview-content" id="notePreview" style="min-height: 80px; padding: 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg-hover);">
+                  <div class="preview-placeholder">Note preview will appear here…</div>
+                </div>
+              </div>
+
+              <!-- Publish Note Bar -->
+              <div class="publish-bar" style="margin-top: 24px;">
+                <button class="btn btn-success btn-lg" id="publishNoteBtn" onclick="handlePublishNote()">
+                  <i data-lucide="send"></i> Publish Note
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom: Notes History Panel -->
+          <div class="card" style="margin-top: 32px;">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <h2><i data-lucide="history" class="header-icon"></i> Published Notes</h2>
+              <button class="btn btn-secondary btn-sm" id="loadNotesBtn" onclick="loadNotes()">
+                <i data-lucide="rotate-ccw"></i> Fetch Notes
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="history-list" id="notesList">
+                <div class="history-empty">Click "Fetch Notes" to retrieve your published notes.</div>
+              </div>
             </div>
           </div>
         </div>

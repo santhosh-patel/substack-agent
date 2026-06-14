@@ -80,7 +80,7 @@ async function loadConfigFromBackend() {
     }
 
     // Load System Prompt configuration
-    loadSystemPrompt(config.defaultSystemPrompt);
+    loadSystemPromptForTab('newsletters');
 
     // Auto-connect if SID is pre-filled from environment
     if (config.sid) {
@@ -379,27 +379,42 @@ function escapeHtml(str) {
 }
 
 // ─── System Prompt Handling ───
-function loadSystemPrompt(defaultPrompt) {
-  const custom = localStorage.getItem('substack_system_prompt');
+let activeSystemPromptTab = 'newsletters';
+
+function loadSystemPromptForTab(tabId) {
   const textarea = document.getElementById('systemPrompt');
-  if (custom !== null) {
-    textarea.value = custom;
-  } else {
-    textarea.value = defaultPrompt || '';
+  if (!textarea) return;
+
+  if (tabId === 'newsletters') {
+    activeSystemPromptTab = 'newsletters';
+    const custom = localStorage.getItem('substack_system_prompt_newsletter');
+    textarea.value = custom !== null ? custom : (window.backendConfig?.defaultSystemPrompt || '');
+  } else if (tabId === 'notes') {
+    activeSystemPromptTab = 'notes';
+    const custom = localStorage.getItem('substack_system_prompt_note');
+    textarea.value = custom !== null ? custom : (window.backendConfig?.defaultNoteSystemPrompt || '');
   }
 }
 
 function saveSystemPrompt() {
   const value = document.getElementById('systemPrompt').value;
-  localStorage.setItem('substack_system_prompt', value);
+  if (activeSystemPromptTab === 'newsletters') {
+    localStorage.setItem('substack_system_prompt_newsletter', value);
+  } else if (activeSystemPromptTab === 'notes') {
+    localStorage.setItem('substack_system_prompt_note', value);
+  }
 }
 
 function resetSystemPrompt() {
-  if (window.backendConfig && window.backendConfig.defaultSystemPrompt) {
+  if (!window.backendConfig) return;
+  if (activeSystemPromptTab === 'newsletters') {
     document.getElementById('systemPrompt').value = window.backendConfig.defaultSystemPrompt;
-    localStorage.removeItem('substack_system_prompt');
-    showToast('System prompt reset to default', 'info');
+    localStorage.removeItem('substack_system_prompt_newsletter');
+  } else if (activeSystemPromptTab === 'notes') {
+    document.getElementById('systemPrompt').value = window.backendConfig.defaultNoteSystemPrompt;
+    localStorage.removeItem('substack_system_prompt_note');
   }
+  showToast('System prompt reset to default', 'info');
 }
 
 // ─── Sidebar Collapsing ───
@@ -482,7 +497,7 @@ function updatePublishButtonLabel() {
 
 // ─── Tab Switching ───
 function switchTab(tabId) {
-  const tabs = ['newsletters', 'comments', 'archive'];
+  const tabs = ['newsletters', 'comments', 'notes', 'archive'];
   tabs.forEach(t => {
     const btn = document.getElementById(`tab-${t}`);
     const view = document.getElementById(`view-${t}`);
@@ -499,10 +514,22 @@ function switchTab(tabId) {
     lucide.createIcons();
   }
 
+  if (tabId === 'newsletters' || tabId === 'notes') {
+    loadSystemPromptForTab(tabId);
+    document.getElementById('promptDetails').style.display = 'block';
+  } else {
+    document.getElementById('promptDetails').style.display = 'none';
+  }
+
   if (tabId === 'archive') {
     const listEl = document.getElementById('archiveList');
     if (listEl && listEl.innerHTML.includes('Click "Fetch Archive"')) {
       loadArchive();
+    }
+  } else if (tabId === 'notes') {
+    const listEl = document.getElementById('notesList');
+    if (listEl && listEl.innerHTML.includes('Click "Fetch Notes"')) {
+      loadNotes();
     }
   }
 }
@@ -704,6 +731,177 @@ async function loadArchive() {
     showToast(err.message, 'error');
   } finally {
     setButtonLoading(btn, false, '<i data-lucide="rotate-ccw"></i> Fetch Archive');
+  }
+}
+
+// ─── Generate Note with AI ───
+async function handleGenerateNote() {
+  const topic = document.getElementById('noteTopic').value.trim();
+  const provider = document.getElementById('provider').value;
+  const model = document.getElementById('model').value;
+  const apiKey = document.getElementById('aiKey').value.trim();
+  const systemPrompt = document.getElementById('systemPrompt').value.trim();
+  const btn = document.getElementById('generateNoteBtn');
+
+  if (!topic) {
+    showToast('Please enter a topic', 'error');
+    return;
+  }
+  
+  const hasBackendKey = window.backendConfig && window.backendConfig[`${provider}ApiKey`];
+  if (!apiKey && !hasBackendKey) {
+    showToast(`Please enter your ${provider.toUpperCase()} API key`, 'error');
+    return;
+  }
+
+  setButtonLoading(btn, true, 'Generating…');
+
+  try {
+    const res = await fetch('/api/notes/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topic, provider, model, apiKey, systemPrompt }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Generation failed');
+    }
+
+    document.getElementById('noteBody').value = data.note.body;
+    updateNotePreview();
+
+    showToast('Note generated successfully!', 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    setButtonLoading(btn, false, '<i data-lucide="sparkles"></i> Generate');
+  }
+}
+
+// ─── Publish Note to Substack ───
+async function handlePublishNote() {
+  const body = document.getElementById('noteBody').value.trim();
+  const link = document.getElementById('noteLink').value.trim();
+  const btn = document.getElementById('publishNoteBtn');
+
+  if (!body) {
+    showToast('Please enter some content for the note', 'error');
+    return;
+  }
+
+  setButtonLoading(btn, true, 'Publishing…');
+
+  try {
+    const res = await fetch('/api/notes/publish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ body, link: link || undefined }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Publishing failed');
+    }
+
+    showToast(`Published note successfully!`, 'success');
+    if (data.note.url) {
+      showToast(`URL: ${data.note.url}`, 'info');
+    }
+    document.getElementById('noteBody').value = '';
+    document.getElementById('noteLink').value = '';
+    updateNotePreview();
+    
+    // Load notes again to show the newly published note in history
+    setTimeout(loadNotes, 1500);
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    setButtonLoading(btn, false, '<i data-lucide="send"></i> Publish Note');
+  }
+}
+
+// ─── Live Note Markdown Preview ───
+function updateNotePreview() {
+  const md = document.getElementById('noteBody').value;
+  const previewEl = document.getElementById('notePreview');
+
+  if (!md.trim()) {
+    previewEl.innerHTML = '<div class="preview-placeholder">Note preview will appear here…</div>';
+    return;
+  }
+
+  try {
+    previewEl.innerHTML = marked.parse(md);
+  } catch {
+    previewEl.textContent = md;
+  }
+}
+
+// ─── Notes Listing ───
+async function loadNotes() {
+  const btn = document.getElementById('loadNotesBtn');
+  const listEl = document.getElementById('notesList');
+
+  if (!isConnected) {
+    showToast('Please connect your Substack account first', 'error');
+    return;
+  }
+
+  setButtonLoading(btn, true, 'Fetching…');
+  listEl.innerHTML = '<div class="history-empty"><span class="spinner"></span> Loading publication notes...</div>';
+
+  try {
+    const res = await fetch('/api/notes');
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to fetch notes');
+    }
+
+    const notes = data.notes || [];
+    if (notes.length === 0) {
+      listEl.innerHTML = '<div class="history-empty">No notes found on this profile.</div>';
+      return;
+    }
+
+    listEl.innerHTML = notes.map(note => {
+      const pubDate = new Date(note.publishedAt).toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+
+      return `
+        <div class="history-item">
+          <div class="history-item-content">
+            <a href="${escapeHtml(note.url)}" target="_blank" class="history-item-link" title="Open note on Substack">
+              <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1;">
+                <span class="history-item-title" style="font-weight: 500; color: var(--text-primary); font-size: 0.95rem;">${escapeHtml(note.body)}</span>
+                <span style="font-size: 0.8rem; color: var(--text-secondary); display: flex; align-items: center; gap: 4px;">
+                  <i data-lucide="heart" style="width: 12px; height: 12px;"></i> ${note.likesCount || 0} likes
+                </span>
+              </div>
+              <i data-lucide="external-link" class="history-item-icon"></i>
+            </a>
+            <div class="history-item-date">${escapeHtml(pubDate)}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+    showToast('Notes loaded successfully!', 'success');
+
+  } catch (err) {
+    listEl.innerHTML = `<div class="history-empty" style="color: var(--error);">${escapeHtml(err.message)}</div>`;
+    showToast(err.message, 'error');
+  } finally {
+    setButtonLoading(btn, false, '<i data-lucide="rotate-ccw"></i> Fetch Notes');
   }
 }
 

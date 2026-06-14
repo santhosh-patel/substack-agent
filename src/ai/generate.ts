@@ -361,3 +361,156 @@ ${req.commentInstruction ? `Specific Comment Guidelines: ${req.commentInstructio
   return callAIForComment(req.provider, req.model, req.apiKey, systemPrompt, userContent);
 }
 
+// ─── Note AI Generation ───
+
+export interface GenerateNoteRequest {
+  topic: string;
+  provider: 'groq' | 'gemini' | 'openai';
+  model: string;
+  apiKey: string;
+  systemPrompt?: string;
+}
+
+export interface GeneratedNote {
+  body: string;
+}
+
+export const NOTE_SYSTEM_PROMPT = `You are a professional writer creating Substack Notes. Given a topic, generate a brief, engaging note.
+
+Return ONLY valid JSON (no markdown fences, no extra text) with this exact structure:
+{
+  "body": "The note body. It must be concise (under 500 characters), conversational, and formatted with basic Markdown (bold, italic) if appropriate. Do NOT use emojis under any circumstances."
+}`;
+
+function parseNoteResponse(raw: string): GeneratedNote {
+  let cleaned = raw.trim();
+  const start = cleaned.indexOf('{');
+  const end = cleaned.lastIndexOf('}');
+  if (start !== -1 && end !== -1 && end > start) {
+    cleaned = cleaned.substring(start, end + 1);
+  } else {
+    if (cleaned.startsWith('```')) {
+      cleaned = cleaned.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+    }
+  }
+
+  try {
+    const escaped = escapeControlCharsInJsonStrings(cleaned);
+    const parsed = JSON.parse(escaped);
+    return {
+      body: parsed.body || '',
+    };
+  } catch (err) {
+    console.error('Failed to parse AI note response JSON:', err);
+    return {
+      body: raw,
+    };
+  }
+}
+
+async function callOpenAICompatibleNote(
+  endpoint: string,
+  apiKey: string,
+  model: string,
+  topic: string,
+  systemPrompt?: string
+): Promise<GeneratedNote> {
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model,
+      messages: [
+        { role: 'system', content: systemPrompt || NOTE_SYSTEM_PROMPT },
+        { role: 'user', content: `Write a Substack Note about: ${topic}` },
+      ],
+      temperature: 0.8,
+      max_tokens: 1024,
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`API error (${res.status}): ${err}`);
+  }
+
+  const data = await res.json();
+  const content = data.choices?.[0]?.message?.content?.trim();
+  if (!content) throw new Error('Empty response from AI');
+
+  return parseNoteResponse(content);
+}
+
+async function callGeminiNote(
+  apiKey: string,
+  model: string,
+  topic: string,
+  systemPrompt?: string
+): Promise<GeneratedNote> {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [
+        {
+          parts: [
+            { text: `${systemPrompt || NOTE_SYSTEM_PROMPT}\n\nWrite a Substack Note about: ${topic}` },
+          ],
+        },
+      ],
+      generationConfig: {
+        temperature: 0.8,
+        maxOutputTokens: 1024,
+        responseMimeType: 'application/json',
+      },
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Gemini API error (${res.status}): ${err}`);
+  }
+
+  const data = await res.json();
+  const content = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+  if (!content) throw new Error('Empty response from Gemini');
+
+  return parseNoteResponse(content);
+}
+
+export async function generateNote(req: GenerateNoteRequest): Promise<GeneratedNote> {
+  const { topic, provider, model, apiKey, systemPrompt } = req;
+
+  switch (provider) {
+    case 'groq':
+      return callOpenAICompatibleNote(
+        'https://api.groq.com/openai/v1/chat/completions',
+        apiKey,
+        model,
+        topic,
+        systemPrompt
+      );
+
+    case 'openai':
+      return callOpenAICompatibleNote(
+        'https://api.openai.com/v1/chat/completions',
+        apiKey,
+        model,
+        topic,
+        systemPrompt
+      );
+
+    case 'gemini':
+      return callGeminiNote(apiKey, model, topic, systemPrompt);
+
+    default:
+      throw new Error(`Unknown provider: ${provider}`);
+  }
+}
+
+
