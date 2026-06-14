@@ -40,16 +40,22 @@
         </button>
       </nav>
 
-      <!-- Connection Profile Card -->
-      <div class="profile-card disconnected" id="connectionBadge">
-        <div class="profile-avatar" id="profileAvatar">?</div>
-        <div class="profile-info">
-          <div class="profile-name" id="connectionText">Not connected</div>
-          <a class="profile-link" id="profileSubLink" href="#" target="_blank" style="display: none;">View Site</a>
-        </div>
-        <button class="profile-disconnect-btn" id="disconnectBtn" onclick="handleDisconnect()" title="Disconnect session" style="display: none;">
-          <i data-lucide="log-out"></i>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button class="btn-sidebar-toggle" id="themeToggleBtn" onclick="toggleTheme()" title="Switch to Light Mode" style="border-radius: 50%; padding: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <i data-lucide="sun" style="width: 18px; height: 18px;"></i>
         </button>
+
+        <!-- Connection Profile Card -->
+        <div class="profile-card disconnected" id="connectionBadge">
+          <div class="profile-avatar" id="profileAvatar">?</div>
+          <div class="profile-info">
+            <div class="profile-name" id="connectionText">Not connected</div>
+            <a class="profile-link" id="profileSubLink" href="#" target="_blank" style="display: none;">View Site</a>
+          </div>
+          <button class="profile-disconnect-btn" id="disconnectBtn" onclick="handleDisconnect()" title="Disconnect session" style="display: none;">
+            <i data-lucide="log-out"></i>
+          </button>
+        </div>
       </div>
     </header>
 
@@ -58,8 +64,11 @@
 
       <!-- ─── Left: Settings Panel ─── -->
       <aside class="card">
-        <div class="card-header">
-          <h2><i data-lucide="sliders-horizontal" class="header-icon"></i> Settings</h2>
+        <div class="card-header" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;">
+          <h2 style="display: flex; align-items: center; gap: 8px; margin: 0;"><i data-lucide="sliders-horizontal" class="header-icon"></i> Settings</h2>
+          <button class="btn-sidebar-close" onclick="toggleSidebar()" title="Collapse Settings" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; transition: var(--transition);">
+            <i data-lucide="x" style="width: 16px; height: 16px; stroke-width: 2.2px;"></i>
+          </button>
         </div>
         <div class="card-body">
 

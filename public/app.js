@@ -26,6 +26,14 @@ let allHistoryItems = [];
 document.addEventListener('DOMContentLoaded', async () => {
   updateModelOptions();
   loadSavedSettings();
+
+  // Initialize App Theme
+  const savedTheme = localStorage.getItem('app_theme') || 'dark';
+  if (savedTheme === 'light') {
+    document.body.classList.add('light-theme');
+    setTimeout(() => updateThemeToggleIcon(true), 50);
+  }
+
   await loadConfigFromBackend();
   loadPublishHistory();
 
@@ -603,6 +611,42 @@ function toggleSidebar() {
   localStorage.setItem('sidebar_collapsed', isCollapsed);
 }
 
+function openSidebarAndFocusSid() {
+  const grid = document.querySelector('.main-grid');
+  if (grid && grid.classList.contains('sidebar-collapsed')) {
+    grid.classList.remove('sidebar-collapsed');
+    localStorage.setItem('sidebar_collapsed', 'false');
+  }
+  const sidInput = document.getElementById('sid');
+  if (sidInput) {
+    sidInput.focus();
+    sidInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  showToast('Please paste your Substack SID cookie value to connect.', 'info');
+}
+
+// ─── Theme Toggling ───
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-theme');
+  localStorage.setItem('app_theme', isLight ? 'light' : 'dark');
+  updateThemeToggleIcon(isLight);
+}
+
+function updateThemeToggleIcon(isLight) {
+  const btn = document.getElementById('themeToggleBtn');
+  if (!btn) return;
+  if (isLight) {
+    btn.innerHTML = `<i data-lucide="moon" style="width: 18px; height: 18px;"></i>`;
+    btn.title = "Switch to Dark Mode";
+  } else {
+    btn.innerHTML = `<i data-lucide="sun" style="width: 18px; height: 18px;"></i>`;
+    btn.title = "Switch to Light Mode";
+  }
+  if (window.lucide) {
+    lucide.createIcons();
+  }
+}
+
 // ─── Publish History ───
 function loadPublishHistory() {
   const historyList = document.getElementById('newsletterHistoryList');
@@ -981,8 +1025,8 @@ function filterAndRenderHistory() {
           <h3 style="font-size: 1.05rem; color: var(--text-primary); margin-bottom: 4px;">Account Disconnected</h3>
           <p style="font-size: 0.84rem; color: var(--text-muted); max-width: 320px; margin: 0 auto;">Connect your session ID in the settings sidebar to retrieve notes, comments, and post archives.</p>
         </div>
-        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('sid').focus(); showToast('Provide Substack SID session cookie and click Connect', 'info');" style="margin-top: 8px;">
-          <i data-lucide="sliders-horizontal"></i> Open Settings
+        <button class="btn btn-primary btn-sm" onclick="openSidebarAndFocusSid()" style="margin-top: 8px; background: var(--accent); color: var(--bg-primary);">
+          <i data-lucide="key-round"></i> Connect Account
         </button>
       </div>
     `;
@@ -1082,12 +1126,12 @@ function filterAndRenderHistory() {
         <!-- Content section -->
         <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0; width: 100%;">
           ${item.type === 'newsletter' ? `
-            <a href="${escapeHtml(item.url)}" target="_blank" style="text-decoration: none; color: var(--text-primary); font-weight: 600; font-size: 1rem; width: fit-content; max-width: 100%; display: flex; align-items: center; gap: 6px;">
+            <a href="${escapeHtml(item.url)}" target="_blank" style="text-decoration: none; color: inherit; font-weight: 600; font-size: 1rem; width: fit-content; max-width: 100%; display: flex; align-items: center; gap: 6px;">
               <span>${escapeHtml(item.title)}</span>
             </a>
-          ` : `<div style="font-weight: 600; color: var(--text-primary); font-size: 0.9rem;">${escapeHtml(item.title)}</div>`}
+          ` : `<div style="font-weight: 600; color: inherit; font-size: 0.9rem;">${escapeHtml(item.title)}</div>`}
           
-          <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55; white-space: pre-wrap; word-break: break-word; margin-top: 2px;">
+          <div style="font-size: 0.88rem; color: inherit; opacity: 0.9; line-height: 1.55; white-space: pre-wrap; word-break: break-word; margin-top: 2px;">
             ${displayBody}
           </div>
         </div>
