@@ -655,7 +655,7 @@ async function loadArchive() {
   }
 
   setButtonLoading(btn, true, 'Fetching…');
-  listEl.innerHTML = '<div class="history-empty"><span class="spinner"></span> Loading publication posts...</div>';
+  listEl.innerHTML = '<div class="history-empty"><span class="spinner"></span> Loading publication archive...</div>';
 
   try {
     const res = await fetch('/api/newsletters');
