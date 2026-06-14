@@ -1036,3 +1036,56 @@ select option {
   width: 100%;
 }
 
+/* History Pastel Categories styling */
+.history-item.category-newsletter {
+  background: rgba(224, 231, 255, 0.04) !important;
+  border-left: 4px solid #b4c6fc !important;
+}
+.history-item.category-newsletter:hover {
+  background: rgba(224, 231, 255, 0.08) !important;
+  border-color: #8da2fb !important;
+}
+
+.history-item.category-note {
+  background: rgba(209, 250, 229, 0.04) !important;
+  border-left: 4px solid #a7f3d0 !important;
+}
+.history-item.category-note:hover {
+  background: rgba(209, 250, 229, 0.08) !important;
+  border-color: #6ee7b7 !important;
+}
+
+.history-item.category-comment {
+  background: rgba(254, 243, 199, 0.04) !important;
+  border-left: 4px solid #fde68a !important;
+}
+.history-item.category-comment:hover {
+  background: rgba(254, 243, 199, 0.08) !important;
+  border-color: #fcd34d !important;
+}
+
+.history-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+.history-badge.badge-newsletter {
+  background: rgba(199, 210, 254, 0.25);
+  color: #c7d2fe;
+}
+.history-badge.badge-note {
+  background: rgba(167, 243, 208, 0.25);
+  color: #a7f3d0;
+}
+.history-badge.badge-comment {
+  background: rgba(253, 230, 138, 0.25);
+  color: #fde68a;
+}
+

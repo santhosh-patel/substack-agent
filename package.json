@@ -4,7 +4,8 @@
   "description": "Automate Substack posts with AI-powered content generation",
   "type": "module",
   "scripts": {
-    "dev": "npx tsx watch src/server.ts"
+    "dev": "npx tsx watch src/server.ts",
+    "test:api": "node scripts/test-apis.js"
   },
   "dependencies": {
     "express": "^5.1.0",

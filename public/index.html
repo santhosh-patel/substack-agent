@@ -35,8 +35,8 @@
         <button class="nav-btn" id="tab-notes" onclick="switchTab('notes')">
           <i data-lucide="sticky-note"></i> Notes
         </button>
-        <button class="nav-btn" id="tab-archive" onclick="switchTab('archive')">
-          <i data-lucide="archive"></i> Archive
+        <button class="nav-btn" id="tab-history" onclick="switchTab('history')">
+          <i data-lucide="history"></i> History
         </button>
       </nav>
 
@@ -302,22 +302,44 @@
           </div>
         </div>
 
-        <!-- ─── Tab View: Archive ─── -->
-        <div id="view-archive" class="tab-view" style="display: none;">
+        <!-- ─── Tab View: History ─── -->
+        <div id="view-history" class="tab-view" style="display: none;">
           <div class="card">
-            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-              <h2><i data-lucide="archive" class="header-icon"></i> Archive</h2>
-              <button class="btn btn-secondary btn-sm" id="loadArchiveBtn" onclick="loadArchive()">
-                <i data-lucide="rotate-ccw"></i> Fetch Archive
-              </button>
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
+              <h2 style="margin: 0; display: flex; align-items: center; gap: 8px;"><i data-lucide="history" class="header-icon"></i> History</h2>
+              
+              <!-- Filters and Sorting controls -->
+              <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <label for="historyTypeFilter" style="margin: 0; font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;">Type:</label>
+                  <select id="historyTypeFilter" class="form-select select-sm" style="width: auto; padding: 6px 32px 6px 12px; font-size: 0.85rem; border-radius: var(--radius-md); background-color: var(--bg-input);" onchange="filterAndRenderHistory()">
+                    <option value="all">All</option>
+                    <option value="newsletter">Newsletters</option>
+                    <option value="note">Notes</option>
+                    <option value="comment">Comments</option>
+                  </select>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <label for="historySort" style="margin: 0; font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;">Sort:</label>
+                  <select id="historySort" class="form-select select-sm" style="width: auto; padding: 6px 32px 6px 12px; font-size: 0.85rem; border-radius: var(--radius-md); background-color: var(--bg-input);" onchange="filterAndRenderHistory()">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                  </select>
+                </div>
+
+                <button class="btn btn-secondary btn-sm" id="loadHistoryBtn" onclick="loadHistory()">
+                  <i data-lucide="rotate-ccw"></i> Fetch History
+                </button>
+              </div>
             </div>
             <div class="card-body">
               <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 0.9rem;">
-                List and view the newsletters and drafts on your connected Substack publication.
+                View and filter your automation history including newsletters, comments, and notes published from this dashboard.
               </p>
 
-              <div id="archiveList" class="history-list">
-                <div class="history-empty">Click "Fetch Archive" to retrieve your publication archive.</div>
+              <div id="historyList" class="history-list">
+                <div class="history-empty">Click "Fetch History" to retrieve your publication history.</div>
               </div>
             </div>
           </div>

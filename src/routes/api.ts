@@ -850,21 +850,33 @@ router.post('/comments/automate', async (req: Request, res: Response) => {
 
       // 3. Post the comment to Substack
       const commentEndpoint = `https://${postPubHostname}/api/v1/post/${post.id}/comment`;
-      const postCommentRes = await fetch(commentEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Cookie': `connect.sid=${currentSid}`,
-          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Origin': `https://${postPubHostname}`,
-          'Referer': `https://${postPubHostname}/p/${post.id}`
-        },
-        body: JSON.stringify({ body: aiResult.comment })
-      });
+      let postCommentRes: { ok: boolean; status?: number; statusText?: string };
+      try {
+        await ensureHttpClientPatched(); // Ensure gotScraping is initialized
+        const response = await gotScraping({
+          url: commentEndpoint,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Cookie': `connect.sid=${currentSid}`,
+            'Origin': `https://${postPubHostname}`,
+            'Referer': `https://${postPubHostname}/p/${post.id}`
+          },
+          body: JSON.stringify({ body: aiResult.comment }),
+          responseType: 'json',
+          retry: { limit: 0 }
+        });
+        postCommentRes = { ok: true };
+      } catch (err: any) {
+        postCommentRes = {
+          ok: false,
+          status: err.response?.statusCode || 500,
+          statusText: err.response?.body ? (typeof err.response.body === 'object' ? JSON.stringify(err.response.body) : String(err.response.body)) : err.message
+        };
+      }
 
       if (!postCommentRes.ok) {
-        const errText = await postCommentRes.text();
-        addLog(`Error: Failed to post comment (HTTP ${postCommentRes.status}): ${errText}`);
+        addLog(`Error: Failed to post comment (HTTP ${postCommentRes.status}): ${postCommentRes.statusText}`);
         results.push({
           postTitle: post.title,
           url: post.url,
@@ -874,6 +886,15 @@ router.post('/comments/automate', async (req: Request, res: Response) => {
         });
       } else {
         addLog(`Success! Comment posted successfully on "${post.title}"`);
+        
+        // Save comment to local JSON history file
+        saveCommentToHistory({
+          postTitle: post.title,
+          postUrl: post.url,
+          body: aiResult.comment,
+          publishedAt: new Date().toISOString()
+        });
+
         results.push({
           postTitle: post.title,
           url: post.url,

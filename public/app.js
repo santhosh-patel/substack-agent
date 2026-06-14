@@ -20,6 +20,7 @@ const MODELS = {
 
 // ─── State ───
 let isConnected = false;
+let allHistoryItems = [];
 
 // ─── Initialization ───
 document.addEventListener('DOMContentLoaded', async () => {
@@ -507,7 +508,7 @@ function updatePublishButtonLabel() {
 
 // ─── Tab Switching ───
 function switchTab(tabId) {
-  const tabs = ['newsletters', 'comments', 'notes', 'archive'];
+  const tabs = ['newsletters', 'comments', 'notes', 'history'];
   tabs.forEach(t => {
     const btn = document.getElementById(`tab-${t}`);
     const view = document.getElementById(`view-${t}`);
@@ -531,10 +532,10 @@ function switchTab(tabId) {
     document.getElementById('promptDetails').style.display = 'none';
   }
 
-  if (tabId === 'archive') {
-    const listEl = document.getElementById('archiveList');
-    if (listEl && listEl.innerHTML.includes('Click "Fetch Archive"')) {
-      loadArchive();
+  if (tabId === 'history') {
+    const listEl = document.getElementById('historyList');
+    if (listEl && listEl.innerHTML.includes('Click "Fetch History"')) {
+      loadHistory();
     }
   } else if (tabId === 'notes') {
     const listEl = document.getElementById('notesList');
@@ -685,9 +686,10 @@ function stopCommentAutomation() {
 }
 
 // ─── Newsletters Listing ───
-async function loadArchive() {
-  const btn = document.getElementById('loadArchiveBtn');
-  const listEl = document.getElementById('archiveList');
+// ─── Publication History Listing ───
+async function loadHistory() {
+  const btn = document.getElementById('loadHistoryBtn');
+  const listEl = document.getElementById('historyList');
 
   if (!isConnected) {
     showToast('Please connect your Substack account first', 'error');
@@ -695,55 +697,145 @@ async function loadArchive() {
   }
 
   setButtonLoading(btn, true, 'Fetching…');
-  listEl.innerHTML = '<div class="history-empty"><span class="spinner"></span> Loading publication archive...</div>';
+  listEl.innerHTML = '<div class="history-empty"><span class="spinner"></span> Loading publication history...</div>';
 
+  let newsletters = [];
+  let notes = [];
+  let comments = [];
+  let errors = [];
+
+  // 1. Fetch Newsletters
   try {
     const res = await fetch('/api/newsletters');
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.error || 'Failed to fetch newsletters');
+    if (res.ok) {
+      const data = await res.json();
+      newsletters = (data.posts || []).map(p => ({
+        id: 'post-' + p.id,
+        type: 'newsletter',
+        title: p.title,
+        body: p.subtitle || p.truncatedBody || '',
+        url: p.url,
+        publishedAt: p.publishedAt
+      }));
+    } else {
+      errors.push('Newsletters');
     }
+  } catch (e) {
+    errors.push('Newsletters');
+  }
 
-    const posts = data.posts || [];
-    if (posts.length === 0) {
-      listEl.innerHTML = '<div class="history-empty">No newsletters found on this publication.</div>';
-      return;
+  // 2. Fetch Notes
+  try {
+    const res = await fetch('/api/notes');
+    if (res.ok) {
+      const data = await res.json();
+      notes = (data.notes || []).map(n => ({
+        id: 'note-' + n.id,
+        type: 'note',
+        title: n.author ? n.author.name + "'s Note" : 'Published Note',
+        body: n.body,
+        url: n.url,
+        publishedAt: n.publishedAt
+      }));
+    } else {
+      errors.push('Notes');
     }
+  } catch (e) {
+    errors.push('Notes');
+  }
 
-    listEl.innerHTML = posts.map(post => {
-      const pubDate = new Date(post.publishedAt).toLocaleDateString(undefined, {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      });
+  // 3. Fetch Comments
+  try {
+    const res = await fetch('/api/comments');
+    if (res.ok) {
+      const data = await res.json();
+      comments = (data.comments || []).map((c, idx) => ({
+        id: 'comment-' + idx,
+        type: 'comment',
+        title: 'Commented on: ' + c.postTitle,
+        body: c.body,
+        url: c.postUrl,
+        publishedAt: c.publishedAt
+      }));
+    } else {
+      errors.push('Comments');
+    }
+  } catch (e) {
+    errors.push('Comments');
+  }
 
-      return `
-        <div class="history-item">
-          <div class="history-item-content">
-            <a href="${escapeHtml(post.url)}" target="_blank" class="history-item-link" title="Open newsletter on Substack">
-              <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1;">
-                <span class="history-item-title" style="font-weight: 600; color: var(--text-primary); font-size: 1rem;">${escapeHtml(post.title)}</span>
-                <span style="font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(post.subtitle || post.truncatedBody)}</span>
-              </div>
-              <i data-lucide="external-link" class="history-item-icon"></i>
-            </a>
-            <div class="history-item-date">${escapeHtml(pubDate)}</div>
+  if (errors.length > 0) {
+    showToast(`Failed to load: ${errors.join(', ')}`, 'warning');
+  } else {
+    showToast('History loaded successfully!', 'success');
+  }
+
+  // Merge all items
+  allHistoryItems = [...newsletters, ...notes, ...comments];
+  
+  filterAndRenderHistory();
+  setButtonLoading(btn, false, '<i data-lucide="rotate-ccw"></i> Fetch History');
+}
+
+function filterAndRenderHistory() {
+  const listEl = document.getElementById('historyList');
+  const typeFilter = document.getElementById('historyTypeFilter').value;
+  const sortOrder = document.getElementById('historySort').value;
+
+  if (!listEl) return;
+
+  // Filter
+  let items = allHistoryItems;
+  if (typeFilter !== 'all') {
+    items = items.filter(item => item.type === typeFilter);
+  }
+
+  // Sort
+  items.sort((a, b) => {
+    const dateA = new Date(a.publishedAt);
+    const dateB = new Date(b.publishedAt);
+    return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+  });
+
+  if (items.length === 0) {
+    listEl.innerHTML = '<div class="history-empty">No items found matching the filter criteria.</div>';
+    return;
+  }
+
+  listEl.innerHTML = items.map(item => {
+    const pubDate = new Date(item.publishedAt).toLocaleDateString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    const badgeClass = `badge-${item.type}`;
+    const categoryClass = `category-${item.type}`;
+    const displayType = item.type === 'newsletter' ? 'Newsletter' : (item.type === 'note' ? 'Note' : 'Comment');
+
+    return `
+      <div class="history-item ${categoryClass}">
+        <div class="history-item-content" style="align-items: flex-start;">
+          <div style="display: flex; align-items: flex-start; gap: 8px; width: 100%; min-width: 0; flex: 1;">
+            <span class="history-badge ${badgeClass}">${displayType}</span>
+            <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1;">
+              <a href="${escapeHtml(item.url)}" target="_blank" class="history-item-link" title="Open on Substack" style="display: inline-flex; align-items: center; gap: 6px; margin: 0; padding: 0; background: transparent; border: none; width: fit-content; max-width: 100%;">
+                <span class="history-item-title" style="font-weight: 600; color: var(--text-primary); font-size: 1.05rem; white-space: normal; word-break: break-word; text-align: left;">${escapeHtml(item.title)}</span>
+                <i data-lucide="external-link" class="history-item-icon" style="width: 14px; height: 14px; flex-shrink: 0;"></i>
+              </a>
+              <span style="font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5; white-space: pre-wrap; word-break: break-word; margin-top: 4px;">${escapeHtml(item.body)}</span>
+            </div>
           </div>
+          <div class="history-item-date" style="align-self: flex-start; text-align: right; margin-top: 4px; color: var(--text-muted); font-size: 0.8rem; white-space: nowrap; margin-left: 12px;">${escapeHtml(pubDate)}</div>
         </div>
-      `;
-    }).join('');
+      </div>
+    `;
+  }).join('');
 
-    if (window.lucide) {
-      lucide.createIcons();
-    }
-    showToast('Archive loaded successfully!', 'success');
-
-  } catch (err) {
-    listEl.innerHTML = `<div class="history-empty" style="color: var(--error);">${escapeHtml(err.message)}</div>`;
-    showToast(err.message, 'error');
-  } finally {
-    setButtonLoading(btn, false, '<i data-lucide="rotate-ccw"></i> Fetch Archive');
+  if (window.lucide) {
+    lucide.createIcons();
   }
 }
 
