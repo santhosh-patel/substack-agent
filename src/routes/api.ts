@@ -1,18 +1,22 @@
 import { Router, Request, Response } from 'express';
 import { Marked } from 'marked';
 import { generatePost, SYSTEM_PROMPT, analyzeAndGenerateComment, generateNote, NOTE_SYSTEM_PROMPT } from '../ai/generate.js';
+import fs from 'fs';
+import path from 'path';
 
 const router = Router();
 const marked = new Marked();
 
 // ─── Track whether HttpClient has been patched ───
 let httpClientPatched = false;
+let gotScraping: any = null;
 
 async function ensureHttpClientPatched() {
   if (httpClientPatched) return;
   try {
     const { SubstackClient } = await import('substack-api');
-    const { gotScraping } = await import('got-scraping');
+    const gotModule = await import('got-scraping');
+    gotScraping = gotModule.gotScraping;
     const tempClient = new SubstackClient({ apiKey: 'temp', hostname: 'substack.com' });
     const HttpClientClass = (tempClient as any).publicationClient.constructor;
 
@@ -625,6 +629,46 @@ router.get('/notes', async (_req: Request, res: Response) => {
   } catch (err: any) {
     console.error('Fetch notes error:', err);
     res.status(500).json({ error: err.message || 'Failed to fetch notes' });
+  }
+});
+
+// ─── Comments History Helper & Route ───
+function saveCommentToHistory(comment: { postTitle: string; postUrl: string; body: string; publishedAt: string }) {
+  try {
+    const dataDir = path.join(process.cwd(), 'src', 'data');
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    const filePath = path.join(dataDir, 'comments_history.json');
+    let history: any[] = [];
+    if (fs.existsSync(filePath)) {
+      try {
+        history = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+      } catch (e) {
+        history = [];
+      }
+    }
+    history.unshift(comment); // add to beginning
+    fs.writeFileSync(filePath, JSON.stringify(history, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Failed to save comment to history:', err);
+  }
+}
+
+router.get('/comments', (req: Request, res: Response) => {
+  try {
+    const filePath = path.join(process.cwd(), 'src', 'data', 'comments_history.json');
+    let history: any[] = [];
+    if (fs.existsSync(filePath)) {
+      try {
+        history = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+      } catch (e) {
+        history = [];
+      }
+    }
+    res.json({ success: true, comments: history });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to fetch comments history' });
   }
 });
 
