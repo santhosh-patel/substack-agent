@@ -12,11 +12,12 @@ async function ensureHttpClientPatched() {
   if (httpClientPatched) return;
   try {
     const { SubstackClient } = await import('substack-api');
+    const { gotScraping } = await import('got-scraping');
     const tempClient = new SubstackClient({ apiKey: 'temp', hostname: 'substack.com' });
     const HttpClientClass = (tempClient as any).publicationClient.constructor;
 
-    // Completely replace makeRequest to avoid the bug in the original where
-    // `...options` spread overrides the `headers` object (losing the Cookie).
+    // Completely replace makeRequest to use gotScraping instead of fetch.
+    // This bypasses Cloudflare WAF/Turnstile blocks by mimicking browser TLS/HTTP2 fingerprints.
     HttpClientClass.prototype.makeRequest = async function (url: string, options: any = {}) {
       let origin = 'https://substack.com';
       try {
@@ -33,22 +34,27 @@ async function ensureHttpClientPatched() {
         ...(options.headers || {}),
       };
 
-      const { headers: _h, ...restOptions } = options;
-
-      const response = await fetch(url, {
-        headers: mergedHeaders,
-        ...restOptions,
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      try {
+        const response = await gotScraping({
+          url,
+          method: options.method || 'GET',
+          headers: mergedHeaders,
+          body: options.body,
+          responseType: 'json',
+          retry: { limit: 0 }, // Prevent duplicate operations on failure
+        });
+        return response.body;
+      } catch (err: any) {
+        if (err.response) {
+          throw new Error(`HTTP ${err.response.statusCode}: ${err.response.statusMessage || err.message}`);
+        }
+        throw err;
       }
-      return response.json();
     };
     httpClientPatched = true;
-    console.log('[Substack] HttpClient patched with browser headers');
+    console.log('[Substack] HttpClient patched with got-scraping browser headers & TLS/HTTP2 fingerprints');
   } catch (err) {
-    console.error('[Substack] Failed to patch HttpClient:', err);
+    console.error('[Substack] Failed to patch HttpClient with got-scraping:', err);
   }
 }
 
