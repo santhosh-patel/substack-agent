@@ -290,6 +290,7 @@ async function handlePublish() {
       showToast(`URL: ${data.post.url}`, 'info');
       addPostToHistory(data.post.title || title, data.post.url);
     }
+    setTimeout(loadHistory, 1500);
   } catch (err) {
     showToast(err.message, 'error');
   } finally {
@@ -438,7 +439,7 @@ function toggleSidebar() {
 
 // ─── Publish History ───
 function loadPublishHistory() {
-  const historyList = document.getElementById('historyList');
+  const historyList = document.getElementById('newsletterHistoryList');
   if (!historyList) return;
 
   const history = JSON.parse(localStorage.getItem('substack_publish_history') || '[]');
@@ -663,6 +664,10 @@ async function runCommentAutomation() {
 
     addToInputHistory('commentTarget', target);
     addToInputHistory('commentKeyword', keyword);
+
+    if (commentCount > 0) {
+      loadHistory();
+    }
 
   } catch (err) {
     if (err.name === 'AbortError') {
@@ -925,8 +930,11 @@ async function handlePublishNote() {
       addToInputHistory('noteLink', link);
     }
     
-    // Load notes again to show the newly published note in history
-    setTimeout(loadNotes, 1500);
+    // Load notes and history again to show the newly published note
+    setTimeout(() => {
+      loadNotes();
+      loadHistory();
+    }, 1500);
   } catch (err) {
     showToast(err.message, 'error');
   } finally {
