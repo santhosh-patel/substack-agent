@@ -354,7 +354,8 @@ function showToast(message, type = 'info') {
   const icons = { 
     success: 'check-circle-2', 
     error: 'alert-triangle', 
-    info: 'info' 
+    info: 'info',
+    warning: 'alert-circle'
   };
   const iconName = icons[type] || 'info';
   

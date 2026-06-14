@@ -503,16 +503,18 @@ router.get('/newsletters', async (_req: Request, res: Response) => {
     }
 
     const pubHostname = (substackClient as any).publicationClient.baseUrl.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
+    const response = await (substackClient as any).publicationClient.get('/api/v1/archive?limit=25');
     const posts: any[] = [];
     
-    for await (const post of ownProfile.posts({ limit: 25 })) {
+    const rawPosts = Array.isArray(response) ? response : (response.posts || []);
+    for (const post of rawPosts) {
       posts.push({
         id: post.id,
         title: post.title,
-        subtitle: post.subtitle || '',
-        publishedAt: post.publishedAt,
-        truncatedBody: post.truncatedBody || '',
-        url: `https://${pubHostname}/p/${post.id}`
+        subtitle: post.subtitle || post.description || '',
+        publishedAt: post.post_date || post.published_date || new Date().toISOString(),
+        truncatedBody: post.truncated_body_text || '',
+        url: post.canonical_url || `https://${pubHostname}/p/${post.slug || post.id}`
       });
     }
 
