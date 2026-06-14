@@ -46,6 +46,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Setup publication URL listener to save on update
   document.getElementById('pubUrl').addEventListener('input', saveSettings);
 
+  // Setup SID listener to save on update
+  document.getElementById('sid').addEventListener('input', saveSettings);
+
+  // Load input histories
+  loadAllInputHistories();
+
   // Setup draftToggle listener to update button label
   const draftToggle = document.getElementById('draftToggle');
   if (draftToggle) {
@@ -102,6 +108,7 @@ function loadSavedSettings() {
       updateModelOptions();
     }
     if (s.model) document.getElementById('model').value = s.model;
+    if (s.sid) document.getElementById('sid').value = s.sid;
   } catch {}
 }
 
@@ -110,6 +117,7 @@ function saveSettings() {
     pubUrl: document.getElementById('pubUrl').value,
     provider: document.getElementById('provider').value,
     model: document.getElementById('model').value,
+    sid: document.getElementById('sid').value,
   };
   localStorage.setItem('substack_settings', JSON.stringify(settings));
 }
@@ -226,6 +234,8 @@ async function handleGenerate() {
     document.getElementById('postSubtitle').value = data.post.subtitle;
     document.getElementById('editor').value = data.post.body;
     updatePreview();
+
+    addToInputHistory('topic', topic);
 
     showToast('Newsletter generated successfully!', 'success');
   } catch (err) {
@@ -650,6 +660,9 @@ async function runCommentAutomation() {
     showToast(`Automation complete! Placed ${commentCount} new comments.`, 'success');
     appendCommentLog(`[Client] Automation completed successfully. Placed ${commentCount} comments.`, 'success');
 
+    addToInputHistory('commentTarget', target);
+    addToInputHistory('commentKeyword', keyword);
+
   } catch (err) {
     if (err.name === 'AbortError') {
       appendCommentLog(`[Client] Automation stopped by user.`, 'warning');
@@ -772,6 +785,8 @@ async function handleGenerateNote() {
     document.getElementById('noteBody').value = data.note.body;
     updateNotePreview();
 
+    addToInputHistory('noteTopic', topic);
+
     showToast('Note generated successfully!', 'success');
   } catch (err) {
     showToast(err.message, 'error');
@@ -813,6 +828,10 @@ async function handlePublishNote() {
     document.getElementById('noteBody').value = '';
     document.getElementById('noteLink').value = '';
     updateNotePreview();
+
+    if (link) {
+      addToInputHistory('noteLink', link);
+    }
     
     // Load notes again to show the newly published note in history
     setTimeout(loadNotes, 1500);
@@ -903,5 +922,34 @@ async function loadNotes() {
   } finally {
     setButtonLoading(btn, false, '<i data-lucide="rotate-ccw"></i> Fetch Notes');
   }
+}
+
+// ─── Input History Handling ───
+function addToInputHistory(inputId, value) {
+  if (!value) return;
+  const historyKey = `history_${inputId}`;
+  let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+  
+  history = history.filter(item => item !== value);
+  history.unshift(value);
+  
+  if (history.length > 10) history.pop();
+  
+  localStorage.setItem(historyKey, JSON.stringify(history));
+  updateDatalist(inputId);
+}
+
+function updateDatalist(inputId) {
+  const historyKey = `history_${inputId}`;
+  const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+  const datalist = document.getElementById(`${inputId}-history`);
+  if (!datalist) return;
+  
+  datalist.innerHTML = history.map(val => `<option value="${escapeHtml(val)}"></option>`).join('');
+}
+
+function loadAllInputHistories() {
+  const inputIds = ['topic', 'commentTarget', 'commentKeyword', 'noteTopic', 'noteLink'];
+  inputIds.forEach(id => updateDatalist(id));
 }
 

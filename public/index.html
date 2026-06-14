@@ -135,7 +135,8 @@
             <div class="card-body">
               <!-- Topic + Generate -->
               <div class="topic-row">
-                <input type="text" id="topic" placeholder="Enter a topic… e.g. '5 ways AI is changing writing'" />
+                <input type="text" id="topic" list="topic-history" placeholder="Enter a topic… e.g. '5 ways AI is changing writing'" />
+                <datalist id="topic-history"></datalist>
                 <button class="btn btn-secondary" id="generateBtn" onclick="handleGenerate()">
                   <i data-lucide="sparkles"></i> Generate
                 </button>
@@ -207,11 +208,13 @@
               <div class="post-meta" style="margin-bottom: 16px;">
                 <div class="form-group">
                   <label for="commentTarget">Target Account (ID, slug, or URL)</label>
-                  <input type="text" id="commentTarget" placeholder="e.g. @username, 1234567, or name.substack.com" />
+                  <input type="text" id="commentTarget" list="commentTarget-history" placeholder="e.g. @username, 1234567, or name.substack.com" />
+                  <datalist id="commentTarget-history"></datalist>
                 </div>
                 <div class="form-group">
                   <label for="commentKeyword">Keyword / Match Phrase</label>
-                  <input type="text" id="commentKeyword" placeholder="e.g. AI writing, startup advice" />
+                  <input type="text" id="commentKeyword" list="commentKeyword-history" placeholder="e.g. AI writing, startup advice" />
+                  <datalist id="commentKeyword-history"></datalist>
                 </div>
               </div>
 
@@ -246,7 +249,8 @@
             <div class="card-body">
               <!-- Topic + Generate -->
               <div class="topic-row">
-                <input type="text" id="noteTopic" placeholder="Enter a topic… e.g. 'Writing advice for beginners'" />
+                <input type="text" id="noteTopic" list="noteTopic-history" placeholder="Enter a topic… e.g. 'Writing advice for beginners'" />
+                <datalist id="noteTopic-history"></datalist>
                 <button class="btn btn-secondary" id="generateNoteBtn" onclick="handleGenerateNote()">
                   <i data-lucide="sparkles"></i> Generate
                 </button>
@@ -260,7 +264,8 @@
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
                   <label for="noteLink">Link Attachment (Optional)</label>
-                  <input type="text" id="noteLink" placeholder="https://example.com/some-link" />
+                  <input type="text" id="noteLink" list="noteLink-history" placeholder="https://example.com/some-link" />
+                  <datalist id="noteLink-history"></datalist>
                 </div>
               </div>
 

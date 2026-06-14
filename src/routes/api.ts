@@ -64,6 +64,13 @@ router.post('/connect', async (req: Request, res: Response) => {
     if (!sid) {
       sid = process.env.SUBSTACK_SID;
     }
+    if (sid) {
+      try {
+        sid = decodeURIComponent(sid);
+      } catch (e) {
+        // Fallback if not decodeable
+      }
+    }
     if (!publicationUrl) {
       publicationUrl = process.env.SUBSTACK_PUB_URL || process.env.PUBLICATION_URL;
     }
