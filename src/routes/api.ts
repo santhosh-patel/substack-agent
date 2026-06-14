@@ -5,38 +5,62 @@ import { generatePost, SYSTEM_PROMPT, analyzeAndGenerateComment, generateNote, N
 const router = Router();
 const marked = new Marked();
 
-// ─── Patch substack-api HttpClient globally to add browser headers ───
-(async () => {
+// ─── Track whether HttpClient has been patched ───
+let httpClientPatched = false;
+
+async function ensureHttpClientPatched() {
+  if (httpClientPatched) return;
   try {
     const { SubstackClient } = await import('substack-api');
     const tempClient = new SubstackClient({ apiKey: 'temp', hostname: 'substack.com' });
     const HttpClientClass = (tempClient as any).publicationClient.constructor;
-    const originalMakeRequest = HttpClientClass.prototype.makeRequest;
 
+    // Completely replace makeRequest to avoid the bug in the original where
+    // `...options` spread overrides the `headers` object (losing the Cookie).
     HttpClientClass.prototype.makeRequest = async function (url: string, options: any = {}) {
+      let origin = 'https://substack.com';
       try {
         const urlObj = new URL(url);
-        const origin = `${urlObj.protocol}//${urlObj.hostname}`;
-        options.headers = {
-          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Origin': origin,
-          'Referer': `${origin}/`,
-          ...options.headers
-        };
-      } catch (e) {
-        options.headers = {
-          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Origin': 'https://substack.com',
-          'Referer': 'https://substack.com/',
-          ...options.headers
-        };
+        origin = `${urlObj.protocol}//${urlObj.hostname}`;
+      } catch {}
+
+      const mergedHeaders: Record<string, string> = {
+        'Cookie': this.cookie,
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Origin': origin,
+        'Referer': `${origin}/`,
+        ...(options.headers || {}),
+      };
+
+      const { headers: _h, ...restOptions } = options;
+
+      const response = await fetch(url, {
+        headers: mergedHeaders,
+        ...restOptions,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      return originalMakeRequest.call(this, url, options);
+      return response.json();
     };
+    httpClientPatched = true;
+    console.log('[Substack] HttpClient patched with browser headers');
   } catch (err) {
-    console.error('Failed to patch substack-api HttpClient:', err);
+    console.error('[Substack] Failed to patch HttpClient:', err);
   }
-})();
+}
+
+// ─── Helper to decode SID (handles URL-encoded values from .env or browser) ───
+function decodeSid(raw: string): string {
+  if (!raw) return raw;
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+}
 
 // ─── In-memory state ───
 let substackClient: any = null;
@@ -64,13 +88,8 @@ router.post('/connect', async (req: Request, res: Response) => {
     if (!sid) {
       sid = process.env.SUBSTACK_SID;
     }
-    if (sid) {
-      try {
-        sid = decodeURIComponent(sid);
-      } catch (e) {
-        // Fallback if not decodeable
-      }
-    }
+    sid = decodeSid(sid);
+
     if (!publicationUrl) {
       publicationUrl = process.env.SUBSTACK_PUB_URL || process.env.PUBLICATION_URL;
     }
@@ -80,7 +99,9 @@ router.post('/connect', async (req: Request, res: Response) => {
       return;
     }
 
-    // Dynamic import for ESM substack-api
+    // Ensure HttpClient is patched with browser headers before any requests
+    await ensureHttpClientPatched();
+
     const { SubstackClient } = await import('substack-api');
 
     let hostname = 'substack.com';
@@ -92,20 +113,33 @@ router.post('/connect', async (req: Request, res: Response) => {
       }
     }
 
+    console.log(`[Substack] Connecting with hostname: ${hostname}, SID: ${sid.substring(0, 10)}...`);
+
     substackClient = new SubstackClient({
       apiKey: sid,
       hostname: hostname,
     });
 
-    const connected = await substackClient.testConnectivity();
-    if (!connected) {
+    // Skip testConnectivity() — the library's connectivity check calls
+    // /api/v1/feed/following on the publication client, but this endpoint
+    // only exists on substack.com, NOT on publication subdomains like
+    // yourname.substack.com. This causes a false negative "Authentication failed".
+    // Instead, go directly to ownProfile() which calls /api/v1/subscription
+    // on the publication subdomain — this correctly validates the session.
+
+    try {
+      ownProfile = await substackClient.ownProfile();
+    } catch (profileErr: any) {
+      console.error('[Substack] ownProfile() failed:', profileErr.message);
       substackClient = null;
-      res.status(401).json({ error: 'Authentication failed — check your SID cookie' });
+      ownProfile = null;
+      res.status(401).json({ error: 'Authentication failed — check your SID cookie and Publication URL' });
       return;
     }
 
-    ownProfile = await substackClient.ownProfile();
     currentSid = sid;
+
+    console.log(`[Substack] Connected as: ${ownProfile.name} (@${ownProfile.slug})`);
 
     res.json({
       success: true,
