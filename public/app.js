@@ -50,6 +50,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Setup SID listener to save on update
   document.getElementById('sid').addEventListener('input', saveSettings);
 
+  // Setup dynamic metadata preview listeners
+  const postTitle = document.getElementById('postTitle');
+  const postSubtitle = document.getElementById('postSubtitle');
+  if (postTitle) postTitle.addEventListener('input', updatePreviewMetadata);
+  if (postSubtitle) postSubtitle.addEventListener('input', updatePreviewMetadata);
+
+  // Setup note preview listener
+  const noteLink = document.getElementById('noteLink');
+  if (noteLink) noteLink.addEventListener('input', updateNotePreview);
+
   // Load input histories
   loadAllInputHistories();
 
@@ -217,6 +227,27 @@ async function handleGenerate() {
 
   setButtonLoading(btn, true, 'Generating…');
 
+  // Inject skeleton loaders into the simulated preview body
+  const previewEl = document.getElementById('preview');
+  if (previewEl) {
+    previewEl.innerHTML = `
+      <div class="skeleton skeleton-title" style="height: 24px; width: 75%; margin-bottom: 12px;"></div>
+      <div class="skeleton skeleton-subtitle" style="height: 16px; width: 45%; margin-bottom: 24px;"></div>
+      <div class="skeleton skeleton-text" style="height: 12px; width: 100%; margin-bottom: 8px;"></div>
+      <div class="skeleton skeleton-text" style="height: 12px; width: 100%; margin-bottom: 8px;"></div>
+      <div class="skeleton skeleton-text" style="height: 12px; width: 80%; margin-bottom: 8px;"></div>
+    `;
+  }
+  const previewTitle = document.getElementById('previewTitle');
+  const previewSubtitle = document.getElementById('previewSubtitle');
+  if (previewTitle) {
+    previewTitle.innerHTML = `<span class="skeleton" style="display: block; height: 30px; width: 80%;"></span>`;
+  }
+  if (previewSubtitle) {
+    previewSubtitle.innerHTML = `<span class="skeleton" style="display: block; height: 18px; width: 50%;"></span>`;
+    previewSubtitle.style.display = 'block';
+  }
+
   try {
     const res = await fetch('/api/generate', {
       method: 'POST',
@@ -307,28 +338,162 @@ function updatePreview() {
 
   if (!md.trim()) {
     previewEl.innerHTML = '<div class="preview-placeholder">Preview will appear here…</div>';
-    return;
+  } else {
+    try {
+      previewEl.innerHTML = marked.parse(md);
+    } catch {
+      previewEl.textContent = md;
+    }
   }
+  updatePreviewMetadata();
+}
 
-  try {
-    previewEl.innerHTML = marked.parse(md);
-  } catch {
-    previewEl.textContent = md;
+function updatePreviewMetadata() {
+  const title = document.getElementById('postTitle').value.trim();
+  const subtitle = document.getElementById('postSubtitle').value.trim();
+  
+  const previewTitle = document.getElementById('previewTitle');
+  const previewSubtitle = document.getElementById('previewSubtitle');
+
+  if (previewTitle) {
+    previewTitle.textContent = title || 'Post Title';
+  }
+  if (previewSubtitle) {
+    if (subtitle) {
+      previewSubtitle.textContent = subtitle;
+      previewSubtitle.style.display = 'block';
+    } else {
+      previewSubtitle.style.display = 'none';
+    }
   }
 }
 
 // ─── UI Helpers ───
 
+let currentProfile = null;
+
 function updateConnectionBadge(profile) {
   const badge = document.getElementById('connectionBadge');
   const text = document.getElementById('connectionText');
+  const avatar = document.getElementById('profileAvatar');
+  const subLink = document.getElementById('profileSubLink');
+  const discBtn = document.getElementById('disconnectBtn');
+
+  currentProfile = profile;
 
   if (profile) {
-    badge.className = 'connection-badge connected';
-    text.textContent = `${profile.name}`;
+    badge.className = 'profile-card connected';
+    text.textContent = profile.name || 'Connected';
+    
+    // Initials for avatar
+    const initials = (profile.name || '')
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .substring(0, 2) || 'U';
+    avatar.textContent = initials;
+    avatar.style.background = 'var(--accent)';
+    avatar.style.color = 'var(--bg-primary)';
+
+    // Update Substack site link
+    if (profile.slug) {
+      const pubUrl = document.getElementById('pubUrl').value.trim();
+      let href = pubUrl ? (pubUrl.startsWith('http') ? pubUrl : `https://${pubUrl}`) : `https://${profile.slug}.substack.com`;
+      subLink.href = href;
+      subLink.textContent = profile.slug + '.substack.com';
+      subLink.style.display = 'block';
+    } else {
+      subLink.style.display = 'none';
+    }
+
+    discBtn.style.display = 'flex';
+
+    // Update dynamic fields in simulated Substack previews
+    updateSimulatedPreviewHeader(profile);
   } else {
-    badge.className = 'connection-badge disconnected';
+    badge.className = 'profile-card disconnected';
     text.textContent = 'Not connected';
+    avatar.textContent = '?';
+    avatar.style.background = 'var(--bg-hover)';
+    avatar.style.color = 'var(--text-secondary)';
+    subLink.style.display = 'none';
+    discBtn.style.display = 'none';
+
+    // Clear dynamic fields in simulated Substack previews
+    updateSimulatedPreviewHeader(null);
+  }
+
+  if (window.lucide) {
+    lucide.createIcons();
+  }
+}
+
+function updateSimulatedPreviewHeader(profile) {
+  const pubLogo = document.getElementById('previewPubLogo');
+  const pubName = document.getElementById('previewPubName');
+  const authorAvatar = document.getElementById('previewAuthorAvatar');
+  const authorName = document.getElementById('previewAuthorName');
+  
+  const noteAvatar = document.getElementById('notePreviewAvatar');
+  const noteAuthorName = document.getElementById('notePreviewAuthorName');
+  const noteSlug = document.getElementById('notePreviewSlug');
+
+  const formattedDate = new Date().toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+  const dateEl = document.getElementById('previewDate');
+  if (dateEl) dateEl.textContent = formattedDate;
+
+  if (profile) {
+    const initials = (profile.name || '')
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .substring(0, 2) || 'U';
+
+    if (pubLogo) pubLogo.textContent = initials[0] || 'S';
+    if (pubName) pubName.textContent = profile.name + "'s Substack";
+    if (authorAvatar) authorAvatar.textContent = initials;
+    if (authorName) authorName.textContent = profile.name;
+
+    if (noteAvatar) noteAvatar.textContent = initials;
+    if (noteAuthorName) noteAuthorName.textContent = profile.name;
+    if (noteSlug) noteSlug.textContent = profile.slug ? `@${profile.slug}` : '@profile';
+  } else {
+    if (pubLogo) pubLogo.textContent = 'S';
+    if (pubName) pubName.textContent = 'My Publication';
+    if (authorAvatar) authorAvatar.textContent = 'U';
+    if (authorName) authorName.textContent = 'Author Name';
+
+    if (noteAvatar) noteAvatar.textContent = 'U';
+    if (noteAuthorName) noteAuthorName.textContent = 'Author Name';
+    if (noteSlug) noteSlug.textContent = '@slug';
+  }
+}
+
+async function handleDisconnect() {
+  const confirmed = confirm('Are you sure you want to disconnect your Substack account?');
+  if (!confirmed) return;
+
+  try {
+    const res = await fetch('/api/disconnect', { method: 'POST' });
+    if (!res.ok) throw new Error('Failed to disconnect from server');
+
+    isConnected = false;
+    updateConnectionBadge(null);
+    document.getElementById('publishBtn').disabled = true;
+
+    // Clear SID from settings inputs
+    document.getElementById('sid').value = '';
+    
+    // Save settings (so they are cleared in localstorage too)
+    saveSettings();
+
+    showToast('Session disconnected successfully', 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
   }
 }
 
@@ -516,10 +681,18 @@ function switchTab(tabId) {
     const view = document.getElementById(`view-${t}`);
     if (t === tabId) {
       if (btn) btn.classList.add('active');
-      if (view) view.style.display = 'block';
+      if (view) {
+        view.style.display = 'block';
+        // force reflow
+        view.offsetHeight;
+        view.classList.add('active-tab');
+      }
     } else {
       if (btn) btn.classList.remove('active');
-      if (view) view.style.display = 'none';
+      if (view) {
+        view.classList.remove('active-tab');
+        view.style.display = 'none';
+      }
     }
   });
 
@@ -614,6 +787,11 @@ async function runCommentAutomation() {
   logsEl.innerHTML = '';
   appendCommentLog(`[Client] Initializing automation...`, 'info');
 
+  const consoleTitleState = document.getElementById('consoleTitleState');
+  if (consoleTitleState) {
+    consoleTitleState.className = 'console-title-text';
+  }
+
   setButtonLoading(runBtn, true, 'Running…');
   stopBtn.disabled = false;
 
@@ -682,6 +860,9 @@ async function runCommentAutomation() {
     setButtonLoading(runBtn, false, '<i data-lucide="play"></i> Run Automation');
     stopBtn.disabled = true;
     commentAutomationAbortController = null;
+    if (consoleTitleState) {
+      consoleTitleState.className = 'console-title-text console-idle';
+    }
   }
 }
 
@@ -787,24 +968,68 @@ function filterAndRenderHistory() {
   const listEl = document.getElementById('historyList');
   const typeFilter = document.getElementById('historyTypeFilter').value;
   const sortOrder = document.getElementById('historySort').value;
+  const searchQuery = document.getElementById('historySearch')?.value.toLowerCase().trim() || '';
 
   if (!listEl) return;
 
-  // Filter
+  // 1. Edgecase: Disconnect state display
+  if (!isConnected && allHistoryItems.length === 0) {
+    listEl.innerHTML = `
+      <div class="history-empty" style="padding: 40px 20px; display: flex; flex-direction: column; align-items: center; gap: 16px;">
+        <i data-lucide="shield-alert" style="width: 44px; height: 44px; color: var(--text-muted);"></i>
+        <div style="text-align: center;">
+          <h3 style="font-size: 1.05rem; color: var(--text-primary); margin-bottom: 4px;">Account Disconnected</h3>
+          <p style="font-size: 0.84rem; color: var(--text-muted); max-width: 320px; margin: 0 auto;">Connect your session ID in the settings sidebar to retrieve notes, comments, and post archives.</p>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('sid').focus(); showToast('Provide Substack SID session cookie and click Connect', 'info');" style="margin-top: 8px;">
+          <i data-lucide="sliders-horizontal"></i> Open Settings
+        </button>
+      </div>
+    `;
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+
+  // 2. Filter list of items
   let items = allHistoryItems;
   if (typeFilter !== 'all') {
     items = items.filter(item => item.type === typeFilter);
   }
 
-  // Sort
+  // Search filtering
+  if (searchQuery) {
+    items = items.filter(item => 
+      (item.title && item.title.toLowerCase().includes(searchQuery)) ||
+      (item.body && item.body.toLowerCase().includes(searchQuery)) ||
+      (item.type && item.type.toLowerCase().includes(searchQuery))
+    );
+  }
+
+  // Sort list of items
   items.sort((a, b) => {
     const dateA = new Date(a.publishedAt);
     const dateB = new Date(b.publishedAt);
     return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
   });
 
+  // 3. Edgecase: Empty history state vs Empty search result state
   if (items.length === 0) {
-    listEl.innerHTML = '<div class="history-empty">No items found matching the filter criteria.</div>';
+    if (searchQuery) {
+      listEl.innerHTML = `
+        <div class="history-empty" style="padding: 40px 20px; text-align: center; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 12px;">
+          <i data-lucide="search" style="width: 38px; height: 38px; opacity: 0.4;"></i>
+          <p>No matches found for "${escapeHtml(searchQuery)}"</p>
+        </div>
+      `;
+    } else {
+      listEl.innerHTML = `
+        <div class="history-empty" style="padding: 40px 20px; text-align: center; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 12px;">
+          <i data-lucide="folder-open" style="width: 38px; height: 38px; opacity: 0.4;"></i>
+          <p>Click "Fetch History" to retrieve your newsletter posts, notes, and comments.</p>
+        </div>
+      `;
+    }
+    if (window.lucide) lucide.createIcons();
     return;
   }
 
@@ -821,20 +1046,50 @@ function filterAndRenderHistory() {
     const categoryClass = `category-${item.type}`;
     const displayType = item.type === 'newsletter' ? 'Newsletter' : (item.type === 'note' ? 'Note' : 'Comment');
 
+    // Handle body text truncation / read-more toggle
+    const longBody = item.body && item.body.length > 180;
+    const shortBody = longBody ? item.body.substring(0, 170) + '...' : item.body;
+    
+    const displayBody = longBody ? `
+      <span class="history-item-body-short" id="body-short-${item.id}">${escapeHtml(shortBody)}</span>
+      <span class="history-item-body-full" id="body-full-${item.id}" style="display: none;">${escapeHtml(item.body)}</span>
+      <button class="btn-text-toggle" onclick="toggleBodyText('${item.id}')" id="btn-toggle-${item.id}" style="background: transparent; border: none; color: var(--accent); font-size: 0.76rem; cursor: pointer; padding: 0; margin-top: 4px; display: inline-flex; align-items: center; gap: 4px; font-weight: 600;">Read More <i data-lucide="chevron-down" style="width: 12px; height: 12px;"></i></button>
+    ` : `<span>${escapeHtml(item.body)}</span>`;
+
     return `
       <div class="history-item ${categoryClass}">
-        <div class="history-item-content" style="align-items: flex-start;">
-          <div style="display: flex; align-items: flex-start; gap: 8px; width: 100%; min-width: 0; flex: 1;">
+        <!-- Header row -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 8px;">
             <span class="history-badge ${badgeClass}">${displayType}</span>
-            <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1;">
-              <a href="${escapeHtml(item.url)}" target="_blank" class="history-item-link" title="Open on Substack" style="display: inline-flex; align-items: center; gap: 6px; margin: 0; padding: 0; background: transparent; border: none; width: fit-content; max-width: 100%;">
-                <span class="history-item-title" style="font-weight: 600; color: var(--text-primary); font-size: 1.05rem; white-space: normal; word-break: break-word; text-align: left;">${escapeHtml(item.title)}</span>
-                <i data-lucide="external-link" class="history-item-icon" style="width: 14px; height: 14px; flex-shrink: 0;"></i>
-              </a>
-              <span style="font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5; white-space: pre-wrap; word-break: break-word; margin-top: 4px;">${escapeHtml(item.body)}</span>
-            </div>
+            <span class="history-item-date" style="color: var(--text-muted); font-size: 0.76rem;">${escapeHtml(pubDate)}</span>
           </div>
-          <div class="history-item-date" style="align-self: flex-start; text-align: right; margin-top: 4px; color: var(--text-muted); font-size: 0.8rem; white-space: nowrap; margin-left: 12px;">${escapeHtml(pubDate)}</div>
+          
+          <!-- Actions bar (CTAs) -->
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <a href="${escapeHtml(item.url)}" target="_blank" class="btn btn-secondary btn-sm" title="Open on Substack" style="padding: 4px 8px; font-size: 0.72rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 4px; text-decoration: none; border-color: var(--border);">
+              <i data-lucide="external-link" style="width: 12px; height: 12px; stroke-width: 2.2px;"></i> View
+            </a>
+            <button class="btn btn-secondary btn-sm" onclick="copyHistoryLink('${escapeHtml(item.url)}')" title="Copy Link" style="padding: 4px 8px; font-size: 0.72rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 4px; border-color: var(--border);">
+              <i data-lucide="copy" style="width: 12px; height: 12px; stroke-width: 2.2px;"></i> Link
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="reuseHistoryItem('${escapeHtml(item.id)}')" title="Load into Composer" style="padding: 4px 8px; font-size: 0.72rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 4px; background: var(--accent); color: var(--bg-primary);">
+              <i data-lucide="refresh-cw" style="width: 12px; height: 12px; stroke-width: 2.2px;"></i> Reuse
+            </button>
+          </div>
+        </div>
+        
+        <!-- Content section -->
+        <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0; width: 100%;">
+          ${item.type === 'newsletter' ? `
+            <a href="${escapeHtml(item.url)}" target="_blank" style="text-decoration: none; color: var(--text-primary); font-weight: 600; font-size: 1rem; width: fit-content; max-width: 100%; display: flex; align-items: center; gap: 6px;">
+              <span>${escapeHtml(item.title)}</span>
+            </a>
+          ` : `<div style="font-weight: 600; color: var(--text-primary); font-size: 0.9rem;">${escapeHtml(item.title)}</div>`}
+          
+          <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55; white-space: pre-wrap; word-break: break-word; margin-top: 2px;">
+            ${displayBody}
+          </div>
         </div>
       </div>
     `;
@@ -842,6 +1097,76 @@ function filterAndRenderHistory() {
 
   if (window.lucide) {
     lucide.createIcons();
+  }
+}
+
+// ─── History Helpers ───
+function copyHistoryLink(url) {
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(() => {
+    showToast('Link copied to clipboard!', 'success');
+  }).catch(() => {
+    const el = document.createElement('textarea');
+    el.value = url;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    showToast('Link copied to clipboard!', 'success');
+  });
+}
+
+function toggleBodyText(id) {
+  const shortEl = document.getElementById(`body-short-${id}`);
+  const fullEl = document.getElementById(`body-full-${id}`);
+  const btn = document.getElementById(`btn-toggle-${id}`);
+
+  if (shortEl && fullEl && btn) {
+    const isShowingFull = fullEl.style.display !== 'none';
+    if (isShowingFull) {
+      fullEl.style.display = 'none';
+      shortEl.style.display = 'inline';
+      btn.innerHTML = `Read More <i data-lucide="chevron-down" style="width: 12px; height: 12px;"></i>`;
+    } else {
+      fullEl.style.display = 'inline';
+      shortEl.style.display = 'none';
+      btn.innerHTML = `Show Less <i data-lucide="chevron-up" style="width: 12px; height: 12px;"></i>`;
+    }
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  }
+}
+
+function reuseHistoryItem(id) {
+  const item = allHistoryItems.find(i => i.id === id);
+  if (!item) {
+    showToast('Template item not found', 'error');
+    return;
+  }
+
+  if (item.type === 'newsletter') {
+    const postTitle = document.getElementById('postTitle');
+    const editor = document.getElementById('editor');
+    if (postTitle) postTitle.value = item.title || '';
+    if (editor) editor.value = item.body || '';
+    
+    updatePreview();
+    switchTab('newsletters');
+    showToast('Newsletter template loaded into Composer!', 'success');
+  } else if (item.type === 'note') {
+    const noteBody = document.getElementById('noteBody');
+    if (noteBody) noteBody.value = item.body || '';
+    
+    updateNotePreview();
+    switchTab('notes');
+    showToast('Note content loaded into Note Composer!', 'success');
+  } else if (item.type === 'comment') {
+    const commentPrompt = document.getElementById('commentPrompt');
+    if (commentPrompt) commentPrompt.value = `Referencing previous comment: "${item.body}"\n`;
+    
+    switchTab('comments');
+    showToast('Loaded comment content context as generation instructions!', 'success');
   }
 }
 
@@ -866,6 +1191,15 @@ async function handleGenerateNote() {
   }
 
   setButtonLoading(btn, true, 'Generating…');
+
+  const previewEl = document.getElementById('notePreview');
+  if (previewEl) {
+    previewEl.innerHTML = `
+      <div class="skeleton skeleton-text" style="height: 12px; width: 100%; margin-bottom: 8px;"></div>
+      <div class="skeleton skeleton-text" style="height: 12px; width: 100%; margin-bottom: 8px;"></div>
+      <div class="skeleton skeleton-text" style="height: 12px; width: 65%; margin-bottom: 8px;"></div>
+    `;
+  }
 
   try {
     const res = await fetch('/api/notes/generate', {
@@ -947,16 +1281,32 @@ async function handlePublishNote() {
 function updateNotePreview() {
   const md = document.getElementById('noteBody').value;
   const previewEl = document.getElementById('notePreview');
+  const link = document.getElementById('noteLink').value.trim();
+  const linkWrap = document.getElementById('notePreviewLinkWrap');
+  const linkText = document.getElementById('notePreviewLinkText');
 
   if (!md.trim()) {
     previewEl.innerHTML = '<div class="preview-placeholder">Note preview will appear here…</div>';
-    return;
+  } else {
+    try {
+      previewEl.innerHTML = marked.parse(md);
+    } catch {
+      previewEl.textContent = md;
+    }
   }
 
-  try {
-    previewEl.innerHTML = marked.parse(md);
-  } catch {
-    previewEl.textContent = md;
+  if (linkWrap && linkText) {
+    if (link) {
+      linkText.textContent = link;
+      linkWrap.href = link.startsWith('http') ? link : `https://${link}`;
+      linkWrap.style.display = 'flex';
+    } else {
+      linkWrap.style.display = 'none';
+    }
+  }
+  
+  if (window.lucide) {
+    lucide.createIcons();
   }
 }
 

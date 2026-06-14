@@ -192,6 +192,16 @@ router.get('/profile', async (_req: Request, res: Response) => {
   });
 });
 
+// ─── POST /api/disconnect ───
+router.post('/disconnect', (_req: Request, res: Response) => {
+  substackClient = null;
+  ownProfile = null;
+  currentSid = '';
+  console.log('[Substack] Session disconnected.');
+  res.json({ success: true });
+});
+
+
 // ─── POST /api/generate ───
 router.post('/generate', async (req: Request, res: Response) => {
   try {

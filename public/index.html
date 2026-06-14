@@ -40,9 +40,16 @@
         </button>
       </nav>
 
-      <div class="connection-badge disconnected" id="connectionBadge">
-        <span class="status-dot"></span>
-        <span id="connectionText">Not connected</span>
+      <!-- Connection Profile Card -->
+      <div class="profile-card disconnected" id="connectionBadge">
+        <div class="profile-avatar" id="profileAvatar">?</div>
+        <div class="profile-info">
+          <div class="profile-name" id="connectionText">Not connected</div>
+          <a class="profile-link" id="profileSubLink" href="#" target="_blank" style="display: none;">View Site</a>
+        </div>
+        <button class="profile-disconnect-btn" id="disconnectBtn" onclick="handleDisconnect()" title="Disconnect session" style="display: none;">
+          <i data-lucide="log-out"></i>
+        </button>
       </div>
     </header>
 
@@ -160,10 +167,43 @@
                   <div class="editor-pane-header">Markdown</div>
                   <textarea class="editor-textarea" id="editor" placeholder="Write your newsletter in Markdown…" oninput="updatePreview()"></textarea>
                 </div>
-                <div class="editor-pane">
+                <div class="editor-pane" style="background: var(--bg-primary);">
                   <div class="editor-pane-header">Preview</div>
-                  <div class="preview-content" id="preview">
-                    <div class="preview-placeholder">Preview will appear here…</div>
+                  <div style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+                    <div class="substack-preview-wrap">
+                      <!-- Substack Post Header (mockup) -->
+                      <div class="substack-preview-header">
+                        <div class="substack-preview-pub">
+                          <div class="substack-preview-pub-logo" id="previewPubLogo">S</div>
+                          <div class="substack-preview-pub-meta">
+                            <span class="substack-preview-pub-name" id="previewPubName">My Publication</span>
+                            <span class="substack-preview-pub-sub">Substack</span>
+                          </div>
+                        </div>
+                        <button class="substack-subscribe-btn">Subscribe</button>
+                      </div>
+                      <div class="substack-preview-body">
+                        <h1 class="substack-preview-title" id="previewTitle">Post Title</h1>
+                        <h2 class="substack-preview-subtitle" id="previewSubtitle">Post Subtitle</h2>
+                        <div class="substack-preview-author">
+                          <div class="substack-preview-author-avatar" id="previewAuthorAvatar">U</div>
+                          <div class="substack-preview-author-meta">
+                            <span class="substack-preview-author-name" id="previewAuthorName">Author Name</span>
+                            <span class="substack-preview-date" id="previewDate">Jun 14, 2026</span>
+                          </div>
+                        </div>
+                        <!-- Rendered markdown goes here -->
+                        <div class="preview-content" id="preview">
+                          <div class="preview-placeholder">Preview will appear here…</div>
+                        </div>
+                      </div>
+                      <!-- Substack Mock Footer Actions -->
+                      <div class="substack-preview-footer">
+                        <div class="substack-preview-action"><i data-lucide="heart"></i> <span>24</span></div>
+                        <div class="substack-preview-action"><i data-lucide="message-square"></i> <span>8</span></div>
+                        <div class="substack-preview-action" style="margin-left: auto;"><i data-lucide="share"></i></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -234,8 +274,17 @@
 
               <div class="divider"></div>
 
-              <div class="settings-section-title" style="margin-top: 24px;">Automation Logs</div>
-              <div id="commentLogs" class="console-box">Ready to start automation logs...</div>
+              <div class="console-header" style="margin-top: 24px;">
+                <div class="console-title-text console-idle" id="consoleTitleState">
+                  <span></span> Automation Logs
+                </div>
+                <div class="console-actions-wrap">
+                  <button class="console-btn" style="display: flex; align-items: center; gap: 4px;" title="Clear console" onclick="document.getElementById('commentLogs').innerHTML = 'Ready to start automation logs...'; document.getElementById('consoleTitleState').className = 'console-title-text console-idle';">
+                    <i data-lucide="trash-2" style="width: 13px; height: 13px;"></i> Clear
+                  </button>
+                </div>
+              </div>
+              <div id="commentLogs" class="console-box console-box-wrap">Ready to start automation logs...</div>
             </div>
           </div>
         </div>
@@ -272,8 +321,27 @@
               <!-- Preview -->
               <div style="margin-top: 16px;">
                 <div class="editor-pane-header">Note Preview</div>
-                <div class="preview-content" id="notePreview" style="min-height: 80px; padding: 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg-hover);">
-                  <div class="preview-placeholder">Note preview will appear here…</div>
+                <div class="substack-note-card">
+                  <div class="substack-note-author">
+                    <div class="substack-note-avatar" id="notePreviewAvatar">U</div>
+                    <div class="substack-note-author-meta">
+                      <span class="substack-note-author-name" id="notePreviewAuthorName">Author Name</span>
+                      <span class="substack-note-slug" id="notePreviewSlug">@slug</span>
+                    </div>
+                  </div>
+                  <div class="substack-note-body" id="notePreview">
+                    <div class="preview-placeholder">Note preview will appear here…</div>
+                  </div>
+                  <div class="substack-note-link-attachment" id="notePreviewLinkWrap" style="display: none;">
+                    <i data-lucide="link"></i>
+                    <span id="notePreviewLinkText">https://example.com</span>
+                  </div>
+                  <div class="substack-note-footer">
+                    <div class="substack-note-action"><i data-lucide="heart"></i> <span>0</span></div>
+                    <div class="substack-note-action"><i data-lucide="message-square"></i> <span>0</span></div>
+                    <div class="substack-note-action"><i data-lucide="repeat"></i> <span>0</span></div>
+                    <div class="substack-note-action" style="margin-left: auto;"><i data-lucide="share"></i></div>
+                  </div>
                 </div>
               </div>
 
@@ -305,32 +373,42 @@
         <!-- ─── Tab View: History ─── -->
         <div id="view-history" class="tab-view" style="display: none;">
           <div class="card">
-            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
-              <h2 style="margin: 0; display: flex; align-items: center; gap: 8px;"><i data-lucide="history" class="header-icon"></i> History</h2>
-              
-              <!-- Filters and Sorting controls -->
-              <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <label for="historyTypeFilter" style="margin: 0; font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;">Type:</label>
-                  <select id="historyTypeFilter" class="form-select select-sm" style="width: auto; padding: 6px 32px 6px 12px; font-size: 0.85rem; border-radius: var(--radius-md); background-color: var(--bg-input);" onchange="filterAndRenderHistory()">
-                    <option value="all">All</option>
-                    <option value="newsletter">Newsletters</option>
-                    <option value="note">Notes</option>
-                    <option value="comment">Comments</option>
-                  </select>
-                </div>
-
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <label for="historySort" style="margin: 0; font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;">Sort:</label>
-                  <select id="historySort" class="form-select select-sm" style="width: auto; padding: 6px 32px 6px 12px; font-size: 0.85rem; border-radius: var(--radius-md); background-color: var(--bg-input);" onchange="filterAndRenderHistory()">
-                    <option value="newest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
-                  </select>
-                </div>
-
-                <button class="btn btn-secondary btn-sm" id="loadHistoryBtn" onclick="loadHistory()">
+            <div class="card-header" style="display: flex; flex-direction: column; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+              <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <h2 style="margin: 0; display: flex; align-items: center; gap: 8px;"><i data-lucide="history" class="header-icon"></i> History</h2>
+                <button class="btn btn-secondary btn-sm" id="loadHistoryBtn" onclick="loadHistory()" style="padding: 6px 14px;">
                   <i data-lucide="rotate-ccw"></i> Fetch History
                 </button>
+              </div>
+              
+              <!-- Search, filters, and sorting controls row -->
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; width: 100%; align-items: center;">
+                <!-- Search Box -->
+                <div style="position: relative; flex: 1; min-width: 200px;">
+                  <input type="text" id="historySearch" placeholder="Search title, content, or tags..." style="padding: 10px 16px 10px 38px; font-size: 0.84rem; width: 100%; border-radius: var(--radius-md); background: var(--bg-input); border: 1px solid var(--border);" oninput="filterAndRenderHistory()" />
+                  <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--text-muted); pointer-events: none;"></i>
+                </div>
+                
+                <!-- Filters dropdowns -->
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <label for="historyTypeFilter" style="margin: 0; font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">Type</label>
+                    <select id="historyTypeFilter" class="form-select select-sm" style="width: auto; padding: 8px 36px 8px 12px; font-size: 0.82rem; border-radius: var(--radius-md); background-color: var(--bg-input); border: 1px solid var(--border);" onchange="filterAndRenderHistory()">
+                      <option value="all">All Types</option>
+                      <option value="newsletter">Newsletters</option>
+                      <option value="note">Notes</option>
+                      <option value="comment">Comments</option>
+                    </select>
+                  </div>
+
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <label for="historySort" style="margin: 0; font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">Sort</label>
+                    <select id="historySort" class="form-select select-sm" style="width: auto; padding: 8px 36px 8px 12px; font-size: 0.82rem; border-radius: var(--radius-md); background-color: var(--bg-input); border: 1px solid var(--border);" onchange="filterAndRenderHistory()">
+                      <option value="newest">Newest First</option>
+                      <option value="oldest">Oldest First</option>
+                    </select>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="card-body">
