@@ -143,6 +143,17 @@ router.post('/connect', async (req: Request, res: Response) => {
       return;
     }
 
+    if (!ownProfile.slug && publicationUrl) {
+      let cleanUrl = publicationUrl.replace(/^(https?:\/\/)?(www\.)?/, '');
+      cleanUrl = cleanUrl.split('/')[0];
+      const parts = cleanUrl.split('.');
+      if (parts.length > 2 && parts[1] === 'substack') {
+        ownProfile.slug = parts[0];
+      } else {
+        ownProfile.slug = parts[0]; // fallback for custom domains
+      }
+    }
+
     currentSid = sid;
 
     console.log(`[Substack] Connected as: ${ownProfile.name} (@${ownProfile.slug})`);
@@ -595,13 +606,15 @@ router.get('/notes', async (_req: Request, res: Response) => {
 
     const notes: any[] = [];
     for await (const note of ownProfile.notes({ limit: 25 })) {
+      const noteId = String(note.id);
+      const cleanNoteId = noteId.startsWith('c-') ? noteId : `c-${noteId}`;
       notes.push({
         id: note.id,
         body: note.body,
         likesCount: note.likesCount,
         publishedAt: note.publishedAt,
         author: note.author,
-        url: ownProfile.slug ? `https://substack.com/@${ownProfile.slug}/note/c-${note.id}` : 'https://substack.com/notes'
+        url: ownProfile.slug ? `https://substack.com/@${ownProfile.slug}/note/${cleanNoteId}` : 'https://substack.com/notes'
       });
     }
 
