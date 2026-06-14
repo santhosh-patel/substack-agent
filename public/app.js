@@ -227,7 +227,7 @@ async function handleGenerate() {
     document.getElementById('editor').value = data.post.body;
     updatePreview();
 
-    showToast('Post generated successfully!', 'success');
+    showToast('Newsletter generated successfully!', 'success');
   } catch (err) {
     showToast(err.message, 'error');
   } finally {
@@ -417,14 +417,14 @@ function loadPublishHistory() {
 
   const history = JSON.parse(localStorage.getItem('substack_publish_history') || '[]');
   if (history.length === 0) {
-    historyList.innerHTML = '<div class="history-empty">No posts published yet.</div>';
+    historyList.innerHTML = '<div class="history-empty">No newsletters published yet.</div>';
     return;
   }
 
   historyList.innerHTML = history.map(item => `
     <div class="history-item">
       <div class="history-item-content">
-        <a href="${escapeHtml(item.url)}" target="_blank" class="history-item-link" title="Open post on Substack">
+        <a href="${escapeHtml(item.url)}" target="_blank" class="history-item-link" title="Open newsletter on Substack">
           <span class="history-item-title">${escapeHtml(item.title)}</span>
           <i data-lucide="external-link" class="history-item-icon"></i>
         </a>
@@ -482,7 +482,7 @@ function updatePublishButtonLabel() {
 
 // ─── Tab Switching ───
 function switchTab(tabId) {
-  const tabs = ['posts', 'comments', 'newsletters'];
+  const tabs = ['newsletters', 'comments', 'archive'];
   tabs.forEach(t => {
     const btn = document.getElementById(`tab-${t}`);
     const view = document.getElementById(`view-${t}`);
@@ -499,10 +499,10 @@ function switchTab(tabId) {
     lucide.createIcons();
   }
 
-  if (tabId === 'newsletters') {
-    const listEl = document.getElementById('newsletterList');
-    if (listEl && listEl.innerHTML.includes('Click "Fetch Newsletters"')) {
-      loadNewsletters();
+  if (tabId === 'archive') {
+    const listEl = document.getElementById('archiveList');
+    if (listEl && listEl.innerHTML.includes('Click "Fetch Archive"')) {
+      loadArchive();
     }
   }
 }
@@ -645,9 +645,9 @@ function stopCommentAutomation() {
 }
 
 // ─── Newsletters Listing ───
-async function loadNewsletters() {
-  const btn = document.getElementById('loadNewslettersBtn');
-  const listEl = document.getElementById('newsletterList');
+async function loadArchive() {
+  const btn = document.getElementById('loadArchiveBtn');
+  const listEl = document.getElementById('archiveList');
 
   if (!isConnected) {
     showToast('Please connect your Substack account first', 'error');
@@ -667,7 +667,7 @@ async function loadNewsletters() {
 
     const posts = data.posts || [];
     if (posts.length === 0) {
-      listEl.innerHTML = '<div class="history-empty">No posts found on this publication.</div>';
+      listEl.innerHTML = '<div class="history-empty">No newsletters found on this publication.</div>';
       return;
     }
 
@@ -697,13 +697,13 @@ async function loadNewsletters() {
     if (window.lucide) {
       lucide.createIcons();
     }
-    showToast('Newsletters loaded successfully!', 'success');
+    showToast('Archive loaded successfully!', 'success');
 
   } catch (err) {
     listEl.innerHTML = `<div class="history-empty" style="color: var(--error);">${escapeHtml(err.message)}</div>`;
     showToast(err.message, 'error');
   } finally {
-    setButtonLoading(btn, false, '<i data-lucide="rotate-ccw"></i> Fetch Newsletters');
+    setButtonLoading(btn, false, '<i data-lucide="rotate-ccw"></i> Fetch Archive');
   }
 }
 

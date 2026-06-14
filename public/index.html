@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Substack Automation — AI-Powered Post Publisher</title>
-  <meta name="description" content="Generate and publish Substack posts with AI. Supports Groq, Gemini, and OpenAI." />
+  <title>Substack Automation — AI-Powered Newsletter Publisher</title>
+  <meta name="description" content="Generate and publish Substack newsletters with AI. Supports Groq, Gemini, and OpenAI." />
   <link rel="stylesheet" href="/styles.css" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='80' height='80' x='10' y='10' rx='15' fill='%2327272a'/><path d='M35 40 h30 M35 50 h30 M35 60 h20' stroke='%23fafafa' stroke-width='6' stroke-linecap='round'/></svg>" />
 </head>
@@ -26,14 +26,14 @@
 
       <!-- Navigation Tabs -->
       <nav class="app-nav">
-        <button class="nav-btn active" id="tab-posts" onclick="switchTab('posts')">
-          <i data-lucide="file-text"></i> Posts
+        <button class="nav-btn active" id="tab-newsletters" onclick="switchTab('newsletters')">
+          <i data-lucide="file-text"></i> Newsletters
         </button>
         <button class="nav-btn" id="tab-comments" onclick="switchTab('comments')">
           <i data-lucide="message-square"></i> Comments
         </button>
-        <button class="nav-btn" id="tab-newsletters" onclick="switchTab('newsletters')">
-          <i data-lucide="mail"></i> Newsletters
+        <button class="nav-btn" id="tab-archive" onclick="switchTab('archive')">
+          <i data-lucide="archive"></i> Archive
         </button>
       </nav>
 
@@ -123,8 +123,8 @@
 
       <!-- ─── Right: Compose Panel ─── -->
       <main>
-        <!-- ─── Tab View: Posts (Compose) ─── -->
-        <div id="view-posts" class="tab-view active">
+        <!-- ─── Tab View: Newsletters (Compose) ─── -->
+        <div id="view-newsletters" class="tab-view active">
           <div class="card">
             <div class="card-header">
               <h2><i data-lucide="file-text" class="header-icon"></i> Compose</h2>
@@ -142,7 +142,7 @@
               <div class="post-meta">
                 <div class="form-group">
                   <label for="postTitle">Title</label>
-                  <input type="text" id="postTitle" placeholder="Post title" />
+                  <input type="text" id="postTitle" placeholder="Newsletter title" />
                 </div>
                 <div class="form-group">
                   <label for="postSubtitle">Subtitle</label>
@@ -154,7 +154,7 @@
               <div class="editor-container">
                 <div class="editor-pane">
                   <div class="editor-pane-header">Markdown</div>
-                  <textarea class="editor-textarea" id="editor" placeholder="Write your post in Markdown…" oninput="updatePreview()"></textarea>
+                  <textarea class="editor-textarea" id="editor" placeholder="Write your newsletter in Markdown…" oninput="updatePreview()"></textarea>
                 </div>
                 <div class="editor-pane">
                   <div class="editor-pane-header">Preview</div>
@@ -184,7 +184,7 @@
             </div>
             <div class="card-body">
               <div class="history-list" id="historyList">
-                <div class="history-empty">No posts published yet.</div>
+                <div class="history-empty">No newsletters published yet.</div>
               </div>
             </div>
           </div>
@@ -234,13 +234,13 @@
           </div>
         </div>
 
-        <!-- ─── Tab View: Newsletters ─── -->
-        <div id="view-newsletters" class="tab-view" style="display: none;">
+        <!-- ─── Tab View: Archive ─── -->
+        <div id="view-archive" class="tab-view" style="display: none;">
           <div class="card">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-              <h2><i data-lucide="mail" class="header-icon"></i> Newsletters</h2>
-              <button class="btn btn-secondary btn-sm" id="loadNewslettersBtn" onclick="loadNewsletters()">
-                <i data-lucide="rotate-ccw"></i> Fetch Newsletters
+              <h2><i data-lucide="archive" class="header-icon"></i> Archive</h2>
+              <button class="btn btn-secondary btn-sm" id="loadArchiveBtn" onclick="loadArchive()">
+                <i data-lucide="rotate-ccw"></i> Fetch Archive
               </button>
             </div>
             <div class="card-body">
@@ -248,8 +248,8 @@
                 List and view the newsletters and drafts on your connected Substack publication.
               </p>
 
-              <div id="newsletterList" class="history-list">
-                <div class="history-empty">Click "Fetch Newsletters" to retrieve your publication posts.</div>
+              <div id="archiveList" class="history-list">
+                <div class="history-empty">Click "Fetch Archive" to retrieve your publication archive.</div>
               </div>
             </div>
           </div>
