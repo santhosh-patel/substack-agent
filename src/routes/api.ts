@@ -5,6 +5,39 @@ import { generatePost, SYSTEM_PROMPT, analyzeAndGenerateComment, generateNote, N
 const router = Router();
 const marked = new Marked();
 
+// ─── Patch substack-api HttpClient globally to add browser headers ───
+(async () => {
+  try {
+    const { SubstackClient } = await import('substack-api');
+    const tempClient = new SubstackClient({ apiKey: 'temp', hostname: 'substack.com' });
+    const HttpClientClass = (tempClient as any).publicationClient.constructor;
+    const originalMakeRequest = HttpClientClass.prototype.makeRequest;
+
+    HttpClientClass.prototype.makeRequest = async function (url: string, options: any = {}) {
+      try {
+        const urlObj = new URL(url);
+        const origin = `${urlObj.protocol}//${urlObj.hostname}`;
+        options.headers = {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Origin': origin,
+          'Referer': `${origin}/`,
+          ...options.headers
+        };
+      } catch (e) {
+        options.headers = {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Origin': 'https://substack.com',
+          'Referer': 'https://substack.com/',
+          ...options.headers
+        };
+      }
+      return originalMakeRequest.call(this, url, options);
+    };
+  } catch (err) {
+    console.error('Failed to patch substack-api HttpClient:', err);
+  }
+})();
+
 // ─── In-memory state ───
 let substackClient: any = null;
 let ownProfile: any = null;
