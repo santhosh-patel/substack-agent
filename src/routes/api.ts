@@ -3,79 +3,24 @@ import { Marked } from 'marked';
 import { generatePost, SYSTEM_PROMPT, analyzeAndGenerateComment, generateNote, NOTE_SYSTEM_PROMPT } from '../ai/generate.js';
 import fs from 'fs';
 import path from 'path';
+import {
+  substackClient,
+  ownProfile,
+  currentSid,
+  decodeSid,
+  ensureHttpClientPatched,
+  getGotScraping,
+  connectSubstack,
+  disconnectSubstack,
+  getPubHostname,
+} from '../lib/substack-client.js';
 
 const router = Router();
 const marked = new Marked();
 
-// ─── Track whether HttpClient has been patched ───
-let httpClientPatched = false;
-let gotScraping: any = null;
-
-async function ensureHttpClientPatched() {
-  if (httpClientPatched) return;
-  try {
-    const { SubstackClient } = await import('substack-api');
-    const gotModule = await import('got-scraping');
-    gotScraping = gotModule.gotScraping;
-    const tempClient = new SubstackClient({ apiKey: 'temp', hostname: 'substack.com' });
-    const HttpClientClass = (tempClient as any).publicationClient.constructor;
-
-    // Completely replace makeRequest to use gotScraping instead of fetch.
-    // This bypasses Cloudflare WAF/Turnstile blocks by mimicking browser TLS/HTTP2 fingerprints.
-    HttpClientClass.prototype.makeRequest = async function (url: string, options: any = {}) {
-      let origin = 'https://substack.com';
-      try {
-        const urlObj = new URL(url);
-        origin = `${urlObj.protocol}//${urlObj.hostname}`;
-      } catch {}
-
-      const mergedHeaders: Record<string, string> = {
-        'Cookie': this.cookie,
-        'Content-Type': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Origin': origin,
-        'Referer': `${origin}/`,
-        ...(options.headers || {}),
-      };
-
-      try {
-        const response = await gotScraping({
-          url,
-          method: options.method || 'GET',
-          headers: mergedHeaders,
-          body: options.body,
-          responseType: 'json',
-          retry: { limit: 0 }, // Prevent duplicate operations on failure
-        });
-        return response.body;
-      } catch (err: any) {
-        if (err.response) {
-          throw new Error(`HTTP ${err.response.statusCode}: ${err.response.statusMessage || err.message}`);
-        }
-        throw err;
-      }
-    };
-    httpClientPatched = true;
-    console.log('[Substack] HttpClient patched with got-scraping browser headers & TLS/HTTP2 fingerprints');
-  } catch (err) {
-    console.error('[Substack] Failed to patch HttpClient with got-scraping:', err);
-  }
-}
-
-// ─── Helper to decode SID (handles URL-encoded values from .env or browser) ───
-function decodeSid(raw: string): string {
-  if (!raw) return raw;
-  try {
-    return decodeURIComponent(raw);
-  } catch {
-    return raw;
-  }
-}
-
-// ─── In-memory state ───
-let substackClient: any = null;
-let ownProfile: any = null;
-let currentSid: string = '';
+// NOTE: httpClient patching, state management, and auto-connect logic
+// are now centralized in ../lib/substack-client.ts and shared with
+// the tool routes (/api/tools/*).
 
 // ─── GET /api/config ───
 router.get('/config', (_req: Request, res: Response) => {
@@ -93,87 +38,21 @@ router.get('/config', (_req: Request, res: Response) => {
 // ─── POST /api/connect ───
 router.post('/connect', async (req: Request, res: Response) => {
   try {
-    let { sid, publicationUrl } = req.body;
+    const { sid, publicationUrl } = req.body;
+    const result = await connectSubstack(sid, publicationUrl);
 
-    if (!sid) {
-      sid = process.env.SUBSTACK_SID;
-    }
-    sid = decodeSid(sid);
-
-    if (!publicationUrl) {
-      publicationUrl = process.env.SUBSTACK_PUB_URL || process.env.PUBLICATION_URL;
-    }
-
-    if (!sid) {
-      res.status(400).json({ error: 'SID is required' });
+    if (!result.success) {
+      const status = result.error?.includes('Authentication') ? 401 : 400;
+      res.status(status).json({ error: result.error });
       return;
     }
-
-    // Ensure HttpClient is patched with browser headers before any requests
-    await ensureHttpClientPatched();
-
-    const { SubstackClient } = await import('substack-api');
-
-    let hostname = 'substack.com';
-    if (publicationUrl) {
-      let cleanUrl = publicationUrl.replace(/^(https?:\/\/)?(www\.)?/, '');
-      cleanUrl = cleanUrl.split('/')[0];
-      if (cleanUrl) {
-        hostname = cleanUrl;
-      }
-    }
-
-    console.log(`[Substack] Connecting with hostname: ${hostname}, SID: ${sid.substring(0, 10)}...`);
-
-    substackClient = new SubstackClient({
-      apiKey: sid,
-      hostname: hostname,
-    });
-
-    // Skip testConnectivity() — the library's connectivity check calls
-    // /api/v1/feed/following on the publication client, but this endpoint
-    // only exists on substack.com, NOT on publication subdomains like
-    // yourname.substack.com. This causes a false negative "Authentication failed".
-    // Instead, go directly to ownProfile() which calls /api/v1/subscription
-    // on the publication subdomain — this correctly validates the session.
-
-    try {
-      ownProfile = await substackClient.ownProfile();
-    } catch (profileErr: any) {
-      console.error('[Substack] ownProfile() failed:', profileErr.message);
-      substackClient = null;
-      ownProfile = null;
-      res.status(401).json({ error: 'Authentication failed — check your SID cookie and Publication URL' });
-      return;
-    }
-
-    if (!ownProfile.slug && publicationUrl) {
-      let cleanUrl = publicationUrl.replace(/^(https?:\/\/)?(www\.)?/, '');
-      cleanUrl = cleanUrl.split('/')[0];
-      const parts = cleanUrl.split('.');
-      if (parts.length > 2 && parts[1] === 'substack') {
-        ownProfile.slug = parts[0];
-      } else {
-        ownProfile.slug = parts[0]; // fallback for custom domains
-      }
-    }
-
-    currentSid = sid;
-
-    console.log(`[Substack] Connected as: ${ownProfile.name} (@${ownProfile.slug})`);
 
     res.json({
       success: true,
-      profile: {
-        name: ownProfile.name,
-        slug: ownProfile.slug,
-        followerCount: ownProfile.followerCount,
-      },
+      profile: result.profile,
     });
   } catch (err: any) {
     console.error('Connect error:', err);
-    substackClient = null;
-    ownProfile = null;
     res.status(500).json({ error: err.message || 'Failed to connect' });
   }
 });
@@ -194,10 +73,7 @@ router.get('/profile', async (_req: Request, res: Response) => {
 
 // ─── POST /api/disconnect ───
 router.post('/disconnect', (_req: Request, res: Response) => {
-  substackClient = null;
-  ownProfile = null;
-  currentSid = '';
-  console.log('[Substack] Session disconnected.');
+  disconnectSubstack();
   res.json({ success: true });
 });
 
@@ -419,7 +295,7 @@ router.post('/publish', async (req: Request, res: Response) => {
       throw new Error('Failed to create draft on Substack');
     }
 
-    const pubHostname = (substackClient as any).publicationClient.baseUrl.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
+    const pubHostname = getPubHostname();
 
     if (isDraft === false) {
       try {
@@ -512,7 +388,7 @@ router.get('/newsletters', async (_req: Request, res: Response) => {
       return;
     }
 
-    const pubHostname = (substackClient as any).publicationClient.baseUrl.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
+    const pubHostname = getPubHostname();
     const response = await (substackClient as any).publicationClient.get('/api/v1/archive?limit=25');
     const posts: any[] = [];
     
@@ -865,7 +741,8 @@ router.post('/comments/automate', async (req: Request, res: Response) => {
       let postCommentRes: { ok: boolean; status?: number; statusText?: string };
       try {
         await ensureHttpClientPatched(); // Ensure gotScraping is initialized
-        const response = await gotScraping({
+        const gotScrapingFn = getGotScraping();
+        const response = await gotScrapingFn({
           url: commentEndpoint,
           method: 'POST',
           headers: {

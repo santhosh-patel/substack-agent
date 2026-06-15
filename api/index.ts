@@ -1,10 +1,17 @@
+/**
+ * Vercel Serverless Entry Point
+ * 
+ * Exports the Express app for Vercel's Node.js runtime.
+ * This file is the single serverless function that handles all /api/* routes.
+ */
+
 import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs';
-import apiRoutes from './routes/api.js';
-import toolRoutes from './routes/tools.js';
-import { authMiddleware } from './middleware/auth.js';
+import apiRoutes from '../src/routes/api.js';
+import toolRoutes from '../src/routes/tools.js';
+import { authMiddleware } from '../src/middleware/auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,7 +20,7 @@ const __dirname = path.dirname(__filename);
 const loadEnv = () => {
   const paths = [
     path.join(process.cwd(), '.env'),
-    path.join(__dirname, '..', '.env')
+    path.join(__dirname, '..', '.env'),
   ];
   for (const envPath of paths) {
     if (fs.existsSync(envPath)) {
@@ -42,13 +49,12 @@ const loadEnv = () => {
 loadEnv();
 
 const app = express();
-const PORT = 3456;
 
 // ─── Middleware ───
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// ─── CORS (for cross-origin tool calls from AI agents) ───
+// ─── CORS ───
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -60,30 +66,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// ─── Serve static frontend (including .well-known directory) ───
-app.use(express.static(path.join(__dirname, '..', 'public'), { dotfiles: 'allow' }));
-
 // ─── API routes (existing UI routes — no auth) ───
 app.use('/api', apiRoutes);
 
-// ─── Tool routes (AI agent routes — with bearer auth) ───
+// ─── Tool routes (AI agent routes — with auth) ───
 app.use('/api/tools', authMiddleware, toolRoutes);
 
-// ─── Fallback to index.html for SPA (skip API and static files) ───
-app.get('/{*path}', (req, res) => {
-  // Don't serve index.html for file-like requests (have extensions)
-  if (req.path.includes('.')) {
-    res.status(404).json({ error: 'Not found' });
-    return;
-  }
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
-});
-
-// ─── Start ───
-app.listen(PORT, () => {
-  console.log(`\n Substack Automation running at:\n`);
-  console.log(`     http://localhost:${PORT}\n`);
-  console.log(`  Tool API:     http://localhost:${PORT}/api/tools/`);
-  console.log(`  OpenAPI Spec: http://localhost:${PORT}/openapi.json`);
-  console.log(`  AI Plugin:    http://localhost:${PORT}/.well-known/ai-plugin.json\n`);
-});
+export default app;
