@@ -80,6 +80,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // ─── Settings Persistence (localStorage & Backend Env) ───
+function hasBackendApiKey(provider) {
+  if (!window.backendConfig) return false;
+  const flags = {
+    groq: 'hasGroqApiKey',
+    gemini: 'hasGeminiApiKey',
+    openai: 'hasOpenAiApiKey',
+  };
+  return Boolean(window.backendConfig[flags[provider]]);
+}
+
 async function loadConfigFromBackend() {
   try {
     const res = await fetch('/api/config');
@@ -87,29 +97,14 @@ async function loadConfigFromBackend() {
     const config = await res.json();
     window.backendConfig = config;
 
-    if (config.sid) {
-      document.getElementById('sid').value = config.sid;
-    }
     if (config.publicationUrl) {
       document.getElementById('pubUrl').value = config.publicationUrl;
     }
 
-    // Fill API keys if they exist in env and not already custom-entered
-    const provider = document.getElementById('provider').value;
-    if (config.groqApiKey && provider === 'groq') {
-      document.getElementById('aiKey').value = config.groqApiKey;
-    } else if (config.geminiApiKey && provider === 'gemini') {
-      document.getElementById('aiKey').value = config.geminiApiKey;
-    } else if (config.openaiApiKey && provider === 'openai') {
-      document.getElementById('aiKey').value = config.openaiApiKey;
-    }
-
-    // Load System Prompt configuration
     loadSystemPromptForTab('newsletters');
 
-    // Auto-connect if SID is pre-filled from environment
-    if (config.sid) {
-      handleConnect();
+    if (config.hasSubstackSid) {
+      await handleConnect({ useServerSid: true });
     }
   } catch (err) {
     console.error('Failed to load backend config:', err);
@@ -127,7 +122,6 @@ function loadSavedSettings() {
       updateModelOptions();
     }
     if (s.model) document.getElementById('model').value = s.model;
-    if (s.sid) document.getElementById('sid').value = s.sid;
   } catch {}
 }
 
@@ -136,7 +130,6 @@ function saveSettings() {
     pubUrl: document.getElementById('pubUrl').value,
     provider: document.getElementById('provider').value,
     model: document.getElementById('model').value,
-    sid: document.getElementById('sid').value,
   };
   localStorage.setItem('substack_settings', JSON.stringify(settings));
 }
@@ -155,31 +148,18 @@ function updateModelOptions() {
     modelSelect.appendChild(opt);
   });
 
-  // Prefill key from loaded backendConfig if available
-  if (window.backendConfig) {
-    const keyInput = document.getElementById('aiKey');
-    if (provider === 'groq' && window.backendConfig.groqApiKey) {
-      keyInput.value = window.backendConfig.groqApiKey;
-    } else if (provider === 'gemini' && window.backendConfig.geminiApiKey) {
-      keyInput.value = window.backendConfig.geminiApiKey;
-    } else if (provider === 'openai' && window.backendConfig.openaiApiKey) {
-      keyInput.value = window.backendConfig.openaiApiKey;
-    } else {
-      keyInput.value = '';
-    }
-  }
-
   saveSettings();
 }
 
 // ─── Connect to Substack ───
-async function handleConnect() {
+async function handleConnect(options = {}) {
   const sid = document.getElementById('sid').value.trim();
   const pubUrl = document.getElementById('pubUrl').value.trim();
   const btn = document.getElementById('connectBtn');
+  const useServerSid = options.useServerSid || (!sid && window.backendConfig?.hasSubstackSid);
 
-  if (!sid) {
-    showToast('Please enter your Substack SID cookie', 'error');
+  if (!sid && !useServerSid) {
+    showToast('Please enter your Substack session cookie', 'error');
     return;
   }
 
@@ -189,7 +169,10 @@ async function handleConnect() {
     const res = await fetch('/api/connect', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sid, publicationUrl: pubUrl || undefined }),
+      body: JSON.stringify({
+        ...(sid ? { sid } : {}),
+        publicationUrl: pubUrl || undefined,
+      }),
     });
 
     const data = await res.json();
@@ -227,7 +210,7 @@ async function handleGenerate() {
     return;
   }
   
-  const hasBackendKey = window.backendConfig && window.backendConfig[`${provider}ApiKey`];
+  const hasBackendKey = hasBackendApiKey(provider);
   if (!apiKey && !hasBackendKey) {
     showToast(`Please enter your ${provider.toUpperCase()} API key`, 'error');
     return;
@@ -822,7 +805,7 @@ async function runCommentAutomation() {
     return;
   }
 
-  const hasBackendKey = window.backendConfig && window.backendConfig[`${provider}ApiKey`];
+  const hasBackendKey = hasBackendApiKey(provider);
   if (!apiKey && !hasBackendKey) {
     showToast(`Please enter your ${provider.toUpperCase()} API key`, 'error');
     return;
@@ -1228,7 +1211,7 @@ async function handleGenerateNote() {
     return;
   }
   
-  const hasBackendKey = window.backendConfig && window.backendConfig[`${provider}ApiKey`];
+  const hasBackendKey = hasBackendApiKey(provider);
   if (!apiKey && !hasBackendKey) {
     showToast(`Please enter your ${provider.toUpperCase()} API key`, 'error');
     return;

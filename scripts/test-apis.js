@@ -60,7 +60,10 @@ async function runTests() {
         const data = await res.json();
         if (!res.ok) throw new Error(`Status ${res.status}: ${JSON.stringify(data)}`);
         if (data.defaultSystemPrompt === undefined) throw new Error('Response missing defaultSystemPrompt');
-        return `Config loaded successfully. Default AI Provider configurations found.`;
+        if ('sid' in data || 'groqApiKey' in data) {
+          throw new Error('Config endpoint must not expose secrets');
+        }
+        return `Config loaded. hasSubstackSid=${data.hasSubstackSid}`;
       }
     },
     {

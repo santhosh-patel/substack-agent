@@ -1,7 +1,15 @@
 {
-  "name": "substack-automation",
+  "name": "substack-agent",
   "version": "2.0.0",
-  "description": "Automate Substack posts with AI-powered content generation — tool-calling API for AI agents",
+  "description": "Automate Substack posts with AI-powered content generation — MCP server and tool-calling API for AI agents",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/santhosh-patel/substack-agent.git"
+  },
+  "engines": {
+    "node": ">=18"
+  },
   "type": "module",
   "scripts": {
     "dev": "npx tsx watch src/server.ts",

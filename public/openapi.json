@@ -263,7 +263,7 @@
                 "commentInstruction": "Write insightful, professional comments that add value to the discussion",
                 "provider": "groq",
                 "model": "llama-3.3-70b-versatile",
-                "apiKey": "gsk_..."
+                "apiKey": "<your-api-key>"
               }
             }
           }
@@ -443,7 +443,7 @@
       "BearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "description": "Pass the API_SECRET as a Bearer token. If no API_SECRET is set on the server (local dev), auth is skipped."
+        "description": "Pass the API_SECRET as a Bearer token. Required in production; skipped in local development when API_SECRET is unset."
       }
     },
     "responses": {

@@ -4,13 +4,22 @@ import { Request, Response, NextFunction } from 'express';
  * Bearer token authentication middleware.
  * Validates the `Authorization: Bearer <token>` header against the `API_SECRET` env var.
  * 
- * If API_SECRET is not set, auth is disabled (local dev mode).
+ * If API_SECRET is not set, auth is disabled for local development only.
+ * In production (NODE_ENV=production or Vercel), API_SECRET is required.
  */
 export function authMiddleware(req: Request, res: Response, next: NextFunction): void {
   const apiSecret = process.env.API_SECRET;
+  const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
 
-  // If no API_SECRET is configured, skip auth (local dev mode)
   if (!apiSecret) {
+    if (isProduction) {
+      res.status(503).json({
+        success: false,
+        error: 'API_SECRET must be configured before tool endpoints can be used in production.',
+      });
+      return;
+    }
+    // Local dev only — tool routes are open when API_SECRET is unset
     next();
     return;
   }

@@ -1,4 +1,8 @@
 node_modules/
 dist/
 .env
+.env.local
 .vercel/
+
+# Runtime data — do not commit local comment history
+src/data/comments_history.json

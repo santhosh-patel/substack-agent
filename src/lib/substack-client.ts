@@ -114,7 +114,7 @@ export async function connectSubstack(sid?: string, publicationUrl?: string): Pr
       if (cleanUrl) hostname = cleanUrl;
     }
 
-    console.log(`[Substack] Connecting with hostname: ${hostname}, SID: ${sid.substring(0, 10)}...`);
+    console.log(`[Substack] Connecting with hostname: ${hostname}`);
 
     substackClient = new SubstackClient({
       apiKey: sid,

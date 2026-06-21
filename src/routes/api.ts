@@ -23,13 +23,14 @@ const marked = new Marked();
 // the tool routes (/api/tools/*).
 
 // ─── GET /api/config ───
+// Returns only non-secret flags and defaults — never expose SID or API keys to the browser.
 router.get('/config', (_req: Request, res: Response) => {
   res.json({
-    sid: process.env.SUBSTACK_SID || '',
+    hasSubstackSid: Boolean(process.env.SUBSTACK_SID),
     publicationUrl: process.env.SUBSTACK_PUB_URL || process.env.PUBLICATION_URL || '',
-    groqApiKey: process.env.GROQ_API_KEY || '',
-    geminiApiKey: process.env.GEMINI_API_KEY || '',
-    openaiApiKey: process.env.OPENAI_API_KEY || '',
+    hasGroqApiKey: Boolean(process.env.GROQ_API_KEY),
+    hasGeminiApiKey: Boolean(process.env.GEMINI_API_KEY),
+    hasOpenAiApiKey: Boolean(process.env.OPENAI_API_KEY),
     defaultSystemPrompt: SYSTEM_PROMPT,
     defaultNoteSystemPrompt: NOTE_SYSTEM_PROMPT,
   });
