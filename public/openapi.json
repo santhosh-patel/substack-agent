@@ -1,0 +1,494 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Substack Automation Tools API",
+    "description": "AI-callable tool endpoints for automating Substack operations — publish newsletters, post notes, comment on posts, and list content. Designed for Claude MCP, N8N, ChatGPT GPTs, and any OpenAPI-aware AI agent.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Substack Automation"
+    }
+  },
+  "servers": [
+    {
+      "url": "{baseUrl}",
+      "description": "Your deployment URL (Vercel, localhost, etc.)",
+      "variables": {
+        "baseUrl": {
+          "default": "http://localhost:3456"
+        }
+      }
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/tools/publish-newsletter": {
+      "post": {
+        "operationId": "publishNewsletter",
+        "summary": "Publish a newsletter post to Substack",
+        "description": "Creates and publishes a newsletter post on the connected Substack publication. Provide the title, subtitle, and body content in Markdown format. Set isDraft to true to save as a draft without emailing subscribers.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["title", "body"],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "The title of the newsletter post"
+                  },
+                  "subtitle": {
+                    "type": "string",
+                    "description": "Optional subtitle / teaser line for the post"
+                  },
+                  "body": {
+                    "type": "string",
+                    "description": "The full body content of the post in Markdown format. Supports headings, bold, italic, links, lists, blockquotes, and code."
+                  },
+                  "isDraft": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "If true (default), saves as a draft. If false, publishes immediately and emails all subscribers."
+                  }
+                }
+              },
+              "example": {
+                "title": "The Future of AI Agents",
+                "subtitle": "How autonomous systems are reshaping productivity",
+                "body": "## Introduction\n\nAI agents are transforming how we work...\n\n## Key Trends\n\n- Autonomous task completion\n- Tool use and function calling\n- Multi-agent collaboration\n\n## Conclusion\n\nThe future belongs to those who embrace AI agents.",
+                "isDraft": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Newsletter created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer", "description": "The Substack post ID" },
+                        "title": { "type": "string" },
+                        "isDraft": { "type": "boolean" },
+                        "url": { "type": "string", "format": "uri", "description": "URL to the published post or draft editor" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/tools/publish-note": {
+      "post": {
+        "operationId": "publishNote",
+        "summary": "Post a note on Substack",
+        "description": "Creates and publishes a short note on Substack (similar to a tweet). Optionally attach a link to share.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["body"],
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "description": "The note content. Should be concise (under 500 characters). Supports basic text formatting."
+                  },
+                  "link": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Optional URL to attach to the note as a link card"
+                  }
+                }
+              },
+              "example": {
+                "body": "Just published my latest thoughts on AI agents and how they're changing the way we build software. Would love your take on this.",
+                "link": "https://example.substack.com/p/ai-agents"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Note published successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer", "description": "The note ID" },
+                        "body": { "type": "string" },
+                        "url": { "type": "string", "format": "uri" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/tools/comment": {
+      "post": {
+        "operationId": "postComment",
+        "summary": "Post a comment on a Substack post",
+        "description": "Posts a comment on a specific Substack post. Provide either a post URL or a numeric post ID along with the comment text.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["comment"],
+                "properties": {
+                  "postUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "The full URL of the Substack post to comment on (e.g. https://example.substack.com/p/some-post)"
+                  },
+                  "postId": {
+                    "type": "integer",
+                    "description": "The numeric Substack post ID to comment on. Use this if you have the ID directly."
+                  },
+                  "comment": {
+                    "type": "string",
+                    "description": "The comment text to post. Should be natural, relevant, and human-sounding."
+                  }
+                }
+              },
+              "example": {
+                "postUrl": "https://example.substack.com/p/my-latest-post",
+                "comment": "This is a fascinating perspective. I especially liked the point about agent-to-agent communication — that's going to be huge in enterprise workflows."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comment posted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "postId": { "type": "integer" },
+                        "comment": { "type": "string" },
+                        "status": { "type": "string", "enum": ["posted"] }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/tools/automate-comments": {
+      "post": {
+        "operationId": "automateComments",
+        "summary": "Auto-scan and comment on a target account's posts",
+        "description": "Scans up to 10 recent posts from a target Substack account, uses AI to check relevance against a keyword, generates context-aware comments for matching posts, and posts them. Requires AI provider credentials for comment generation.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["targetAccount", "keyword", "provider", "model", "apiKey"],
+                "properties": {
+                  "targetAccount": {
+                    "type": "string",
+                    "description": "The target account. Can be a @username handle, numeric profile ID, or full publication URL (e.g. https://example.substack.com)"
+                  },
+                  "keyword": {
+                    "type": "string",
+                    "description": "The keyword or phrase to match against posts for relevance"
+                  },
+                  "commentInstruction": {
+                    "type": "string",
+                    "description": "Optional custom instructions for how the AI should write comments"
+                  },
+                  "provider": {
+                    "type": "string",
+                    "enum": ["groq", "gemini", "openai"],
+                    "description": "The AI provider to use for analyzing posts and generating comments"
+                  },
+                  "model": {
+                    "type": "string",
+                    "description": "The model name to use (e.g. 'llama-3.3-70b-versatile' for Groq, 'gemini-2.0-flash' for Gemini)"
+                  },
+                  "apiKey": {
+                    "type": "string",
+                    "description": "The API key for the chosen AI provider"
+                  }
+                }
+              },
+              "example": {
+                "targetAccount": "@elonmusk",
+                "keyword": "artificial intelligence",
+                "commentInstruction": "Write insightful, professional comments that add value to the discussion",
+                "provider": "groq",
+                "model": "llama-3.3-70b-versatile",
+                "apiKey": "gsk_..."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Automation completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "logs": {
+                          "type": "array",
+                          "items": { "type": "string" },
+                          "description": "Timestamped execution logs"
+                        },
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "postTitle": { "type": "string" },
+                              "url": { "type": "string" },
+                              "matched": { "type": "boolean" },
+                              "comment": { "type": "string" },
+                              "status": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/tools/list-newsletters": {
+      "get": {
+        "operationId": "listNewsletters",
+        "summary": "List recent newsletters from your publication",
+        "description": "Fetches the 25 most recent newsletter posts from your connected Substack publication, including titles, publish dates, and URLs.",
+        "responses": {
+          "200": {
+            "description": "Newsletters retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "posts": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": { "type": "integer" },
+                              "title": { "type": "string" },
+                              "subtitle": { "type": "string" },
+                              "publishedAt": { "type": "string", "format": "date-time" },
+                              "truncatedBody": { "type": "string" },
+                              "url": { "type": "string", "format": "uri" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/tools/list-notes": {
+      "get": {
+        "operationId": "listNotes",
+        "summary": "List recent notes from your Substack profile",
+        "description": "Fetches the 25 most recent notes from your connected Substack profile, including body text, like counts, and URLs.",
+        "responses": {
+          "200": {
+            "description": "Notes retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "notes": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": { "type": "integer" },
+                              "body": { "type": "string" },
+                              "likesCount": { "type": "integer" },
+                              "publishedAt": { "type": "string", "format": "date-time" },
+                              "author": { "type": "object" },
+                              "url": { "type": "string", "format": "uri" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/tools/list-comments": {
+      "get": {
+        "operationId": "listComments",
+        "summary": "List your comment history",
+        "description": "Returns the history of comments you have posted through the automation system, in reverse chronological order.",
+        "responses": {
+          "200": {
+            "description": "Comments history retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "comments": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "postTitle": { "type": "string" },
+                              "postUrl": { "type": "string", "format": "uri" },
+                              "body": { "type": "string" },
+                              "publishedAt": { "type": "string", "format": "date-time" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Pass the API_SECRET as a Bearer token. If no API_SECRET is set on the server (local dev), auth is skipped."
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Missing or invalid parameters",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "enum": [false] },
+                "error": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Not authenticated — missing/invalid Bearer token or Substack session",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "enum": [false] },
+                "error": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "ServerError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "enum": [false] },
+                "error": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Substack Automation",
+  "name_for_model": "substack_automation",
+  "description_for_human": "Automate your Substack — publish newsletters, post notes, comment on posts, and manage your content programmatically.",
+  "description_for_model": "This plugin provides tools to automate Substack operations. Use it to publish newsletter posts (with title, subtitle, and markdown body), post short notes, comment on Substack posts, auto-scan target accounts for relevant posts and comment on them, and list recent newsletters, notes, and comment history from the connected Substack account.",
+  "auth": {
+    "type": "service_http",
+    "authorization_type": "bearer",
+    "verification_tokens": {}
+  },
+  "api": {
+    "type": "openapi",
+    "url": "/openapi.json"
+  },
+  "logo_url": "/logo.png",
+  "contact_email": "",
+  "legal_info_url": ""
+}

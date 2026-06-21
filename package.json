@@ -1,0 +1,25 @@
+{
+  "name": "substack-automation",
+  "version": "2.0.0",
+  "description": "Automate Substack posts with AI-powered content generation — tool-calling API for AI agents",
+  "type": "module",
+  "scripts": {
+    "dev": "npx tsx watch src/server.ts",
+    "mcp": "npx tsx src/mcp-server.ts",
+    "test:api": "node scripts/test-apis.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "express": "^5.1.0",
+    "got-scraping": "^4.2.1",
+    "marked": "^15.0.0",
+    "substack-api": "^1.0.0",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
