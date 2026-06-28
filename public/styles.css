@@ -1820,6 +1820,40 @@ body.light-theme .app-modal-overlay {
   white-space: pre-line;
 }
 
+.schedule-confirm-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.schedule-confirm-row {
+  display: grid;
+  grid-template-columns: 108px 1fr;
+  gap: 6px 12px;
+  align-items: start;
+  font-size: 0.84rem;
+}
+
+.schedule-confirm-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.schedule-confirm-value {
+  color: var(--text-primary);
+  word-break: break-word;
+  line-height: 1.45;
+}
+
+body.light-theme .schedule-confirm-details {
+  background: var(--bg-secondary);
+}
+
 .app-modal-footer {
   display: flex;
   align-items: center;

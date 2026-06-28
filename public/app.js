@@ -721,6 +721,7 @@ function escapeHtml(str) {
 function showAppConfirm({
   title = 'Confirm',
   message = '',
+  messageHtml = '',
   confirmLabel = 'Confirm',
   cancelLabel = 'Cancel',
   variant = 'default',
@@ -741,7 +742,13 @@ function showAppConfirm({
     }
 
     titleEl.textContent = title;
-    bodyEl.textContent = message;
+    if (messageHtml) {
+      bodyEl.innerHTML = messageHtml;
+      bodyEl.style.whiteSpace = 'normal';
+    } else {
+      bodyEl.textContent = message;
+      bodyEl.style.whiteSpace = 'pre-line';
+    }
     cancelBtn.textContent = cancelLabel;
     confirmBtn.textContent = confirmLabel;
 
@@ -2072,6 +2079,68 @@ async function loadSchedules() {
   }
 }
 
+function getSelectLabel(selectId, value) {
+  const select = document.getElementById(selectId);
+  if (!select) return value;
+  const option = Array.from(select.options).find((opt) => opt.value === value);
+  return option ? option.textContent.trim() : value;
+}
+
+function truncateScheduleText(text, max = 160) {
+  if (!text) return '';
+  const normalized = text.replace(/\s+/g, ' ').trim();
+  if (normalized.length <= max) return normalized;
+  return `${normalized.slice(0, max).trim()}…`;
+}
+
+function buildScheduleConfirmHtml(details) {
+  const rows = [];
+
+  const addRow = (label, value) => {
+    if (value == null || value === '') return;
+    rows.push(
+      `<div class="schedule-confirm-row">` +
+        `<span class="schedule-confirm-label">${escapeHtml(label)}</span>` +
+        `<span class="schedule-confirm-value">${escapeHtml(value)}</span>` +
+      `</div>`
+    );
+  };
+
+  addRow('Post type', details.postTypeLabel);
+  addRow('Date & time', details.scheduledAtLabel);
+  addRow('Recurrence', details.recurrenceLabel);
+  addRow('Publish as', details.publishMode);
+
+  if (details.postType === 'newsletter') {
+    addRow('Title', details.title || (details.enableSearch ? 'AI generated at run time' : ''));
+    addRow('Subtitle', details.subtitle);
+  }
+
+  if (details.postType === 'note') {
+    addRow('Link', details.noteLink);
+  }
+
+  addRow('Topic / guidelines', truncateScheduleText(details.body));
+  addRow('Web search', details.searchLabel);
+
+  if (details.enableSearch) {
+    addRow('AI provider', details.providerLabel);
+    addRow('Model', details.modelLabel);
+  }
+
+  return `<div class="schedule-confirm-details">${rows.join('')}</div>`;
+}
+
+async function confirmSchedulePost(details) {
+  return showAppConfirm({
+    title: 'Confirm scheduled post',
+    messageHtml: buildScheduleConfirmHtml(details),
+    confirmLabel: 'Confirm Schedule',
+    cancelLabel: 'Go Back',
+    icon: 'calendar',
+  });
+}
+
 async function handleCreateSchedule() {
   const postType = document.getElementById('schedPostType').value;
   const title = document.getElementById('schedTitle').value.trim();
@@ -2132,6 +2201,44 @@ async function handleCreateSchedule() {
     );
     return;
   }
+
+  const postTypeLabel = getSelectLabel('schedPostType', postType);
+  const recurrenceLabel = getSelectLabel('schedRecurrence', recurrence);
+  const scheduledAtLabel = new Date(scheduledAtRaw).toLocaleString(undefined, {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+
+  let publishMode = 'Publish live';
+  if (postType === 'note') {
+    publishMode = 'Publish note';
+  } else if (isDraft) {
+    publishMode = 'Save as draft';
+  }
+
+  const confirmed = await confirmSchedulePost({
+    postType,
+    postTypeLabel,
+    title,
+    subtitle,
+    body,
+    noteLink,
+    isDraft,
+    recurrence,
+    recurrenceLabel,
+    scheduledAtLabel,
+    enableSearch,
+    publishMode,
+    searchLabel: enableSearch ? 'Enabled' : 'Disabled',
+    providerLabel: (resolvedProvider || 'Default').toUpperCase(),
+    modelLabel: resolvedModel || 'Default model',
+  });
+
+  if (!confirmed) return;
 
   const isoTime = scheduledAtRaw;
 
