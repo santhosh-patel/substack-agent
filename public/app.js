@@ -31,7 +31,6 @@ let allHistoryItems = [];
 
 // ─── Initialization ───
 document.addEventListener('DOMContentLoaded', async () => {
-  updateModelOptions();
   loadSavedSettings();
 
   // Initialize App Theme
@@ -41,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setTimeout(() => updateThemeToggleIcon(true), 50);
   }
 
-  loadConfigFromBackend();
+  await loadConfigFromBackend();
   loadPublishHistory();
 
   // Load sidebar state from localStorage
@@ -64,6 +63,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Setup SID listener to save on update
   document.getElementById('sid').addEventListener('input', saveSettings);
+
+  // Auto-save API key locally as user types (debounced)
+  const aiKeyInput = document.getElementById('aiKey');
+  if (aiKeyInput) {
+    aiKeyInput.addEventListener('input', scheduleApiKeySave);
+    aiKeyInput.addEventListener('blur', () => {
+      const keyVal = aiKeyInput.value.trim();
+      if (keyVal) saveApiKey({ silent: true });
+    });
+  }
 
   // Setup dynamic metadata preview listeners
   const postTitle = document.getElementById('postTitle');
@@ -100,6 +109,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // ─── Settings Persistence (localStorage & Backend Env) ───
+const SETTINGS_STORAGE_KEY = 'substack_settings';
+
+function getStoredSettings() {
+  try {
+    return JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) || '{}');
+  } catch {
+    return {};
+  }
+}
+
+function getStoredSid() {
+  const sidInput = document.getElementById('sid');
+  const fromInput = sidInput ? sidInput.value.trim() : '';
+  if (fromInput) return fromInput;
+  return getStoredSettings().sid || '';
+}
+
+function getStoredApiKey(provider) {
+  const providerVal = provider || document.getElementById('provider')?.value;
+  const keyInput = document.getElementById('aiKey');
+  const fromInput = keyInput ? keyInput.value.trim() : '';
+  if (fromInput) return fromInput;
+  if (!providerVal) return '';
+  return localStorage.getItem(`substack_apikey_${providerVal}`) || '';
+}
+
 function hasBackendApiKey(provider) {
   if (!window.backendConfig) return false;
   const flags = {
@@ -118,44 +153,78 @@ async function loadConfigFromBackend() {
     const config = await res.json();
     window.backendConfig = config;
 
-    if (config.publicationUrl) {
-      document.getElementById('pubUrl').value = config.publicationUrl;
+    const pubUrlInput = document.getElementById('pubUrl');
+    if (config.publicationUrl && pubUrlInput && !pubUrlInput.value.trim()) {
+      pubUrlInput.value = config.publicationUrl;
+      saveSettings();
     }
 
     loadSystemPromptForTab('newsletters');
-
-    if (config.hasSubstackSid) {
-      await handleConnect({ useServerSid: true });
-    }
+    await restorePersistedSession();
   } catch (err) {
     console.error('Failed to load backend config:', err);
   }
 }
 
+async function restorePersistedSession() {
+  const localSid = getStoredSid();
+  if (localSid) {
+    const sidInput = document.getElementById('sid');
+    if (sidInput && !sidInput.value.trim()) {
+      sidInput.value = localSid;
+    }
+    await handleConnect({ auto: true });
+    return;
+  }
+
+  if (window.backendConfig?.hasSubstackSid) {
+    await handleConnect({ useServerSid: true, auto: true });
+  }
+}
+
 function loadSavedSettings() {
-  const saved = localStorage.getItem('substack_settings');
-  if (!saved) return;
+  const saved = localStorage.getItem(SETTINGS_STORAGE_KEY);
+  if (!saved) {
+    updateModelOptions();
+    return;
+  }
+
   try {
     const s = JSON.parse(saved);
     if (s.pubUrl) document.getElementById('pubUrl').value = s.pubUrl;
+    if (s.sid) document.getElementById('sid').value = s.sid;
     if (s.provider) {
       document.getElementById('provider').value = s.provider;
       updateModelOptions();
+    } else {
+      updateModelOptions();
     }
     if (s.model) document.getElementById('model').value = s.model;
-    
-    // Load saved API key for active provider
+
     loadApiKeyForProvider();
-  } catch {}
+  } catch {
+    updateModelOptions();
+  }
 }
 
 function saveSettings() {
   const settings = {
     pubUrl: document.getElementById('pubUrl').value,
+    sid: document.getElementById('sid').value.trim(),
     provider: document.getElementById('provider').value,
     model: document.getElementById('model').value,
   };
-  localStorage.setItem('substack_settings', JSON.stringify(settings));
+  localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+}
+
+let apiKeySaveTimer = null;
+
+function scheduleApiKeySave() {
+  clearTimeout(apiKeySaveTimer);
+  apiKeySaveTimer = setTimeout(() => {
+    const keyVal = document.getElementById('aiKey')?.value.trim();
+    if (keyVal) saveApiKey({ silent: true });
+  }, 600);
 }
 
 function loadApiKeyForProvider() {
@@ -165,7 +234,7 @@ function loadApiKeyForProvider() {
   const saveBtn = document.getElementById('saveAiKeyBtn');
   
   if (!keyInput) return;
-  const savedKey = localStorage.getItem(`substack_apikey_${provider}`) || '';
+  const savedKey = getStoredApiKey(provider);
   keyInput.value = savedKey;
 
   // If API key is saved, rename button to "Update API Key" and enable model select.
@@ -177,12 +246,19 @@ function loadApiKeyForProvider() {
     if (modelSelect) {
       modelSelect.disabled = false;
     }
-  } else {
+  } else if (!hasBackendApiKey(provider)) {
     if (saveBtn) {
       saveBtn.innerHTML = '<i data-lucide="save"></i> Save API Key';
     }
     if (modelSelect) {
       modelSelect.disabled = true;
+    }
+  } else {
+    if (saveBtn) {
+      saveBtn.innerHTML = '<i data-lucide="save"></i> Save API Key';
+    }
+    if (modelSelect) {
+      modelSelect.disabled = false;
     }
   }
 
@@ -191,15 +267,23 @@ function loadApiKeyForProvider() {
   }
 }
 
-function saveApiKey() {
+function saveApiKey(options = {}) {
+  const { silent = false } = options;
   const provider = document.getElementById('provider').value;
   const keyInput = document.getElementById('aiKey');
   if (!keyInput) return;
   const keyVal = keyInput.value.trim();
   
-  localStorage.setItem(`substack_apikey_${provider}`, keyVal);
+  if (keyVal) {
+    localStorage.setItem(`substack_apikey_${provider}`, keyVal);
+  } else {
+    localStorage.removeItem(`substack_apikey_${provider}`);
+  }
+
   loadApiKeyForProvider();
-  showToast('Done! API Key updated.', 'success');
+  if (!silent) {
+    showToast('Done! API Key updated.', 'success');
+  }
 }
 
 // ─── Model Dropdown ───
@@ -222,17 +306,20 @@ function updateModelOptions() {
 
 // ─── Connect to Substack ───
 async function handleConnect(options = {}) {
-  const sid = document.getElementById('sid').value.trim();
+  const { auto = false } = options;
+  const sid = getStoredSid();
   const pubUrl = document.getElementById('pubUrl').value.trim();
   const btn = document.getElementById('connectBtn');
   const useServerSid = options.useServerSid || (!sid && window.backendConfig?.hasSubstackSid);
 
   if (!sid && !useServerSid) {
-    showToast('Please enter your Substack session cookie', 'error');
+    if (!auto) showToast('Please enter your Substack session cookie', 'error');
     return;
   }
 
-  setButtonLoading(btn, true, 'Connecting…');
+  if (!auto) {
+    setButtonLoading(btn, true, 'Connecting…');
+  }
 
   try {
     const res = await fetch('/api/connect', {
@@ -254,14 +341,23 @@ async function handleConnect(options = {}) {
     updateConnectionBadge(data.profile);
     document.getElementById('publishBtn').disabled = false;
     saveSettings();
-    showToast(`Connected as ${data.profile.name} (@${data.profile.slug})`, 'success');
+    if (!auto) {
+      showToast(`Connected as ${data.profile.name} (@${data.profile.slug})`, 'success');
+    }
   } catch (err) {
     isConnected = false;
     updateConnectionBadge(null);
     document.getElementById('publishBtn').disabled = true;
-    showToast(err.message, 'error');
+    if (!auto) {
+      showToast(err.message, 'error');
+    } else {
+      console.warn('Auto-reconnect failed:', err.message);
+      showToast('Saved session could not be restored. Update connect.sid and click Connect.', 'warning');
+    }
   } finally {
-    setButtonLoading(btn, false, 'Connect');
+    if (!auto) {
+      setButtonLoading(btn, false, 'Connect');
+    }
   }
 }
 
@@ -270,7 +366,7 @@ async function handleGenerate() {
   const topic = document.getElementById('topic').value.trim();
   const provider = document.getElementById('provider').value;
   const model = document.getElementById('model').value;
-  const apiKey = document.getElementById('aiKey').value.trim();
+  const apiKey = getStoredApiKey(provider);
   const systemPrompt = document.getElementById('systemPrompt').value.trim();
   const btn = document.getElementById('generateBtn');
 
@@ -545,10 +641,8 @@ async function handleDisconnect() {
     updateConnectionBadge(null);
     document.getElementById('publishBtn').disabled = true;
 
-    // Clear SID from settings inputs
+    // Clear SID from settings inputs and local storage
     document.getElementById('sid').value = '';
-    
-    // Save settings (so they are cleared in localstorage too)
     saveSettings();
 
     showToast('Session disconnected successfully', 'success');
@@ -891,7 +985,7 @@ async function runCommentAutomation() {
   
   const provider = document.getElementById('provider').value;
   const model = document.getElementById('model').value;
-  const apiKey = document.getElementById('aiKey').value.trim();
+  const apiKey = getStoredApiKey(provider);
 
   const runBtn = document.getElementById('runCommentAutoBtn');
   const stopBtn = document.getElementById('stopCommentAutoBtn');
@@ -1309,7 +1403,7 @@ async function handleGenerateNote() {
   const topic = document.getElementById('noteTopic').value.trim();
   const provider = document.getElementById('provider').value;
   const model = document.getElementById('model').value;
-  const apiKey = document.getElementById('aiKey').value.trim();
+  const apiKey = getStoredApiKey(provider);
   const systemPrompt = document.getElementById('systemPrompt').value.trim();
   const btn = document.getElementById('generateNoteBtn');
 

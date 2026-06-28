@@ -683,6 +683,14 @@ main {
   justify-content: space-between;
 }
 
+.field-hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
 /* ─── Form Elements ─── */
 .form-group {
   margin-bottom: 16px;
