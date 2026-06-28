@@ -451,7 +451,7 @@
                 </div>
                 <div class="form-group">
                   <label for="schedRecurrence">Recurrence Pattern</label>
-                  <select id="schedRecurrence">
+                  <select id="schedRecurrence" onchange="toggleRecurrenceFields()">
                     <option value="once">Once (One-off)</option>
                     <option value="daily">Everyday (Daily)</option>
                     <option value="twice_daily">Twice a Day</option>
@@ -462,7 +462,7 @@
               </div>
 
               <div class="form-group form-group-datetime">
-                <label>Scheduled Date &amp; Time</label>
+                <label id="schedDateTimeLabel">Scheduled Date &amp; Time</label>
                 <div class="dt-picker" id="dtPicker">
                   <div class="dt-picker-summary" id="dtPickerSummary">Select date and time</div>
                   <div class="dt-picker-grid">
@@ -508,6 +508,12 @@
                   <span id="dtTzBadge" class="schedule-datetime-tz"></span>
                 </p>
                 <input type="hidden" id="schedTime" />
+              </div>
+
+              <div class="form-group sched-second-time-group" id="schedSecondTimeGroup" hidden>
+                <label for="schedSecondTime">Second Time of Day</label>
+                <input type="time" id="schedSecondTime" value="18:00" step="60" onchange="dtUpdateSummary()" oninput="dtUpdateSummary()" />
+                <span class="field-hint">Posts run at the first time above and again at this second time each day.</span>
               </div>
 
               <!-- Newsletter Fields (Title + Subtitle) -->

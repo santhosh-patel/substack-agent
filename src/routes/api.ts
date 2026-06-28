@@ -960,7 +960,7 @@ router.post('/schedule', async (req: Request, res: Response) => {
   try {
     const { 
       title, subtitle, body, isDraft, scheduledAt, recurrence, postType, noteLink,
-      enableSearch, provider, model, apiKey, systemPrompt, presetMode
+      enableSearch, provider, model, apiKey, systemPrompt, presetMode, recurrenceTimes
     } = req.body;
 
     const payload = {
@@ -978,6 +978,9 @@ router.post('/schedule', async (req: Request, res: Response) => {
       apiKey,
       systemPrompt,
       presetMode: typeof presetMode === 'string' && presetMode.trim() ? presetMode.trim() : undefined,
+      recurrenceTimes: Array.isArray(recurrenceTimes) && recurrenceTimes.length === 2
+        ? recurrenceTimes.map(Number)
+        : undefined,
     };
 
     const validationError = validateScheduledPost(payload);
@@ -1472,7 +1475,11 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
           freshPost.status = 'completed';
         } else {
           const prevScheduled = freshPost.scheduledAt;
-          freshPost.scheduledAt = calculateNextRun(freshPost.scheduledAt, freshPost.recurrence);
+          freshPost.scheduledAt = calculateNextRun(
+            freshPost.scheduledAt,
+            freshPost.recurrence,
+            freshPost.recurrenceTimes
+          );
           freshPost.status = 'pending';
           addLog(`Recurrent post reset from ${prevScheduled} to ${freshPost.scheduledAt}`);
         }

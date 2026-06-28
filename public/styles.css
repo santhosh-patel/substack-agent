@@ -854,6 +854,19 @@ select option {
   margin-bottom: 16px;
 }
 
+.sched-second-time-group {
+  margin-bottom: 16px;
+}
+
+.sched-second-time-group input[type="time"] {
+  max-width: 180px;
+  padding: 10px 14px;
+}
+
+.sched-second-time-group[hidden] {
+  display: none !important;
+}
+
 /* ─── Date/Time Picker (butter green) ─── */
 .dt-picker {
   border: 1px solid var(--border);

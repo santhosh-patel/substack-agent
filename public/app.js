@@ -97,6 +97,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Initialize custom date/time picker widget (default: 1 hour in the future)
   dtInitWidget();
   toggleSchedulerFields();
+  toggleRecurrenceFields();
   toggleSchedSearchFields();
 
   // Restore Active Tab on reload from URL path
@@ -1820,6 +1821,76 @@ function toggleSchedulerFields() {
   toggleSchedSearchFields();
 }
 
+function parseTimeInputToMinutes(value) {
+  if (!value || typeof value !== 'string') return null;
+  const [hours, minutes] = value.split(':').map(Number);
+  if (Number.isNaN(hours) || Number.isNaN(minutes)) return null;
+  return hours * 60 + minutes;
+}
+
+function formatMinutesLabel(minutes) {
+  if (!Number.isFinite(minutes)) return '';
+  const date = new Date();
+  date.setHours(Math.floor(minutes / 60), minutes % 60, 0, 0);
+  return date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+}
+
+function isTwiceDailyRecurrence() {
+  return document.getElementById('schedRecurrence')?.value === 'twice_daily';
+}
+
+function getTwiceDailyTimes() {
+  const firstMinutes = dtState.selectedMinutes;
+  const secondMinutes = parseTimeInputToMinutes(document.getElementById('schedSecondTime')?.value);
+  return { firstMinutes, secondMinutes };
+}
+
+function computeTwiceDailyInitialIso() {
+  const { firstMinutes, secondMinutes } = getTwiceDailyTimes();
+  if (!Number.isFinite(firstMinutes) || !Number.isFinite(secondMinutes)) return null;
+  if (firstMinutes === secondMinutes) return null;
+
+  const now = new Date();
+  const dayBase = dtDateFromState();
+  dayBase.setHours(0, 0, 0, 0);
+
+  const slots = [firstMinutes, secondMinutes]
+    .sort((a, b) => a - b)
+    .map((minutes) => {
+      const slot = new Date(dayBase);
+      slot.setHours(Math.floor(minutes / 60), minutes % 60, 0, 0);
+      return slot;
+    });
+
+  for (const slot of slots) {
+    if (slot > now) return slot.toISOString();
+  }
+
+  const tomorrow = new Date(dayBase);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(Math.floor(firstMinutes / 60), firstMinutes % 60, 0, 0);
+  return tomorrow.toISOString();
+}
+
+function toggleRecurrenceFields() {
+  const twiceDaily = isTwiceDailyRecurrence();
+  const secondGroup = document.getElementById('schedSecondTimeGroup');
+  const dateLabel = document.getElementById('schedDateTimeLabel');
+
+  if (secondGroup) {
+    secondGroup.hidden = !twiceDaily;
+  }
+  if (dateLabel) {
+    dateLabel.textContent = twiceDaily ? 'Scheduled Date & First Time' : 'Scheduled Date & Time';
+  }
+  dtUpdateSummary();
+}
+
+function formatRecurrenceTimesLabel(times) {
+  if (!Array.isArray(times) || times.length !== 2) return '';
+  return `${formatMinutesLabel(times[0])} and ${formatMinutesLabel(times[1])}`;
+}
+
 function formatScheduleDueLabel(scheduledAt, status) {
   if (status === 'failed') {
     return `Last scheduled: ${new Date(scheduledAt).toLocaleString()}`;
@@ -1847,6 +1918,9 @@ function formatScheduleDueLabel(scheduledAt, status) {
 }
 
 function getScheduleIsoTime() {
+  if (isTwiceDailyRecurrence()) {
+    return computeTwiceDailyInitialIso();
+  }
   const built = dtBuildSelectedDate();
   if (built) return built.toISOString();
   const raw = document.getElementById('schedTime')?.value;
@@ -2005,7 +2079,7 @@ async function loadSchedules() {
               ` : ''}
               <div class="schedule-item-meta-item" title="Recurrence pattern">
                 <i data-lucide="repeat"></i>
-                <span>Recurrence: <strong>${escapeHtml(item.recurrence)}</strong></span>
+                <span>Recurrence: <strong>${escapeHtml(item.recurrence)}</strong>${item.recurrence === 'twice_daily' && Array.isArray(item.recurrenceTimes) ? ` · ${escapeHtml(formatRecurrenceTimesLabel(item.recurrenceTimes))}` : ''}</span>
               </div>
               <div class="schedule-item-meta-item" title="Last run time">
                 <i data-lucide="check-square"></i>
@@ -2109,6 +2183,9 @@ function buildScheduleConfirmHtml(details) {
   addRow('Post type', details.postTypeLabel);
   addRow('Date & time', details.scheduledAtLabel);
   addRow('Recurrence', details.recurrenceLabel);
+  if (details.recurrenceTimesLabel) {
+    addRow('Daily times', details.recurrenceTimesLabel);
+  }
   addRow('Publish as', details.publishMode);
 
   if (details.postType === 'newsletter') {
@@ -2195,8 +2272,26 @@ async function handleCreateSchedule() {
 
   const scheduledAtRaw = getScheduleIsoTime();
   if (!scheduledAtRaw) {
-    showToast('Please select a scheduled date and time', 'error');
+    if (isTwiceDailyRecurrence()) {
+      showToast('Please select a date, first time, and second time', 'error');
+    } else {
+      showToast('Please select a scheduled date and time', 'error');
+    }
     return;
+  }
+
+  let recurrenceTimes;
+  if (recurrence === 'twice_daily') {
+    const { firstMinutes, secondMinutes } = getTwiceDailyTimes();
+    if (!Number.isFinite(secondMinutes)) {
+      showToast('Please choose a second time of day', 'error');
+      return;
+    }
+    if (firstMinutes === secondMinutes) {
+      showToast('First and second times must be different', 'error');
+      return;
+    }
+    recurrenceTimes = [firstMinutes, secondMinutes];
   }
 
   if (enableSearch && !apiKey && !hasBackendApiKey(resolvedProvider)) {
@@ -2217,6 +2312,7 @@ async function handleCreateSchedule() {
     hour: 'numeric',
     minute: '2-digit',
   });
+  const recurrenceTimesLabel = recurrenceTimes ? formatRecurrenceTimesLabel(recurrenceTimes) : '';
 
   let publishMode = 'Publish live';
   if (postType === 'note') {
@@ -2236,6 +2332,7 @@ async function handleCreateSchedule() {
     recurrence,
     recurrenceLabel,
     scheduledAtLabel,
+    recurrenceTimesLabel,
     enableSearch,
     publishMode,
     searchLabel: enableSearch ? 'Enabled' : 'Disabled',
@@ -2261,6 +2358,7 @@ async function handleCreateSchedule() {
         isDraft,
         scheduledAt: isoTime,
         recurrence,
+        recurrenceTimes,
         postType,
         noteLink,
         enableSearch,
@@ -2624,6 +2722,7 @@ async function copySchedulerLogs() {
 }
 
 window.toggleSchedulerFields = toggleSchedulerFields;
+window.toggleRecurrenceFields = toggleRecurrenceFields;
 window.loadSchedules = loadSchedules;
 window.handleCreateSchedule = handleCreateSchedule;
 window.toggleScheduleState = toggleScheduleState;
@@ -2916,11 +3015,21 @@ function dtFormatSummary(date) {
 function dtUpdateSummary() {
   const summaryEl = document.getElementById('dtPickerSummary');
   const relativeEl = document.getElementById('dtRelative');
-  const target = dtDateFromState();
+  let target = dtDateFromState();
 
-  if (summaryEl) {
+  if (isTwiceDailyRecurrence()) {
+    const nextIso = computeTwiceDailyInitialIso();
+    if (nextIso) target = new Date(nextIso);
+    const { firstMinutes, secondMinutes } = getTwiceDailyTimes();
+    const firstLabel = formatMinutesLabel(firstMinutes);
+    const secondLabel = formatMinutesLabel(secondMinutes);
+    if (summaryEl) {
+      summaryEl.textContent = `${dtFormatSummary(dtDateFromState())} · daily at ${firstLabel} and ${secondLabel}`;
+    }
+  } else if (summaryEl) {
     summaryEl.textContent = dtFormatSummary(target);
   }
+
   if (relativeEl) {
     relativeEl.textContent = dtGetRelativeLabel(target);
   }

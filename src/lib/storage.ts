@@ -14,6 +14,8 @@ export interface ScheduledPost {
   isDraft: boolean;
   scheduledAt: string; // ISO string
   recurrence: 'once' | 'daily' | 'twice_daily' | 'alternate_days' | 'weekly';
+  /** Minutes from midnight for twice_daily: [first time, second time] */
+  recurrenceTimes?: number[];
   postType: 'newsletter' | 'note';
   noteLink?: string; // only if postType === 'note'
   lastRunAt?: string; // ISO string
@@ -299,6 +301,22 @@ export function validateScheduledPost(post: any): string | null {
     return 'Schedule time must be in the future';
   }
 
+  if (post.recurrence === 'twice_daily') {
+    if (!Array.isArray(post.recurrenceTimes) || post.recurrenceTimes.length !== 2) {
+      return 'Twice daily schedules require two times';
+    }
+    const [first, second] = post.recurrenceTimes;
+    if (!Number.isFinite(first) || !Number.isFinite(second)) {
+      return 'Twice daily times are invalid';
+    }
+    if (first < 0 || first >= 1440 || second < 0 || second >= 1440) {
+      return 'Twice daily times must be within a 24 hour day';
+    }
+    if (first === second) {
+      return 'The two daily times must be different';
+    }
+  }
+
   const recurrences = ['once', 'daily', 'twice_daily', 'alternate_days', 'weekly'];
   if (post.recurrence && !recurrences.includes(post.recurrence)) {
     return `Invalid recurrence. Must be one of: ${recurrences.join(', ')}`;
@@ -413,7 +431,7 @@ export async function toggleSchedule(id: string): Promise<ScheduledPost | null> 
     const scheduledTime = new Date(post.scheduledAt);
     if (isNaN(scheduledTime.getTime()) || scheduledTime <= new Date()) {
       if (post.recurrence && post.recurrence !== 'once') {
-        post.scheduledAt = calculateNextRun(post.scheduledAt, post.recurrence);
+        post.scheduledAt = calculateNextRun(post.scheduledAt, post.recurrence, post.recurrenceTimes);
       } else {
         // Reschedule for 1 minute in the future
         post.scheduledAt = new Date(Date.now() + 60000).toISOString();
@@ -430,7 +448,7 @@ export async function toggleSchedule(id: string): Promise<ScheduledPost | null> 
     const scheduledTime = new Date(post.scheduledAt);
     if (isNaN(scheduledTime.getTime()) || scheduledTime <= new Date()) {
       if (post.recurrence && post.recurrence !== 'once') {
-        post.scheduledAt = calculateNextRun(post.scheduledAt, post.recurrence);
+        post.scheduledAt = calculateNextRun(post.scheduledAt, post.recurrence, post.recurrenceTimes);
       } else {
         // Reschedule for 1 minute in the future
         post.scheduledAt = new Date(Date.now() + 60000).toISOString();
@@ -445,7 +463,15 @@ export async function toggleSchedule(id: string): Promise<ScheduledPost | null> 
 /**
  * Calculate the next run time for recurring schedules.
  */
-export function calculateNextRun(currentScheduled: string, recurrence: ScheduledPost['recurrence']): string {
+export function calculateNextRun(
+  currentScheduled: string,
+  recurrence: ScheduledPost['recurrence'],
+  recurrenceTimes?: number[]
+): string {
+  if (recurrence === 'twice_daily' && recurrenceTimes?.length === 2) {
+    return calculateTwiceDailyNextRun(currentScheduled, recurrenceTimes[0], recurrenceTimes[1]);
+  }
+
   const next = new Date(currentScheduled);
   if (isNaN(next.getTime())) {
     return new Date(Date.now() + 60000).toISOString();
@@ -471,7 +497,6 @@ export function calculateNextRun(currentScheduled: string, recurrence: Scheduled
         next.setDate(next.getDate() + 7);
         break;
       default:
-        // 'once' or fallback: don't loop infinitely, just return now plus a default offset
         return new Date(now.getTime() + 60000).toISOString();
     }
   }
@@ -481,6 +506,71 @@ export function calculateNextRun(currentScheduled: string, recurrence: Scheduled
   }
 
   return next.toISOString();
+}
+
+function dateAtMinutes(base: Date, minutes: number): Date {
+  const d = new Date(base);
+  d.setHours(Math.floor(minutes / 60), minutes % 60, 0, 0);
+  return d;
+}
+
+function calculateTwiceDailyNextRun(
+  lastRunIso: string,
+  firstMinutes: number,
+  secondMinutes: number,
+  now = new Date()
+): string {
+  const last = new Date(lastRunIso);
+  if (isNaN(last.getTime())) {
+    return new Date(now.getTime() + 60000).toISOString();
+  }
+
+  const lastMin = last.getHours() * 60 + last.getMinutes();
+  const ranFirst = Math.abs(lastMin - firstMinutes) <= Math.abs(lastMin - secondMinutes);
+
+  let candidate = new Date(last);
+  candidate.setSeconds(0, 0);
+
+  if (ranFirst) {
+    candidate = dateAtMinutes(candidate, secondMinutes);
+    if (candidate <= last) {
+      candidate.setDate(candidate.getDate() + 1);
+      candidate = dateAtMinutes(candidate, firstMinutes);
+    }
+  } else {
+    candidate.setDate(candidate.getDate() + 1);
+    candidate = dateAtMinutes(candidate, firstMinutes);
+  }
+
+  let guard = 0;
+  while (candidate <= now && guard < 10) {
+    guard++;
+    const cm = candidate.getHours() * 60 + candidate.getMinutes();
+    if (Math.abs(cm - firstMinutes) <= 2) {
+      candidate = dateAtMinutes(candidate, secondMinutes);
+      if (candidate <= now) {
+        candidate.setDate(candidate.getDate() + 1);
+        candidate = dateAtMinutes(candidate, firstMinutes);
+      }
+    } else {
+      candidate.setDate(candidate.getDate() + 1);
+      candidate = dateAtMinutes(candidate, firstMinutes);
+    }
+  }
+
+  return candidate.toISOString();
+}
+
+export function formatRecurrenceTimes(times?: number[]): string {
+  if (!times || times.length !== 2) return '';
+  const fmt = (minutes: number) => {
+    const h24 = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    const period = h24 >= 12 ? 'PM' : 'AM';
+    const h12 = h24 % 12 || 12;
+    return `${h12}:${String(m).padStart(2, '0')} ${period}`;
+  };
+  return `${fmt(times[0])} and ${fmt(times[1])}`;
 }
 
 /**
