@@ -39,6 +39,10 @@ import {
   getGotScraping,
   getPubHostname,
 } from './lib/substack-client.js';
+import {
+  getSchedules,
+  addSchedule,
+} from './lib/storage.js';
 import { analyzeAndGenerateComment } from './ai/generate.js';
 import fs from 'fs';
 import path from 'path';
@@ -267,6 +271,32 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       {
         name: 'list_comments',
         description: 'List your comment history — all comments posted through the automation system.',
+        inputSchema: {
+          type: 'object' as const,
+          properties: {},
+        },
+      },
+      {
+        name: 'schedule_post',
+        description: 'Schedule a newsletter post or note on Substack for future publication. Provide title (optional for notes), body (required), scheduledAt (ISO date/time string, e.g. "2026-06-29T14:30:00Z"), recurrence ("once", "daily", "twice_daily", "alternate_days", "weekly"), postType ("newsletter" or "note"), and noteLink (optional, for notes).',
+        inputSchema: {
+          type: 'object' as const,
+          required: ['body', 'scheduledAt', 'postType'],
+          properties: {
+            title: { type: 'string', description: 'The title of the newsletter post (optional for notes)' },
+            subtitle: { type: 'string', description: 'Optional subtitle for newsletters' },
+            body: { type: 'string', description: 'Full body content (Markdown for newsletter, plain text for note)' },
+            isDraft: { type: 'boolean', description: 'If true (default), drafts. If false, publishes live.', default: true },
+            scheduledAt: { type: 'string', description: 'ISO date string for when to publish (e.g. 2026-06-28T15:00:00Z)' },
+            recurrence: { type: 'string', enum: ['once', 'daily', 'twice_daily', 'alternate_days', 'weekly'], description: 'Recurrence frequency', default: 'once' },
+            postType: { type: 'string', enum: ['newsletter', 'note'], description: 'Whether it is a newsletter post or a short note' },
+            noteLink: { type: 'string', description: 'Optional link to attach to the note' },
+          },
+        },
+      },
+      {
+        name: 'list_schedules',
+        description: 'List all currently scheduled newsletters and notes in the system queue.',
         inputSchema: {
           type: 'object' as const,
           properties: {},
@@ -512,6 +542,47 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         if (history.length === 0) return { content: [{ type: 'text', text: 'No comments in history yet.' }] };
         const lines = history.map((c: any, i: number) => `${i + 1}. On "${c.postTitle}" (${c.publishedAt})\n   Comment: "${c.body.substring(0, 100)}..."\n   ${c.postUrl}`);
         return { content: [{ type: 'text', text: `Your ${history.length} most recent comments:\n\n${lines.join('\n\n')}` }] };
+      }
+
+      // ━━━ schedule_post ━━━
+      case 'schedule_post': {
+        const { title, subtitle, body, isDraft, scheduledAt, recurrence, postType, noteLink } = args as any;
+        if (!body || !scheduledAt || !postType) {
+          return { content: [{ type: 'text', text: 'Error: body, scheduledAt, and postType are required.' }], isError: true };
+        }
+        if (postType === 'newsletter' && !title) {
+          return { content: [{ type: 'text', text: 'Error: title is required for newsletters.' }], isError: true };
+        }
+
+        const scheduledPost = await addSchedule({
+          title: title || '',
+          subtitle: subtitle || '',
+          body,
+          isDraft: isDraft !== false,
+          scheduledAt,
+          recurrence: recurrence || 'once',
+          postType,
+          noteLink: noteLink || '',
+        });
+
+        return {
+          content: [{
+            type: 'text',
+            text: `Post scheduled successfully!\n\nID: ${scheduledPost.id}\nType: ${postType}\nScheduled For: ${scheduledAt}\nRecurrence: ${recurrence || 'once'}\nTitle/Snippet: ${title || body.substring(0, 50)}...`
+          }]
+        };
+      }
+
+      // ━━━ list_schedules ━━━
+      case 'list_schedules': {
+        const schedules = await getSchedules();
+        if (schedules.length === 0) {
+          return { content: [{ type: 'text', text: 'No posts currently scheduled.' }] };
+        }
+        const lines = schedules.map((s, i) => {
+          return `${i + 1}. [${s.postType.toUpperCase()}] "${s.title || s.body.substring(0, 30) + '...'}"\n   ID: ${s.id} | Status: ${s.status.toUpperCase()}\n   Scheduled: ${s.scheduledAt} | Recurrence: ${s.recurrence}`;
+        });
+        return { content: [{ type: 'text', text: `Currently scheduled posts (${schedules.length}):\n\n${lines.join('\n\n')}` }] };
       }
 
       default:

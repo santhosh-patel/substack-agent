@@ -35,6 +35,9 @@
         <button class="nav-btn" id="tab-notes" onclick="switchTab('notes')">
           <i data-lucide="sticky-note"></i> Notes
         </button>
+        <button class="nav-btn" id="tab-scheduler" onclick="switchTab('scheduler')">
+          <i data-lucide="calendar"></i> Scheduler
+        </button>
         <button class="nav-btn" id="tab-history" onclick="switchTab('history')">
           <i data-lucide="history"></i> History
         </button>
@@ -374,6 +377,100 @@
             <div class="card-body">
               <div class="history-list" id="notesList">
                 <div class="history-empty">Click "Fetch Notes" to retrieve your published notes.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── Tab View: Scheduler ─── -->
+        <div id="view-scheduler" class="tab-view" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <h2><i data-lucide="calendar" class="header-icon"></i> Schedule a Post</h2>
+            </div>
+            <div class="card-body">
+              <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 0.9rem;">
+                Schedule a Substack newsletter or note to be published at a future time. Support for one-off and recurring intervals.
+              </p>
+
+              <!-- Form: Type + Timing -->
+              <div class="post-meta" style="margin-bottom: 16px;">
+                <div class="form-group">
+                  <label for="schedPostType">Post Type</label>
+                  <select id="schedPostType" onchange="toggleSchedulerFields()" style="background-color: var(--bg-input); border: 1px solid var(--border); padding: 8px 12px; border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.9rem;">
+                    <option value="newsletter">Newsletter Post</option>
+                    <option value="note">Short Note</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="schedTime">Scheduled Date & Time</label>
+                  <input type="datetime-local" id="schedTime" style="background-color: var(--bg-input); border: 1px solid var(--border); padding: 8px 12px; border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.9rem;" />
+                </div>
+                <div class="form-group">
+                  <label for="schedRecurrence">Recurrence Pattern</label>
+                  <select id="schedRecurrence" style="background-color: var(--bg-input); border: 1px solid var(--border); padding: 8px 12px; border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.9rem;">
+                    <option value="once">Once (One-off)</option>
+                    <option value="daily">Everyday (Daily)</option>
+                    <option value="twice_daily">Twice a Day</option>
+                    <option value="alternate_days">Alternate Days</option>
+                    <option value="weekly">Weekly Once</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Newsletter Fields (Title + Subtitle) -->
+              <div id="schedNewsletterFields" class="post-meta" style="margin-bottom: 16px;">
+                <div class="form-group">
+                  <label for="schedTitle">Title</label>
+                  <input type="text" id="schedTitle" placeholder="Newsletter title" />
+                </div>
+                <div class="form-group">
+                  <label for="schedSubtitle">Subtitle</label>
+                  <input type="text" id="schedSubtitle" placeholder="Brief subtitle (optional)" />
+                </div>
+              </div>
+
+              <!-- Note Link Field -->
+              <div id="schedNoteFields" class="form-group" style="margin-bottom: 16px; display: none;">
+                <label for="schedNoteLink">Link Attachment (Optional)</label>
+                <input type="text" id="schedNoteLink" placeholder="https://example.com/some-link" />
+              </div>
+
+              <!-- Content Editor -->
+              <div class="form-group" style="margin-bottom: 20px;">
+                <label for="schedBody">Content / Body (Supports Markdown for Newsletters)</label>
+                <textarea class="editor-textarea" id="schedBody" style="min-height: 180px;" placeholder="Write post content here..."></textarea>
+              </div>
+
+              <!-- Save as Draft Toggle + Action Buttons -->
+              <div class="publish-bar" style="margin-top: 16px;">
+                <div class="draft-toggle" id="schedDraftToggleWrap">
+                  <input type="checkbox" class="toggle" id="schedDraftToggle" checked />
+                  <label for="schedDraftToggle" style="margin-bottom: 0; cursor: pointer;">Save as Draft (Newsletters only)</label>
+                </div>
+                <button class="btn btn-success" id="schedSubmitBtn" onclick="handleCreateSchedule()">
+                  <i data-lucide="calendar"></i> Schedule Post
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Queue Panel -->
+          <div class="card" style="margin-top: 32px;">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+              <h2 style="margin: 0;"><i data-lucide="clock" class="header-icon"></i> Scheduled Queue</h2>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-secondary btn-sm" onclick="runManualCron()" style="padding: 6px 12px; display: flex; align-items: center; gap: 6px;">
+                  <i data-lucide="play-circle"></i> Trigger Queue Check
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="loadSchedules()" style="padding: 6px 12px; display: flex; align-items: center; gap: 6px;">
+                  <i data-lucide="rotate-ccw"></i> Refresh List
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="history-list" id="schedulesQueueList">
+                <div class="history-empty">No posts currently scheduled.</div>
               </div>
             </div>
           </div>

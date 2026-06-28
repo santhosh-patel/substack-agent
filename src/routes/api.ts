@@ -13,7 +13,16 @@ import {
   connectSubstack,
   disconnectSubstack,
   getPubHostname,
+  ensureConnected,
 } from '../lib/substack-client.js';
+import {
+  getSchedules,
+  saveSchedules,
+  addSchedule,
+  deleteSchedule,
+  toggleSchedule,
+  calculateNextRun,
+} from '../lib/storage.js';
 
 const router = Router();
 const marked = new Marked();
@@ -815,6 +824,218 @@ router.post('/comments/automate', async (req: Request, res: Response) => {
     });
   }
 });
+
+// ─── GET /api/schedule ───
+router.get('/schedule', async (_req: Request, res: Response) => {
+  try {
+    const schedules = await getSchedules();
+    res.json({ success: true, schedules });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to fetch schedules' });
+  }
+});
+
+// ─── POST /api/schedule ───
+router.post('/schedule', async (req: Request, res: Response) => {
+  try {
+    const { title, subtitle, body, isDraft, scheduledAt, recurrence, postType, noteLink } = req.body;
+
+    if (postType === 'note') {
+      if (!body) {
+        res.status(400).json({ error: 'Body is required for notes' });
+        return;
+      }
+    } else {
+      if (!title || !body) {
+        res.status(400).json({ error: 'Title and body are required for newsletters' });
+        return;
+      }
+    }
+
+    if (!scheduledAt) {
+      res.status(400).json({ error: 'Schedule time is required' });
+      return;
+    }
+
+    const schedule = await addSchedule({
+      title: title || '',
+      subtitle: subtitle || '',
+      body,
+      isDraft: isDraft !== false,
+      scheduledAt,
+      recurrence: recurrence || 'once',
+      postType: postType || 'newsletter',
+      noteLink: noteLink || '',
+    });
+
+    res.json({ success: true, schedule });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to create schedule' });
+  }
+});
+
+// ─── DELETE /api/schedule/:id ───
+router.delete('/schedule/:id', async (req: Request, res: Response) => {
+  try {
+    const success = await deleteSchedule(req.params.id);
+    if (!success) {
+      res.status(404).json({ error: 'Schedule not found' });
+      return;
+    }
+    res.json({ success: true });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to delete schedule' });
+  }
+});
+
+// ─── POST /api/schedule/:id/toggle ───
+router.post('/schedule/:id/toggle', async (req: Request, res: Response) => {
+  try {
+    const schedule = await toggleSchedule(req.params.id);
+    if (!schedule) {
+      res.status(404).json({ error: 'Schedule not found' });
+      return;
+    }
+    res.json({ success: true, schedule });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to toggle schedule' });
+  }
+});
+
+// ─── CRON Endpoint: process-schedules ───
+const processSchedulesHandler = async (req: Request, res: Response) => {
+  const authHeader = req.headers.authorization;
+  const cronSecret = process.env.CRON_SECRET;
+  const apiSecret = process.env.API_SECRET;
+
+  if (
+    process.env.NODE_ENV === 'production' &&
+    ((cronSecret && authHeader !== `Bearer ${cronSecret}`) &&
+     (apiSecret && authHeader !== `Bearer ${apiSecret}`))
+  ) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+
+  const logs: string[] = [];
+  const addLog = (msg: string) => {
+    logs.push(`[${new Date().toLocaleTimeString()}] ${msg}`);
+    console.log(`[CronScheduler] ${msg}`);
+  };
+
+  addLog('Cron scheduler triggered. Fetching schedules...');
+
+  try {
+    const schedules = await getSchedules();
+    const now = new Date();
+    const processed: any[] = [];
+    let isSubstackConnected = false;
+
+    for (const post of schedules) {
+      if (post.status !== 'pending') continue;
+      
+      const scheduledTime = new Date(post.scheduledAt);
+      if (scheduledTime > now) continue;
+
+      addLog(`Processing schedule ${post.id}: "${post.title || 'Note'}" (due: ${post.scheduledAt})`);
+
+      try {
+        if (!isSubstackConnected) {
+          addLog('Initializing Substack connection...');
+          const conn = await ensureConnected();
+          if (!conn.success) {
+            throw new Error(conn.error || 'Failed to connect to Substack');
+          }
+          isSubstackConnected = true;
+          addLog('Connected successfully.');
+        }
+
+        if (post.postType === 'note') {
+          addLog(`Publishing note: "${post.body.substring(0, 50)}..."`);
+          let response;
+          if (post.noteLink) {
+            response = await ownProfile.newNoteWithLink(post.noteLink).paragraph().text(post.body).publish();
+          } else {
+            response = await ownProfile.newNote().paragraph().text(post.body).publish();
+          }
+          if (!response?.id) {
+            throw new Error('Failed to create note on Substack');
+          }
+          addLog(`Note published successfully (ID: ${response.id}).`);
+        } else {
+          addLog(`Creating newsletter draft: "${post.title}"`);
+          const docJson = markdownToProseMirror(post.body);
+          const bylines = [{ id: ownProfile.id, is_guest: false }];
+          const payload = {
+            draft_title: post.title,
+            draft_subtitle: post.subtitle || undefined,
+            draft_body: docJson,
+            draft_bylines: bylines,
+            type: 'newsletter',
+            audience: 'everyone'
+          };
+
+          const response = await (substackClient as any).publicationClient.post('/api/v1/drafts', payload);
+          if (!response || !response.id) {
+            throw new Error('Failed to create draft on Substack');
+          }
+
+          if (post.isDraft === false) {
+            addLog(`Publishing draft ${response.id} live...`);
+            try {
+              await (substackClient as any).publicationClient.get(`/api/v1/drafts/${response.id}/prepublish`);
+            } catch (e) {
+              addLog(`Prepublish call warning: ${e instanceof Error ? e.message : String(e)}`);
+            }
+
+            const publishResponse = await (substackClient as any).publicationClient.post(
+              `/api/v1/drafts/${response.id}/publish`,
+              { send: true, share_automatically: false }
+            );
+            addLog('Newsletter published live.');
+          } else {
+            addLog('Newsletter draft saved.');
+          }
+        }
+
+        // Success: update status and recurrence
+        post.lastRunAt = now.toISOString();
+        post.errorMessage = undefined;
+        if (post.recurrence === 'once') {
+          post.status = 'completed';
+        } else {
+          const prevScheduled = post.scheduledAt;
+          post.scheduledAt = calculateNextRun(post.scheduledAt, post.recurrence);
+          post.status = 'pending';
+          addLog(`Recurrent post reset from ${prevScheduled} to ${post.scheduledAt}`);
+        }
+
+        processed.push({ id: post.id, title: post.title || 'Note', status: 'success' });
+      } catch (postErr: any) {
+        addLog(`Error processing schedule ${post.id}: ${postErr.message}`);
+        post.lastRunAt = now.toISOString();
+        post.status = 'failed';
+        post.errorMessage = postErr.message || 'Publication failed';
+        processed.push({ id: post.id, title: post.title || 'Note', status: 'failed', error: postErr.message });
+      }
+    }
+
+    if (processed.length > 0) {
+      await saveSchedules(schedules);
+      addLog(`Finished processing. Updated ${processed.length} schedules.`);
+    } else {
+      addLog('No due schedules found.');
+    }
+
+    res.json({ success: true, processedCount: processed.length, processed, logs });
+  } catch (err: any) {
+    addLog(`Fatal cron error: ${err.message}`);
+    res.status(500).json({ error: err.message || 'Cron execution failed', logs });
+  }
+};
+
+router.get('/cron/process-schedules', processSchedulesHandler);
+router.post('/cron/process-schedules', processSchedulesHandler);
 
 export default router;
 
