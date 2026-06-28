@@ -39,21 +39,21 @@
       </div>
 
       <!-- Navigation Tabs -->
-      <nav class="app-nav">
-        <button class="nav-btn active" id="tab-newsletters" onclick="switchTab('newsletters')">
-          <i data-lucide="file-text"></i> Newsletters
+      <nav class="app-nav" aria-label="Main navigation">
+        <button class="nav-btn active" id="tab-newsletters" onclick="switchTab('newsletters')" aria-label="Newsletters">
+          <i data-lucide="file-text"></i><span class="nav-btn-label">Newsletters</span>
         </button>
-        <button class="nav-btn" id="tab-comments" onclick="switchTab('comments')">
-          <i data-lucide="message-square"></i> Comments
+        <button class="nav-btn" id="tab-comments" onclick="switchTab('comments')" aria-label="Comments">
+          <i data-lucide="message-square"></i><span class="nav-btn-label">Comments</span>
         </button>
-        <button class="nav-btn" id="tab-notes" onclick="switchTab('notes')">
-          <i data-lucide="sticky-note"></i> Notes
+        <button class="nav-btn" id="tab-notes" onclick="switchTab('notes')" aria-label="Notes">
+          <i data-lucide="sticky-note"></i><span class="nav-btn-label">Notes</span>
         </button>
-        <button class="nav-btn" id="tab-scheduler" onclick="switchTab('scheduler')">
-          <i data-lucide="calendar"></i> Scheduler
+        <button class="nav-btn" id="tab-scheduler" onclick="switchTab('scheduler')" aria-label="Scheduler">
+          <i data-lucide="calendar"></i><span class="nav-btn-label">Scheduler</span>
         </button>
-        <button class="nav-btn" id="tab-history" onclick="switchTab('history')">
-          <i data-lucide="history"></i> History
+        <button class="nav-btn" id="tab-history" onclick="switchTab('history')" aria-label="History">
+          <i data-lucide="history"></i><span class="nav-btn-label">History</span>
         </button>
       </nav>
 
@@ -116,10 +116,10 @@
 
             <div class="form-group">
               <div class="settings-btn-row">
-                <button class="btn btn-secondary" id="testSidBtn" onclick="testSubstackSession()" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                  <i data-lucide="shield-check"></i> Test Session
+                <button type="button" class="btn btn-secondary btn-sm" id="testSidBtn" onclick="testSubstackSession()">
+                  Test
                 </button>
-                <button class="btn btn-primary" id="connectBtn" onclick="handleConnect()" style="flex: 1;">
+                <button type="button" class="btn btn-primary btn-sm" id="connectBtn" onclick="handleConnect()">
                   Connect
                 </button>
               </div>

@@ -2300,7 +2300,7 @@ async function testSubstackSession() {
     updateConnectionBadge(null);
     showToast(err.message, 'error');
   } finally {
-    setButtonLoading(btn, false, '<i data-lucide="shield-check"></i> Test Session');
+    setButtonLoading(btn, false, 'Test');
   }
 }
 
