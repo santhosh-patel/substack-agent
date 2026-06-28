@@ -1571,9 +1571,11 @@ async function loadSchedules() {
 
     if (schedules.length === 0) {
       container.innerHTML = '<div class="history-empty">No posts currently scheduled.</div>';
+      updateSchedulerStats([]);
       return;
     }
 
+    updateSchedulerStats(schedules);
     container.innerHTML = schedules.map(item => {
       const date = new Date(item.scheduledAt).toLocaleString();
       const lastRun = item.lastRunAt ? new Date(item.lastRunAt).toLocaleString() : 'Never';
@@ -1761,21 +1763,132 @@ async function deleteScheduleItem(id) {
 }
 
 async function runManualCron() {
-  showToast('Triggering queue check...', 'info');
+  appendSchedulerLog('Manual queue check triggered…', 'highlight');
   try {
     const res = await fetch('/api/cron/process-schedules');
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Failed to trigger queue check');
 
+    renderSchedulerApiLogs(data.logs);
+
     const count = data.processedCount || 0;
     if (count > 0) {
       showToast(`Queue check complete: processed ${count} posts!`, 'success');
+      appendSchedulerLog(`Queue check finished — processed ${count} post(s).`, 'success');
     } else {
       showToast('Queue check complete: no due posts found.', 'info');
+      appendSchedulerLog('Queue check finished — no due posts found.', 'info');
     }
     await loadSchedules();
   } catch (err) {
+    appendSchedulerLog(`Queue check failed: ${err.message}`, 'error');
     showToast(err.message, 'error');
+  }
+}
+
+function updateSchedulerStats(schedules) {
+  const pendingEl = document.getElementById('schedStatPending');
+  const pausedEl = document.getElementById('schedStatPaused');
+  const nextDueEl = document.getElementById('schedStatNextDue');
+  if (!pendingEl || !pausedEl || !nextDueEl) return;
+
+  const pending = schedules.filter(s => s.status === 'pending').length;
+  const paused = schedules.filter(s => s.status === 'paused').length;
+  pendingEl.textContent = String(pending);
+  pausedEl.textContent = String(paused);
+
+  const now = Date.now();
+  const upcoming = schedules
+    .filter(s => s.status === 'pending')
+    .map(s => new Date(s.scheduledAt))
+    .filter(d => !isNaN(d.getTime()) && d.getTime() >= now)
+    .sort((a, b) => a - b);
+
+  nextDueEl.textContent = upcoming.length > 0
+    ? upcoming[0].toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
+    : '—';
+}
+
+const SCHEDULER_LOG_PLACEHOLDER = 'Waiting for scheduler activity. Trigger a queue check or wait for automatic polling…';
+
+function classifySchedulerLogType(message) {
+  const msg = message.toLowerCase();
+  if (msg.includes('error') || msg.includes('failed') || msg.includes('fatal')) return 'error';
+  if (msg.includes('success') || msg.includes('finished processing') || msg.includes('processed')) return 'success';
+  if (msg.includes('skipping') || msg.includes('no due')) return 'warning';
+  if (msg.includes('triggered') || msg.includes('running schedules')) return 'highlight';
+  return 'info';
+}
+
+function appendSchedulerLog(message, type = 'info') {
+  const logsEl = document.getElementById('schedulerLogs');
+  const stateEl = document.getElementById('schedulerConsoleState');
+  if (!logsEl) return;
+
+  const cleanMsg = escapeHtml(message);
+  let formattedMsg = cleanMsg;
+
+  if (type === 'highlight') {
+    formattedMsg = `<span class="log-highlight">${cleanMsg}</span>`;
+  } else if (type === 'success') {
+    formattedMsg = `<span class="log-success">${cleanMsg}</span>`;
+  } else if (type === 'error') {
+    formattedMsg = `<span class="log-error">${cleanMsg}</span>`;
+  } else if (type === 'warning') {
+    formattedMsg = `<span class="log-warning">${cleanMsg}</span>`;
+  } else if (type === 'info') {
+    formattedMsg = `<span class="log-info">${cleanMsg}</span>`;
+  }
+
+  if (logsEl.textContent.trim() === SCHEDULER_LOG_PLACEHOLDER) {
+    logsEl.innerHTML = '';
+  }
+
+  logsEl.innerHTML += formattedMsg + '\n';
+  logsEl.scrollTop = logsEl.scrollHeight;
+
+  if (stateEl) {
+    stateEl.className = 'console-title-text';
+    const dot = stateEl.querySelector('span');
+    if (dot) {
+      dot.style.background = type === 'error' ? 'var(--error)' : 'var(--success)';
+      dot.style.boxShadow = type === 'error' ? '0 0 6px var(--error)' : '0 0 6px var(--success)';
+    }
+  }
+}
+
+function renderSchedulerApiLogs(logs) {
+  if (!Array.isArray(logs) || logs.length === 0) return;
+  logs.forEach(log => appendSchedulerLog(log, classifySchedulerLogType(log)));
+}
+
+function clearSchedulerLogs() {
+  const logsEl = document.getElementById('schedulerLogs');
+  const stateEl = document.getElementById('schedulerConsoleState');
+  if (logsEl) logsEl.textContent = SCHEDULER_LOG_PLACEHOLDER;
+  if (stateEl) {
+    stateEl.className = 'console-title-text console-idle';
+    const dot = stateEl.querySelector('span');
+    if (dot) {
+      dot.style.background = '';
+      dot.style.boxShadow = '';
+    }
+  }
+}
+
+async function copySchedulerLogs() {
+  const logsEl = document.getElementById('schedulerLogs');
+  if (!logsEl) return;
+  const text = logsEl.innerText.trim();
+  if (!text || text === SCHEDULER_LOG_PLACEHOLDER) {
+    showToast('No logs to copy yet', 'info');
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast('Scheduler logs copied to clipboard', 'success');
+  } catch {
+    showToast('Could not copy logs', 'error');
   }
 }
 
@@ -1785,6 +1898,8 @@ window.handleCreateSchedule = handleCreateSchedule;
 window.toggleScheduleState = toggleScheduleState;
 window.deleteScheduleItem = deleteScheduleItem;
 window.runManualCron = runManualCron;
+window.clearSchedulerLogs = clearSchedulerLogs;
+window.copySchedulerLogs = copySchedulerLogs;
 
 function togglePasswordVisibility(inputId, btnEl) {
   const input = document.getElementById(inputId);
@@ -1822,14 +1937,18 @@ async function runSilentQueueCheck() {
     const res = await fetch('/api/cron/process-schedules');
     const data = await res.json();
     if (res.ok && data.processedCount > 0) {
+      renderSchedulerApiLogs(data.logs);
+      appendSchedulerLog(`Auto-poll processed ${data.processedCount} due post(s).`, 'success');
       showToast(`Automatically processed ${data.processedCount} due scheduled post(s)!`, 'success');
       await loadSchedules();
     } else if (res.ok) {
-      // Just refresh the list silently
       await loadSchedules();
+    } else {
+      appendSchedulerLog(`Auto-poll failed: ${data.error || res.statusText}`, 'error');
     }
   } catch (err) {
     console.error('Silent queue check failed:', err);
+    appendSchedulerLog(`Auto-poll error: ${err.message}`, 'error');
   } finally {
     setTimeout(() => {
       if (indicator) {
@@ -1843,11 +1962,12 @@ async function runSilentQueueCheck() {
 function startSchedulerPolling() {
   if (schedulerPollingInterval) return;
   
-  // Set the dynamic endpoint URL dynamically in the banner!
   const endpointEl = document.getElementById('cronEndpointSnippet');
   if (endpointEl) {
     endpointEl.textContent = `${window.location.origin}/api/cron/process-schedules`;
   }
+
+  appendSchedulerLog('Scheduler polling started (every 60s).', 'info');
   
   // Initial run
   runSilentQueueCheck();
@@ -1951,6 +2071,12 @@ function dtInitWidget() {
   dtState.hour12 = h % 12 || 12;
   dtState.minute = now.getMinutes();
 
+  const tzHint = document.getElementById('dtTimezoneHint');
+  if (tzHint) {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    tzHint.textContent = `Times shown in your local timezone (${tz})`;
+  }
+
   dtSyncHiddenInput();
   dtUpdateTriggerDisplay();
   dtRenderCalendar();
@@ -1976,7 +2102,9 @@ function toggleDatetimeWidget() {
 function dtOpenWidget() {
   dtState.isOpen = true;
   const widget = document.getElementById('datetimeWidget');
+  const trigger = document.getElementById('datetimeWidgetTrigger');
   if (widget) widget.classList.add('open');
+  if (trigger) trigger.setAttribute('aria-expanded', 'true');
   dtRenderCalendar();
   dtUpdateTimeUI();
   if (window.lucide) lucide.createIcons();
@@ -1985,7 +2113,9 @@ function dtOpenWidget() {
 function dtCloseWidget() {
   dtState.isOpen = false;
   const widget = document.getElementById('datetimeWidget');
+  const trigger = document.getElementById('datetimeWidgetTrigger');
   if (widget) widget.classList.remove('open');
+  if (trigger) trigger.setAttribute('aria-expanded', 'false');
 }
 
 function dtNavigateMonth(delta) {
@@ -2165,8 +2295,12 @@ function dtUpdateTriggerDisplay() {
   const { date, time } = dtGetFormattedDisplay();
   const dateEl = document.getElementById('dtWidgetDate');
   const timeEl = document.getElementById('dtWidgetTime');
+  const widget = document.getElementById('datetimeWidget');
   if (dateEl) dateEl.textContent = date;
   if (timeEl) timeEl.textContent = time;
+  if (widget) {
+    widget.classList.toggle('is-empty', !dtState.selectedDate);
+  }
 }
 
 function dtSyncHiddenInput() {

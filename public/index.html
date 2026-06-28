@@ -415,7 +415,7 @@
 
 
               <!-- Form: Type + Timing -->
-              <div class="post-meta" style="margin-bottom: 16px;">
+              <div class="scheduler-meta-grid">
                 <div class="form-group">
                   <label for="schedPostType">Post Type</label>
                   <select id="schedPostType" onchange="toggleSchedulerFields()">
@@ -423,24 +423,35 @@
                     <option value="note">Short Note</option>
                   </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group form-group-datetime">
                   <label for="schedTime">Scheduled Date & Time</label>
                   <div class="datetime-widget" id="datetimeWidget">
                     <input type="hidden" id="schedTime" />
-                    <button type="button" class="datetime-widget-trigger" id="datetimeWidgetTrigger" onclick="toggleDatetimeWidget()">
+                    <button type="button" class="datetime-widget-trigger" id="datetimeWidgetTrigger" onclick="toggleDatetimeWidget()" aria-haspopup="dialog" aria-expanded="false" aria-controls="datetimeDropdown">
                       <div class="datetime-widget-display">
-                        <div class="datetime-widget-section">
-                          <i data-lucide="calendar" class="datetime-widget-icon"></i>
-                          <span class="datetime-widget-date" id="dtWidgetDate">Select date</span>
+                        <div class="datetime-widget-section datetime-widget-section--date">
+                          <span class="datetime-widget-icon-wrap" aria-hidden="true">
+                            <i data-lucide="calendar" class="datetime-widget-icon"></i>
+                          </span>
+                          <div class="datetime-widget-text">
+                            <span class="datetime-widget-label">Date</span>
+                            <span class="datetime-widget-date" id="dtWidgetDate">Select date</span>
+                          </div>
                         </div>
-                        <div class="datetime-widget-divider"></div>
-                        <div class="datetime-widget-section">
-                          <i data-lucide="clock" class="datetime-widget-icon"></i>
-                          <span class="datetime-widget-time" id="dtWidgetTime">Select time</span>
+                        <div class="datetime-widget-divider" aria-hidden="true"></div>
+                        <div class="datetime-widget-section datetime-widget-section--time">
+                          <span class="datetime-widget-icon-wrap" aria-hidden="true">
+                            <i data-lucide="clock" class="datetime-widget-icon"></i>
+                          </span>
+                          <div class="datetime-widget-text">
+                            <span class="datetime-widget-label">Time</span>
+                            <span class="datetime-widget-time" id="dtWidgetTime">Select time</span>
+                          </div>
                         </div>
                       </div>
-                      <i data-lucide="chevron-down" class="datetime-widget-chevron" id="dtWidgetChevron"></i>
+                      <i data-lucide="chevron-down" class="datetime-widget-chevron" id="dtWidgetChevron" aria-hidden="true"></i>
                     </button>
+                    <span class="datetime-widget-hint" id="dtTimezoneHint"></span>
                     <div class="datetime-widget-dropdown" id="datetimeDropdown">
                       <div class="datetime-widget-panel">
                         <!-- Calendar Header -->
@@ -637,6 +648,54 @@
               <div class="history-list" id="schedulesQueueList">
                 <div class="history-empty">No posts currently scheduled.</div>
               </div>
+            </div>
+          </div>
+
+          <!-- Scheduler Inspector -->
+          <div class="card" style="margin-top: 32px;">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+              <h2 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                <i data-lucide="terminal" class="header-icon"></i> Scheduler Inspector
+              </h2>
+              <button class="btn btn-secondary btn-sm" onclick="clearSchedulerLogs()" style="padding: 6px 12px; display: flex; align-items: center; gap: 6px;">
+                <i data-lucide="trash-2"></i> Clear Logs
+              </button>
+            </div>
+            <div class="card-body">
+              <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.9rem;">
+                Monitor queue checks, cron runs, and processing output. Use this panel to debug scheduled posts.
+              </p>
+
+              <div class="scheduler-inspect-grid">
+                <div class="scheduler-inspect-stat">
+                  <span class="scheduler-inspect-stat-label">Pending</span>
+                  <span class="scheduler-inspect-stat-value" id="schedStatPending">0</span>
+                </div>
+                <div class="scheduler-inspect-stat">
+                  <span class="scheduler-inspect-stat-label">Paused</span>
+                  <span class="scheduler-inspect-stat-value" id="schedStatPaused">0</span>
+                </div>
+                <div class="scheduler-inspect-stat">
+                  <span class="scheduler-inspect-stat-label">Next Due</span>
+                  <span class="scheduler-inspect-stat-value scheduler-inspect-stat-value--sm" id="schedStatNextDue">—</span>
+                </div>
+                <div class="scheduler-inspect-stat scheduler-inspect-stat--wide">
+                  <span class="scheduler-inspect-stat-label">Cron Endpoint</span>
+                  <code class="scheduler-inspect-endpoint" id="cronEndpointSnippet">/api/cron/process-schedules</code>
+                </div>
+              </div>
+
+              <div class="console-header" style="margin-top: 24px;">
+                <div class="console-title-text console-idle" id="schedulerConsoleState">
+                  <span></span> Processing Logs
+                </div>
+                <div class="console-actions-wrap">
+                  <button class="console-btn" style="display: flex; align-items: center; gap: 4px;" title="Copy logs" onclick="copySchedulerLogs()">
+                    <i data-lucide="copy" style="width: 13px; height: 13px;"></i> Copy
+                  </button>
+                </div>
+              </div>
+              <div id="schedulerLogs" class="console-box console-box-wrap">Waiting for scheduler activity. Trigger a queue check or wait for automatic polling…</div>
             </div>
           </div>
         </div>
