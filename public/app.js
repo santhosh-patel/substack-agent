@@ -542,8 +542,7 @@ function updateConnectionBadge(profile) {
   if (profile) {
     badge.className = 'profile-card connected';
     text.textContent = profile.name || 'Connected';
-    
-    // Initials for avatar
+
     const initials = (profile.name || '')
       .split(' ')
       .map(n => n[0])
@@ -552,6 +551,11 @@ function updateConnectionBadge(profile) {
     avatar.textContent = initials;
     avatar.style.background = 'var(--accent)';
     avatar.style.color = 'var(--bg-primary)';
+
+    const tooltipParts = [profile.name || 'Connected'];
+    if (profile.slug) tooltipParts.push(`${profile.slug}.substack.com`);
+    badge.title = tooltipParts.join(' · ');
+    avatar.title = badge.title;
 
     // Update Substack site link
     if (profile.slug) {
@@ -570,6 +574,8 @@ function updateConnectionBadge(profile) {
     updateSimulatedPreviewHeader(profile);
   } else {
     badge.className = 'profile-card disconnected';
+    badge.title = 'Not connected';
+    avatar.title = 'Not connected';
     text.textContent = 'Not connected';
     avatar.textContent = '?';
     avatar.style.background = 'var(--bg-hover)';
@@ -710,6 +716,74 @@ function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
+}
+
+function showAppConfirm({
+  title = 'Confirm',
+  message = '',
+  confirmLabel = 'Confirm',
+  cancelLabel = 'Cancel',
+  variant = 'default',
+  icon = 'send',
+} = {}) {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('appConfirmOverlay');
+    const titleEl = document.getElementById('appConfirmTitle');
+    const bodyEl = document.getElementById('appConfirmBody');
+    const iconWrap = document.getElementById('appConfirmIconWrap');
+    const iconEl = document.getElementById('appConfirmIcon');
+    const cancelBtn = document.getElementById('appConfirmCancel');
+    const confirmBtn = document.getElementById('appConfirmOk');
+
+    if (!overlay || !titleEl || !bodyEl || !cancelBtn || !confirmBtn) {
+      resolve(window.confirm(`${title}\n\n${message}`));
+      return;
+    }
+
+    titleEl.textContent = title;
+    bodyEl.textContent = message;
+    cancelBtn.textContent = cancelLabel;
+    confirmBtn.textContent = confirmLabel;
+
+    const isDanger = variant === 'danger';
+    iconWrap.classList.toggle('danger', isDanger);
+    confirmBtn.classList.toggle('danger', isDanger);
+    iconEl.setAttribute('data-lucide', icon);
+
+    let settled = false;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      overlay.hidden = true;
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('app-modal-open');
+      document.removeEventListener('keydown', onKeyDown);
+      overlay.removeEventListener('click', onOverlayClick);
+      cancelBtn.removeEventListener('click', onCancel);
+      confirmBtn.removeEventListener('click', onConfirm);
+      resolve(result);
+    };
+
+    const onCancel = () => finish(false);
+    const onConfirm = () => finish(true);
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') onCancel();
+    };
+    const onOverlayClick = (e) => {
+      if (e.target === overlay) onCancel();
+    };
+
+    cancelBtn.addEventListener('click', onCancel);
+    confirmBtn.addEventListener('click', onConfirm);
+    document.addEventListener('keydown', onKeyDown);
+    overlay.addEventListener('click', onOverlayClick);
+
+    overlay.hidden = false;
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('app-modal-open');
+    if (window.lucide) lucide.createIcons();
+    cancelBtn.focus();
+  });
 }
 
 // ─── System Prompt Handling ───
@@ -1773,7 +1847,7 @@ function getScheduleIsoTime() {
   return new Date(raw).toISOString();
 }
 
-function confirmSendScheduleNow(btn) {
+async function confirmSendScheduleNow(btn) {
   if (!btn) return;
 
   const id = btn.dataset.scheduleId;
@@ -1782,24 +1856,34 @@ function confirmSendScheduleNow(btn) {
   const scheduledAt = btn.dataset.scheduledAt;
   const label = btn.dataset.scheduleLabel || postType;
 
-  const typeName = postType === 'note' ? 'note' : 'newsletter';
   const when = scheduledAt ? new Date(scheduledAt).toLocaleString() : 'the scheduled time';
   const publishAction = postType === 'note'
     ? 'publish this note to Substack'
     : (isDraft ? 'save this newsletter as a draft on Substack' : 'publish this newsletter live on Substack');
 
-  const firstMessage =
-    `Send "${label}" now?\n\n` +
-    `This will skip the scheduled time (${when}) and ${publishAction} immediately.`;
-
-  if (!confirm(firstMessage)) return;
+  const confirmed = await showAppConfirm({
+    title: 'Send now?',
+    message:
+      `Send "${label}" immediately?\n\n` +
+      `This skips the scheduled time (${when}) and will ${publishAction}.`,
+    confirmLabel: 'Send Now',
+    cancelLabel: 'Cancel',
+    icon: 'send',
+  });
+  if (!confirmed) return;
 
   if (postType === 'newsletter' && !isDraft) {
-    const liveMessage =
-      'Final confirmation: this will publish live to your Substack audience.\n\n' +
-      'Subscribers may be notified depending on your Substack settings.\n\n' +
-      'Continue?';
-    if (!confirm(liveMessage)) return;
+    const liveConfirmed = await showAppConfirm({
+      title: 'Publish live?',
+      message:
+        'This will publish live to your Substack audience.\n\n' +
+        'Subscribers may be notified depending on your Substack settings.',
+      confirmLabel: 'Publish Live',
+      cancelLabel: 'Go Back',
+      variant: 'danger',
+      icon: 'alert-triangle',
+    });
+    if (!liveConfirmed) return;
   }
 
   sendScheduleNow(id, btn);
