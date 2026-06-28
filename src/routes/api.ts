@@ -905,6 +905,143 @@ router.post('/schedule/:id/toggle', async (req: Request, res: Response) => {
   }
 });
 
+// Core scheduler processor function
+export async function runScheduleProcessing(addLog: (msg: string) => void): Promise<{ processed: any[] }> {
+  const schedules = await getSchedules();
+  const now = new Date();
+  const processed: any[] = [];
+  let isSubstackConnected = false;
+
+  // Filter to schedules that need processing: status must be pending and scheduledAt <= now
+  const eligibleSchedules = schedules.filter(post => {
+    if (post.status !== 'pending') return false;
+    const scheduledTime = new Date(post.scheduledAt);
+    return !isNaN(scheduledTime.getTime()) && scheduledTime <= now;
+  });
+
+  addLog(`Found ${eligibleSchedules.length} due schedules to process.`);
+
+  for (const post of eligibleSchedules) {
+    addLog(`Processing schedule ${post.id}: "${post.title || 'Note'}" (due: ${post.scheduledAt})`);
+
+    // 1. Idempotency Lock: Mark as processing and save immediately
+    try {
+      const currentSchedules = await getSchedules();
+      const freshPost = currentSchedules.find(p => p.id === post.id);
+      if (!freshPost || freshPost.status !== 'pending') {
+        addLog(`Skipping schedule ${post.id}: already processed or processing by concurrent run.`);
+        continue;
+      }
+
+      freshPost.status = 'processing';
+      await saveSchedules(currentSchedules);
+    } catch (lockErr: any) {
+      addLog(`Locking error for schedule ${post.id}: ${lockErr.message}`);
+      continue;
+    }
+
+    // 2. Perform execution
+    try {
+      if (!isSubstackConnected) {
+        addLog('Initializing Substack connection...');
+        const conn = await ensureConnected();
+        if (!conn.success) {
+          throw new Error(conn.error || 'Failed to connect to Substack');
+        }
+        isSubstackConnected = true;
+        addLog('Connected successfully.');
+      }
+
+      if (post.postType === 'note') {
+        addLog(`Publishing note: "${post.body.substring(0, 50)}..."`);
+        let response;
+        if (post.noteLink) {
+          response = await ownProfile.newNoteWithLink(post.noteLink).paragraph().text(post.body).publish();
+        } else {
+          response = await ownProfile.newNote().paragraph().text(post.body).publish();
+        }
+        if (!response?.id) {
+          throw new Error('Failed to create note on Substack');
+        }
+        addLog(`Note published successfully (ID: ${response.id}).`);
+      } else {
+        addLog(`Creating newsletter draft: "${post.title}"`);
+        const docJson = markdownToProseMirror(post.body);
+        const bylines = [{ id: ownProfile.id, is_guest: false }];
+        const payload = {
+          draft_title: post.title,
+          draft_subtitle: post.subtitle || undefined,
+          draft_body: docJson,
+          draft_bylines: bylines,
+          type: 'newsletter',
+          audience: 'everyone'
+        };
+
+        const response = await (substackClient as any).publicationClient.post('/api/v1/drafts', payload);
+        if (!response || !response.id) {
+          throw new Error('Failed to create draft on Substack');
+        }
+
+        if (post.isDraft === false) {
+          addLog(`Publishing draft ${response.id} live...`);
+          try {
+            await (substackClient as any).publicationClient.get(`/api/v1/drafts/${response.id}/prepublish`);
+          } catch (e) {
+            addLog(`Prepublish call warning: ${e instanceof Error ? e.message : String(e)}`);
+          }
+
+          const publishResponse = await (substackClient as any).publicationClient.post(
+            `/api/v1/drafts/${response.id}/publish`,
+            { send: true, share_automatically: false }
+          );
+          addLog('Newsletter published live.');
+        } else {
+          addLog('Newsletter draft saved.');
+        }
+      }
+
+      // Success: update status and recurrence on fresh list and save
+      const currentSchedules = await getSchedules();
+      const freshPost = currentSchedules.find(p => p.id === post.id);
+      if (freshPost) {
+        freshPost.lastRunAt = new Date().toISOString();
+        freshPost.errorMessage = undefined;
+        if (freshPost.recurrence === 'once') {
+          freshPost.status = 'completed';
+        } else {
+          const prevScheduled = freshPost.scheduledAt;
+          freshPost.scheduledAt = calculateNextRun(freshPost.scheduledAt, freshPost.recurrence);
+          freshPost.status = 'pending';
+          addLog(`Recurrent post reset from ${prevScheduled} to ${freshPost.scheduledAt}`);
+        }
+        await saveSchedules(currentSchedules);
+      }
+
+      processed.push({ id: post.id, title: post.title || 'Note', status: 'success' });
+    } catch (postErr: any) {
+      addLog(`Error processing schedule ${post.id}: ${postErr.message}`);
+      
+      // Failure: update status on fresh list and save
+      try {
+        const currentSchedules = await getSchedules();
+        const freshPost = currentSchedules.find(p => p.id === post.id);
+        if (freshPost) {
+          freshPost.lastRunAt = new Date().toISOString();
+          freshPost.status = 'failed';
+          freshPost.errorMessage = postErr.message || 'Publication failed';
+          await saveSchedules(currentSchedules);
+        }
+      } catch (saveErr: any) {
+        addLog(`Failed to save error status for ${post.id}: ${saveErr.message}`);
+      }
+
+      processed.push({ id: post.id, title: post.title || 'Note', status: 'failed', error: postErr.message });
+    }
+  }
+
+  return { processed };
+}
+
 // ─── CRON Endpoint: process-schedules ───
 const processSchedulesHandler = async (req: Request, res: Response) => {
   const authHeader = req.headers.authorization;
@@ -912,16 +1049,18 @@ const processSchedulesHandler = async (req: Request, res: Response) => {
   const apiSecret = process.env.API_SECRET;
 
   const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
-  if (isProduction) {
+  const hasSecrets = Boolean(cronSecret || apiSecret);
+
+  if (isProduction && hasSecrets) {
     let authorized = false;
-    if (cronSecret && authHeader === `Bearer ${cronSecret}`) {
+    if (cronSecret && (authHeader === `Bearer ${cronSecret}` || req.query.secret === cronSecret)) {
       authorized = true;
     }
-    if (apiSecret && authHeader === `Bearer ${apiSecret}`) {
+    if (apiSecret && (authHeader === `Bearer ${apiSecret}` || req.query.secret === apiSecret)) {
       authorized = true;
     }
     if (!authorized) {
-      res.status(401).json({ error: 'Unauthorized: Invalid or missing bearer token' });
+      res.status(401).json({ error: 'Unauthorized: Invalid or missing bearer token/secret query' });
       return;
     }
   }
@@ -932,141 +1071,10 @@ const processSchedulesHandler = async (req: Request, res: Response) => {
     console.log(`[CronScheduler] ${msg}`);
   };
 
-  addLog('Cron scheduler triggered. Fetching schedules...');
+  addLog('Cron scheduler triggered. Running schedules...');
 
   try {
-    const schedules = await getSchedules();
-    const now = new Date();
-    const processed: any[] = [];
-    let isSubstackConnected = false;
-
-    // Filter to schedules that need processing: status must be pending and scheduledAt <= now
-    const eligibleSchedules = schedules.filter(post => {
-      if (post.status !== 'pending') return false;
-      const scheduledTime = new Date(post.scheduledAt);
-      return !isNaN(scheduledTime.getTime()) && scheduledTime <= now;
-    });
-
-    addLog(`Found ${eligibleSchedules.length} due schedules to process.`);
-
-    for (const post of eligibleSchedules) {
-      addLog(`Processing schedule ${post.id}: "${post.title || 'Note'}" (due: ${post.scheduledAt})`);
-
-      // 1. Idempotency Lock: Mark as processing and save immediately
-      try {
-        const currentSchedules = await getSchedules();
-        const freshPost = currentSchedules.find(p => p.id === post.id);
-        if (!freshPost || freshPost.status !== 'pending') {
-          addLog(`Skipping schedule ${post.id}: already processed or processing by concurrent run.`);
-          continue;
-        }
-
-        freshPost.status = 'processing';
-        await saveSchedules(currentSchedules);
-      } catch (lockErr: any) {
-        addLog(`Locking error for schedule ${post.id}: ${lockErr.message}`);
-        continue;
-      }
-
-      // 2. Perform execution
-      try {
-        if (!isSubstackConnected) {
-          addLog('Initializing Substack connection...');
-          const conn = await ensureConnected();
-          if (!conn.success) {
-            throw new Error(conn.error || 'Failed to connect to Substack');
-          }
-          isSubstackConnected = true;
-          addLog('Connected successfully.');
-        }
-
-        if (post.postType === 'note') {
-          addLog(`Publishing note: "${post.body.substring(0, 50)}..."`);
-          let response;
-          if (post.noteLink) {
-            response = await ownProfile.newNoteWithLink(post.noteLink).paragraph().text(post.body).publish();
-          } else {
-            response = await ownProfile.newNote().paragraph().text(post.body).publish();
-          }
-          if (!response?.id) {
-            throw new Error('Failed to create note on Substack');
-          }
-          addLog(`Note published successfully (ID: ${response.id}).`);
-        } else {
-          addLog(`Creating newsletter draft: "${post.title}"`);
-          const docJson = markdownToProseMirror(post.body);
-          const bylines = [{ id: ownProfile.id, is_guest: false }];
-          const payload = {
-            draft_title: post.title,
-            draft_subtitle: post.subtitle || undefined,
-            draft_body: docJson,
-            draft_bylines: bylines,
-            type: 'newsletter',
-            audience: 'everyone'
-          };
-
-          const response = await (substackClient as any).publicationClient.post('/api/v1/drafts', payload);
-          if (!response || !response.id) {
-            throw new Error('Failed to create draft on Substack');
-          }
-
-          if (post.isDraft === false) {
-            addLog(`Publishing draft ${response.id} live...`);
-            try {
-              await (substackClient as any).publicationClient.get(`/api/v1/drafts/${response.id}/prepublish`);
-            } catch (e) {
-              addLog(`Prepublish call warning: ${e instanceof Error ? e.message : String(e)}`);
-            }
-
-            const publishResponse = await (substackClient as any).publicationClient.post(
-              `/api/v1/drafts/${response.id}/publish`,
-              { send: true, share_automatically: false }
-            );
-            addLog('Newsletter published live.');
-          } else {
-            addLog('Newsletter draft saved.');
-          }
-        }
-
-        // Success: update status and recurrence on fresh list and save
-        const currentSchedules = await getSchedules();
-        const freshPost = currentSchedules.find(p => p.id === post.id);
-        if (freshPost) {
-          freshPost.lastRunAt = new Date().toISOString();
-          freshPost.errorMessage = undefined;
-          if (freshPost.recurrence === 'once') {
-            freshPost.status = 'completed';
-          } else {
-            const prevScheduled = freshPost.scheduledAt;
-            freshPost.scheduledAt = calculateNextRun(freshPost.scheduledAt, freshPost.recurrence);
-            freshPost.status = 'pending';
-            addLog(`Recurrent post reset from ${prevScheduled} to ${freshPost.scheduledAt}`);
-          }
-          await saveSchedules(currentSchedules);
-        }
-
-        processed.push({ id: post.id, title: post.title || 'Note', status: 'success' });
-      } catch (postErr: any) {
-        addLog(`Error processing schedule ${post.id}: ${postErr.message}`);
-        
-        // Failure: update status on fresh list and save
-        try {
-          const currentSchedules = await getSchedules();
-          const freshPost = currentSchedules.find(p => p.id === post.id);
-          if (freshPost) {
-            freshPost.lastRunAt = new Date().toISOString();
-            freshPost.status = 'failed';
-            freshPost.errorMessage = postErr.message || 'Publication failed';
-            await saveSchedules(currentSchedules);
-          }
-        } catch (saveErr: any) {
-          addLog(`Failed to save error status for ${post.id}: ${saveErr.message}`);
-        }
-
-        processed.push({ id: post.id, title: post.title || 'Note', status: 'failed', error: postErr.message });
-      }
-    }
-
+    const { processed } = await runScheduleProcessing(addLog);
     addLog(`Finished processing. Processed ${processed.length} schedules.`);
     res.json({ success: true, processedCount: processed.length, processed, logs });
   } catch (err: any) {

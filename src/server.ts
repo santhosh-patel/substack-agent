@@ -2,7 +2,7 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs';
-import apiRoutes from './routes/api.js';
+import apiRoutes, { runScheduleProcessing } from './routes/api.js';
 import toolRoutes from './routes/tools.js';
 import { authMiddleware } from './middleware/auth.js';
 
@@ -86,4 +86,19 @@ app.listen(PORT, () => {
   console.log(`  Tool API:     http://localhost:${PORT}/api/tools/`);
   console.log(`  OpenAPI Spec: http://localhost:${PORT}/openapi.json`);
   console.log(`  AI Plugin:    http://localhost:${PORT}/.well-known/ai-plugin.json\n`);
+
+  // Start background worker for local development
+  const isVercel = process.env.VERCEL === '1';
+  if (!isVercel) {
+    console.log('[LocalWorker] Starting local background schedule worker (interval: 60s)...');
+    setInterval(async () => {
+      try {
+        await runScheduleProcessing((msg) => {
+          console.log(`[LocalWorker] ${msg}`);
+        });
+      } catch (err: any) {
+        console.error('[LocalWorker] Error in background worker:', err.message);
+      }
+    }, 60 * 1000);
+  }
 });
