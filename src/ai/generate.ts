@@ -24,23 +24,31 @@ I have built and deployed more than 20 production AI systems across startups and
 
 Skilled across the full software development lifecycle, from product architecture and MVP development to cloud deployment, optimization, and long term scaling. I build web, desktop, and mobile applications using Python, TypeScript, Node.js, React, FastAPI, Tauri, Android Studio, and modern AI frameworks. Proficient in backend architectures, REST APIs, event driven systems, workflow automation, and cloud native infrastructure. Deep technical expertise includes AI agent orchestration, RAG pipelines, knowledge retrieval, and vector search.`;
 
+export const ENGAGEMENT_WRITING_RULES = `Engagement rules (follow strictly):
+1. Hook first: Open with a line that earns attention — a bold take, a surprising detail, or "here's what most people miss."
+2. Be specific: Name products, companies, trends, or facts from the research. Vague summaries feel dead.
+3. Add your angle: Connect the story to building software, shipping AI, or lessons from production. Show you actually thought about it.
+4. Rhythm: Mix short punchy sentences with longer ones. Use 3–4 paragraphs with clear flow — setup, insight, implication, close.
+5. Strong close: End with a takeaway, question, or opinion worth remembering. Never trail off or say "time will tell" without a point.
+6. Title: Specific and curiosity-driven (name the news). Not generic ("AI Update", "My Thoughts").
+7. Subtitle: One line that promises your unique angle or why the reader should care.
+
+Still avoid AI slop: no "delve", "landscape", "game-changer", "revolutionize", "it's important to note", "in today's fast-paced world", "in conclusion", "moreover", "tapestry", "beacon".
+No emojis. No press-release tone. Sound like a sharp engineer who can write.`;
+
 export const SYSTEM_PROMPT = `${AUTHOR_CONTEXT}
 
-Write a Substack newsletter post as this author. Keep it simple, small, and brief. Sound like a human sharing what they understood after reading about the topic, not like a polished AI summary or press release.
+Write a Substack newsletter post as this author. Make it engaging, polished, and worth reading — not a flat summary or wall of plain statements.
 
-Writing rules:
-1. Tone: Clear, honest, conversational. First person when it feels natural. Write like you are explaining your take to a peer.
-2. Length: Under 200 words. Two or three short paragraphs at most.
-3. No AI filler: Avoid words like "delve", "tapestry", "revolutionize", "game changer", "beacon", "furthermore", "in conclusion", "moreover", or "it is important to note".
-4. No emojis or icons.
-5. No hyphens or em dashes for bullet lists. Use plain sentences or numbered lists if needed.
-6. Structure: A simple title, a one line subtitle, and a body that gets to the point fast.
+${ENGAGEMENT_WRITING_RULES}
+
+Length: 220–380 words. Human voice, first person when it fits.
 
 Return ONLY valid JSON (no markdown fences, no extra text) with this exact structure:
 {
-  "title": "A short simple title",
-  "subtitle": "One brief sentence on what this is about",
-  "body": "The full markdown formatted body following all rules above."
+  "title": "A specific, engaging title",
+  "subtitle": "One compelling sentence — your angle or why this matters",
+  "body": "The full markdown formatted body with a hook, substance, and strong close."
 }`;
 
 // ─── Groq & OpenAI (both use OpenAI-compatible API) ───
@@ -64,7 +72,7 @@ async function callOpenAICompatible(
         { role: 'system', content: systemPrompt || SYSTEM_PROMPT },
         { role: 'user', content: `Write a Substack newsletter post about: ${topic}` },
       ],
-      temperature: 0.8,
+      temperature: 0.88,
       max_tokens: 4096,
     }),
   });
@@ -80,8 +88,6 @@ async function callOpenAICompatible(
 
   return parseAIResponse(content);
 }
-
-// ─── Gemini ───
 
 async function callGemini(
   apiKey: string,
@@ -103,7 +109,7 @@ async function callGemini(
         },
       ],
       generationConfig: {
-        temperature: 0.8,
+        temperature: 0.88,
         maxOutputTokens: 4096,
         responseMimeType: 'application/json',
       },
@@ -262,7 +268,9 @@ export function deriveResearchSearchQuery(guidelines: string, titleHint?: string
 
 export function buildWebResearchNewsletterPrompt(guidelines: string, searchResults: string): string {
   return [
-    'Write a complete Substack newsletter using live web research.',
+    'Write a complete, engaging Substack newsletter using live web research.',
+    '',
+    ENGAGEMENT_WRITING_RULES,
     '',
     'Author guidelines (tone, angle, audience):',
     guidelines,
@@ -271,10 +279,10 @@ export function buildWebResearchNewsletterPrompt(guidelines: string, searchResul
     searchResults,
     '',
     'Your tasks:',
-    '1. Read the search results and pick the SINGLE best, most timely topic or news angle that fits the guidelines.',
-    '2. Write a specific title about that chosen topic (not generic — name the news, product, or trend).',
-    '3. Write a one-sentence subtitle that adds context or your angle.',
-    '4. Write the full post body grounded in the search results. Keep it brief and human.',
+    '1. Pick the SINGLE best, most timely story or angle from the search results.',
+    '2. Write a specific, engaging title (name the news — not a generic headline).',
+    '3. Write a subtitle that sells your angle in one sentence.',
+    '4. Write the body: hook → what happened → why it matters to builders → strong close. Use facts from the search results.',
     '',
     'Return JSON with title, subtitle, and body only.',
   ].join('\n');
@@ -282,7 +290,10 @@ export function buildWebResearchNewsletterPrompt(guidelines: string, searchResul
 
 export function buildWebResearchNotePrompt(topic: string, searchResults: string): string {
   return [
-    'Write a Substack Note using live web research.',
+    'Write an engaging Substack Note using live web research.',
+    '',
+    'Make it punchy and readable — open strong, include one specific detail from the news, land your opinion.',
+    'Length: 1–3 sentences, under 600 characters. No flat summaries.',
     '',
     'Topic / guidelines:',
     topic,
@@ -290,7 +301,7 @@ export function buildWebResearchNotePrompt(topic: string, searchResults: string)
     'Web search results:',
     searchResults,
     '',
-    'Pick the best timely angle from the results and write one concise note grounded in what you found.',
+    'Pick the best timely angle and write a note someone would actually stop scrolling for.',
   ].join('\n');
 }
 
@@ -298,10 +309,12 @@ export function buildOnlineModelNewsletterPrompt(guidelines: string): string {
   return [
     'Search the web for the latest news related to these guidelines, then write a complete Substack newsletter.',
     '',
+    ENGAGEMENT_WRITING_RULES,
+    '',
     'Author guidelines:',
     guidelines,
     '',
-    'Pick the best timely topic you find. Generate a specific title, one-sentence subtitle, and brief post body.',
+    'Pick the best timely topic. Write an engaging title, compelling subtitle, and a post with a hook, substance, and strong close.',
   ].join('\n');
 }
 
@@ -507,13 +520,14 @@ export interface GeneratedNote {
 
 export const NOTE_SYSTEM_PROMPT = `${AUTHOR_CONTEXT}
 
-Write a Substack Note as this author. Keep it very short. One or two sentences max, like a quick thought you would post after reading something interesting. Simple words. No hype.
+Write a Substack Note as this author. Make it engaging — the kind of note that makes someone pause in their feed. Not a flat summary.
 
-Writing rules:
-1. Tone: Casual and human. Share what you understood, not a summary essay.
-2. Length: Under 280 characters.
-3. No AI filler, no emojis, no hyphens or em dashes for lists.
-4. First person is fine when it sounds natural.
+Writing style:
+1. Open with a hook: a sharp opinion, surprising detail, or "here's what stood out to me."
+2. Include one specific fact or name from the topic when possible.
+3. Land with your take — why it matters or what you'd do differently.
+4. Length: 1–3 sentences, under 600 characters. Punchy, human, confident.
+5. No AI filler, no emojis, no corporate tone.
 
 Return ONLY valid JSON (no markdown fences, no extra text) with this exact structure:
 {
@@ -565,7 +579,7 @@ async function callOpenAICompatibleNote(
         { role: 'system', content: systemPrompt || NOTE_SYSTEM_PROMPT },
         { role: 'user', content: `Write a Substack Note about: ${topic}` },
       ],
-      temperature: 0.8,
+      temperature: 0.88,
       max_tokens: 1024,
     }),
   });

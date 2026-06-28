@@ -2542,7 +2542,7 @@ function toggleSchedSearchFields() {
   if (enableSearch) {
     if (postType === 'newsletter') {
       bodyLabel.textContent = 'Research Topic & Writing Guidelines';
-      bodyTextarea.placeholder = 'e.g. Latest AI agent news — share a short take on what you understood and why it matters to builders…';
+      bodyTextarea.placeholder = 'e.g. Latest AI agent news — write an engaging post with a hook, specific details, and a strong builder takeaway…';
       if (titleGroup) titleGroup.style.display = 'none';
       if (subtitleGroup) subtitleGroup.style.display = 'none';
       if (searchHelp) {
@@ -2728,9 +2728,9 @@ function dtSelectPromptPreset(type) {
   if (!schedBody) return;
 
   const presets = {
-    brief: 'Share a short personal take on the topic. Explain what you understood in plain language. Keep it under 150 words. No jargon, no hype, no long intro.',
-    builder: 'Focus on what matters for builders and engineers. One practical insight from the news and why it might matter in production. Keep it brief and conversational.',
-    reaction: 'Write like you just read the news and are posting your honest reaction. Simple, direct, human. One key point plus a short personal opinion.',
+    brief: 'Find the most interesting recent news on this topic. Write an engaging post with a strong hook, specific names/details from the story, and a clear builder-focused takeaway. Make it worth reading — not a flat summary.',
+    builder: 'Lead with why this news matters for engineers shipping AI in production. Include concrete details, a sharp insight, and a memorable close. Engaging and professional, not bland.',
+    reaction: 'Write like something in the news genuinely caught your attention. Strong opening, honest reaction, one sharp opinion — make it feel alive and specific, not generic.',
   };
 
   schedBody.value = presets[type] || '';
