@@ -1663,3 +1663,27 @@ window.toggleScheduleState = toggleScheduleState;
 window.deleteScheduleItem = deleteScheduleItem;
 window.runManualCron = runManualCron;
 
+function togglePasswordVisibility(inputId, btnEl) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  const icon = btnEl.querySelector('i');
+  
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (icon) {
+      icon.setAttribute('data-lucide', 'eye-off');
+    }
+  } else {
+    input.type = 'password';
+    if (icon) {
+      icon.setAttribute('data-lucide', 'eye');
+    }
+  }
+  
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+}
+
+window.togglePasswordVisibility = togglePasswordVisibility;
+
