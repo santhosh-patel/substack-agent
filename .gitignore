@@ -8,3 +8,4 @@ dist/
 src/data/comments_history.json
 src/data/publications_history.json
 src/data/schedules.json
+src/data/schedule_secrets.json

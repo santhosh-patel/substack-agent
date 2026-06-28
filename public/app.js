@@ -1734,6 +1734,122 @@ function toggleSchedulerFields() {
   }
 }
 
+function formatScheduleDueLabel(scheduledAt, status) {
+  if (status === 'failed') {
+    return `Last scheduled: ${new Date(scheduledAt).toLocaleString()}`;
+  }
+
+  const target = new Date(scheduledAt);
+  const diffMs = target.getTime() - Date.now();
+  const when = target.toLocaleString();
+
+  if (diffMs <= 0) {
+    return `Due now (${when})`;
+  }
+
+  const diffMins = Math.round(diffMs / 60000);
+  if (diffMins < 60) {
+    return `Due in ${diffMins} min (${when})`;
+  }
+
+  const diffHours = Math.round(diffMins / 60);
+  if (diffHours < 24) {
+    return `Due in ${diffHours} hour${diffHours === 1 ? '' : 's'} (${when})`;
+  }
+
+  return `Next run: ${when}`;
+}
+
+function getScheduleIsoTime() {
+  const built = dtBuildSelectedDate();
+  if (built) return built.toISOString();
+  const raw = document.getElementById('schedTime')?.value;
+  if (!raw) return '';
+  return new Date(raw).toISOString();
+}
+
+function confirmSendScheduleNow(btn) {
+  if (!btn) return;
+
+  const id = btn.dataset.scheduleId;
+  const postType = btn.dataset.postType || 'newsletter';
+  const isDraft = btn.dataset.isDraft === 'true';
+  const scheduledAt = btn.dataset.scheduledAt;
+  const label = btn.dataset.scheduleLabel || postType;
+
+  const typeName = postType === 'note' ? 'note' : 'newsletter';
+  const when = scheduledAt ? new Date(scheduledAt).toLocaleString() : 'the scheduled time';
+  const publishAction = postType === 'note'
+    ? 'publish this note to Substack'
+    : (isDraft ? 'save this newsletter as a draft on Substack' : 'publish this newsletter live on Substack');
+
+  const firstMessage =
+    `Send "${label}" now?\n\n` +
+    `This will skip the scheduled time (${when}) and ${publishAction} immediately.`;
+
+  if (!confirm(firstMessage)) return;
+
+  if (postType === 'newsletter' && !isDraft) {
+    const liveMessage =
+      'Final confirmation: this will publish live to your Substack audience.\n\n' +
+      'Subscribers may be notified depending on your Substack settings.\n\n' +
+      'Continue?';
+    if (!confirm(liveMessage)) return;
+  }
+
+  sendScheduleNow(id, btn);
+}
+
+async function sendScheduleNow(id, btn) {
+  appendSchedulerLog(`Send now requested for schedule ${id}…`, 'highlight');
+  if (btn) setButtonLoading(btn, true, 'Sending…');
+
+  try {
+    const resolvedProvider = document.getElementById('schedProvider')?.value
+      || document.getElementById('provider')?.value
+      || 'groq';
+    let apiKey = document.getElementById('schedApiKey')?.value.trim() || '';
+    if (!apiKey) apiKey = getStoredApiKey(resolvedProvider);
+
+    const res = await fetch(`/api/schedule/${id}/run-now`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        apiKey: apiKey || undefined,
+        provider: resolvedProvider,
+        model: document.getElementById('schedModel')?.value.trim()
+          || document.getElementById('model')?.value.trim()
+          || undefined,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to send scheduled post');
+
+    renderSchedulerApiLogs(data.logs);
+
+    if (data.processed?.status === 'success') {
+      showToast('Post sent successfully!', 'success');
+      appendSchedulerLog(`Send now succeeded for schedule ${id}.`, 'success');
+      if (document.getElementById('view-history')?.style.display !== 'none') {
+        loadHistory();
+      }
+    } else if (data.processed?.status === 'failed') {
+      showToast(`Send failed: ${data.processed.error || 'Unknown error'}`, 'error');
+      appendSchedulerLog(`Send now failed: ${data.processed.error || 'Unknown error'}`, 'error');
+    } else {
+      showToast('Send completed — check logs for details', 'info');
+    }
+
+    await loadSchedules();
+  } catch (err) {
+    appendSchedulerLog(`Send now error: ${err.message}`, 'error');
+    showToast(err.message, 'error');
+  } finally {
+    if (btn) setButtonLoading(btn, false, '<i data-lucide="send"></i> Send Now');
+    if (window.lucide) lucide.createIcons();
+  }
+}
+
 async function loadSchedules() {
   const container = document.getElementById('schedulesQueueList');
   if (!container) return;
@@ -1754,9 +1870,11 @@ async function loadSchedules() {
 
     updateSchedulerStats(schedules);
     container.innerHTML = schedules.map(item => {
-      const date = new Date(item.scheduledAt).toLocaleString();
+      const dueLabel = formatScheduleDueLabel(item.scheduledAt, item.status);
       const lastRun = item.lastRunAt ? new Date(item.lastRunAt).toLocaleString() : 'Never';
       const statusClass = `badge-${item.status}`;
+      const canSendNow = item.status === 'pending' || item.status === 'paused';
+      const scheduleLabel = item.title || item.body.substring(0, 50) + '...';
 
       const isPaused = item.status === 'paused';
       const isFailed = item.status === 'failed';
@@ -1776,8 +1894,19 @@ async function loadSchedules() {
             <div class="schedule-item-meta">
               <div class="schedule-item-meta-item" title="Scheduled execution time">
                 <i data-lucide="clock"></i>
-                <span>${isFailed ? 'Last scheduled' : 'Next Run'}: <strong>${date}</strong></span>
+                <span>${isFailed ? 'Last scheduled' : 'Next Run'}: <strong>${escapeHtml(dueLabel)}</strong></span>
               </div>
+              ${item.hasApiKey ? `
+                <div class="schedule-item-meta-item" title="AI key stored securely on server">
+                  <i data-lucide="key-round"></i>
+                  <span>API key: <strong>Configured</strong></span>
+                </div>
+              ` : item.enableSearch ? `
+                <div class="schedule-item-meta-item" style="color: var(--error);" title="Missing API key for research">
+                  <i data-lucide="key-round"></i>
+                  <span>API key: <strong>Missing</strong></span>
+                </div>
+              ` : ''}
               <div class="schedule-item-meta-item" title="Recurrence pattern">
                 <i data-lucide="repeat"></i>
                 <span>Recurrence: <strong>${escapeHtml(item.recurrence)}</strong></span>
@@ -1813,6 +1942,22 @@ async function loadSchedules() {
             </div>
           </div>
           <div class="schedule-item-actions">
+            ${canSendNow ? `
+              <button
+                class="btn btn-primary btn-sm schedule-send-now-btn"
+                type="button"
+                data-schedule-id="${escapeHtml(item.id)}"
+                data-post-type="${escapeHtml(item.postType)}"
+                data-is-draft="${item.isDraft ? 'true' : 'false'}"
+                data-scheduled-at="${escapeHtml(item.scheduledAt)}"
+                data-schedule-label="${escapeHtml(scheduleLabel)}"
+                onclick="confirmSendScheduleNow(this)"
+                title="Send this post now, skipping the scheduled time"
+                style="display: flex; align-items: center; gap: 4px;"
+              >
+                <i data-lucide="send" style="width: 14px; height: 14px;"></i> Send Now
+              </button>
+            ` : ''}
             ${canRetryNow ? `
               <button class="btn btn-primary btn-sm" onclick="retryScheduleItem('${item.id}', this)" title="Retry this post now" style="display: flex; align-items: center; gap: 4px;">
                 <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Retry Now
@@ -1844,7 +1989,6 @@ async function handleCreateSchedule() {
   const subtitle = document.getElementById('schedSubtitle').value.trim();
   const noteLink = document.getElementById('schedNoteLink').value.trim();
   const body = document.getElementById('schedBody').value.trim();
-  const scheduledAt = document.getElementById('schedTime').value;
   const isDraft = document.getElementById('schedDraftToggle') ? document.getElementById('schedDraftToggle').checked : true;
   const recurrence = document.getElementById('schedRecurrence') ? document.getElementById('schedRecurrence').value : 'once';
   
@@ -1870,8 +2014,12 @@ async function handleCreateSchedule() {
     }
   } else {
     if (enableSearch) {
-      if (!title && !body) {
-        showToast('Either Title/Topic or Writing Guidelines is required for newsletters', 'error');
+      if (!title) {
+        showToast('Title/Topic is required — it is used as the web search topic for AI research', 'error');
+        return;
+      }
+      if (!body) {
+        showToast('Writing guidelines are required for AI research newsletters', 'error');
         return;
       }
     } else {
@@ -1886,7 +2034,8 @@ async function handleCreateSchedule() {
     }
   }
 
-  if (!scheduledAt) {
+  const scheduledAtRaw = getScheduleIsoTime();
+  if (!scheduledAtRaw) {
     showToast('Please select a scheduled date and time', 'error');
     return;
   }
@@ -1899,7 +2048,7 @@ async function handleCreateSchedule() {
     return;
   }
 
-  const isoTime = new Date(scheduledAt).toISOString();
+  const isoTime = scheduledAtRaw;
 
   setButtonLoading(btn, true, 'Scheduling...');
 
@@ -1927,7 +2076,7 @@ async function handleCreateSchedule() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Failed to schedule post');
 
-    showToast(`Post scheduled successfully for ${new Date(scheduledAt).toLocaleString()}`, 'success');
+    showToast(`Post scheduled successfully for ${new Date(isoTime).toLocaleString()}`, 'success');
 
     // Clear form fields
     document.getElementById('schedTitle').value = '';
@@ -2140,9 +2289,16 @@ async function runManualCron() {
     renderSchedulerApiLogs(data.logs);
 
     const count = data.processedCount || 0;
+    const pendingCount = data.pendingCount || 0;
+    const dueCount = data.dueCount || 0;
+
     if (count > 0) {
-      showToast(`Queue check complete: processed ${count} posts!`, 'success');
+      showToast(`Queue check complete: processed ${count} post(s)!`, 'success');
       appendSchedulerLog(`Queue check finished — processed ${count} post(s).`, 'success');
+    } else if (pendingCount > 0 && data.nextDueAt) {
+      const nextDue = new Date(data.nextDueAt).toLocaleString();
+      showToast(`No posts due yet. ${pendingCount} pending — next at ${nextDue}`, 'info');
+      appendSchedulerLog(`Queue check finished — ${pendingCount} pending, 0 due. Next: ${nextDue}`, 'info');
     } else {
       showToast('Queue check complete: no due posts found.', 'info');
       appendSchedulerLog('Queue check finished — no due posts found.', 'info');
@@ -2275,6 +2431,8 @@ window.retryScheduleItem = retryScheduleItem;
 window.testSubstackSession = testSubstackSession;
 window.testAiKey = testAiKey;
 window.testSchedAiKey = testSchedAiKey;
+window.confirmSendScheduleNow = confirmSendScheduleNow;
+window.sendScheduleNow = sendScheduleNow;
 window.runManualCron = runManualCron;
 window.clearSchedulerLogs = clearSchedulerLogs;
 window.copySchedulerLogs = copySchedulerLogs;

@@ -35,6 +35,91 @@ export interface ScheduledPost {
 
 const LOCAL_DATA_DIR = process.env.VERCEL === '1' ? '/tmp' : path.join(process.cwd(), 'src', 'data');
 const LOCAL_FILE_PATH = path.join(LOCAL_DATA_DIR, 'schedules.json');
+const SECRETS_FILE_PATH = path.join(LOCAL_DATA_DIR, 'schedule_secrets.json');
+
+type ScheduleSecretsMap = Record<string, { apiKey?: string }>;
+
+function loadScheduleSecrets(): ScheduleSecretsMap {
+  try {
+    if (!fs.existsSync(SECRETS_FILE_PATH)) return {};
+    const parsed = JSON.parse(fs.readFileSync(SECRETS_FILE_PATH, 'utf-8'));
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch (err) {
+    console.error('[Storage] Error reading schedule secrets:', err);
+    return {};
+  }
+}
+
+function saveScheduleSecrets(secrets: ScheduleSecretsMap): void {
+  if (!fs.existsSync(LOCAL_DATA_DIR)) {
+    fs.mkdirSync(LOCAL_DATA_DIR, { recursive: true });
+  }
+  fs.writeFileSync(SECRETS_FILE_PATH, JSON.stringify(secrets, null, 2), 'utf-8');
+}
+
+function deleteScheduleSecret(id: string): void {
+  const secrets = loadScheduleSecrets();
+  if (!secrets[id]) return;
+  delete secrets[id];
+  saveScheduleSecrets(secrets);
+}
+
+function attachScheduleSecrets(schedules: ScheduledPost[]): ScheduledPost[] {
+  const secrets = loadScheduleSecrets();
+  return schedules.map((schedule) => ({
+    ...schedule,
+    apiKey: schedule.apiKey || secrets[schedule.id]?.apiKey,
+  }));
+}
+
+function stripScheduleSecretsForStorage(schedules: ScheduledPost[]): ScheduledPost[] {
+  const secrets = loadScheduleSecrets();
+  for (const schedule of schedules) {
+    if (schedule.apiKey?.trim()) {
+      secrets[schedule.id] = { apiKey: schedule.apiKey.trim() };
+    }
+  }
+  saveScheduleSecrets(secrets);
+  return schedules.map(({ apiKey: _apiKey, ...rest }) => rest);
+}
+
+function migrateInlineScheduleSecrets(schedules: ScheduledPost[]): ScheduledPost[] {
+  const secrets = loadScheduleSecrets();
+  let changed = false;
+
+  const migrated = schedules.map((schedule) => {
+    if (!schedule.apiKey?.trim()) return schedule;
+    secrets[schedule.id] = { apiKey: schedule.apiKey.trim() };
+    changed = true;
+    const { apiKey: _apiKey, ...rest } = schedule;
+    return rest;
+  });
+
+  if (changed) {
+    saveScheduleSecrets(secrets);
+    writeLocalSchedulesFile(migrated);
+  }
+
+  return migrated;
+}
+
+function writeLocalSchedulesFile(schedules: ScheduledPost[]): void {
+  if (!fs.existsSync(LOCAL_DATA_DIR)) {
+    fs.mkdirSync(LOCAL_DATA_DIR, { recursive: true });
+  }
+  fs.writeFileSync(LOCAL_FILE_PATH, JSON.stringify(schedules, null, 2), 'utf-8');
+}
+
+export function sanitizeScheduleForClient(
+  schedule: ScheduledPost
+): Omit<ScheduledPost, 'apiKey'> & { hasApiKey: boolean } {
+  const { apiKey, ...rest } = schedule;
+  return { ...rest, hasApiKey: Boolean(apiKey?.trim()) };
+}
+
+export function sanitizeSchedulesForClient(schedules: ScheduledPost[]) {
+  return schedules.map(sanitizeScheduleForClient);
+}
 
 export const MAX_SCHEDULE_RETRIES = 3;
 const STUCK_PROCESSING_MS = 15 * 60 * 1000;
@@ -140,7 +225,10 @@ function getLocalSchedules(): ScheduledPost[] {
       return [];
     }
     const content = fs.readFileSync(LOCAL_FILE_PATH, 'utf-8');
-    return JSON.parse(content);
+    const parsed = JSON.parse(content);
+    if (!Array.isArray(parsed)) return [];
+    const migrated = migrateInlineScheduleSecrets(parsed);
+    return attachScheduleSecrets(migrated);
   } catch (err) {
     console.error('[Storage] Error reading local schedules file:', err);
     return [];
@@ -155,7 +243,8 @@ function saveLocalSchedules(schedules: ScheduledPost[]): void {
     if (!fs.existsSync(LOCAL_DATA_DIR)) {
       fs.mkdirSync(LOCAL_DATA_DIR, { recursive: true });
     }
-    fs.writeFileSync(LOCAL_FILE_PATH, JSON.stringify(schedules, null, 2), 'utf-8');
+    const stripped = stripScheduleSecretsForStorage(schedules);
+    writeLocalSchedulesFile(stripped);
   } catch (err) {
     console.error('[Storage] Error writing local schedules file:', err);
     throw new Error(`Failed to save local schedules: ${err instanceof Error ? err.message : String(err)}`);
@@ -182,9 +271,11 @@ export function validateScheduledPost(post: any): string | null {
     }
   } else if (post.postType === 'newsletter') {
     if (isSearchEnabled) {
-      if ((!post.title || typeof post.title !== 'string' || post.title.trim().length === 0) &&
-          (!post.body || typeof post.body !== 'string' || post.body.trim().length === 0)) {
-        return 'Either Title/Topic or Writing Guidelines must be provided for newsletters';
+      if (!post.title || typeof post.title !== 'string' || post.title.trim().length === 0) {
+        return 'Title/Topic is required for AI research newsletters (used as the web search topic)';
+      }
+      if (!post.body || typeof post.body !== 'string' || post.body.trim().length === 0) {
+        return 'Writing guidelines are required for AI research newsletters';
       }
     } else {
       if (!post.title || typeof post.title !== 'string' || post.title.trim().length === 0) {
@@ -268,8 +359,45 @@ export async function deleteSchedule(id: string): Promise<boolean> {
   const initialLength = schedules.length;
   const filtered = schedules.filter(p => p.id !== id);
   if (filtered.length === initialLength) return false;
+  deleteScheduleSecret(id);
   await saveSchedules(filtered);
   return true;
+}
+
+/**
+ * Queue a schedule to run immediately (sets scheduledAt to now).
+ */
+export async function runScheduleNow(id: string): Promise<ScheduledPost | null> {
+  const schedules = await getSchedules();
+  const post = schedules.find(p => p.id === id);
+  if (!post) return null;
+  if (post.status === 'processing' || post.status === 'completed') return null;
+
+  post.status = 'pending';
+  post.scheduledAt = new Date(Date.now() - 1000).toISOString();
+  post.errorMessage = undefined;
+  post.processingStartedAt = undefined;
+  await saveSchedules(schedules);
+  return post;
+}
+
+export function getScheduleQueueStats(schedules: ScheduledPost[]) {
+  const now = Date.now();
+  const pending = schedules.filter(s => s.status === 'pending');
+  const due = pending.filter(s => {
+    const t = new Date(s.scheduledAt).getTime();
+    return !isNaN(t) && t <= now;
+  });
+  const upcoming = pending
+    .map(s => new Date(s.scheduledAt))
+    .filter(d => !isNaN(d.getTime()) && d.getTime() > now)
+    .sort((a, b) => a.getTime() - b.getTime());
+
+  return {
+    pendingCount: pending.length,
+    dueCount: due.length,
+    nextDueAt: upcoming[0]?.toISOString() || null,
+  };
 }
 
 /**

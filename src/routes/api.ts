@@ -27,6 +27,10 @@ import {
   calculateNextRun,
   validateScheduledPost,
   MAX_SCHEDULE_RETRIES,
+  runScheduleNow,
+  getScheduleQueueStats,
+  sanitizeSchedulesForClient,
+  sanitizeScheduleForClient,
   type ScheduledPost,
 } from '../lib/storage.js';
 import { searchInternet } from '../lib/search.js';
@@ -916,7 +920,7 @@ router.post('/comments/automate', async (req: Request, res: Response) => {
 router.get('/schedule', async (_req: Request, res: Response) => {
   try {
     const schedules = await getSchedules();
-    res.json({ success: true, schedules });
+    res.json({ success: true, schedules: sanitizeSchedulesForClient(schedules) });
   } catch (err: any) {
     res.status(500).json({ error: err.message || 'Failed to fetch schedules' });
   }
@@ -953,7 +957,7 @@ router.post('/schedule', async (req: Request, res: Response) => {
     }
 
     const schedule = await addSchedule(payload);
-    res.json({ success: true, schedule });
+    res.json({ success: true, schedule: sanitizeScheduleForClient(schedule) });
   } catch (err: any) {
     res.status(400).json({ error: err.message || 'Failed to create schedule' });
   }
@@ -981,9 +985,52 @@ router.post('/schedule/:id/toggle', async (req: Request, res: Response) => {
       res.status(404).json({ error: 'Schedule not found' });
       return;
     }
-    res.json({ success: true, schedule });
+    res.json({ success: true, schedule: sanitizeScheduleForClient(schedule) });
   } catch (err: any) {
     res.status(500).json({ error: err.message || 'Failed to toggle schedule' });
+  }
+});
+
+// ─── POST /api/schedule/:id/run-now ───
+router.post('/schedule/:id/run-now', async (req: Request, res: Response) => {
+  try {
+    const { apiKey, provider, model } = req.body || {};
+    const schedule = await runScheduleNow(req.params.id as string);
+    if (!schedule) {
+      res.status(404).json({ error: 'Schedule not found or cannot be run now' });
+      return;
+    }
+
+    if (apiKey || provider || model) {
+      const schedules = await getSchedules();
+      const fresh = schedules.find(p => p.id === schedule.id);
+      if (fresh) {
+        if (apiKey) fresh.apiKey = apiKey;
+        if (provider) fresh.provider = provider;
+        if (model) fresh.model = model;
+        await saveSchedules(schedules);
+      }
+    }
+
+    const logs: string[] = [];
+    const addLog = (msg: string) => {
+      logs.push(`[${new Date().toLocaleTimeString()}] ${msg}`);
+      console.log(`[CronScheduler] ${msg}`);
+    };
+
+    addLog(`Send now requested for schedule ${schedule.id}.`);
+    const { processed } = await runScheduleProcessing(addLog);
+    const result = processed.find(item => item.id === schedule.id);
+
+    res.json({
+      success: true,
+      schedule: sanitizeScheduleForClient(schedule),
+      processed: result || null,
+      processedCount: processed.length,
+      logs,
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to run schedule now' });
   }
 });
 
@@ -1079,7 +1126,7 @@ router.post('/schedule/:id/retry', async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      schedule,
+      schedule: sanitizeScheduleForClient(schedule),
       processed: result || null,
       processedCount: processed.length,
       logs,
@@ -1420,9 +1467,23 @@ const processSchedulesHandler = async (req: Request, res: Response) => {
   addLog('Cron scheduler triggered. Running schedules...');
 
   try {
+    const allSchedules = await getSchedules();
+    const queueStats = getScheduleQueueStats(allSchedules);
+    if (queueStats.pendingCount > 0 && queueStats.dueCount === 0 && queueStats.nextDueAt) {
+      addLog(
+        `No posts due yet. ${queueStats.pendingCount} pending — next run at ${queueStats.nextDueAt}.`
+      );
+    }
+
     const { processed } = await runScheduleProcessing(addLog);
     addLog(`Finished processing. Processed ${processed.length} schedules.`);
-    res.json({ success: true, processedCount: processed.length, processed, logs });
+    res.json({
+      success: true,
+      processedCount: processed.length,
+      processed,
+      logs,
+      ...queueStats,
+    });
   } catch (err: any) {
     addLog(`Fatal cron error: ${err.message}`);
     res.status(500).json({ error: err.message || 'Cron execution failed', logs });
