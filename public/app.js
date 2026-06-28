@@ -3156,6 +3156,7 @@ function dtSelectPromptPreset(type) {
   if (!schedBody) return;
 
   const presets = {
+    default: 'Search the web and pick the single best current story where artificial intelligence meets healthcare, nanotechnology, biotechnology, health technology, space technology, rural development, or robotics. Focus on one field per post.\n\nWrite a simple, clean, elegant newsletter in 100 to 150 words. Plain prose only. No icons, emojis, bullet lists, or hyphenated phrases. Avoid buzzwords, hype, and press release tone. Name real developments, companies, or research where possible. End with one clear thought worth keeping.',
     brief: 'Find the most interesting recent news on this topic. Write an engaging post with a strong hook, specific names/details from the story, and a clear builder-focused takeaway. Make it worth reading — not a flat summary.',
     builder: 'Lead with why this news matters for engineers shipping AI in production. Include concrete details, a sharp insight, and a memorable close. Engaging and professional, not bland.',
     reaction: 'Write like something in the news genuinely caught your attention. Strong opening, honest reaction, one sharp opinion — make it feel alive and specific, not generic.',

@@ -275,6 +275,8 @@ export function buildWebResearchNewsletterPrompt(guidelines: string, searchResul
     'Author guidelines (tone, angle, audience):',
     guidelines,
     '',
+    'If author guidelines specify word count, topic focus, or style rules, follow those over any conflicting defaults above.',
+    '',
     'Web search results:',
     searchResults,
     '',
