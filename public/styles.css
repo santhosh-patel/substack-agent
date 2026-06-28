@@ -737,6 +737,38 @@ select option {
   color: var(--text-primary);
 }
 
+/* ─── Premium Date & Time Selection UI ─── */
+input[type="datetime-local"] {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Custom WebKit Calendar picker icon alignment and accent coloring */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  opacity: 0.7;
+  filter: invert(0.6) sepia(1) saturate(5) hue-rotate(90deg); /* Sage green tint */
+}
+
+input[type="datetime-local"]:hover::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.15);
+  background-color: var(--accent-glow);
+}
+
+body.light-theme input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.3) sepia(1) saturate(4) hue-rotate(85deg); /* Forest green tint */
+}
+
 /* ─── Collapsible Details Accordion ─── */
 .prompt-details {
   border: 1px solid var(--border);

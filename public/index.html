@@ -430,18 +430,18 @@
               <div class="post-meta" style="margin-bottom: 16px;">
                 <div class="form-group">
                   <label for="schedPostType">Post Type</label>
-                  <select id="schedPostType" onchange="toggleSchedulerFields()" style="background-color: var(--bg-input); border: 1px solid var(--border); padding: 8px 12px; border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.9rem;">
+                  <select id="schedPostType" onchange="toggleSchedulerFields()">
                     <option value="newsletter">Newsletter Post</option>
                     <option value="note">Short Note</option>
                   </select>
                 </div>
                 <div class="form-group">
                   <label for="schedTime">Scheduled Date & Time</label>
-                  <input type="datetime-local" id="schedTime" style="background-color: var(--bg-input); border: 1px solid var(--border); padding: 8px 12px; border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.9rem;" />
+                  <input type="datetime-local" id="schedTime" />
                 </div>
                 <div class="form-group">
                   <label for="schedRecurrence">Recurrence Pattern</label>
-                  <select id="schedRecurrence" style="background-color: var(--bg-input); border: 1px solid var(--border); padding: 8px 12px; border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.9rem;">
+                  <select id="schedRecurrence">
                     <option value="once">Once (One-off)</option>
                     <option value="daily">Everyday (Daily)</option>
                     <option value="twice_daily">Twice a Day</option>
