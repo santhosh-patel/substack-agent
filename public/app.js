@@ -1781,7 +1781,57 @@ function stopSchedulerPolling() {
   }
 }
 
+function toggleSchedSearchFields() {
+  const enableSearch = document.getElementById('schedEnableSearch').checked;
+  const bodyLabel = document.getElementById('schedBodyLabel');
+  const bodyTextarea = document.getElementById('schedBody');
+  const postType = document.getElementById('schedPostType').value;
+
+  if (enableSearch) {
+    if (postType === 'newsletter') {
+      bodyLabel.textContent = 'Research Topic Description / Writing Guidelines';
+      bodyTextarea.placeholder = 'e.g. Focus on the main technical details of the news, contrast it with older versions, and write in a professional tone...';
+    } else {
+      bodyLabel.textContent = 'Research Topic / Keywords';
+      bodyTextarea.placeholder = 'e.g. SpaceX Mars Launch updates';
+    }
+  } else {
+    if (postType === 'newsletter') {
+      bodyLabel.textContent = 'Content / Body (Supports Markdown for Newsletters)';
+      bodyTextarea.placeholder = 'Write post content here...';
+    } else {
+      bodyLabel.textContent = 'Content / Body';
+      bodyTextarea.placeholder = 'Write post content here...';
+    }
+  }
+}
+
+function updateSchedModelOptions() {
+  const provider = document.getElementById('schedProvider').value;
+  const modelSelect = document.getElementById('schedModel');
+  
+  modelSelect.innerHTML = '';
+  
+  // Add default option
+  const defaultOpt = document.createElement('option');
+  defaultOpt.value = '';
+  defaultOpt.textContent = '(Use System Default)';
+  modelSelect.appendChild(defaultOpt);
+  
+  if (!provider) return;
+  
+  const models = MODELS[provider] || [];
+  models.forEach((m) => {
+    const opt = document.createElement('option');
+    opt.value = m.value;
+    opt.textContent = m.label;
+    modelSelect.appendChild(opt);
+  });
+}
+
 window.togglePasswordVisibility = togglePasswordVisibility;
 window.startSchedulerPolling = startSchedulerPolling;
 window.stopSchedulerPolling = stopSchedulerPolling;
+window.toggleSchedSearchFields = toggleSchedSearchFields;
+window.updateSchedModelOptions = updateSchedModelOptions;
 
