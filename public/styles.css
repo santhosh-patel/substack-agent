@@ -835,9 +835,11 @@ select option {
 .datetime-widget-dropdown {
   position: absolute;
   top: calc(100% + 8px);
-  left: 0;
+  left: auto;
   right: 0;
-  min-width: 320px;
+  width: 100%;
+  max-width: 320px;
+  min-width: 300px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -854,6 +856,25 @@ select option {
   display: block;
   opacity: 1;
   transform: translateY(0) scale(1);
+}
+
+@media (min-width: 640px) {
+  .datetime-widget.open .datetime-widget-dropdown {
+    max-width: 600px;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+  }
+  .datetime-widget-panel + .datetime-widget-panel {
+    border-top: none !important;
+    border-left: 1px solid var(--border);
+  }
+  .dt-footer {
+    grid-column: span 2;
+  }
+}
+
+.datetime-widget.open .datetime-widget-dropdown[style*="display: block"] {
+  display: block !important;
 }
 
 /* Panel */

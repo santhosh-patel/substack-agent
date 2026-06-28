@@ -1004,10 +1004,10 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
           if (post.postType === 'note') {
             userPrompt = `Write a Substack Note about: ${post.body}.`;
           } else {
-            userPrompt = `Write a Substack newsletter post about: ${post.title}.`;
+            userPrompt = `Write a Substack newsletter post. Guidelines: ${post.title || post.body}.`;
           }
         } else {
-          const searchQuery = post.postType === 'note' ? post.body : post.title || 'latest hot topics news';
+          const searchQuery = post.postType === 'note' ? post.body : (post.title || post.body || 'latest hot topics news');
           addLog(`Performing local internet research on topic: "${searchQuery}"...`);
           const searchResults = await searchInternet(searchQuery);
           addLog(`Research complete. Retrieved search results (first 200 chars): "${searchResults.substring(0, 200)}..."`);
@@ -1015,7 +1015,7 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
           if (post.postType === 'note') {
             userPrompt = `Write a Substack Note about: ${post.body}. You MUST incorporate these latest news/search results:\n\n${searchResults}`;
           } else {
-            userPrompt = `Write a Substack newsletter post about: ${post.title}. You MUST incorporate these latest news/search results:\n\n${searchResults}`;
+            userPrompt = `Write a Substack newsletter post based on guidelines: ${post.title || post.body}. You MUST incorporate these latest news/search results:\n\n${searchResults}`;
           }
         }
 

@@ -168,10 +168,15 @@ export function validateScheduledPost(post: any): string | null {
       return 'Note topic is too long (maximum 1000 characters)';
     }
   } else if (post.postType === 'newsletter') {
-    if (!post.title || typeof post.title !== 'string' || post.title.trim().length === 0) {
-      return 'Title/Topic is required for newsletters';
-    }
-    if (!isSearchEnabled) {
+    if (isSearchEnabled) {
+      if ((!post.title || typeof post.title !== 'string' || post.title.trim().length === 0) &&
+          (!post.body || typeof post.body !== 'string' || post.body.trim().length === 0)) {
+        return 'Either Title/Topic or Writing Guidelines must be provided for newsletters';
+      }
+    } else {
+      if (!post.title || typeof post.title !== 'string' || post.title.trim().length === 0) {
+        return 'Title/Topic is required for newsletters';
+      }
       if (!post.body || typeof post.body !== 'string' || post.body.trim().length === 0) {
         return 'Body is required for newsletters';
       }

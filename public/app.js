@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setTimeout(() => updateThemeToggleIcon(true), 50);
   }
 
-  await loadConfigFromBackend();
+  loadConfigFromBackend();
   loadPublishHistory();
 
   // Load sidebar state from localStorage
@@ -1645,6 +1645,9 @@ async function handleCreateSchedule() {
   const noteLink = document.getElementById('schedNoteLink').value.trim();
   const body = document.getElementById('schedBody').value.trim();
   const scheduledAt = document.getElementById('schedTime').value;
+  const isDraft = document.getElementById('schedDraftToggle') ? document.getElementById('schedDraftToggle').checked : true;
+  const recurrence = document.getElementById('schedRecurrence') ? document.getElementById('schedRecurrence').value : 'once';
+  
   // New fields
   const enableSearch = document.getElementById('schedEnableSearch').checked;
   const provider = document.getElementById('schedProvider').value;
@@ -1660,13 +1663,20 @@ async function handleCreateSchedule() {
       return;
     }
   } else {
-    if (!title) {
-      showToast('Title/Topic is required for newsletters', 'error');
-      return;
-    }
-    if (!enableSearch && !body) {
-      showToast('Body content is required for newsletters when search is disabled', 'error');
-      return;
+    if (enableSearch) {
+      if (!title && !body) {
+        showToast('Either Title/Topic or Writing Guidelines is required for newsletters', 'error');
+        return;
+      }
+    } else {
+      if (!title) {
+        showToast('Title/Topic is required for newsletters', 'error');
+        return;
+      }
+      if (!body) {
+        showToast('Body content is required for newsletters when search is disabled', 'error');
+        return;
+      }
     }
   }
 
