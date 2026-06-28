@@ -22,7 +22,7 @@ export interface ScheduledPost {
   createdAt: string; // ISO string
 }
 
-const LOCAL_DATA_DIR = path.join(process.cwd(), 'src', 'data');
+const LOCAL_DATA_DIR = process.env.VERCEL === '1' ? '/tmp' : path.join(process.cwd(), 'src', 'data');
 const LOCAL_FILE_PATH = path.join(LOCAL_DATA_DIR, 'schedules.json');
 
 /**
@@ -30,16 +30,6 @@ const LOCAL_FILE_PATH = path.join(LOCAL_DATA_DIR, 'schedules.json');
  */
 function isKVEnabled(): boolean {
   return Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
-}
-
-/**
- * Ensure KV is configured if running in production or Vercel environment.
- */
-function checkKVConfig() {
-  const isProdOrVercel = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
-  if (isProdOrVercel && !isKVEnabled()) {
-    throw new Error('Vercel KV environment variables (KV_REST_API_URL and KV_REST_API_TOKEN) must be configured for scheduling in production / Vercel.');
-  }
 }
 
 /**
@@ -202,7 +192,6 @@ export function validateScheduledPost(post: any): string | null {
  * Get all scheduled posts.
  */
 export async function getSchedules(): Promise<ScheduledPost[]> {
-  checkKVConfig();
   if (isKVEnabled()) {
     return await getKVSchedules();
   }
@@ -213,7 +202,6 @@ export async function getSchedules(): Promise<ScheduledPost[]> {
  * Save all schedules.
  */
 export async function saveSchedules(schedules: ScheduledPost[]): Promise<void> {
-  checkKVConfig();
   if (isKVEnabled()) {
     await saveKVSchedules(schedules);
   } else {
