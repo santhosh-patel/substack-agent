@@ -27,21 +27,34 @@ export async function searchInternet(query: string): Promise<string> {
     const html = response.body;
     const snippets: string[] = [];
     
-    // Regular expression to find search result items in DuckDuckGo HTML results
-    const resultReg = /<div class="result__body">([\s\S]*?)<\/div>/g;
-    let match;
+    // Split html by result block container to avoid nested div regex matching issues
+    const blocks = html.split('class="result results_links results_links_deep web-result ');
     let count = 0;
 
-    while ((match = resultReg.exec(html)) !== null && count < 6) {
-      const content = match[1];
-      const titleMatch = /<a class="result__url"[^>]*>([\s\S]*?)<\/a>/.exec(content);
-      const snippetMatch = /<a class="result__snippet"[^>]*>([\s\S]*?)<\/a>/.exec(content);
+    for (let i = 1; i < blocks.length && count < 6; i++) {
+      const block = blocks[i];
+      const titleMatch = /class="result__a"[^>]*>([\s\S]*?)<\/a>/.exec(block);
+      const snippetMatch = /class="result__snippet"[^>]*>([\s\S]*?)<\/a>/.exec(block);
       
       const title = titleMatch ? titleMatch[1].replace(/<[^>]*>/g, '').trim() : '';
       const snippet = snippetMatch ? snippetMatch[1].replace(/<[^>]*>/g, '').trim() : '';
       
       if (title || snippet) {
-        snippets.push(`- Title: ${title}\n  Snippet: ${snippet}`);
+        // Decode HTML entities like &#x27; or &amp;
+        const cleanTitle = title
+          .replace(/&amp;/g, '&')
+          .replace(/&#x27;/g, "'")
+          .replace(/&quot;/g, '"')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>');
+        const cleanSnippet = snippet
+          .replace(/&amp;/g, '&')
+          .replace(/&#x27;/g, "'")
+          .replace(/&quot;/g, '"')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>');
+        
+        snippets.push(`- Title: ${cleanTitle}\n  Snippet: ${cleanSnippet}`);
         count++;
       }
     }
