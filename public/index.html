@@ -589,7 +589,15 @@
 
               <!-- Content Editor -->
               <div class="form-group" style="margin-bottom: 20px;" id="schedBodyGroup">
-                <label for="schedBody" id="schedBodyLabel">Research Topic Description / Writing Guidelines</label>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                  <label for="schedBody" id="schedBodyLabel" style="margin-bottom: 0;">Research Topic Description / Writing Guidelines</label>
+                  <!-- Prompt Preset Chips -->
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap;" class="dt-time-chips">
+                    <button type="button" class="dt-chip" onclick="dtSelectPromptPreset('tech')" style="font-size: 0.72rem; padding: 4px 10px;">Technical Deep-Dive</button>
+                    <button type="button" class="dt-chip" onclick="dtSelectPromptPreset('strategy')" style="font-size: 0.72rem; padding: 4px 10px;">Product & Strategy</button>
+                    <button type="button" class="dt-chip" onclick="dtSelectPromptPreset('casual')" style="font-size: 0.72rem; padding: 4px 10px;">Casual & Opinionated</button>
+                  </div>
+                </div>
                 <textarea class="editor-textarea" id="schedBody" style="min-height: 180px;" placeholder="e.g. Focus on the main technical details of the news, contrast it with older versions, and write in a professional tone..."></textarea>
               </div>
 

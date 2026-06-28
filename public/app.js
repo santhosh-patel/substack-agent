@@ -2172,6 +2172,19 @@ function dtSyncHiddenInput() {
   input.value = iso;
 }
 
+function dtSelectPromptPreset(type) {
+  const schedBody = document.getElementById('schedBody');
+  if (!schedBody) return;
+
+  const presets = {
+    tech: "Focus on the main technical details, architectural decisions, code patterns, and practical code snippets. Contrast it with alternatives and write in a professional, builder-focused tone.",
+    strategy: "Focus on the business strategy, user experience, market positioning, target audience, and future impact. Keep the tone engaging, strategic, and analytical.",
+    casual: "Provide a quick, punchy summary highlighting what is exciting and what might be overhyped. Write in a casual, conversational, and highly opinionated tone."
+  };
+
+  schedBody.value = presets[type] || "";
+}
+
 // Global exports for onclick handlers
 window.toggleDatetimeWidget = toggleDatetimeWidget;
 window.dtNavigateMonth = dtNavigateMonth;
@@ -2183,5 +2196,7 @@ window.dtQuickTime = dtQuickTime;
 window.dtSetToday = dtSetToday;
 window.dtConfirm = dtConfirm;
 window.saveApiKey = saveApiKey;
+window.dtSelectPromptPreset = dtSelectPromptPreset;
+
 
 
