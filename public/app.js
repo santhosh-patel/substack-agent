@@ -758,6 +758,12 @@ function switchTab(tabId) {
   } else if (tabId === 'scheduler') {
     loadSchedules();
   }
+
+  if (tabId === 'scheduler') {
+    startSchedulerPolling();
+  } else {
+    stopSchedulerPolling();
+  }
 }
 
 // ─── Comment Automation ───
@@ -1685,5 +1691,70 @@ function togglePasswordVisibility(inputId, btnEl) {
   }
 }
 
+let schedulerPollingInterval = null;
+
+async function runSilentQueueCheck() {
+  const indicator = document.getElementById('pollingIndicator');
+  
+  if (indicator) {
+    indicator.style.backgroundColor = 'var(--accent)';
+    indicator.style.boxShadow = '0 0 8px var(--accent)';
+  }
+  
+  try {
+    const res = await fetch('/api/cron/process-schedules');
+    const data = await res.json();
+    if (res.ok && data.processedCount > 0) {
+      showToast(`Automatically processed ${data.processedCount} due scheduled post(s)!`, 'success');
+      await loadSchedules();
+    } else if (res.ok) {
+      // Just refresh the list silently
+      await loadSchedules();
+    }
+  } catch (err) {
+    console.error('Silent queue check failed:', err);
+  } finally {
+    setTimeout(() => {
+      if (indicator) {
+        indicator.style.backgroundColor = 'var(--text-muted)';
+        indicator.style.boxShadow = 'none';
+      }
+    }, 1000);
+  }
+}
+
+function startSchedulerPolling() {
+  if (schedulerPollingInterval) return;
+  
+  // Set the dynamic endpoint URL dynamically in the banner!
+  const endpointEl = document.getElementById('cronEndpointSnippet');
+  if (endpointEl) {
+    endpointEl.textContent = `${window.location.origin}/api/cron/process-schedules`;
+  }
+  
+  // Initial run
+  runSilentQueueCheck();
+  
+  schedulerPollingInterval = setInterval(runSilentQueueCheck, 60 * 1000);
+  
+  const statusEl = document.getElementById('pollingStatus');
+  if (statusEl) {
+    statusEl.style.display = 'flex';
+  }
+}
+
+function stopSchedulerPolling() {
+  if (schedulerPollingInterval) {
+    clearInterval(schedulerPollingInterval);
+    schedulerPollingInterval = null;
+  }
+  const statusEl = document.getElementById('pollingStatus');
+  if (statusEl) {
+    statusEl.style.display = 'none';
+  }
+}
+
 window.togglePasswordVisibility = togglePasswordVisibility;
+window.startSchedulerPolling = startSchedulerPolling;
+window.stopSchedulerPolling = stopSchedulerPolling;
 
