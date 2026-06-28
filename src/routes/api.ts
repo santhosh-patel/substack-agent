@@ -480,7 +480,7 @@ router.get('/newsletters', async (_req: Request, res: Response) => {
 // ─── POST /api/notes/generate ───
 router.post('/notes/generate', async (req: Request, res: Response) => {
   try {
-    let { topic, provider, model, apiKey, systemPrompt } = req.body;
+    let { topic, provider, model, apiKey, systemPrompt, useWebSearch } = req.body;
 
     if (!topic) {
       res.status(400).json({ error: 'Topic is required' });
@@ -502,7 +502,21 @@ router.post('/notes/generate', async (req: Request, res: Response) => {
       return;
     }
 
-    const note = await generateNote({ topic, provider, model, apiKey, systemPrompt });
+    const baseReq = { topic, provider, model, apiKey, systemPrompt };
+    if (useWebSearch) {
+      const result = await generateNoteWithWebResearch(baseReq);
+      res.json({
+        success: true,
+        note: { body: result.body },
+        research: {
+          searchQuery: result.searchQuery,
+          searchResultsPreview: result.searchResults.substring(0, 500),
+        },
+      });
+      return;
+    }
+
+    const note = await generateNote(baseReq);
     res.json({ success: true, note });
   } catch (err: any) {
     console.error('Generate note error:', err);
@@ -1198,6 +1212,9 @@ function resolveScheduleAIConfig(
 }
 
 function deriveScheduleSearchQuery(post: ScheduledPost): string {
+  if (post.postType === 'note') {
+    return deriveResearchSearchQuery(post.body);
+  }
   return deriveResearchSearchQuery(post.body, post.title);
 }
 
@@ -1270,7 +1287,7 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
             model,
             apiKey,
             systemPrompt: post.systemPrompt,
-            searchQuery: post.postType === 'note' ? guidelines : searchQuery,
+            searchQuery,
           });
 
           if (noteResult.searchResults) {

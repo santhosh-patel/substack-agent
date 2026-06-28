@@ -427,7 +427,7 @@ async function handleGenerate() {
 
     addToInputHistory('topic', topic);
 
-    showToast('Newsletter generated successfully!', 'success');
+    showToast('Title, subtitle, and post generated from web research!', 'success');
   } catch (err) {
     showToast(err.message, 'error');
   } finally {
@@ -1518,7 +1518,7 @@ async function handleGenerateNote() {
     const res = await fetch('/api/notes/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ topic, provider, model, apiKey, systemPrompt }),
+      body: JSON.stringify({ topic, provider, model, apiKey, systemPrompt, useWebSearch: true }),
     });
 
     const data = await res.json();
