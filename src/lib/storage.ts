@@ -20,6 +20,13 @@ export interface ScheduledPost {
   status: 'pending' | 'processing' | 'completed' | 'failed' | 'paused';
   errorMessage?: string;
   createdAt: string; // ISO string
+  
+  // Custom automated search & dynamic generation parameters
+  enableSearch?: boolean;
+  provider?: 'groq' | 'gemini' | 'openai' | 'openrouter';
+  model?: string;
+  apiKey?: string;
+  systemPrompt?: string;
 }
 
 const LOCAL_DATA_DIR = process.env.VERCEL === '1' ? '/tmp' : path.join(process.cwd(), 'src', 'data');
@@ -151,19 +158,23 @@ export function validateScheduledPost(post: any): string | null {
   if (!post || typeof post !== 'object') {
     return 'Invalid post object';
   }
+  const isSearchEnabled = post.enableSearch === true;
+
   if (post.postType === 'note') {
     if (!post.body || typeof post.body !== 'string' || post.body.trim().length === 0) {
-      return 'Body is required for notes';
+      return 'Topic/Prompt is required for notes';
     }
     if (post.body.length > 1000) {
-      return 'Note body is too long (maximum 1000 characters)';
+      return 'Note topic is too long (maximum 1000 characters)';
     }
   } else if (post.postType === 'newsletter') {
     if (!post.title || typeof post.title !== 'string' || post.title.trim().length === 0) {
-      return 'Title is required for newsletters';
+      return 'Title/Topic is required for newsletters';
     }
-    if (!post.body || typeof post.body !== 'string' || post.body.trim().length === 0) {
-      return 'Body is required for newsletters';
+    if (!isSearchEnabled) {
+      if (!post.body || typeof post.body !== 'string' || post.body.trim().length === 0) {
+        return 'Body is required for newsletters';
+      }
     }
   } else {
     return 'Invalid postType. Must be newsletter or note.';

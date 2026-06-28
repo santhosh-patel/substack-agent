@@ -3,7 +3,7 @@
 
 export interface GenerateRequest {
   topic: string;
-  provider: 'groq' | 'gemini' | 'openai';
+  provider: 'groq' | 'gemini' | 'openai' | 'openrouter';
   model: string;
   apiKey: string;
   systemPrompt?: string;
@@ -209,6 +209,15 @@ export async function generatePost(req: GenerateRequest): Promise<GeneratedPost>
         systemPrompt
       );
 
+    case 'openrouter':
+      return callOpenAICompatible(
+        'https://openrouter.ai/api/v1/chat/completions',
+        apiKey,
+        model,
+        topic,
+        systemPrompt
+      );
+
     case 'gemini':
       return callGemini(apiKey, model, topic, systemPrompt);
 
@@ -225,7 +234,7 @@ export interface CommentAnalysisRequest {
   postBody: string;
   keyword: string;
   commentInstruction?: string;
-  provider: 'groq' | 'gemini' | 'openai';
+  provider: 'groq' | 'gemini' | 'openai' | 'openrouter';
   model: string;
   apiKey: string;
 }
@@ -271,10 +280,12 @@ async function callAIForComment(
   systemPrompt: string,
   userContent: string
 ): Promise<CommentAnalysisResponse> {
-  if (provider === 'groq' || provider === 'openai') {
+  if (provider === 'groq' || provider === 'openai' || provider === 'openrouter') {
     const endpoint = provider === 'groq'
       ? 'https://api.groq.com/openai/v1/chat/completions'
-      : 'https://api.openai.com/v1/chat/completions';
+      : provider === 'openai'
+      ? 'https://api.openai.com/v1/chat/completions'
+      : 'https://openrouter.ai/api/v1/chat/completions';
 
     const res = await fetch(endpoint, {
       method: 'POST',
@@ -365,7 +376,7 @@ ${req.commentInstruction ? `Specific Comment Guidelines: ${req.commentInstructio
 
 export interface GenerateNoteRequest {
   topic: string;
-  provider: 'groq' | 'gemini' | 'openai';
+  provider: 'groq' | 'gemini' | 'openai' | 'openrouter';
   model: string;
   apiKey: string;
   systemPrompt?: string;
@@ -499,6 +510,15 @@ export async function generateNote(req: GenerateNoteRequest): Promise<GeneratedN
     case 'openai':
       return callOpenAICompatibleNote(
         'https://api.openai.com/v1/chat/completions',
+        apiKey,
+        model,
+        topic,
+        systemPrompt
+      );
+
+    case 'openrouter':
+      return callOpenAICompatibleNote(
+        'https://openrouter.ai/api/v1/chat/completions',
         apiKey,
         model,
         topic,
