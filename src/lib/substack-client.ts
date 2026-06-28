@@ -60,6 +60,7 @@ export async function ensureHttpClientPatched() {
           body: options.body,
           responseType: 'json',
           retry: { limit: 0 },
+          timeout: { request: 25000 },
         });
         return response.body;
       } catch (err: any) {
@@ -171,14 +172,33 @@ export function disconnectSubstack() {
 }
 
 /**
- * Ensure connected — auto-connects using env vars if not already connected.
+ * Perform a health check on the current Substack connection by fetching ownProfile.
+ */
+export async function checkConnectionHealth(): Promise<boolean> {
+  if (!substackClient || !currentSid) return false;
+  try {
+    const profile = await substackClient.ownProfile();
+    if (profile && profile.id) {
+      ownProfile = profile; // Refresh local instance
+      return true;
+    }
+  } catch (err) {
+    console.warn('[Substack] Connection health check failed:', err);
+  }
+  return false;
+}
+
+/**
+ * Ensure connected — auto-connects using env vars if not already connected or if connection is unhealthy.
  * Used by tool endpoints so callers don't need explicit /api/connect.
  */
 export async function ensureConnected(): Promise<{ success: boolean; error?: string }> {
-  if (substackClient && ownProfile && currentSid) {
+  const isHealthy = await checkConnectionHealth();
+  if (isHealthy) {
     return { success: true };
   }
 
+  console.log('[Substack] Connection missing or unhealthy. Attempting to connect/reconnect...');
   const result = await connectSubstack();
   if (!result.success) {
     return { success: false, error: result.error };

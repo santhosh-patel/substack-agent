@@ -192,14 +192,20 @@ router.post('/publish-newsletter', async (req: Request, res: Response) => {
       return;
     }
 
-    const { title, subtitle, body, isDraft } = req.body;
+    const title = typeof req.body.title === 'string' ? req.body.title.trim() : '';
+    const subtitle = typeof req.body.subtitle === 'string' ? req.body.subtitle.trim() : '';
+    const body = typeof req.body.body === 'string' ? req.body.body.trim() : '';
+    const isDraft = req.body.isDraft;
 
     if (!title || !body) {
-      res.status(400).json({ success: false, error: 'title and body are required.' });
+      res.status(400).json({ success: false, error: 'title and body are required and cannot be empty.' });
       return;
     }
 
     const docJson = markdownToProseMirror(body);
+    if (!ownProfile || !ownProfile.id) {
+      throw new Error('Missing profile details. Please check your Substack SID.');
+    }
     const bylines = [{ id: ownProfile.id, is_guest: false }];
 
     const payload = {
@@ -272,10 +278,16 @@ router.post('/publish-note', async (req: Request, res: Response) => {
       return;
     }
 
-    const { body, link } = req.body;
+    const body = typeof req.body.body === 'string' ? req.body.body.trim() : '';
+    const link = typeof req.body.link === 'string' ? req.body.link.trim() : '';
 
     if (!body) {
-      res.status(400).json({ success: false, error: 'body is required.' });
+      res.status(400).json({ success: false, error: 'body is required and cannot be empty.' });
+      return;
+    }
+
+    if (body.length > 1000) {
+      res.status(400).json({ success: false, error: 'Note body is too long (maximum 1000 characters)' });
       return;
     }
 
