@@ -2618,26 +2618,53 @@ window.stopSchedulerPolling = stopSchedulerPolling;
 window.toggleSchedSearchFields = toggleSchedSearchFields;
 window.updateSchedModelOptions = updateSchedModelOptions;
 
-// ─── Scheduled Date & Time (simple inputs) ───
+// ─── Scheduled Date & Time Picker ───
+
+const DT_MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+let dtState = {
+  viewYear: 2026,
+  viewMonth: 0,
+  selectedYear: 2026,
+  selectedMonth: 0,
+  selectedDay: 1,
+  selectedMinutes: 0,
+  confirmed: null,
+};
+
+const DT_WHEEL_ITEM_HEIGHT = 36;
+const DT_WHEEL_PAD = 2;
+let dtWheelReady = false;
+let dtWheelScrolling = false;
+let dtWheelScrollTimer = null;
 
 function dtPad(n) {
   return String(n).padStart(2, '0');
 }
 
-function dtFormatDateInput(date) {
-  return `${date.getFullYear()}-${dtPad(date.getMonth() + 1)}-${dtPad(date.getDate())}`;
+function dtDateFromState() {
+  const hours = Math.floor(dtState.selectedMinutes / 60);
+  const minutes = dtState.selectedMinutes % 60;
+  return new Date(dtState.selectedYear, dtState.selectedMonth, dtState.selectedDay, hours, minutes, 0, 0);
 }
 
-function dtFormatTimeInput(date) {
-  return `${dtPad(date.getHours())}:${dtPad(date.getMinutes())}`;
+function dtSetStateFromDate(date) {
+  dtState.selectedYear = date.getFullYear();
+  dtState.selectedMonth = date.getMonth();
+  dtState.selectedDay = date.getDate();
+  dtState.selectedMinutes = date.getHours() * 60 + date.getMinutes();
+  dtState.viewYear = date.getFullYear();
+  dtState.viewMonth = date.getMonth();
 }
 
 function dtSyncHiddenInput() {
-  const date = document.getElementById('schedDate')?.value;
-  const time = document.getElementById('schedTimeInput')?.value;
   const hidden = document.getElementById('schedTime');
-  if (!date || !time || !hidden) return;
-  hidden.value = `${date}T${time}`;
+  if (!hidden) return;
+  const d = dtDateFromState();
+  hidden.value = `${d.getFullYear()}-${dtPad(d.getMonth() + 1)}-${dtPad(d.getDate())}T${dtPad(d.getHours())}:${dtPad(d.getMinutes())}`;
 }
 
 function dtBuildSelectedDate() {
@@ -2673,54 +2700,317 @@ function dtGetRelativeLabel(targetDate) {
   return `Publishing in ${diffWeeks} week${diffWeeks === 1 ? '' : 's'}`;
 }
 
-function dtUpdateHint() {
-  const target = dtBuildSelectedDate();
+function dtFormatSummary(date) {
+  return date.toLocaleString(undefined, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}
+
+function dtUpdateSummary() {
+  const summaryEl = document.getElementById('dtPickerSummary');
   const relativeEl = document.getElementById('dtRelative');
+  const target = dtDateFromState();
+
+  if (summaryEl) {
+    summaryEl.textContent = dtFormatSummary(target);
+  }
   if (relativeEl) {
-    relativeEl.textContent = target ? dtGetRelativeLabel(target) : '';
+    relativeEl.textContent = dtGetRelativeLabel(target);
   }
 }
 
-function dtApplyDateTime(date) {
-  const dateEl = document.getElementById('schedDate');
-  const timeEl = document.getElementById('schedTimeInput');
-  if (dateEl) dateEl.value = dtFormatDateInput(date);
-  if (timeEl) timeEl.value = dtFormatTimeInput(date);
+function dtRenderCalendar() {
+  const grid = document.getElementById('dtCalendarGrid');
+  const monthYearEl = document.getElementById('dtMonthYear');
+  if (!grid || !monthYearEl) return;
+
+  const year = dtState.viewYear;
+  const month = dtState.viewMonth;
+  monthYearEl.textContent = `${DT_MONTH_NAMES[month]} ${year}`;
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let html = '';
+
+  for (let i = firstDay - 1; i >= 0; i--) {
+    const d = daysInPrevMonth - i;
+    html += `<button type="button" class="dt-day dt-day-outside dt-day-disabled" tabindex="-1" disabled>${d}</button>`;
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const thisDate = new Date(year, month, d);
+    const isPast = thisDate < today;
+    const isToday = thisDate.getTime() === today.getTime();
+    const isSelected =
+      dtState.selectedYear === year &&
+      dtState.selectedMonth === month &&
+      dtState.selectedDay === d;
+
+    let cls = 'dt-day';
+    if (isToday) cls += ' dt-day-today';
+    if (isSelected) cls += ' dt-day-selected';
+    if (isPast) cls += ' dt-day-disabled';
+
+    html += `<button type="button" class="${cls}" onclick="dtSelectDay(${d})"${isPast ? ' disabled' : ''}>${d}</button>`;
+  }
+
+  const totalCells = firstDay + daysInMonth;
+  const remainingCells = (7 - (totalCells % 7)) % 7;
+  for (let d = 1; d <= remainingCells; d++) {
+    html += `<button type="button" class="dt-day dt-day-outside dt-day-disabled" tabindex="-1" disabled>${d}</button>`;
+  }
+
+  grid.innerHTML = html;
+}
+
+function dtWheelSpacers() {
+  return '<div class="dt-wheel-item dt-wheel-spacer" aria-hidden="true"></div>'.repeat(DT_WHEEL_PAD);
+}
+
+function dtWheelItemsHtml(items) {
+  return items.map(({ value, label }) =>
+    `<div class="dt-wheel-item" data-value="${value}">${label}</div>`
+  ).join('');
+}
+
+function dtBuildTimeWheel() {
+  const container = document.getElementById('dtTimeList');
+  if (!container || dtWheelReady) return;
+
+  const hours = Array.from({ length: 12 }, (_, i) => ({ value: i + 1, label: String(i + 1) }));
+  const minutes = Array.from({ length: 60 }, (_, i) => ({ value: i, label: dtPad(i) }));
+  const ampm = [{ value: 0, label: 'AM' }, { value: 1, label: 'PM' }];
+
+  container.innerHTML = `
+    <div class="dt-wheel-fade dt-wheel-fade-top"></div>
+    <div class="dt-wheel-fade dt-wheel-fade-bottom"></div>
+    <div class="dt-wheel-highlight" aria-hidden="true"></div>
+    <div class="dt-wheel-columns">
+      <div class="dt-wheel-col" id="dtWheelHour" aria-label="Hour">${dtWheelSpacers()}${dtWheelItemsHtml(hours)}${dtWheelSpacers()}</div>
+      <span class="dt-wheel-sep" aria-hidden="true">:</span>
+      <div class="dt-wheel-col" id="dtWheelMinute" aria-label="Minute">${dtWheelSpacers()}${dtWheelItemsHtml(minutes)}${dtWheelSpacers()}</div>
+      <div class="dt-wheel-col dt-wheel-col-ampm" id="dtWheelAmPm" aria-label="AM or PM">${dtWheelSpacers()}${dtWheelItemsHtml(ampm)}${dtWheelSpacers()}</div>
+    </div>
+  `;
+
+  ['dtWheelHour', 'dtWheelMinute', 'dtWheelAmPm'].forEach((id) => {
+    const col = document.getElementById(id);
+    if (!col) return;
+    col.addEventListener('scroll', dtOnWheelScroll, { passive: true });
+    col.addEventListener('scrollend', dtOnWheelScrollEnd);
+  });
+
+  dtWheelReady = true;
+}
+
+function dtWheelItems(col) {
+  return col ? [...col.querySelectorAll('.dt-wheel-item:not(.dt-wheel-spacer)')] : [];
+}
+
+function dtWheelIndex(col) {
+  if (!col) return 0;
+  const items = dtWheelItems(col);
+  const idx = Math.round(col.scrollTop / DT_WHEEL_ITEM_HEIGHT);
+  return Math.max(0, Math.min(items.length - 1, idx));
+}
+
+function dtScrollWheelTo(col, index, smooth = false) {
+  if (!col) return;
+  const top = index * DT_WHEEL_ITEM_HEIGHT;
+  if (smooth) {
+    col.scrollTo({ top, behavior: 'smooth' });
+  } else {
+    col.scrollTop = top;
+  }
+}
+
+function dtUpdateWheelItemStyles() {
+  ['dtWheelHour', 'dtWheelMinute', 'dtWheelAmPm'].forEach((id) => {
+    const col = document.getElementById(id);
+    if (!col) return;
+    const activeIdx = dtWheelIndex(col);
+    dtWheelItems(col).forEach((item, i) => {
+      item.classList.toggle('dt-wheel-item-active', i === activeIdx);
+    });
+  });
+}
+
+function dtMinutesFromWheelParts(hour12, minute, isPm) {
+  let hour24 = hour12 % 12;
+  if (isPm) hour24 += 12;
+  return hour24 * 60 + minute;
+}
+
+function dtReadWheelsToState() {
+  const hourCol = document.getElementById('dtWheelHour');
+  const minCol = document.getElementById('dtWheelMinute');
+  const ampmCol = document.getElementById('dtWheelAmPm');
+  if (!hourCol || !minCol || !ampmCol) return;
+
+  const hour12 = parseInt(dtWheelItems(hourCol)[dtWheelIndex(hourCol)]?.dataset.value || '12', 10);
+  const minute = parseInt(dtWheelItems(minCol)[dtWheelIndex(minCol)]?.dataset.value || '0', 10);
+  const isPm = parseInt(dtWheelItems(ampmCol)[dtWheelIndex(ampmCol)]?.dataset.value || '0', 10) === 1;
+
+  dtState.selectedMinutes = dtMinutesFromWheelParts(hour12, minute, isPm);
   dtSyncHiddenInput();
-  dtUpdateHint();
+  dtUpdateSummary();
+  dtUpdateWheelItemStyles();
+}
+
+function dtSyncWheelFromState() {
+  if (!dtWheelReady) return;
+
+  const totalMin = dtState.selectedMinutes;
+  const hour24 = Math.floor(totalMin / 60) % 24;
+  const minute = totalMin % 60;
+  const hour12 = hour24 % 12 || 12;
+  const isPm = hour24 >= 12 ? 1 : 0;
+
+  dtWheelScrolling = true;
+  dtScrollWheelTo(document.getElementById('dtWheelHour'), hour12 - 1);
+  dtScrollWheelTo(document.getElementById('dtWheelMinute'), minute);
+  dtScrollWheelTo(document.getElementById('dtWheelAmPm'), isPm);
+  dtUpdateWheelItemStyles();
+
+  requestAnimationFrame(() => {
+    dtWheelScrolling = false;
+  });
+}
+
+function dtSnapWheels(smooth = true) {
+  ['dtWheelHour', 'dtWheelMinute', 'dtWheelAmPm'].forEach((id) => {
+    dtScrollWheelTo(document.getElementById(id), dtWheelIndex(document.getElementById(id)), smooth);
+  });
+}
+
+function dtOnWheelScrollEnd() {
+  if (dtWheelScrolling) return;
+  dtSnapWheels(true);
+  dtReadWheelsToState();
+}
+
+function dtOnWheelScroll() {
+  if (dtWheelScrolling) return;
+  dtUpdateWheelItemStyles();
+  clearTimeout(dtWheelScrollTimer);
+  dtWheelScrollTimer = setTimeout(() => {
+    dtSnapWheels(true);
+    dtReadWheelsToState();
+  }, 100);
+}
+
+function dtRenderTimeList() {
+  dtBuildTimeWheel();
+  dtSyncWheelFromState();
+}
+
+function dtRenderAll() {
+  dtRenderCalendar();
+  dtRenderTimeList();
+  dtUpdateSummary();
+}
+
+function dtNavigateMonth(delta) {
+  dtState.viewMonth += delta;
+  if (dtState.viewMonth > 11) {
+    dtState.viewMonth = 0;
+    dtState.viewYear++;
+  } else if (dtState.viewMonth < 0) {
+    dtState.viewMonth = 11;
+    dtState.viewYear--;
+  }
+  dtRenderCalendar();
+  if (window.lucide) lucide.createIcons();
+}
+
+function dtSelectDay(day) {
+  dtState.selectedYear = dtState.viewYear;
+  dtState.selectedMonth = dtState.viewMonth;
+  dtState.selectedDay = day;
+  dtSyncHiddenInput();
+  dtRenderAll();
+}
+
+function dtSelectTime(minutes) {
+  dtState.selectedMinutes = minutes;
+  dtSyncHiddenInput();
+  dtSyncWheelFromState();
+  dtUpdateSummary();
+}
+
+function dtApplyDateTime(date, confirm = true) {
+  dtSetStateFromDate(date);
+  dtSyncHiddenInput();
+  if (confirm) {
+    dtState.confirmed = {
+      selectedYear: dtState.selectedYear,
+      selectedMonth: dtState.selectedMonth,
+      selectedDay: dtState.selectedDay,
+      selectedMinutes: dtState.selectedMinutes,
+      viewYear: dtState.viewYear,
+      viewMonth: dtState.viewMonth,
+    };
+  }
+  dtRenderAll();
 }
 
 function dtInitWidget() {
   const defaultDate = new Date();
-  defaultDate.setHours(defaultDate.getHours() + 1, 0, 0, 0);
+  defaultDate.setSeconds(0, 0);
+  defaultDate.setMinutes(defaultDate.getMinutes() + 1);
+  defaultDate.setHours(defaultDate.getHours() + 1);
 
   const tzEl = document.getElementById('dtTzBadge');
   if (tzEl) {
     tzEl.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
   }
 
-  dtApplyDateTime(defaultDate);
+  dtApplyDateTime(defaultDate, true);
+  if (window.lucide) lucide.createIcons();
+}
 
-  const dateEl = document.getElementById('schedDate');
-  const timeEl = document.getElementById('schedTimeInput');
-  const onChange = () => {
-    dtSyncHiddenInput();
-    dtUpdateHint();
+function dtConfirm() {
+  dtState.confirmed = {
+    selectedYear: dtState.selectedYear,
+    selectedMonth: dtState.selectedMonth,
+    selectedDay: dtState.selectedDay,
+    selectedMinutes: dtState.selectedMinutes,
+    viewYear: dtState.viewYear,
+    viewMonth: dtState.viewMonth,
   };
-  dateEl?.addEventListener('change', onChange);
-  timeEl?.addEventListener('change', onChange);
-  timeEl?.addEventListener('input', onChange);
+  dtSyncHiddenInput();
+  dtUpdateSummary();
+  showToast(`Scheduled: ${dtFormatSummary(dtDateFromState())}`, 'info');
+}
+
+function dtCancel() {
+  if (!dtState.confirmed) return;
+  Object.assign(dtState, dtState.confirmed);
+  dtSyncHiddenInput();
+  dtRenderAll();
 }
 
 function dtQuickSchedule(minutesFromNow) {
-  dtApplyDateTime(new Date(Date.now() + minutesFromNow * 60000));
+  const date = new Date(Date.now() + minutesFromNow * 60000);
+  date.setSeconds(0, 0);
+  dtApplyDateTime(date, true);
 }
 
 function dtQuickScheduleTomorrow(hour, minute) {
   const date = new Date();
   date.setDate(date.getDate() + 1);
   date.setHours(hour, minute, 0, 0);
-  dtApplyDateTime(date);
+  dtApplyDateTime(date, true);
 }
 
 function dtSelectPromptPreset(type) {
@@ -2736,6 +3026,11 @@ function dtSelectPromptPreset(type) {
   schedBody.value = presets[type] || '';
 }
 
+window.dtNavigateMonth = dtNavigateMonth;
+window.dtSelectDay = dtSelectDay;
+window.dtSelectTime = dtSelectTime;
+window.dtConfirm = dtConfirm;
+window.dtCancel = dtCancel;
 window.dtQuickSchedule = dtQuickSchedule;
 window.dtQuickScheduleTomorrow = dtQuickScheduleTomorrow;
 window.dtSelectPromptPreset = dtSelectPromptPreset;

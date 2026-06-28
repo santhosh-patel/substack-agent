@@ -448,10 +448,40 @@
               </div>
 
               <div class="form-group form-group-datetime">
-                <label for="schedDate">Scheduled Date &amp; Time</label>
-                <div class="schedule-datetime">
-                  <input type="date" id="schedDate" class="schedule-datetime-field" aria-label="Schedule date" />
-                  <input type="time" id="schedTimeInput" class="schedule-datetime-field" step="300" aria-label="Schedule time" />
+                <label>Scheduled Date &amp; Time</label>
+                <div class="dt-picker" id="dtPicker">
+                  <div class="dt-picker-summary" id="dtPickerSummary">Select date and time</div>
+                  <div class="dt-picker-grid">
+                    <div class="dt-picker-date">
+                      <div class="dt-picker-section-title">Select Date</div>
+                      <div class="dt-picker-month-row">
+                        <div class="dt-picker-month-display">
+                          <span id="dtMonthYear">June 2026</span>
+                          <i data-lucide="chevron-down" class="dt-picker-month-chevron"></i>
+                        </div>
+                        <div class="dt-picker-nav">
+                          <button type="button" class="dt-picker-nav-btn" onclick="dtNavigateMonth(-1)" aria-label="Previous month">
+                            <i data-lucide="chevron-left"></i>
+                          </button>
+                          <button type="button" class="dt-picker-nav-btn" onclick="dtNavigateMonth(1)" aria-label="Next month">
+                            <i data-lucide="chevron-right"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="dt-picker-weekdays">
+                        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                      </div>
+                      <div class="dt-picker-days" id="dtCalendarGrid"></div>
+                    </div>
+                    <div class="dt-picker-time">
+                      <div class="dt-picker-section-title">Select Time</div>
+                      <div class="dt-time-wheel" id="dtTimeList" aria-label="Time picker"></div>
+                    </div>
+                  </div>
+                  <div class="dt-picker-footer">
+                    <button type="button" class="dt-picker-cancel" onclick="dtCancel()">Cancel</button>
+                    <button type="button" class="dt-picker-confirm" onclick="dtConfirm()">Confirm</button>
+                  </div>
                 </div>
                 <div class="schedule-datetime-quick">
                   <button type="button" class="schedule-datetime-quick-btn" onclick="dtQuickSchedule(30)">In 30 min</button>

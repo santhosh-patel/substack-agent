@@ -771,36 +771,336 @@ select option {
   margin-bottom: 16px;
 }
 
-.schedule-datetime {
-  display: grid;
-  grid-template-columns: 1fr 140px;
-  gap: 10px;
+/* ─── Date/Time Picker (butter green) ─── */
+.dt-picker {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
 
-.schedule-datetime-field {
-  width: 100%;
-  min-height: 42px;
-  padding: 10px 12px;
+.dt-picker-summary {
+  padding: 12px 18px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  background: rgba(134, 167, 137, 0.06);
+}
+
+.dt-picker-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  min-height: 320px;
+}
+
+.dt-picker-date,
+.dt-picker-time {
+  padding: 18px 20px;
+}
+
+.dt-picker-time {
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.dt-picker-section-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+
+.dt-picker-month-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.dt-picker-month-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: var(--bg-input);
+  font-size: 0.88rem;
+  font-weight: 600;
   color: var(--text-primary);
-  font-family: inherit;
-  font-size: 0.9rem;
+}
+
+.dt-picker-month-chevron {
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+}
+
+.dt-picker-nav {
+  display: flex;
+  gap: 6px;
+}
+
+.dt-picker-nav-btn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  color: var(--text-secondary);
+  cursor: pointer;
   transition: var(--transition);
 }
 
-.schedule-datetime-field:focus {
-  outline: none;
+.dt-picker-nav-btn:hover {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
+  color: var(--accent);
+  background: rgba(134, 167, 137, 0.1);
+}
+
+.dt-picker-nav-btn i {
+  width: 16px;
+  height: 16px;
+}
+
+.dt-picker-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 6px;
+}
+
+.dt-picker-weekdays span {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 4px 0;
+}
+
+.dt-picker-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.dt-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.dt-day:hover:not(.dt-day-disabled):not(.dt-day-selected) {
+  background: rgba(134, 167, 137, 0.12);
+  color: var(--accent);
+}
+
+.dt-day.dt-day-today:not(.dt-day-selected) {
+  background: rgba(134, 167, 137, 0.18);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.dt-day.dt-day-selected {
+  background: var(--accent);
+  color: var(--bg-primary);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(134, 167, 137, 0.35);
+}
+
+.dt-day.dt-day-disabled {
+  color: var(--text-muted);
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+
+.dt-day.dt-day-outside {
+  opacity: 0.28;
+}
+
+/* iOS-style scroll wheel time picker */
+.dt-time-wheel {
+  position: relative;
+  flex: 1;
+  min-height: 180px;
+  height: 180px;
+  overflow: hidden;
+}
+
+.dt-wheel-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 38%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.dt-wheel-fade-top {
+  top: 0;
+  background: linear-gradient(to bottom, var(--bg-card) 30%, transparent);
+}
+
+.dt-wheel-fade-bottom {
+  bottom: 0;
+  background: linear-gradient(to top, var(--bg-card) 30%, transparent);
+}
+
+.dt-wheel-highlight {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: rgba(134, 167, 137, 0.14);
+  border: 1px solid rgba(134, 167, 137, 0.32);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.dt-wheel-columns {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 0;
+  padding: 0 4px;
+}
+
+.dt-wheel-col {
+  flex: 1;
+  max-width: 54px;
+  height: 100%;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+
+.dt-wheel-col::-webkit-scrollbar {
+  display: none;
+}
+
+.dt-wheel-col-ampm {
+  flex: 0 0 56px;
+  max-width: 56px;
+}
+
+.dt-wheel-sep {
+  flex: 0 0 auto;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  padding: 0 1px;
+  user-select: none;
+}
+
+.dt-wheel-item {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: center;
+  font-size: 1.02rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  opacity: 0.45;
+  transform: scale(0.92);
+  transition: color 0.12s, opacity 0.12s, transform 0.12s, font-weight 0.12s;
+  user-select: none;
+  cursor: default;
+}
+
+.dt-wheel-item.dt-wheel-item-active {
+  color: var(--accent);
+  opacity: 1;
+  font-weight: 700;
+  transform: scale(1);
+}
+
+.dt-wheel-spacer {
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.dt-picker-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.dt-picker-cancel {
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.dt-picker-cancel:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.dt-picker-confirm {
+  padding: 9px 22px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--bg-primary);
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 2px 8px rgba(134, 167, 137, 0.35);
+}
+
+.dt-picker-confirm:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 4px 12px rgba(134, 167, 137, 0.4);
 }
 
 .schedule-datetime-quick {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 .schedule-datetime-quick-btn {
@@ -819,7 +1119,7 @@ select option {
 .schedule-datetime-quick-btn:hover {
   border-color: var(--accent);
   color: var(--accent);
-  background: rgba(134, 167, 137, 0.08);
+  background: rgba(134, 167, 137, 0.1);
 }
 
 .schedule-datetime-meta {
@@ -827,7 +1127,7 @@ select option {
   flex-wrap: wrap;
   align-items: center;
   gap: 8px 12px;
-  margin: 8px 0 0;
+  margin: 10px 0 0;
   font-size: 0.78rem;
   color: var(--text-muted);
 }
@@ -841,18 +1141,41 @@ select option {
   opacity: 0.85;
 }
 
-@media (max-width: 560px) {
-  .schedule-datetime {
+@media (max-width: 640px) {
+  .dt-picker-grid {
     grid-template-columns: 1fr;
+  }
+
+  .dt-picker-time {
+    border-left: none;
+    border-top: 1px solid var(--border);
+  }
+
+  .dt-picker-times {
+    max-height: 200px;
   }
 }
 
-body.light-theme .schedule-datetime-field {
+body.light-theme .dt-picker {
   background: #fff;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme .dt-picker-summary {
+  background: rgba(85, 124, 85, 0.06);
+}
+
+body.light-theme .dt-picker-month-display,
+body.light-theme .dt-picker-nav-btn {
+  background: #fafafa;
+}
+
+body.light-theme .dt-picker-footer {
+  background: #fafafa;
 }
 
 body.light-theme .schedule-datetime-quick-btn:hover {
-  background: rgba(85, 124, 85, 0.06);
+  background: rgba(85, 124, 85, 0.08);
 }
 
 /* ─── Scheduler Inspector ─── */
