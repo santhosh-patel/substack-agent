@@ -2094,7 +2094,7 @@ function toggleSchedSearchFields() {
   if (enableSearch) {
     if (postType === 'newsletter') {
       bodyLabel.textContent = 'Research Topic Description / Writing Guidelines';
-      bodyTextarea.placeholder = 'e.g. Focus on the main technical details of the news, contrast it with older versions, and write in a professional tone...';
+      bodyTextarea.placeholder = 'e.g. Latest AI agent news — share a short take on what you understood and why it matters to builders…';
     } else {
       bodyLabel.textContent = 'Research Topic / Keywords';
       bodyTextarea.placeholder = 'e.g. SpaceX Mars Launch updates';
@@ -2415,9 +2415,9 @@ function dtSelectPromptPreset(type) {
   if (!schedBody) return;
 
   const presets = {
-    tech: "Analyze the topic with a rigorous technical focus. Break down the core architectural patterns, implementation details, and key decisions. Provide illustrative code snippets (if applicable) and concrete examples. Critically contrast this technology with its leading alternatives on performance, complexity, and scalability. Maintain an authoritative, builder-focused, engineering-first tone.",
-    strategy: "Deconstruct the product, release, or trend from a business and strategy standpoint. Analyze the market positioning, value proposition, competitive landscape, and user experience (UX) implications. Discuss the broader impact on the industry and the target audience's daily lives. Keep the tone strategic, analytical, and highly forward-looking.",
-    casual: "Give a high-energy, punchy, and highly conversational breakdown of the topic. Cut through the marketing hype—clearly distinguish what is revolutionary from what is pure noise. Share strong, opinionated perspectives, ask provocative questions, and use engaging analogies. Write in an authentic, relatable tone that sparks discussion."
+    brief: 'Share a short personal take on the topic. Explain what you understood in plain language. Keep it under 150 words. No jargon, no hype, no long intro.',
+    builder: 'Focus on what matters for builders and engineers. One practical insight from the news and why it might matter in production. Keep it brief and conversational.',
+    reaction: 'Write like you just read the news and are posting your honest reaction. Simple, direct, human. One key point plus a short personal opinion.',
   };
 
   schedBody.value = presets[type] || "";

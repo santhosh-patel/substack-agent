@@ -595,7 +595,7 @@
 
                   <div class="form-group" style="margin-top: 12px;">
                     <label for="schedSystemPrompt">Custom System Prompt instructions (Optional)</label>
-                    <textarea id="schedSystemPrompt" style="min-height: 80px; font-size: 0.85rem;" placeholder="e.g. Write in a sarcastic tone..."></textarea>
+                    <textarea id="schedSystemPrompt" style="min-height: 80px; font-size: 0.85rem;" placeholder="Leave blank to use the default voice: brief, human, first-person takes from a Full Stack AI Engineer perspective…"></textarea>
                   </div>
                 </details>
               </div>
@@ -606,12 +606,12 @@
                   <label for="schedBody" id="schedBodyLabel" style="margin-bottom: 0;">Research Topic Description / Writing Guidelines</label>
                   <!-- Prompt Preset Chips -->
                   <div style="display: flex; gap: 6px; flex-wrap: wrap;" class="dt-time-chips">
-                    <button type="button" class="dt-chip" onclick="dtSelectPromptPreset('tech')" style="font-size: 0.72rem; padding: 4px 10px;">Technical Deep-Dive</button>
-                    <button type="button" class="dt-chip" onclick="dtSelectPromptPreset('strategy')" style="font-size: 0.72rem; padding: 4px 10px;">Product & Strategy</button>
-                    <button type="button" class="dt-chip" onclick="dtSelectPromptPreset('casual')" style="font-size: 0.72rem; padding: 4px 10px;">Casual & Opinionated</button>
+                    <button type="button" class="dt-chip" onclick="dtSelectPromptPreset('brief')" style="font-size: 0.72rem; padding: 4px 10px;">Brief Take</button>
+                    <button type="button" class="dt-chip" onclick="dtSelectPromptPreset('builder')" style="font-size: 0.72rem; padding: 4px 10px;">Builder Insight</button>
+                    <button type="button" class="dt-chip" onclick="dtSelectPromptPreset('reaction')" style="font-size: 0.72rem; padding: 4px 10px;">Quick Reaction</button>
                   </div>
                 </div>
-                <textarea class="editor-textarea" id="schedBody" style="min-height: 180px;" placeholder="e.g. Focus on the main technical details of the news, contrast it with older versions, and write in a professional tone..."></textarea>
+                <textarea class="editor-textarea" id="schedBody" style="min-height: 180px;" placeholder="e.g. Latest on AI agents and MCP — share a short take on what changed and why it matters to builders…"></textarea>
               </div>
 
               <!-- Save as Draft Toggle + Action Buttons -->
