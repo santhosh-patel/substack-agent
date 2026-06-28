@@ -448,116 +448,22 @@
               </div>
 
               <div class="form-group form-group-datetime">
-                <div class="datetime-widget" id="datetimeWidget">
-                  <input type="hidden" id="schedTime" />
-
-                  <div class="datetime-widget-card">
-                    <div class="datetime-widget-card-header">
-                      <label for="datetimeWidgetTrigger" class="datetime-widget-card-title">
-                        <i data-lucide="calendar-clock" class="datetime-widget-title-icon"></i>
-                        Scheduled Date &amp; Time
-                      </label>
-                      <span class="datetime-widget-tz-badge" id="dtTzBadge"></span>
-                    </div>
-
-                    <button type="button" class="datetime-widget-trigger" id="datetimeWidgetTrigger" onclick="toggleDatetimeWidget()" aria-haspopup="dialog" aria-expanded="false" aria-controls="datetimeDropdown">
-                      <div class="datetime-widget-trigger-body">
-                        <div class="datetime-widget-primary">
-                          <span class="datetime-widget-primary-label">Scheduled for</span>
-                          <span class="datetime-widget-full" id="dtWidgetFull">Select a date and time</span>
-                        </div>
-                        <div class="datetime-widget-secondary">
-                          <div class="datetime-widget-pill datetime-widget-pill--date">
-                            <i data-lucide="calendar" class="datetime-widget-pill-icon"></i>
-                            <span id="dtWidgetDate">—</span>
-                          </div>
-                          <div class="datetime-widget-pill datetime-widget-pill--time">
-                            <i data-lucide="clock" class="datetime-widget-pill-icon"></i>
-                            <span id="dtWidgetTime">—</span>
-                          </div>
-                        </div>
-                        <div class="datetime-widget-meta">
-                          <span class="datetime-widget-relative" id="dtRelative"></span>
-                          <span class="datetime-widget-iso" id="dtIsoPreview"></span>
-                        </div>
-                      </div>
-                      <span class="datetime-widget-action">
-                        <span class="datetime-widget-action-text">Change</span>
-                        <i data-lucide="chevron-down" class="datetime-widget-chevron" id="dtWidgetChevron" aria-hidden="true"></i>
-                      </span>
-                    </button>
-                  </div>
-
-                  <div class="datetime-widget-dropdown" id="datetimeDropdown" role="dialog" aria-label="Pick date and time">
-                    <div class="dt-dropdown-preview">
-                      <div class="dt-dropdown-preview-label">Preview</div>
-                      <div class="dt-dropdown-preview-value" id="dtDropdownPreview">Select date and time</div>
-                      <div class="dt-dropdown-preview-sub" id="dtDropdownPreviewSub"></div>
-                    </div>
-
-                    <div class="datetime-widget-panel dt-date-panel">
-                      <div class="datetime-widget-panel-title">
-                        <i data-lucide="calendar"></i>
-                        <span>Select Date</span>
-                      </div>
-                      <div class="dt-calendar-header">
-                        <button type="button" class="dt-nav-btn" onclick="dtNavigateMonth(-1)" title="Previous month">
-                          <i data-lucide="chevron-left"></i>
-                        </button>
-                        <span class="dt-month-year" id="dtMonthYear">June 2026</span>
-                        <button type="button" class="dt-nav-btn" onclick="dtNavigateMonth(1)" title="Next month">
-                          <i data-lucide="chevron-right"></i>
-                        </button>
-                      </div>
-                      <div class="dt-weekdays">
-                        <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
-                      </div>
-                      <div class="dt-calendar-grid" id="dtCalendarGrid"></div>
-                    </div>
-
-                    <div class="datetime-widget-panel dt-time-panel">
-                      <div class="datetime-widget-panel-title">
-                        <i data-lucide="clock"></i>
-                        <span>Select Time</span>
-                      </div>
-                      <div class="dt-time-display" id="dtTimeDisplay">12:00 AM</div>
-                      <div class="dt-time-selectors">
-                        <div class="dt-time-col">
-                          <button type="button" class="dt-spin-btn" onclick="dtSpinTime('hour', 1)" aria-label="Increase hour"><i data-lucide="chevron-up"></i></button>
-                          <input type="text" class="dt-time-input" id="dtHourInput" value="12" maxlength="2" inputmode="numeric" aria-label="Hour" oninput="dtValidateTimeInput(this, 'hour')" />
-                          <button type="button" class="dt-spin-btn" onclick="dtSpinTime('hour', -1)" aria-label="Decrease hour"><i data-lucide="chevron-down"></i></button>
-                          <span class="dt-time-col-label">Hour</span>
-                        </div>
-                        <span class="dt-time-colon">:</span>
-                        <div class="dt-time-col">
-                          <button type="button" class="dt-spin-btn" onclick="dtSpinTime('minute', 1)" aria-label="Increase minute"><i data-lucide="chevron-up"></i></button>
-                          <input type="text" class="dt-time-input" id="dtMinuteInput" value="00" maxlength="2" inputmode="numeric" aria-label="Minute" oninput="dtValidateTimeInput(this, 'minute')" />
-                          <button type="button" class="dt-spin-btn" onclick="dtSpinTime('minute', -1)" aria-label="Decrease minute"><i data-lucide="chevron-down"></i></button>
-                          <span class="dt-time-col-label">Min</span>
-                        </div>
-                        <div class="dt-ampm-toggle">
-                          <button type="button" class="dt-ampm-btn active" id="dtAmBtn" onclick="dtSetAmPm('AM')">AM</button>
-                          <button type="button" class="dt-ampm-btn" id="dtPmBtn" onclick="dtSetAmPm('PM')">PM</button>
-                        </div>
-                      </div>
-                      <div class="dt-time-chips">
-                        <button type="button" class="dt-chip" onclick="dtQuickTime(9,0)">9:00 AM</button>
-                        <button type="button" class="dt-chip" onclick="dtQuickTime(12,0)">12:00 PM</button>
-                        <button type="button" class="dt-chip" onclick="dtQuickTime(17,0)">5:00 PM</button>
-                        <button type="button" class="dt-chip" onclick="dtQuickTime(20,0)">8:00 PM</button>
-                      </div>
-                    </div>
-
-                    <div class="dt-footer">
-                      <button type="button" class="btn btn-secondary btn-sm" onclick="dtSetToday()">
-                        <i data-lucide="calendar-days"></i> Today
-                      </button>
-                      <button type="button" class="btn btn-primary btn-sm" onclick="dtConfirm()">
-                        <i data-lucide="check"></i> Confirm Selection
-                      </button>
-                    </div>
-                  </div>
+                <label for="schedDate">Scheduled Date &amp; Time</label>
+                <div class="schedule-datetime">
+                  <input type="date" id="schedDate" class="schedule-datetime-field" aria-label="Schedule date" />
+                  <input type="time" id="schedTimeInput" class="schedule-datetime-field" step="300" aria-label="Schedule time" />
                 </div>
+                <div class="schedule-datetime-quick">
+                  <button type="button" class="schedule-datetime-quick-btn" onclick="dtQuickSchedule(30)">In 30 min</button>
+                  <button type="button" class="schedule-datetime-quick-btn" onclick="dtQuickSchedule(60)">In 1 hour</button>
+                  <button type="button" class="schedule-datetime-quick-btn" onclick="dtQuickSchedule(180)">In 3 hours</button>
+                  <button type="button" class="schedule-datetime-quick-btn" onclick="dtQuickScheduleTomorrow(9, 0)">Tomorrow 9 AM</button>
+                </div>
+                <p class="schedule-datetime-meta">
+                  <span id="dtRelative" class="schedule-datetime-hint"></span>
+                  <span id="dtTzBadge" class="schedule-datetime-tz"></span>
+                </p>
+                <input type="hidden" id="schedTime" />
               </div>
 
               <!-- Newsletter Fields (Title + Subtitle) -->
@@ -650,10 +556,10 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
                   <label for="schedBody" id="schedBodyLabel" style="margin-bottom: 0;">Research Topic Description / Writing Guidelines</label>
                   <!-- Prompt Preset Chips -->
-                  <div style="display: flex; gap: 6px; flex-wrap: wrap;" class="dt-time-chips">
-                    <button type="button" class="dt-chip" onclick="dtSelectPromptPreset('brief')" style="font-size: 0.72rem; padding: 4px 10px;">Brief Take</button>
-                    <button type="button" class="dt-chip" onclick="dtSelectPromptPreset('builder')" style="font-size: 0.72rem; padding: 4px 10px;">Builder Insight</button>
-                    <button type="button" class="dt-chip" onclick="dtSelectPromptPreset('reaction')" style="font-size: 0.72rem; padding: 4px 10px;">Quick Reaction</button>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap;" class="schedule-prompt-chips">
+                    <button type="button" class="schedule-datetime-quick-btn" onclick="dtSelectPromptPreset('brief')" style="font-size: 0.72rem; padding: 4px 10px;">Brief Take</button>
+                    <button type="button" class="schedule-datetime-quick-btn" onclick="dtSelectPromptPreset('builder')" style="font-size: 0.72rem; padding: 4px 10px;">Builder Insight</button>
+                    <button type="button" class="schedule-datetime-quick-btn" onclick="dtSelectPromptPreset('reaction')" style="font-size: 0.72rem; padding: 4px 10px;">Quick Reaction</button>
                   </div>
                 </div>
                 <textarea class="editor-textarea" id="schedBody" style="min-height: 180px;" placeholder="e.g. Latest on AI agents and MCP — share a short take on what changed and why it matters to builders…"></textarea>

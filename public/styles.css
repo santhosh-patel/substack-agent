@@ -769,703 +769,89 @@ select option {
 .form-group-datetime {
   min-width: 0;
   margin-bottom: 16px;
-  overflow: visible;
 }
 
-#view-scheduler .card-body {
-  overflow: visible;
+.schedule-datetime {
+  display: grid;
+  grid-template-columns: 1fr 140px;
+  gap: 10px;
 }
 
-.datetime-widget {
-  position: relative;
+.schedule-datetime-field {
   width: 100%;
-}
-
-.datetime-widget-card {
+  min-height: 42px;
+  padding: 10px 12px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.02);
-  overflow: hidden;
-}
-
-.datetime-widget-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.datetime-widget-card-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  font-size: 0.84rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.datetime-widget-title-icon {
-  width: 16px;
-  height: 16px;
-  color: var(--accent);
-  stroke-width: 2.2px;
-}
-
-.datetime-widget-tz-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 10px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--accent);
-  background: rgba(134, 167, 137, 0.1);
-  border: 1px solid rgba(134, 167, 137, 0.2);
-  border-radius: var(--radius-pill);
-  white-space: nowrap;
-}
-
-.datetime-widget-trigger {
-  width: 100%;
-  display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 16px 18px;
+  border-radius: var(--radius-md);
   background: var(--bg-input);
-  border: none;
-  border-radius: 0;
   color: var(--text-primary);
   font-family: inherit;
   font-size: 0.9rem;
-  cursor: pointer;
   transition: var(--transition);
-  text-align: left;
 }
 
-.datetime-widget-trigger:hover {
-  background: var(--bg-hover);
-}
-
-.datetime-widget-trigger:focus {
+.schedule-datetime-field:focus {
   outline: none;
-  box-shadow: inset 0 0 0 2px var(--accent-glow);
-}
-
-.datetime-widget.open .datetime-widget-card {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-glow);
-}
-
-.datetime-widget-trigger-body {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  flex: 1;
-  min-width: 0;
-}
-
-.datetime-widget-primary {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.datetime-widget-primary-label {
-  font-size: 0.68rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.7px;
-  color: var(--text-muted);
-}
-
-.datetime-widget-full {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1.35;
-  word-wrap: break-word;
-}
-
-.datetime-widget.is-empty .datetime-widget-full {
-  color: var(--text-muted);
-  font-weight: 500;
-  font-size: 0.95rem;
-}
-
-.datetime-widget-secondary {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.datetime-widget-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  font-size: 0.86rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  line-height: 1.2;
-}
-
-.datetime-widget-pill-icon {
-  width: 14px;
-  height: 14px;
-  color: var(--accent);
-  stroke-width: 2.2px;
-  flex-shrink: 0;
-}
-
-.datetime-widget.is-empty .datetime-widget-pill {
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.datetime-widget-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 14px;
-}
-
-.datetime-widget-relative {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--accent);
-}
-
-.datetime-widget-iso {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  padding: 3px 8px;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-}
-
-.datetime-widget-action {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  flex-shrink: 0;
-  padding-left: 12px;
-  border-left: 1px solid var(--border);
-  min-width: 64px;
-}
-
-.datetime-widget-action-text {
-  font-size: 0.72rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-muted);
-}
-
-.datetime-widget-chevron {
-  width: 18px;
-  height: 18px;
-  color: var(--text-muted);
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.datetime-widget.open .datetime-widget-chevron {
-  transform: rotate(180deg);
-}
-
-/* Dropdown */
-.datetime-widget-dropdown {
-  position: absolute;
-  top: calc(100% + 10px);
-  left: 0;
-  right: 0;
-  width: 100%;
-  min-width: min(100%, 620px);
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.04);
-  z-index: 1100;
-  display: none;
-  opacity: 0;
-  transform: translateY(-8px) scale(0.98);
-  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  overflow: hidden;
-}
-
-.datetime-widget.open .datetime-widget-dropdown {
-  display: block;
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-.dt-dropdown-preview {
-  padding: 14px 18px;
-  background: linear-gradient(135deg, rgba(134, 167, 137, 0.12), rgba(134, 167, 137, 0.04));
-  border-bottom: 1px solid var(--border);
-}
-
-.dt-dropdown-preview-label {
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--text-muted);
-  margin-bottom: 6px;
-}
-
-.dt-dropdown-preview-value {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1.4;
-  word-wrap: break-word;
-}
-
-.dt-dropdown-preview-sub {
-  margin-top: 4px;
-  font-size: 0.78rem;
-  color: var(--text-secondary);
-}
-
-@media (min-width: 680px) {
-  .datetime-widget.open .datetime-widget-dropdown {
-    display: grid !important;
-    grid-template-columns: 1.15fr 0.85fr;
-    grid-template-rows: auto 1fr auto;
-  }
-
-  .dt-dropdown-preview {
-    grid-column: 1 / -1;
-  }
-
-  .dt-footer {
-    grid-column: 1 / -1;
-  }
-
-  .datetime-widget-panel + .datetime-widget-panel {
-    border-top: none !important;
-    border-left: 1px solid var(--border);
-  }
-}
-
-.datetime-widget-panel {
-  padding: 18px;
-}
-
-.datetime-widget-panel-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 14px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.7px;
-  color: var(--text-muted);
-}
-
-.datetime-widget-panel-title i {
-  width: 15px;
-  height: 15px;
-  color: var(--accent);
-  stroke-width: 2.2px;
-}
-
-.datetime-widget-panel + .datetime-widget-panel {
-  border-top: 1px solid var(--border);
-}
-
-@media (max-width: 560px) {
-  .datetime-widget-trigger {
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .datetime-widget-action {
-    flex-direction: row;
-    justify-content: space-between;
-    border-left: none;
-    border-top: 1px solid var(--border);
-    padding-left: 0;
-    padding-top: 12px;
-    min-width: 0;
-  }
-
-  .datetime-widget-full {
-    font-size: 0.98rem;
-  }
-}
-
-/* Calendar Header */
-.dt-calendar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-}
-
-.dt-month-year {
-  font-weight: 600;
-  font-size: 0.92rem;
-  color: var(--text-primary);
-  letter-spacing: 0.2px;
-}
-
-.dt-nav-btn {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.dt-nav-btn:hover {
-  background: var(--bg-hover);
-  border-color: var(--border-focus);
-  color: var(--accent);
-}
-
-.dt-nav-btn i {
-  width: 16px;
-  height: 16px;
-  stroke-width: 2.2px;
-}
-
-/* Weekday header */
-.dt-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
-  margin-bottom: 6px;
-}
-
-.dt-weekdays span {
-  text-align: center;
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 4px 0;
-}
-
-/* Calendar Grid */
-.dt-calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 3px;
-}
-
-.dt-day {
-  width: 100%;
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.82rem;
-  font-weight: 500;
-  background: transparent;
-  border: none;
-  border-radius: var(--radius-sm);
-  color: var(--text-primary);
-  cursor: pointer;
-  transition: var(--transition);
-  position: relative;
-}
-
-.dt-day:hover:not(.dt-day-disabled):not(.dt-day-selected) {
-  background: var(--bg-hover);
-  color: var(--accent);
-}
-
-.dt-day.dt-day-today {
-  color: var(--accent);
-  font-weight: 700;
-}
-
-.dt-day.dt-day-today::after {
-  content: '';
-  position: absolute;
-  bottom: 3px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
-.dt-day.dt-day-selected {
-  background: var(--accent);
-  color: var(--bg-primary);
-  font-weight: 700;
-  box-shadow: 0 2px 8px rgba(134, 167, 137, 0.3);
-}
-
-.dt-day.dt-day-selected.dt-day-today::after {
-  background: var(--bg-primary);
-}
-
-.dt-day.dt-day-disabled {
-  color: var(--text-muted);
-  opacity: 0.35;
-  cursor: default;
-  pointer-events: none;
-}
-
-.dt-day.dt-day-outside {
-  color: var(--text-muted);
-  opacity: 0.3;
-}
-
-/* Time Panel */
-.dt-time-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.dt-time-display {
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: 700;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--text-primary);
-  padding: 10px 0 4px;
-  letter-spacing: 0.5px;
-}
-
-.dt-time-label {
-  font-size: 0.78rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--text-muted);
-}
-
-.dt-time-selectors {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: center;
-}
-
-.dt-time-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.dt-spin-btn {
-  width: 36px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.dt-spin-btn:hover {
-  background: var(--bg-hover);
-  border-color: var(--border-focus);
-  color: var(--accent);
-}
-
-.dt-spin-btn:active {
-  transform: scale(0.92);
-}
-
-.dt-spin-btn i {
-  width: 14px;
-  height: 14px;
-  stroke-width: 2.5px;
-}
-
-.dt-time-input {
-  width: 52px !important;
-  height: 44px;
-  text-align: center;
-  font-size: 1.3rem !important;
-  font-weight: 700;
-  font-family: 'JetBrains Mono', 'Inter', monospace;
-  color: var(--text-primary);
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 0 !important;
-  outline: none;
-  transition: var(--transition);
-  -moz-appearance: textfield;
-}
-
-.dt-time-input::-webkit-outer-spin-button,
-.dt-time-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.dt-time-input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
-.dt-time-col-label {
-  font-size: 0.65rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-
-.dt-time-colon {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  margin: 0 2px;
-  padding-top: 2px;
-  line-height: 1;
-}
-
-/* AM/PM Toggle */
-.dt-ampm-toggle {
+.schedule-datetime-quick {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-left: 6px;
-}
-
-.dt-ampm-btn {
-  padding: 6px 12px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.dt-ampm-btn:hover {
-  border-color: var(--border-focus);
-  color: var(--text-secondary);
-}
-
-.dt-ampm-btn.active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--bg-primary);
-  box-shadow: 0 2px 6px rgba(134, 167, 137, 0.2);
-}
-
-/* Quick Time Chips */
-.dt-time-chips {
-  display: flex;
-  gap: 6px;
   flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
 }
 
-.dt-chip {
-  padding: 5px 10px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  background: var(--bg-input);
+.schedule-datetime-quick-btn {
+  padding: 6px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
+  background: transparent;
   color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 500;
   cursor: pointer;
   transition: var(--transition);
-  white-space: nowrap;
 }
 
-.dt-chip:hover {
+.schedule-datetime-quick-btn:hover {
   border-color: var(--accent);
   color: var(--accent);
-  background: var(--accent-glow);
+  background: rgba(134, 167, 137, 0.08);
 }
 
-/* Footer */
-.dt-footer {
+.schedule-datetime-meta {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
-  padding: 12px 16px;
-  border-top: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.01);
+  gap: 8px 12px;
+  margin: 8px 0 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
 }
 
-/* Light Theme overrides */
-body.light-theme .datetime-widget-card {
-  background: #FFFFFF;
+.schedule-datetime-hint {
+  color: var(--accent);
+  font-weight: 600;
 }
 
-body.light-theme .datetime-widget-trigger {
-  background: #FFFFFF;
+.schedule-datetime-tz {
+  opacity: 0.85;
 }
 
-body.light-theme .datetime-widget-trigger:hover {
-  background: var(--bg-hover);
+@media (max-width: 560px) {
+  .schedule-datetime {
+    grid-template-columns: 1fr;
+  }
 }
 
-body.light-theme .datetime-widget-pill {
-  background: rgba(0, 0, 0, 0.02);
+body.light-theme .schedule-datetime-field {
+  background: #fff;
 }
 
-body.light-theme .datetime-widget-iso {
-  background: rgba(0, 0, 0, 0.03);
-}
-
-body.light-theme .datetime-widget-dropdown {
-  background: #FFFFFF;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.14), 0 0 0 1px var(--border);
-}
-
-body.light-theme .dt-dropdown-preview {
-  background: linear-gradient(135deg, rgba(85, 124, 85, 0.08), rgba(85, 124, 85, 0.03));
-}
-
-body.light-theme .dt-day.dt-day-selected {
-  color: #FFFFFF;
-}
-
-body.light-theme .dt-ampm-btn.active {
-  color: #FFFFFF;
-}
-
-body.light-theme .dt-time-input {
-  background: #FFFFFF;
-}
-
-body.light-theme .dt-footer {
-  background: var(--bg-secondary);
-}
-
-body.light-theme .dt-chip:hover {
+body.light-theme .schedule-datetime-quick-btn:hover {
   background: rgba(85, 124, 85, 0.06);
 }
 

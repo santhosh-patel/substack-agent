@@ -2603,246 +2603,34 @@ window.stopSchedulerPolling = stopSchedulerPolling;
 window.toggleSchedSearchFields = toggleSchedSearchFields;
 window.updateSchedModelOptions = updateSchedModelOptions;
 
-// ─── Custom Date/Time Picker Widget ───
+// ─── Scheduled Date & Time (simple inputs) ───
 
-let dtState = {
-  viewYear: 2026,
-  viewMonth: 5, // 0-indexed: June
-  selectedDate: null, // Date object (date portion only)
-  hour12: 12,
-  minute: 0,
-  ampm: 'AM',
-  isOpen: false,
-};
-
-function dtInitWidget() {
-  const now = new Date();
-  now.setHours(now.getHours() + 1);
-  now.setMinutes(0, 0, 0);
-
-  dtState.viewYear = now.getFullYear();
-  dtState.viewMonth = now.getMonth();
-  dtState.selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-  let h = now.getHours();
-  dtState.ampm = h >= 12 ? 'PM' : 'AM';
-  dtState.hour12 = h % 12 || 12;
-  dtState.minute = now.getMinutes();
-
-  const tzBadge = document.getElementById('dtTzBadge');
-  if (tzBadge) {
-    tzBadge.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  }
-
-  dtSyncHiddenInput();
-  dtUpdateTriggerDisplay();
-  dtRenderCalendar();
-  dtUpdateTimeUI();
-
-  // Close dropdown when clicking outside
-  document.addEventListener('click', (e) => {
-    const widget = document.getElementById('datetimeWidget');
-    if (widget && dtState.isOpen && !widget.contains(e.target)) {
-      dtCloseWidget();
-    }
-  });
+function dtPad(n) {
+  return String(n).padStart(2, '0');
 }
 
-function toggleDatetimeWidget() {
-  if (dtState.isOpen) {
-    dtCloseWidget();
-  } else {
-    dtOpenWidget();
-  }
+function dtFormatDateInput(date) {
+  return `${date.getFullYear()}-${dtPad(date.getMonth() + 1)}-${dtPad(date.getDate())}`;
 }
 
-function dtOpenWidget() {
-  dtState.isOpen = true;
-  const widget = document.getElementById('datetimeWidget');
-  const trigger = document.getElementById('datetimeWidgetTrigger');
-  if (widget) widget.classList.add('open');
-  if (trigger) trigger.setAttribute('aria-expanded', 'true');
-  dtRenderCalendar();
-  dtUpdateTimeUI();
-  dtUpdateTriggerDisplay();
-  if (window.lucide) lucide.createIcons();
+function dtFormatTimeInput(date) {
+  return `${dtPad(date.getHours())}:${dtPad(date.getMinutes())}`;
 }
 
-function dtCloseWidget() {
-  dtState.isOpen = false;
-  const widget = document.getElementById('datetimeWidget');
-  const trigger = document.getElementById('datetimeWidgetTrigger');
-  if (widget) widget.classList.remove('open');
-  if (trigger) trigger.setAttribute('aria-expanded', 'false');
-}
-
-function dtNavigateMonth(delta) {
-  dtState.viewMonth += delta;
-  if (dtState.viewMonth > 11) {
-    dtState.viewMonth = 0;
-    dtState.viewYear++;
-  } else if (dtState.viewMonth < 0) {
-    dtState.viewMonth = 11;
-    dtState.viewYear--;
-  }
-  dtRenderCalendar();
-  if (window.lucide) lucide.createIcons();
-}
-
-function dtRenderCalendar() {
-  const grid = document.getElementById('dtCalendarGrid');
-  const monthYearEl = document.getElementById('dtMonthYear');
-  if (!grid || !monthYearEl) return;
-
-  const year = dtState.viewYear;
-  const month = dtState.viewMonth;
-
-  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'];
-  monthYearEl.textContent = `${monthNames[month]} ${year}`;
-
-  const firstDay = new Date(year, month, 1).getDay(); // 0=Sun
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const daysInPrevMonth = new Date(year, month, 0).getDate();
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  let html = '';
-
-  // Previous month filler days
-  for (let i = firstDay - 1; i >= 0; i--) {
-    const d = daysInPrevMonth - i;
-    html += `<button type="button" class="dt-day dt-day-outside" tabindex="-1" disabled>${d}</button>`;
-  }
-
-  // Current month days
-  for (let d = 1; d <= daysInMonth; d++) {
-    const thisDate = new Date(year, month, d);
-    const isPast = thisDate < today;
-    const isToday = thisDate.getTime() === today.getTime();
-    const isSelected = dtState.selectedDate &&
-      dtState.selectedDate.getFullYear() === year &&
-      dtState.selectedDate.getMonth() === month &&
-      dtState.selectedDate.getDate() === d;
-
-    let cls = 'dt-day';
-    if (isToday) cls += ' dt-day-today';
-    if (isSelected) cls += ' dt-day-selected';
-    if (isPast) cls += ' dt-day-disabled';
-
-    html += `<button type="button" class="${cls}" onclick="dtSelectDay(${d})"${isPast ? ' disabled' : ''}>${d}</button>`;
-  }
-
-  // Next month filler days
-  const totalCells = firstDay + daysInMonth;
-  const remainingCells = (7 - (totalCells % 7)) % 7;
-  for (let d = 1; d <= remainingCells; d++) {
-    html += `<button type="button" class="dt-day dt-day-outside" tabindex="-1" disabled>${d}</button>`;
-  }
-
-  grid.innerHTML = html;
-}
-
-function dtSelectDay(day) {
-  dtState.selectedDate = new Date(dtState.viewYear, dtState.viewMonth, day);
-  dtRenderCalendar();
-  dtSyncHiddenInput();
-  dtUpdateTriggerDisplay();
-}
-
-function dtSpinTime(type, delta) {
-  if (type === 'hour') {
-    dtState.hour12 += delta;
-    if (dtState.hour12 > 12) dtState.hour12 = 1;
-    if (dtState.hour12 < 1) dtState.hour12 = 12;
-  } else if (type === 'minute') {
-    dtState.minute += delta * 5;
-    if (dtState.minute >= 60) dtState.minute = 0;
-    if (dtState.minute < 0) dtState.minute = 55;
-  }
-  dtUpdateTimeUI();
-  dtSyncHiddenInput();
-  dtUpdateTriggerDisplay();
-}
-
-function dtValidateTimeInput(el, type) {
-  let val = el.value.replace(/[^0-9]/g, '');
-  if (type === 'hour') {
-    let n = parseInt(val, 10);
-    if (isNaN(n)) n = 12;
-    if (n > 12) n = 12;
-    if (n < 1) n = 1;
-    dtState.hour12 = n;
-    el.value = String(n).padStart(2, '0');
-  } else {
-    let n = parseInt(val, 10);
-    if (isNaN(n)) n = 0;
-    if (n > 59) n = 59;
-    if (n < 0) n = 0;
-    dtState.minute = n;
-    el.value = String(n).padStart(2, '0');
-  }
-  dtSyncHiddenInput();
-  dtUpdateTriggerDisplay();
-}
-
-function dtSetAmPm(val) {
-  dtState.ampm = val;
-  dtUpdateTimeUI();
-  dtSyncHiddenInput();
-  dtUpdateTriggerDisplay();
-}
-
-function dtQuickTime(h24, m) {
-  dtState.ampm = h24 >= 12 ? 'PM' : 'AM';
-  dtState.hour12 = h24 % 12 || 12;
-  dtState.minute = m;
-  dtUpdateTimeUI();
-  dtSyncHiddenInput();
-  dtUpdateTriggerDisplay();
-}
-
-function dtSetToday() {
-  const now = new Date();
-  dtState.viewYear = now.getFullYear();
-  dtState.viewMonth = now.getMonth();
-  dtState.selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  dtRenderCalendar();
-  dtSyncHiddenInput();
-  dtUpdateTriggerDisplay();
-}
-
-function dtConfirm() {
-  dtSyncHiddenInput();
-  dtUpdateTriggerDisplay();
-  dtCloseWidget();
-  const display = dtGetFormattedDisplay();
-  showToast(`Scheduled: ${display.full}`, 'info');
-}
-
-function dtUpdateTimeUI() {
-  const hourEl = document.getElementById('dtHourInput');
-  const minEl = document.getElementById('dtMinuteInput');
-  const amBtn = document.getElementById('dtAmBtn');
-  const pmBtn = document.getElementById('dtPmBtn');
-  const timeDisplay = document.getElementById('dtTimeDisplay');
-
-  if (hourEl) hourEl.value = String(dtState.hour12).padStart(2, '0');
-  if (minEl) minEl.value = String(dtState.minute).padStart(2, '0');
-  if (amBtn) amBtn.classList.toggle('active', dtState.ampm === 'AM');
-  if (pmBtn) pmBtn.classList.toggle('active', dtState.ampm === 'PM');
-  if (timeDisplay) {
-    timeDisplay.textContent = `${dtState.hour12}:${String(dtState.minute).padStart(2, '0')} ${dtState.ampm}`;
-  }
+function dtSyncHiddenInput() {
+  const date = document.getElementById('schedDate')?.value;
+  const time = document.getElementById('schedTimeInput')?.value;
+  const hidden = document.getElementById('schedTime');
+  if (!date || !time || !hidden) return;
+  hidden.value = `${date}T${time}`;
 }
 
 function dtBuildSelectedDate() {
-  if (!dtState.selectedDate) return null;
-  let h24 = dtState.hour12 % 12;
-  if (dtState.ampm === 'PM') h24 += 12;
-  const d = dtState.selectedDate;
-  return new Date(d.getFullYear(), d.getMonth(), d.getDate(), h24, dtState.minute, 0, 0);
+  dtSyncHiddenInput();
+  const raw = document.getElementById('schedTime')?.value;
+  if (!raw) return null;
+  const parsed = new Date(raw);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
 function dtGetRelativeLabel(targetDate) {
@@ -2870,81 +2658,54 @@ function dtGetRelativeLabel(targetDate) {
   return `Publishing in ${diffWeeks} week${diffWeeks === 1 ? '' : 's'}`;
 }
 
-function dtGetFormattedDisplay() {
-  const empty = {
-    full: 'Select a date and time',
-    date: '—',
-    time: '—',
-    iso: '',
-    relative: '',
-  };
-
-  if (!dtState.selectedDate) return empty;
-
+function dtUpdateHint() {
   const target = dtBuildSelectedDate();
-  const dateStr = dtState.selectedDate.toLocaleDateString(undefined, {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  });
-  const dateShort = dtState.selectedDate.toLocaleDateString(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-  const timeStr = `${dtState.hour12}:${String(dtState.minute).padStart(2, '0')} ${dtState.ampm}`;
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-  return {
-    full: `${dateStr} at ${timeStr}`,
-    date: dateShort,
-    time: timeStr,
-    iso: target ? target.toISOString() : '',
-    relative: dtGetRelativeLabel(target),
-    tz,
-  };
-}
-
-function dtUpdateTriggerDisplay() {
-  const display = dtGetFormattedDisplay();
-  const fullEl = document.getElementById('dtWidgetFull');
-  const dateEl = document.getElementById('dtWidgetDate');
-  const timeEl = document.getElementById('dtWidgetTime');
   const relativeEl = document.getElementById('dtRelative');
-  const isoEl = document.getElementById('dtIsoPreview');
-  const previewEl = document.getElementById('dtDropdownPreview');
-  const previewSubEl = document.getElementById('dtDropdownPreviewSub');
-  const widget = document.getElementById('datetimeWidget');
-
-  if (fullEl) fullEl.textContent = display.full;
-  if (dateEl) dateEl.textContent = display.date;
-  if (timeEl) timeEl.textContent = display.time;
-  if (relativeEl) relativeEl.textContent = display.relative;
-  if (isoEl) isoEl.textContent = display.iso ? display.iso : '';
-  if (previewEl) previewEl.textContent = display.full;
-  if (previewSubEl) {
-    previewSubEl.textContent = display.relative
-      ? `${display.relative}${display.tz ? ` · ${display.tz}` : ''}`
-      : (display.tz || '');
-  }
-  if (widget) {
-    widget.classList.toggle('is-empty', !dtState.selectedDate);
+  if (relativeEl) {
+    relativeEl.textContent = target ? dtGetRelativeLabel(target) : '';
   }
 }
 
-function dtSyncHiddenInput() {
-  const input = document.getElementById('schedTime');
-  if (!input || !dtState.selectedDate) return;
+function dtApplyDateTime(date) {
+  const dateEl = document.getElementById('schedDate');
+  const timeEl = document.getElementById('schedTimeInput');
+  if (dateEl) dateEl.value = dtFormatDateInput(date);
+  if (timeEl) timeEl.value = dtFormatTimeInput(date);
+  dtSyncHiddenInput();
+  dtUpdateHint();
+}
 
-  let h24 = dtState.hour12 % 12;
-  if (dtState.ampm === 'PM') h24 += 12;
+function dtInitWidget() {
+  const defaultDate = new Date();
+  defaultDate.setHours(defaultDate.getHours() + 1, 0, 0, 0);
 
-  const d = dtState.selectedDate;
-  // Format: YYYY-MM-DDTHH:MM (same as datetime-local)
-  const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}T${String(h24).padStart(2, '0')}:${String(dtState.minute).padStart(2, '0')}`;
-  input.value = iso;
+  const tzEl = document.getElementById('dtTzBadge');
+  if (tzEl) {
+    tzEl.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  }
+
+  dtApplyDateTime(defaultDate);
+
+  const dateEl = document.getElementById('schedDate');
+  const timeEl = document.getElementById('schedTimeInput');
+  const onChange = () => {
+    dtSyncHiddenInput();
+    dtUpdateHint();
+  };
+  dateEl?.addEventListener('change', onChange);
+  timeEl?.addEventListener('change', onChange);
+  timeEl?.addEventListener('input', onChange);
+}
+
+function dtQuickSchedule(minutesFromNow) {
+  dtApplyDateTime(new Date(Date.now() + minutesFromNow * 60000));
+}
+
+function dtQuickScheduleTomorrow(hour, minute) {
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+  date.setHours(hour, minute, 0, 0);
+  dtApplyDateTime(date);
 }
 
 function dtSelectPromptPreset(type) {
@@ -2957,20 +2718,11 @@ function dtSelectPromptPreset(type) {
     reaction: 'Write like you just read the news and are posting your honest reaction. Simple, direct, human. One key point plus a short personal opinion.',
   };
 
-  schedBody.value = presets[type] || "";
+  schedBody.value = presets[type] || '';
 }
 
-// Global exports for onclick handlers
-window.toggleDatetimeWidget = toggleDatetimeWidget;
-window.dtNavigateMonth = dtNavigateMonth;
-window.dtSelectDay = dtSelectDay;
-window.dtSpinTime = dtSpinTime;
-window.dtValidateTimeInput = dtValidateTimeInput;
-window.dtSetAmPm = dtSetAmPm;
-window.dtQuickTime = dtQuickTime;
-window.dtSetToday = dtSetToday;
-window.dtConfirm = dtConfirm;
-window.saveApiKey = saveApiKey;
+window.dtQuickSchedule = dtQuickSchedule;
+window.dtQuickScheduleTomorrow = dtQuickScheduleTomorrow;
 window.dtSelectPromptPreset = dtSelectPromptPreset;
 
 
