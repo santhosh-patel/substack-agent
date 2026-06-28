@@ -81,12 +81,22 @@
 
             <div class="form-group">
               <label for="sid">Session cookie (connect.sid)</label>
-              <input type="password" id="sid" placeholder="Paste your cookie value…" autocomplete="off" />
+              <div class="input-password-wrapper">
+                <input type="password" id="sid" placeholder="Paste your cookie value…" autocomplete="off" />
+                <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('sid', this)" title="Toggle visibility">
+                  <i data-lucide="eye"></i>
+                </button>
+              </div>
             </div>
 
             <div class="form-group">
               <label for="pubUrl">Publication URL</label>
-              <input type="text" id="pubUrl" placeholder="yoursite.substack.com" />
+              <div class="input-password-wrapper">
+                <input type="text" id="pubUrl" placeholder="yoursite.substack.com" />
+                <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('pubUrl', this)" title="Toggle visibility">
+                  <i data-lucide="eye-off"></i>
+                </button>
+              </div>
             </div>
 
             <div class="form-group">
@@ -118,7 +128,12 @@
 
             <div class="form-group">
               <label for="aiKey">API Key</label>
-              <input type="password" id="aiKey" placeholder="Paste your API key…" autocomplete="off" />
+              <div class="input-password-wrapper">
+                <input type="password" id="aiKey" placeholder="Paste your API key…" autocomplete="off" />
+                <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('aiKey', this)" title="Toggle visibility">
+                  <i data-lucide="eye"></i>
+                </button>
+              </div>
             </div>
           </div>
 

@@ -2271,5 +2271,43 @@ body.light-theme .badge-pending {
   color: #2B6CB0;
 }
 
+/* Password/Secret Inputs with Toggle Eye Button */
+.input-password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-password-wrapper input {
+  padding-right: 48px; /* Leave space for the eye button */
+}
+
+.btn-toggle-password {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  z-index: 5;
+}
+
+.btn-toggle-password:hover {
+  color: var(--accent);
+  background: var(--bg-hover);
+}
+
+.btn-toggle-password i {
+  width: 18px;
+  height: 18px;
+}
+
 
 
