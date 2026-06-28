@@ -4,5 +4,7 @@ dist/
 .env.local
 .vercel/
 
-# Runtime data — do not commit local comment history
+# Runtime data — do not commit local history or schedules (may contain API keys)
 src/data/comments_history.json
+src/data/publications_history.json
+src/data/schedules.json

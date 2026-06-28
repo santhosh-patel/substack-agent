@@ -1679,6 +1679,7 @@ async function loadSchedules() {
       const isPaused = item.status === 'paused';
       const isFailed = item.status === 'failed';
       const retryCount = item.retryCount || 0;
+      const canRetryNow = isFailed || (item.status === 'pending' && retryCount > 0 && item.errorMessage);
       const toggleText = isPaused ? 'Resume' : 'Pause';
       const toggleIcon = isPaused ? 'play' : 'pause';
 
@@ -1724,15 +1725,15 @@ async function loadSchedules() {
             </div>
           </div>
           <div class="schedule-item-actions">
-            ${isFailed ? `
-              <button class="btn btn-primary btn-sm" onclick="retryScheduleItem('${item.id}')" title="Retry this post" style="display: flex; align-items: center; gap: 4px;">
-                <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Retry
+            ${canRetryNow ? `
+              <button class="btn btn-primary btn-sm" onclick="retryScheduleItem('${item.id}', this)" title="Retry this post now" style="display: flex; align-items: center; gap: 4px;">
+                <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Retry Now
               </button>
-            ` : `
+            ` : !isFailed ? `
               <button class="btn btn-secondary btn-sm" onclick="toggleScheduleState('${item.id}')" title="${toggleText} Schedule" style="display: flex; align-items: center; gap: 4px;">
                 <i data-lucide="${toggleIcon}" style="width: 14px; height: 14px;"></i> ${toggleText}
               </button>
-            `}
+            ` : ''}
             <button class="btn btn-secondary btn-sm" style="color: var(--error); border-color: rgba(239, 68, 68, 0.2); display: flex; align-items: center; gap: 4px;" onclick="deleteScheduleItem('${item.id}')" title="Delete Schedule">
               <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Delete
             </button>
@@ -1885,7 +1886,9 @@ async function deleteScheduleItem(id) {
   }
 }
 
-async function retryScheduleItem(id) {
+async function retryScheduleItem(id, btnEl) {
+  if (btnEl) setButtonLoading(btnEl, true, 'Retrying…');
+
   try {
     const schedProviderVal = document.getElementById('schedProvider')?.value || '';
     const mainProvider = document.getElementById('provider')?.value || 'groq';
@@ -1897,6 +1900,8 @@ async function retryScheduleItem(id) {
     if (!apiKey) {
       apiKey = getStoredApiKey(resolvedProvider);
     }
+
+    appendSchedulerLog(`Manual retry started for schedule ${id}…`, 'highlight');
 
     const res = await fetch(`/api/schedule/${id}/retry`, {
       method: 'POST',
@@ -1910,12 +1915,128 @@ async function retryScheduleItem(id) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Failed to retry schedule');
 
-    showToast('Post queued for retry with updated credentials', 'success');
-    appendSchedulerLog(`Manual retry queued for schedule ${id}.`, 'info');
+    renderSchedulerApiLogs(data.logs);
+
+    if (data.processed?.status === 'success') {
+      showToast('Post processed successfully on retry!', 'success');
+      appendSchedulerLog(`Retry succeeded for schedule ${id}.`, 'success');
+    } else if (data.processed?.status === 'failed') {
+      showToast(`Retry failed: ${data.processed.error}`, 'error');
+      appendSchedulerLog(`Retry failed for schedule ${id}: ${data.processed.error}`, 'error');
+    } else {
+      showToast('Retry completed — check logs for details', 'info');
+    }
+
     await loadSchedules();
   } catch (err) {
+    appendSchedulerLog(`Retry error: ${err.message}`, 'error');
     showToast(err.message, 'error');
+  } finally {
+    if (btnEl) setButtonLoading(btnEl, false, '<i data-lucide="refresh-cw"></i> Retry Now');
   }
+}
+
+async function testSubstackSession() {
+  const sid = getStoredSid();
+  const pubUrl = document.getElementById('pubUrl')?.value.trim();
+  const btn = document.getElementById('testSidBtn');
+
+  if (!sid && !window.backendConfig?.hasSubstackSid) {
+    showToast('Enter your connect.sid session cookie first', 'error');
+    return;
+  }
+
+  setButtonLoading(btn, true, 'Testing…');
+
+  try {
+    const res = await fetch('/api/test/substack', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sid: sid || undefined,
+        publicationUrl: pubUrl || undefined,
+      }),
+    });
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || 'Session test failed');
+    }
+
+    saveSettings();
+    isConnected = true;
+    updateConnectionBadge(data.profile);
+    const publishBtn = document.getElementById('publishBtn');
+    if (publishBtn) publishBtn.disabled = false;
+
+    showToast(`Session OK — connected as ${data.profile.name} (@${data.profile.slug})`, 'success');
+  } catch (err) {
+    isConnected = false;
+    updateConnectionBadge(null);
+    showToast(err.message, 'error');
+  } finally {
+    setButtonLoading(btn, false, '<i data-lucide="shield-check"></i> Test Session');
+  }
+}
+
+async function testAiKey(options = {}) {
+  const { providerOverride, modelOverride, keyOverride, buttonId = 'testAiKeyBtn' } = options;
+  const provider = providerOverride || document.getElementById('provider')?.value;
+  const model = modelOverride || document.getElementById('model')?.value;
+  let apiKey = keyOverride || getStoredApiKey(provider);
+  const btn = document.getElementById(buttonId);
+
+  if (!apiKey && !hasBackendApiKey(provider)) {
+    showToast(`Enter your ${provider.toUpperCase()} API key first`, 'error');
+    return false;
+  }
+
+  if (btn) setButtonLoading(btn, true, 'Testing…');
+
+  try {
+    const res = await fetch('/api/test/ai-key', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ provider, model, apiKey: apiKey || undefined }),
+    });
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || 'API key test failed');
+    }
+
+    if (!keyOverride) saveApiKey({ silent: true });
+    showToast(`${data.provider.toUpperCase()} key works with ${data.model}`, 'success');
+    return true;
+  } catch (err) {
+    showToast(err.message, 'error');
+    return false;
+  } finally {
+    if (btn) {
+      const label = buttonId === 'testSchedAiKeyBtn'
+        ? '<i data-lucide="shield-check"></i> Test Key'
+        : '<i data-lucide="shield-check"></i> Test API Key';
+      setButtonLoading(btn, false, label);
+    }
+  }
+}
+
+async function testSchedAiKey() {
+  const schedProviderVal = document.getElementById('schedProvider')?.value || '';
+  const mainProvider = document.getElementById('provider')?.value || 'groq';
+  const provider = schedProviderVal || mainProvider;
+  const model = document.getElementById('schedModel')?.value.trim()
+    || document.getElementById('model')?.value.trim()
+    || '';
+  let apiKey = document.getElementById('schedApiKey')?.value.trim() || '';
+  if (!apiKey) apiKey = getStoredApiKey(provider);
+
+  await testAiKey({
+    providerOverride: provider,
+    modelOverride: model,
+    keyOverride: apiKey,
+    buttonId: 'testSchedAiKeyBtn',
+  });
 }
 
 async function runManualCron() {
@@ -2057,6 +2178,9 @@ window.handleCreateSchedule = handleCreateSchedule;
 window.toggleScheduleState = toggleScheduleState;
 window.deleteScheduleItem = deleteScheduleItem;
 window.retryScheduleItem = retryScheduleItem;
+window.testSubstackSession = testSubstackSession;
+window.testAiKey = testAiKey;
+window.testSchedAiKey = testSchedAiKey;
 window.runManualCron = runManualCron;
 window.clearSchedulerLogs = clearSchedulerLogs;
 window.copySchedulerLogs = copySchedulerLogs;

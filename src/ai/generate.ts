@@ -556,4 +556,78 @@ export async function generateNote(req: GenerateNoteRequest): Promise<GeneratedN
   }
 }
 
+function getOpenAICompatibleEndpoint(provider: 'groq' | 'openai' | 'openrouter'): string {
+  if (provider === 'groq') return 'https://api.groq.com/openai/v1/chat/completions';
+  if (provider === 'openai') return 'https://api.openai.com/v1/chat/completions';
+  return 'https://openrouter.ai/api/v1/chat/completions';
+}
+
+export async function testAIKey(
+  provider: GenerateRequest['provider'],
+  model: string,
+  apiKey: string
+): Promise<{ provider: string; model: string; message: string }> {
+  if (!apiKey) {
+    throw new Error('API key is required');
+  }
+
+  const resolvedModel = model || DEFAULT_AI_MODELS[provider];
+
+  switch (provider) {
+    case 'groq':
+    case 'openai':
+    case 'openrouter': {
+      const res = await fetch(getOpenAICompatibleEndpoint(provider), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: resolvedModel,
+          messages: [{ role: 'user', content: 'Reply with exactly: OK' }],
+          max_tokens: 8,
+          temperature: 0,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(`API error (${res.status}): ${err}`);
+      }
+
+      return {
+        provider,
+        model: resolvedModel,
+        message: 'API key is valid and the model responded successfully.',
+      };
+    }
+
+    case 'gemini': {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${resolvedModel}:generateContent?key=${apiKey}`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: 'Reply with exactly: OK' }] }],
+          generationConfig: { maxOutputTokens: 8, temperature: 0 },
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(`Gemini API error (${res.status}): ${err}`);
+      }
+
+      return {
+        provider,
+        model: resolvedModel,
+        message: 'API key is valid and the model responded successfully.',
+      };
+    }
+
+    default:
+      throw new Error(`Unknown provider: ${provider}`);
+  }
+}
 

@@ -691,6 +691,12 @@ main {
   line-height: 1.3;
 }
 
+.settings-btn-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
 /* ─── Form Elements ─── */
 .form-group {
   margin-bottom: 16px;

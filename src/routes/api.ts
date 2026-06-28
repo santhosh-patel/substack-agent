@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { Marked } from 'marked';
-import { generatePost, SYSTEM_PROMPT, analyzeAndGenerateComment, generateNote, NOTE_SYSTEM_PROMPT, DEFAULT_AI_MODELS } from '../ai/generate.js';
+import { generatePost, SYSTEM_PROMPT, analyzeAndGenerateComment, generateNote, NOTE_SYSTEM_PROMPT, DEFAULT_AI_MODELS, testAIKey } from '../ai/generate.js';
 import fs from 'fs';
 import path from 'path';
 import {
@@ -922,6 +922,72 @@ router.post('/schedule/:id/toggle', async (req: Request, res: Response) => {
   }
 });
 
+// ─── POST /api/test/substack ───
+type AIProvider = 'groq' | 'gemini' | 'openai' | 'openrouter';
+
+router.post('/test/substack', async (req: Request, res: Response) => {
+  try {
+    const { sid, publicationUrl } = req.body || {};
+    const cookie = sid?.trim() || process.env.SUBSTACK_SID;
+    if (!cookie) {
+      res.status(400).json({ error: 'Session cookie (connect.sid) is required' });
+      return;
+    }
+
+    const result = await connectSubstack(cookie, publicationUrl || process.env.SUBSTACK_PUB_URL);
+    if (!result.success) {
+      res.status(401).json({
+        success: false,
+        error: result.error || 'Substack session test failed',
+      });
+      return;
+    }
+
+    res.json({
+      success: true,
+      message: 'Substack session is valid',
+      profile: {
+        name: result.profile?.name,
+        slug: result.profile?.slug,
+      },
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Substack session test failed' });
+  }
+});
+
+// ─── POST /api/test/ai-key ───
+router.post('/test/ai-key', async (req: Request, res: Response) => {
+  try {
+    let { provider, model, apiKey } = req.body || {};
+    if (!provider) {
+      res.status(400).json({ error: 'Provider is required' });
+      return;
+    }
+
+    if (!apiKey) {
+      if (provider === 'groq') apiKey = process.env.GROQ_API_KEY;
+      else if (provider === 'gemini') apiKey = process.env.GEMINI_API_KEY;
+      else if (provider === 'openai') apiKey = process.env.OPENAI_API_KEY;
+      else if (provider === 'openrouter') apiKey = process.env.OPENROUTER_API_KEY;
+    }
+
+    if (!apiKey) {
+      res.status(400).json({ error: 'API key is required' });
+      return;
+    }
+
+    if (!model) {
+      model = DEFAULT_AI_MODELS[provider as AIProvider];
+    }
+
+    const result = await testAIKey(provider, model, apiKey);
+    res.json({ success: true, ...result });
+  } catch (err: any) {
+    res.status(401).json({ success: false, error: err.message || 'API key test failed' });
+  }
+});
+
 // ─── POST /api/schedule/:id/retry ───
 router.post('/schedule/:id/retry', async (req: Request, res: Response) => {
   try {
@@ -932,16 +998,31 @@ router.post('/schedule/:id/retry', async (req: Request, res: Response) => {
       model: model || undefined,
     });
     if (!schedule) {
-      res.status(404).json({ error: 'Failed schedule not found' });
+      res.status(404).json({ error: 'Schedule not found or cannot be retried' });
       return;
     }
-    res.json({ success: true, schedule });
+
+    const logs: string[] = [];
+    const addLog = (msg: string) => {
+      logs.push(`[${new Date().toLocaleTimeString()}] ${msg}`);
+      console.log(`[CronScheduler] ${msg}`);
+    };
+
+    addLog(`Manual retry requested for schedule ${schedule.id}. Running now...`);
+    const { processed } = await runScheduleProcessing(addLog);
+    const result = processed.find(item => item.id === schedule.id);
+
+    res.json({
+      success: true,
+      schedule,
+      processed: result || null,
+      processedCount: processed.length,
+      logs,
+    });
   } catch (err: any) {
     res.status(500).json({ error: err.message || 'Failed to retry schedule' });
   }
 });
-
-type AIProvider = 'groq' | 'gemini' | 'openai' | 'openrouter';
 
 function resolveEnvApiKey(provider: AIProvider): string | undefined {
   if (provider === 'groq') return process.env.GROQ_API_KEY;

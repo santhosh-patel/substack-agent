@@ -387,7 +387,7 @@ export async function recoverStuckSchedules(
 }
 
 /**
- * Manually retry a permanently failed schedule.
+ * Manually retry a failed or waiting schedule and run immediately.
  */
 export async function retrySchedule(
   id: string,
@@ -395,7 +395,14 @@ export async function retrySchedule(
 ): Promise<ScheduledPost | null> {
   const schedules = await getSchedules();
   const post = schedules.find(p => p.id === id);
-  if (!post || post.status !== 'failed') return null;
+  if (!post) return null;
+
+  const canRetry =
+    post.status === 'failed' ||
+    (post.status === 'pending' && (post.retryCount || 0) > 0 && Boolean(post.errorMessage)) ||
+    post.status === 'paused';
+
+  if (!canRetry) return null;
 
   if (updates?.apiKey) post.apiKey = updates.apiKey;
   if (updates?.provider) post.provider = updates.provider;
@@ -405,7 +412,7 @@ export async function retrySchedule(
   post.retryCount = 0;
   post.errorMessage = undefined;
   post.processingStartedAt = undefined;
-  post.scheduledAt = new Date(Date.now() + 5000).toISOString();
+  post.scheduledAt = new Date().toISOString();
   await saveSchedules(schedules);
   return post;
 }
