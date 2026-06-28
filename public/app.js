@@ -2128,6 +2128,10 @@ function buildScheduleConfirmHtml(details) {
     addRow('Model', details.modelLabel);
   }
 
+  if (details.presetMode === 'default') {
+    addRow('Illustration', 'Editorial sketch (generated and attached)');
+  }
+
   return `<div class="schedule-confirm-details">${rows.join('')}</div>`;
 }
 
@@ -2162,6 +2166,7 @@ async function handleCreateSchedule() {
     apiKey = getStoredApiKey(resolvedProvider);
   }
   const systemPrompt = document.getElementById('schedSystemPrompt').value.trim();
+  const presetMode = document.getElementById('schedPresetMode')?.value.trim() || '';
 
   const btn = document.getElementById('schedSubmitBtn');
 
@@ -2236,6 +2241,7 @@ async function handleCreateSchedule() {
     searchLabel: enableSearch ? 'Enabled' : 'Disabled',
     providerLabel: (resolvedProvider || 'Default').toUpperCase(),
     modelLabel: resolvedModel || 'Default model',
+    presetMode,
   });
 
   if (!confirmed) return;
@@ -2262,6 +2268,7 @@ async function handleCreateSchedule() {
         model: enableSearch ? (resolvedModel || undefined) : (document.getElementById('schedModel').value || undefined),
         apiKey: apiKey || undefined,
         systemPrompt: systemPrompt || undefined,
+        presetMode: presetMode || undefined,
       }),
     });
 
@@ -2275,6 +2282,8 @@ async function handleCreateSchedule() {
     document.getElementById('schedSubtitle').value = '';
     document.getElementById('schedNoteLink').value = '';
     document.getElementById('schedBody').value = '';
+    const presetModeEl = document.getElementById('schedPresetMode');
+    if (presetModeEl) presetModeEl.value = '';
 
     // Reload queue list
     await loadSchedules();
@@ -3260,16 +3269,20 @@ function dtQuickScheduleTomorrow(hour, minute) {
 
 function dtSelectPromptPreset(type) {
   const schedBody = document.getElementById('schedBody');
+  const presetModeEl = document.getElementById('schedPresetMode');
   if (!schedBody) return;
 
   const presets = {
-    default: 'Search the web and pick the single best current story where artificial intelligence meets healthcare, nanotechnology, biotechnology, health technology, space technology, rural development, or robotics. Focus on one field per post.\n\nWrite a simple, clean, elegant newsletter in 100 to 150 words. Plain prose only. No icons, emojis, bullet lists, or hyphenated phrases. Avoid buzzwords, hype, and press release tone. Name real developments, companies, or research where possible. End with one clear thought worth keeping.',
+    default: 'Search the web and pick the single best current story where artificial intelligence meets healthcare, nanotechnology, biotechnology, health technology, space technology, rural development, or robotics. Focus on one field per post.\n\nWrite a simple, clean, elegant newsletter in 100 to 150 words. Plain prose only. No icons, emojis, bullet lists, or hyphenated phrases. Avoid buzzwords, hype, and press release tone. Name real developments, companies, or research where possible. End with one clear thought worth keeping.\n\nAlso create an editorial sketch illustration related to the post and publish it at the top of the draft.',
     brief: 'Find the most interesting recent news on this topic. Write an engaging post with a strong hook, specific names/details from the story, and a clear builder-focused takeaway. Make it worth reading — not a flat summary.',
     builder: 'Lead with why this news matters for engineers shipping AI in production. Include concrete details, a sharp insight, and a memorable close. Engaging and professional, not bland.',
     reaction: 'Write like something in the news genuinely caught your attention. Strong opening, honest reaction, one sharp opinion — make it feel alive and specific, not generic.',
   };
 
   schedBody.value = presets[type] || '';
+  if (presetModeEl) {
+    presetModeEl.value = presets[type] ? type : '';
+  }
 }
 
 window.dtNavigateMonth = dtNavigateMonth;

@@ -29,6 +29,7 @@ export interface ScheduledPost {
   model?: string;
   apiKey?: string;
   systemPrompt?: string;
+  presetMode?: 'default' | 'brief' | 'builder' | 'reaction' | 'custom' | string;
   publishedUrl?: string;
   publishedTitle?: string;
 }

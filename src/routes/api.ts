@@ -1,6 +1,8 @@
 import { Router, Request, Response } from 'express';
 import { Marked } from 'marked';
 import { generatePost, SYSTEM_PROMPT, analyzeAndGenerateComment, generateNote, NOTE_SYSTEM_PROMPT, DEFAULT_AI_MODELS, testAIKey, deriveResearchSearchQuery, generateNewsletterWithWebResearch, generateNoteWithWebResearch } from '../ai/generate.js';
+import { resolveOpenAIImageApiKey } from '../ai/generate-image.js';
+import { attachIllustrationToDraft } from '../lib/substack-media.js';
 import fs from 'fs';
 import path from 'path';
 import {
@@ -958,7 +960,7 @@ router.post('/schedule', async (req: Request, res: Response) => {
   try {
     const { 
       title, subtitle, body, isDraft, scheduledAt, recurrence, postType, noteLink,
-      enableSearch, provider, model, apiKey, systemPrompt
+      enableSearch, provider, model, apiKey, systemPrompt, presetMode
     } = req.body;
 
     const payload = {
@@ -975,6 +977,7 @@ router.post('/schedule', async (req: Request, res: Response) => {
       model,
       apiKey,
       systemPrompt,
+      presetMode: typeof presetMode === 'string' && presetMode.trim() ? presetMode.trim() : undefined,
     };
 
     const validationError = validateScheduledPost(payload);
@@ -1387,7 +1390,36 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
           throw new Error('Failed to create draft on Substack');
         }
 
+        let docJsonForDraft = docJson;
         const pubHostname = getPubHostname();
+          const imageApiKey = resolveOpenAIImageApiKey({
+            provider: post.provider,
+            apiKey: post.apiKey,
+          });
+
+          if (!imageApiKey) {
+            addLog(
+              'Default mode: no OpenAI API key available for illustration. Add OPENAI_API_KEY on the server or use OpenAI as the schedule provider.'
+            );
+          } else {
+            try {
+              await attachIllustrationToDraft({
+                draftId: response.id,
+                docJson,
+                title: finalTitle,
+                bodyMarkdown: finalBody,
+                subtitle: finalSubtitle || undefined,
+                bylineId: ownProfile.id,
+                openaiApiKey: imageApiKey,
+                addLog,
+              });
+            } catch (imageErr) {
+              const message = imageErr instanceof Error ? imageErr.message : String(imageErr);
+              addLog(`Default mode illustration failed (post will continue without image): ${message}`);
+            }
+          }
+        }
+
         publishedUrl = `https://${pubHostname}/publish/post/${response.id}`;
         publishedTitle = finalTitle || response.title || 'Scheduled Newsletter';
         const isLivePublish = post.isDraft === false;
