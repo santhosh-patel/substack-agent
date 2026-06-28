@@ -2177,9 +2177,9 @@ function dtSelectPromptPreset(type) {
   if (!schedBody) return;
 
   const presets = {
-    tech: "Focus on the main technical details, architectural decisions, code patterns, and practical code snippets. Contrast it with alternatives and write in a professional, builder-focused tone.",
-    strategy: "Focus on the business strategy, user experience, market positioning, target audience, and future impact. Keep the tone engaging, strategic, and analytical.",
-    casual: "Provide a quick, punchy summary highlighting what is exciting and what might be overhyped. Write in a casual, conversational, and highly opinionated tone."
+    tech: "Analyze the topic with a rigorous technical focus. Break down the core architectural patterns, implementation details, and key decisions. Provide illustrative code snippets (if applicable) and concrete examples. Critically contrast this technology with its leading alternatives on performance, complexity, and scalability. Maintain an authoritative, builder-focused, engineering-first tone.",
+    strategy: "Deconstruct the product, release, or trend from a business and strategy standpoint. Analyze the market positioning, value proposition, competitive landscape, and user experience (UX) implications. Discuss the broader impact on the industry and the target audience's daily lives. Keep the tone strategic, analytical, and highly forward-looking.",
+    casual: "Give a high-energy, punchy, and highly conversational breakdown of the topic. Cut through the marketing hype—clearly distinguish what is revolutionary from what is pure noise. Share strong, opinionated perspectives, ask provocative questions, and use engaging analogies. Write in an authentic, relatable tone that sparks discussion."
   };
 
   schedBody.value = presets[type] || "";
