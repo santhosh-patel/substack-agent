@@ -143,6 +143,9 @@ function loadSavedSettings() {
       updateModelOptions();
     }
     if (s.model) document.getElementById('model').value = s.model;
+    
+    // Load saved API key for active provider
+    loadApiKeyForProvider();
   } catch {}
 }
 
@@ -153,6 +156,50 @@ function saveSettings() {
     model: document.getElementById('model').value,
   };
   localStorage.setItem('substack_settings', JSON.stringify(settings));
+}
+
+function loadApiKeyForProvider() {
+  const provider = document.getElementById('provider').value;
+  const keyInput = document.getElementById('aiKey');
+  const modelSelect = document.getElementById('model');
+  const saveBtn = document.getElementById('saveAiKeyBtn');
+  
+  if (!keyInput) return;
+  const savedKey = localStorage.getItem(`substack_apikey_${provider}`) || '';
+  keyInput.value = savedKey;
+
+  // If API key is saved, rename button to "Update API Key" and enable model select.
+  // Otherwise, rename button to "Save API Key" and disable model select.
+  if (savedKey) {
+    if (saveBtn) {
+      saveBtn.innerHTML = '<i data-lucide="save"></i> Update API Key';
+    }
+    if (modelSelect) {
+      modelSelect.disabled = false;
+    }
+  } else {
+    if (saveBtn) {
+      saveBtn.innerHTML = '<i data-lucide="save"></i> Save API Key';
+    }
+    if (modelSelect) {
+      modelSelect.disabled = true;
+    }
+  }
+
+  if (window.lucide) {
+    lucide.createIcons();
+  }
+}
+
+function saveApiKey() {
+  const provider = document.getElementById('provider').value;
+  const keyInput = document.getElementById('aiKey');
+  if (!keyInput) return;
+  const keyVal = keyInput.value.trim();
+  
+  localStorage.setItem(`substack_apikey_${provider}`, keyVal);
+  loadApiKeyForProvider();
+  showToast('Done! API Key updated.', 'success');
 }
 
 // ─── Model Dropdown ───
@@ -170,6 +217,7 @@ function updateModelOptions() {
   });
 
   saveSettings();
+  loadApiKeyForProvider();
 }
 
 // ─── Connect to Substack ───
@@ -2134,4 +2182,6 @@ window.dtSetAmPm = dtSetAmPm;
 window.dtQuickTime = dtQuickTime;
 window.dtSetToday = dtSetToday;
 window.dtConfirm = dtConfirm;
+window.saveApiKey = saveApiKey;
+
 
