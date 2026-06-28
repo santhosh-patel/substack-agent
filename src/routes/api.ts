@@ -1390,8 +1390,9 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
           throw new Error('Failed to create draft on Substack');
         }
 
-        let docJsonForDraft = docJson;
         const pubHostname = getPubHostname();
+
+        if (post.presetMode === 'default') {
           const imageApiKey = resolveOpenAIImageApiKey({
             provider: post.provider,
             apiKey: post.apiKey,
