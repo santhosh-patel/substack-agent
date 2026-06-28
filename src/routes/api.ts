@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { Marked } from 'marked';
-import { generatePost, SYSTEM_PROMPT, analyzeAndGenerateComment, generateNote, NOTE_SYSTEM_PROMPT, DEFAULT_AI_MODELS, testAIKey } from '../ai/generate.js';
+import { generatePost, SYSTEM_PROMPT, analyzeAndGenerateComment, generateNote, NOTE_SYSTEM_PROMPT, DEFAULT_AI_MODELS, testAIKey, deriveResearchSearchQuery, generateNewsletterWithWebResearch, generateNoteWithWebResearch } from '../ai/generate.js';
 import fs from 'fs';
 import path from 'path';
 import {
@@ -33,7 +33,6 @@ import {
   sanitizeScheduleForClient,
   type ScheduledPost,
 } from '../lib/storage.js';
-import { searchInternet } from '../lib/search.js';
 import { getPublicationHistory, savePublicationToHistory } from '../lib/publication-history.js';
 
 const router = Router();
@@ -104,10 +103,10 @@ router.post('/disconnect', (_req: Request, res: Response) => {
 // ─── POST /api/generate ───
 router.post('/generate', async (req: Request, res: Response) => {
   try {
-    let { topic, provider, model, apiKey, systemPrompt } = req.body;
+    let { topic, provider, model, apiKey, systemPrompt, useWebSearch } = req.body;
 
     if (!topic) {
-      res.status(400).json({ error: 'Topic is required' });
+      res.status(400).json({ error: 'Topic or writing guidelines are required' });
       return;
     }
     if (!provider || !model) {
@@ -126,7 +125,21 @@ router.post('/generate', async (req: Request, res: Response) => {
       return;
     }
 
-    const post = await generatePost({ topic, provider, model, apiKey, systemPrompt });
+    const baseReq = { topic, provider, model, apiKey, systemPrompt };
+    if (useWebSearch) {
+      const { post, searchQuery, searchResults } = await generateNewsletterWithWebResearch(baseReq);
+      res.json({
+        success: true,
+        post,
+        research: {
+          searchQuery,
+          searchResultsPreview: searchResults.substring(0, 500),
+        },
+      });
+      return;
+    }
+
+    const post = await generatePost(baseReq);
     res.json({ success: true, post });
   } catch (err: any) {
     console.error('Generate error:', err);
@@ -1184,6 +1197,10 @@ function resolveScheduleAIConfig(
   return { provider, model, apiKey };
 }
 
+function deriveScheduleSearchQuery(post: ScheduledPost): string {
+  return deriveResearchSearchQuery(post.body, post.title);
+}
+
 // Core scheduler processor function
 export async function runScheduleProcessing(addLog: (msg: string) => void): Promise<{ processed: any[] }> {
   const recovered = await recoverStuckSchedules((post) => {
@@ -1235,54 +1252,62 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
 
       if (post.enableSearch) {
         const { provider, model, apiKey } = resolveScheduleAIConfig(post, addLog);
+        const guidelines = post.body?.trim() || post.title?.trim() || '';
+        const searchQuery = deriveScheduleSearchQuery(post);
 
-        let userPrompt = '';
-        if (provider === 'openrouter' && model === 'openrouter/free:online') {
-          addLog(`Using OpenRouter native online search model "${model}"...`);
-          if (post.postType === 'note') {
-            userPrompt = `Write a Substack Note about: ${post.body}.`;
-          } else {
-            userPrompt = `Write a Substack newsletter post. Guidelines: ${post.title || post.body}.`;
-          }
-        } else {
-          const searchQuery = post.postType === 'note' ? post.body : (post.title || post.body || 'latest hot topics news');
-          addLog(`Performing local internet research on topic: "${searchQuery}"...`);
-          const searchResults = await searchInternet(searchQuery);
-          addLog(`Research complete. Retrieved search results (first 200 chars): "${searchResults.substring(0, 200)}..."`);
-
-          if (post.postType === 'note') {
-            userPrompt = `Write a Substack Note about: ${post.body}. You MUST incorporate these latest news/search results:\n\n${searchResults}`;
-          } else {
-            userPrompt = `Write a Substack newsletter post based on guidelines: ${post.title || post.body}. You MUST incorporate these latest news/search results:\n\n${searchResults}`;
-          }
-        }
-
-        addLog(`Generating dynamic content using provider "${provider}" and model "${model}"...`);
+        addLog(`Generating content with web research using provider "${provider}" and model "${model}"...`);
 
         if (post.postType === 'note') {
-          const genNote = await generateNote({
-            topic: userPrompt,
+          if (provider === 'openrouter' && model === 'openrouter/free:online') {
+            addLog(`Using OpenRouter native online search model "${model}"...`);
+          } else {
+            addLog(`Searching the web for: "${searchQuery.substring(0, 120)}..."`);
+          }
+
+          const noteResult = await generateNoteWithWebResearch({
+            topic: guidelines,
             provider,
             model,
             apiKey,
-            systemPrompt: post.systemPrompt
+            systemPrompt: post.systemPrompt,
+            searchQuery: post.postType === 'note' ? guidelines : searchQuery,
           });
-          finalBody = genNote.body;
+
+          if (noteResult.searchResults) {
+            addLog(`Research complete. Retrieved search results (first 200 chars): "${noteResult.searchResults.substring(0, 200)}..."`);
+          }
+
+          finalBody = noteResult.body;
           finalTitle = '';
           finalSubtitle = '';
           addLog(`Dynamic note generated successfully (first 50 chars): "${finalBody.substring(0, 50)}..."`);
         } else {
-          const genPost = await generatePost({
-            topic: userPrompt,
+          if (provider === 'openrouter' && model === 'openrouter/free:online') {
+            addLog(`Using OpenRouter native online search model "${model}"...`);
+          } else {
+            addLog(`Searching the web for: "${searchQuery.substring(0, 120)}..."`);
+          }
+
+          const research = await generateNewsletterWithWebResearch({
+            topic: guidelines,
             provider,
             model,
             apiKey,
-            systemPrompt: post.systemPrompt
+            systemPrompt: post.systemPrompt,
+            searchQuery,
           });
-          finalTitle = genPost.title;
-          finalSubtitle = genPost.subtitle;
-          finalBody = genPost.body;
-          addLog(`Dynamic newsletter post generated successfully: "${finalTitle}"`);
+
+          if (research.searchResults) {
+            addLog(`Research complete. Retrieved search results (first 200 chars): "${research.searchResults.substring(0, 200)}..."`);
+          }
+
+          finalTitle = research.post.title;
+          finalSubtitle = research.post.subtitle;
+          finalBody = research.post.body;
+          addLog(`Generated title: "${finalTitle}"`);
+          if (finalSubtitle) {
+            addLog(`Generated subtitle: "${finalSubtitle.substring(0, 80)}${finalSubtitle.length > 80 ? '...' : ''}"`);
+          }
         }
       }
 

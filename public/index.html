@@ -468,11 +468,11 @@
 
               <!-- Newsletter Fields (Title + Subtitle) -->
               <div id="schedNewsletterFields" class="post-meta" style="margin-bottom: 16px;">
-                <div class="form-group">
-                  <label for="schedTitle">Title</label>
+                <div class="form-group" id="schedTitleGroup">
+                  <label for="schedTitle" id="schedTitleLabel">Title</label>
                   <input type="text" id="schedTitle" placeholder="Newsletter title" />
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="schedSubtitleGroup">
                   <label for="schedSubtitle">Subtitle</label>
                   <input type="text" id="schedSubtitle" placeholder="Brief subtitle (optional)" />
                 </div>
@@ -493,8 +493,8 @@
                       <i data-lucide="search" style="width: 16px; height: 16px; color: var(--accent);"></i>
                       Enable Internet Research / Web Search
                     </label>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);">
-                      DDG search for latest news on the topic/keywords at execution time to generate real-time content.
+                    <span style="font-size: 0.75rem; color: var(--text-muted);" id="schedSearchHelpText">
+                      AI searches the web at run time, then writes the title, subtitle, and post from your guidelines.
                     </span>
                   </div>
                   <input type="checkbox" class="toggle" id="schedEnableSearch" onchange="toggleSchedSearchFields()" checked />

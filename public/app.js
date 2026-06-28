@@ -96,6 +96,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Initialize custom date/time picker widget (default: 1 hour in the future)
   dtInitWidget();
+  toggleSchedulerFields();
+  toggleSchedSearchFields();
 
   // Restore Active Tab on reload from URL path
   const activeTab = getTabFromPath(window.location.pathname);
@@ -408,7 +410,7 @@ async function handleGenerate() {
     const res = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ topic, provider, model, apiKey, systemPrompt }),
+      body: JSON.stringify({ topic, provider, model, apiKey, systemPrompt, useWebSearch: true }),
     });
 
     const data = await res.json();
@@ -1732,6 +1734,8 @@ function toggleSchedulerFields() {
     noteFields.style.display = 'none';
     draftWrap.style.display = 'flex';
   }
+
+  toggleSchedSearchFields();
 }
 
 function formatScheduleDueLabel(scheduledAt, status) {
@@ -2014,12 +2018,8 @@ async function handleCreateSchedule() {
     }
   } else {
     if (enableSearch) {
-      if (!title) {
-        showToast('Title/Topic is required — it is used as the web search topic for AI research', 'error');
-        return;
-      }
-      if (!body) {
-        showToast('Writing guidelines are required for AI research newsletters', 'error');
+      if (!title && !body) {
+        showToast('Add research topic or writing guidelines — AI will search and create the title, subtitle, and post', 'error');
         return;
       }
     } else {
@@ -2535,16 +2535,31 @@ function toggleSchedSearchFields() {
   const bodyLabel = document.getElementById('schedBodyLabel');
   const bodyTextarea = document.getElementById('schedBody');
   const postType = document.getElementById('schedPostType').value;
+  const titleGroup = document.getElementById('schedTitleGroup');
+  const subtitleGroup = document.getElementById('schedSubtitleGroup');
+  const searchHelp = document.getElementById('schedSearchHelpText');
 
   if (enableSearch) {
     if (postType === 'newsletter') {
-      bodyLabel.textContent = 'Research Topic Description / Writing Guidelines';
+      bodyLabel.textContent = 'Research Topic & Writing Guidelines';
       bodyTextarea.placeholder = 'e.g. Latest AI agent news — share a short take on what you understood and why it matters to builders…';
+      if (titleGroup) titleGroup.style.display = 'none';
+      if (subtitleGroup) subtitleGroup.style.display = 'none';
+      if (searchHelp) {
+        searchHelp.textContent = 'AI searches the web at run time, then writes the title, subtitle, and post from your guidelines.';
+      }
     } else {
       bodyLabel.textContent = 'Research Topic / Keywords';
       bodyTextarea.placeholder = 'e.g. SpaceX Mars Launch updates';
+      if (titleGroup) titleGroup.style.display = 'none';
+      if (subtitleGroup) subtitleGroup.style.display = 'none';
     }
   } else {
+    if (titleGroup) titleGroup.style.display = '';
+    if (subtitleGroup) subtitleGroup.style.display = '';
+    if (searchHelp) {
+      searchHelp.textContent = 'Turn on to let AI search the web and generate content at schedule time.';
+    }
     if (postType === 'newsletter') {
       bodyLabel.textContent = 'Content / Body (Supports Markdown for Newsletters)';
       bodyTextarea.placeholder = 'Write post content here...';

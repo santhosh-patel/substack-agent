@@ -271,11 +271,9 @@ export function validateScheduledPost(post: any): string | null {
     }
   } else if (post.postType === 'newsletter') {
     if (isSearchEnabled) {
-      if (!post.title || typeof post.title !== 'string' || post.title.trim().length === 0) {
-        return 'Title/Topic is required for AI research newsletters (used as the web search topic)';
-      }
-      if (!post.body || typeof post.body !== 'string' || post.body.trim().length === 0) {
-        return 'Writing guidelines are required for AI research newsletters';
+      const hasTopic = (post.title && post.title.trim()) || (post.body && post.body.trim());
+      if (!hasTopic) {
+        return 'Research topic or writing guidelines are required — AI will search the web and generate the title, subtitle, and post';
       }
     } else {
       if (!post.title || typeof post.title !== 'string' || post.title.trim().length === 0) {

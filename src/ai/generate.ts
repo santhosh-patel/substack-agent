@@ -1,6 +1,8 @@
 // ─── AI Post Generation Module ───
 // Unified interface for Groq, Gemini, and OpenAI
 
+import { searchInternet } from '../lib/search.js';
+
 export interface GenerateRequest {
   topic: string;
   provider: 'groq' | 'gemini' | 'openai' | 'openrouter';
@@ -239,6 +241,108 @@ export async function generatePost(req: GenerateRequest): Promise<GeneratedPost>
     default:
       throw new Error(`Unknown provider: ${provider}`);
   }
+}
+
+// ─── Web research → title, subtitle, body ───
+
+export interface WebResearchResult {
+  post: GeneratedPost;
+  searchQuery: string;
+  searchResults: string;
+}
+
+export function deriveResearchSearchQuery(guidelines: string, titleHint?: string): string {
+  const body = guidelines?.trim() || '';
+  const title = titleHint?.trim() || '';
+  if (title && body) {
+    return `${title}. ${body.substring(0, 200)}`;
+  }
+  return title || body || 'latest technology and AI engineering news';
+}
+
+export function buildWebResearchNewsletterPrompt(guidelines: string, searchResults: string): string {
+  return [
+    'Write a complete Substack newsletter using live web research.',
+    '',
+    'Author guidelines (tone, angle, audience):',
+    guidelines,
+    '',
+    'Web search results:',
+    searchResults,
+    '',
+    'Your tasks:',
+    '1. Read the search results and pick the SINGLE best, most timely topic or news angle that fits the guidelines.',
+    '2. Write a specific title about that chosen topic (not generic — name the news, product, or trend).',
+    '3. Write a one-sentence subtitle that adds context or your angle.',
+    '4. Write the full post body grounded in the search results. Keep it brief and human.',
+    '',
+    'Return JSON with title, subtitle, and body only.',
+  ].join('\n');
+}
+
+export function buildWebResearchNotePrompt(topic: string, searchResults: string): string {
+  return [
+    'Write a Substack Note using live web research.',
+    '',
+    'Topic / guidelines:',
+    topic,
+    '',
+    'Web search results:',
+    searchResults,
+    '',
+    'Pick the best timely angle from the results and write one concise note grounded in what you found.',
+  ].join('\n');
+}
+
+export function buildOnlineModelNewsletterPrompt(guidelines: string): string {
+  return [
+    'Search the web for the latest news related to these guidelines, then write a complete Substack newsletter.',
+    '',
+    'Author guidelines:',
+    guidelines,
+    '',
+    'Pick the best timely topic you find. Generate a specific title, one-sentence subtitle, and brief post body.',
+  ].join('\n');
+}
+
+export async function generateNewsletterWithWebResearch(
+  req: GenerateRequest & { searchQuery?: string }
+): Promise<WebResearchResult> {
+  const guidelines = req.topic.trim();
+  const searchQuery = req.searchQuery?.trim() || deriveResearchSearchQuery(guidelines);
+
+  if (req.provider === 'openrouter' && req.model === 'openrouter/free:online') {
+    const post = await generatePost({
+      ...req,
+      topic: buildOnlineModelNewsletterPrompt(guidelines),
+    });
+    return { post, searchQuery, searchResults: '' };
+  }
+
+  const searchResults = await searchInternet(searchQuery);
+  const prompt = buildWebResearchNewsletterPrompt(guidelines, searchResults);
+  const post = await generatePost({ ...req, topic: prompt });
+  return { post, searchQuery, searchResults };
+}
+
+export async function generateNoteWithWebResearch(
+  req: GenerateRequest & { searchQuery?: string }
+): Promise<{ body: string; searchQuery: string; searchResults: string }> {
+  const topic = req.topic.trim();
+  const searchQuery = req.searchQuery?.trim() || topic;
+
+  if (req.provider === 'openrouter' && req.model === 'openrouter/free:online') {
+    const note = await generateNote({
+      ...req,
+      topic: `${topic}\n\nSearch the web for the latest on this topic and write a concise note.`,
+    });
+    return { body: note.body, searchQuery, searchResults: '' };
+  }
+
+  const searchResults = await searchInternet(searchQuery);
+  const prompt = buildWebResearchNotePrompt(topic, searchResults);
+  const note = await generateNote({ ...req, topic: prompt });
+  return { body: note.body, searchQuery, searchResults };
 }
 
 // ─── Comment Analysis & Generation ───
