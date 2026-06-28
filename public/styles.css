@@ -2128,4 +2128,148 @@ select option {
   border-top-right-radius: 0 !important;
 }
 
+/* ─── Scheduler Styles ─── */
+.schedule-item {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  transition: var(--transition);
+}
+
+.schedule-item:hover {
+  border-color: var(--border-focus);
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.schedule-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.schedule-item-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 2px;
+}
+
+.schedule-item-type {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.schedule-item-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.schedule-item-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.schedule-item-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.schedule-item-meta-item i {
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+}
+
+.schedule-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Status Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.badge-pending {
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+}
+
+.badge-completed {
+  background: var(--success-bg);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  color: var(--success);
+}
+
+.badge-failed {
+  background: var(--error-bg);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: var(--error);
+}
+
+.badge-paused {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+/* Light Theme Additions for Scheduler */
+body.light-theme .schedule-item {
+  background: #FCFAF5;
+  border-color: #E2DFCE;
+}
+
+body.light-theme .schedule-item:hover {
+  background: #FFFFFF;
+  border-color: #FF7A6B;
+}
+
+body.light-theme .schedule-item-type {
+  background: #EFECE1;
+  border-color: #DEDACD;
+  color: #5C5E6E;
+}
+
+body.light-theme .badge-pending {
+  background: #EBF8FF;
+  border-color: #BEE3F8;
+  color: #2B6CB0;
+}
+
+
 

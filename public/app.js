@@ -77,6 +77,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     draftToggle.addEventListener('change', updatePublishButtonLabel);
   }
   updatePublishButtonLabel();
+
+  // Prefill scheduled time default (1 hour in the future)
+  const schedTimeInput = document.getElementById('schedTime');
+  if (schedTimeInput && !schedTimeInput.value) {
+    const now = new Date();
+    now.setHours(now.getHours() + 1);
+    // local date-time string in format YYYY-MM-DDTHH:MM
+    const tzoffset = now.getTimezoneOffset() * 60000;
+    const localISOTime = (new Date(now.getTime() - tzoffset)).toISOString().slice(0, 16);
+    schedTimeInput.value = localISOTime;
+  }
 });
 
 // ─── Settings Persistence (localStorage & Backend Env) ───
@@ -702,7 +713,7 @@ function updatePublishButtonLabel() {
 
 // ─── Tab Switching ───
 function switchTab(tabId) {
-  const tabs = ['newsletters', 'comments', 'notes', 'history'];
+  const tabs = ['newsletters', 'comments', 'notes', 'scheduler', 'history'];
   tabs.forEach(t => {
     const btn = document.getElementById(`tab-${t}`);
     const view = document.getElementById(`view-${t}`);
@@ -744,6 +755,8 @@ function switchTab(tabId) {
     if (listEl && listEl.innerHTML.includes('Click "Fetch Notes"')) {
       loadNotes();
     }
+  } else if (tabId === 'scheduler') {
+    loadSchedules();
   }
 }
 
@@ -1430,4 +1443,223 @@ function loadAllInputHistories() {
   const inputIds = ['topic', 'commentTarget', 'commentKeyword', 'noteTopic', 'noteLink'];
   inputIds.forEach(id => updateDatalist(id));
 }
+
+// ─── Scheduler tab logic ───
+
+function toggleSchedulerFields() {
+  const postType = document.getElementById('schedPostType').value;
+  const newsFields = document.getElementById('schedNewsletterFields');
+  const noteFields = document.getElementById('schedNoteFields');
+  const draftWrap = document.getElementById('schedDraftToggleWrap');
+
+  if (postType === 'note') {
+    newsFields.style.display = 'none';
+    noteFields.style.display = 'block';
+    draftWrap.style.display = 'none';
+  } else {
+    newsFields.style.display = 'grid';
+    noteFields.style.display = 'none';
+    draftWrap.style.display = 'flex';
+  }
+}
+
+async function loadSchedules() {
+  const container = document.getElementById('schedulesQueueList');
+  if (!container) return;
+
+  try {
+    const res = await fetch('/api/schedule');
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || 'Failed to load schedules');
+
+    const schedules = data.schedules || [];
+
+    if (schedules.length === 0) {
+      container.innerHTML = '<div class="history-empty">No posts currently scheduled.</div>';
+      return;
+    }
+
+    container.innerHTML = schedules.map(item => {
+      const date = new Date(item.scheduledAt).toLocaleString();
+      const lastRun = item.lastRunAt ? new Date(item.lastRunAt).toLocaleString() : 'Never';
+      const statusClass = `badge-${item.status}`;
+
+      const isPaused = item.status === 'paused';
+      const toggleText = isPaused ? 'Resume' : 'Pause';
+      const toggleIcon = isPaused ? 'play' : 'pause';
+
+      return `
+        <div class="schedule-item">
+          <div class="schedule-item-info">
+            <div class="schedule-item-header">
+              <span class="schedule-item-type">${escapeHtml(item.postType)}</span>
+              <span class="schedule-item-title">${escapeHtml(item.title || item.body.substring(0, 50) + '...')}</span>
+              <span class="badge ${statusClass}">${escapeHtml(item.status)}</span>
+            </div>
+            <div class="schedule-item-meta">
+              <div class="schedule-item-meta-item" title="Scheduled execution time">
+                <i data-lucide="clock"></i>
+                <span>Next Run: <strong>${date}</strong></span>
+              </div>
+              <div class="schedule-item-meta-item" title="Recurrence pattern">
+                <i data-lucide="repeat"></i>
+                <span>Recurrence: <strong>${escapeHtml(item.recurrence)}</strong></span>
+              </div>
+              <div class="schedule-item-meta-item" title="Last run time">
+                <i data-lucide="check-square"></i>
+                <span>Last Run: ${lastRun}</span>
+              </div>
+              ${item.errorMessage ? `
+                <div class="schedule-item-meta-item" style="color: var(--error);" title="Error message">
+                  <i data-lucide="alert-triangle"></i>
+                  <span>Error: ${escapeHtml(item.errorMessage)}</span>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+          <div class="schedule-item-actions">
+            <button class="btn btn-secondary btn-sm" onclick="toggleScheduleState('${item.id}')" title="${toggleText} Schedule" style="display: flex; align-items: center; gap: 4px;">
+              <i data-lucide="${toggleIcon}" style="width: 14px; height: 14px;"></i> ${toggleText}
+            </button>
+            <button class="btn btn-secondary btn-sm" style="color: var(--error); border-color: rgba(239, 68, 68, 0.2); display: flex; align-items: center; gap: 4px;" onclick="deleteScheduleItem('${item.id}')" title="Delete Schedule">
+              <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Delete
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+async function handleCreateSchedule() {
+  const postType = document.getElementById('schedPostType').value;
+  const title = document.getElementById('schedTitle').value.trim();
+  const subtitle = document.getElementById('schedSubtitle').value.trim();
+  const noteLink = document.getElementById('schedNoteLink').value.trim();
+  const body = document.getElementById('schedBody').value.trim();
+  const scheduledAt = document.getElementById('schedTime').value;
+  const recurrence = document.getElementById('schedRecurrence').value;
+  const isDraft = document.getElementById('schedDraftToggle').checked;
+
+  const btn = document.getElementById('schedSubmitBtn');
+
+  if (postType === 'note') {
+    if (!body) {
+      showToast('Note body is required', 'error');
+      return;
+    }
+  } else {
+    if (!title || !body) {
+      showToast('Title and body are required for newsletters', 'error');
+      return;
+    }
+  }
+
+  if (!scheduledAt) {
+    showToast('Please select a scheduled date and time', 'error');
+    return;
+  }
+
+  const isoTime = new Date(scheduledAt).toISOString();
+
+  setButtonLoading(btn, true, 'Scheduling...');
+
+  try {
+    const res = await fetch('/api/schedule', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title,
+        subtitle,
+        body,
+        isDraft,
+        scheduledAt: isoTime,
+        recurrence,
+        postType,
+        noteLink
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to schedule post');
+
+    showToast(`Post scheduled successfully for ${new Date(scheduledAt).toLocaleString()}`, 'success');
+
+    // Clear form fields
+    document.getElementById('schedTitle').value = '';
+    document.getElementById('schedSubtitle').value = '';
+    document.getElementById('schedNoteLink').value = '';
+    document.getElementById('schedBody').value = '';
+
+    // Reload queue list
+    await loadSchedules();
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    setButtonLoading(btn, false, '<i data-lucide="calendar"></i> Schedule Post');
+  }
+}
+
+async function toggleScheduleState(id) {
+  try {
+    const res = await fetch(`/api/schedule/${id}/toggle`, { method: 'POST' });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to toggle schedule');
+
+    const state = data.schedule.status === 'paused' ? 'paused' : 'resumed/active';
+    showToast(`Schedule was successfully ${state}`, 'success');
+    await loadSchedules();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+async function deleteScheduleItem(id) {
+  const confirmed = confirm('Are you sure you want to delete this scheduled post?');
+  if (!confirmed) return;
+
+  try {
+    const res = await fetch(`/api/schedule/${id}`, { method: 'DELETE' });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to delete schedule');
+
+    showToast('Scheduled post deleted successfully', 'success');
+    await loadSchedules();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+async function runManualCron() {
+  showToast('Triggering queue check...', 'info');
+  try {
+    const res = await fetch('/api/cron/process-schedules');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to trigger queue check');
+
+    const count = data.processedCount || 0;
+    if (count > 0) {
+      showToast(`Queue check complete: processed ${count} posts!`, 'success');
+    } else {
+      showToast('Queue check complete: no due posts found.', 'info');
+    }
+    await loadSchedules();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+window.toggleSchedulerFields = toggleSchedulerFields;
+window.loadSchedules = loadSchedules;
+window.handleCreateSchedule = handleCreateSchedule;
+window.toggleScheduleState = toggleScheduleState;
+window.deleteScheduleItem = deleteScheduleItem;
+window.runManualCron = runManualCron;
 
