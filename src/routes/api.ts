@@ -24,6 +24,7 @@ import {
   calculateNextRun,
   validateScheduledPost,
 } from '../lib/storage.js';
+import { searchInternet } from '../lib/search.js';
 
 const router = Router();
 const marked = new Marked();
@@ -41,6 +42,7 @@ router.get('/config', (_req: Request, res: Response) => {
     hasGroqApiKey: Boolean(process.env.GROQ_API_KEY),
     hasGeminiApiKey: Boolean(process.env.GEMINI_API_KEY),
     hasOpenAiApiKey: Boolean(process.env.OPENAI_API_KEY),
+    hasOpenrouterApiKey: Boolean(process.env.OPENROUTER_API_KEY),
     defaultSystemPrompt: SYSTEM_PROMPT,
     defaultNoteSystemPrompt: NOTE_SYSTEM_PROMPT,
   });
@@ -106,6 +108,7 @@ router.post('/generate', async (req: Request, res: Response) => {
       if (provider === 'groq') apiKey = process.env.GROQ_API_KEY;
       else if (provider === 'gemini') apiKey = process.env.GEMINI_API_KEY;
       else if (provider === 'openai') apiKey = process.env.OPENAI_API_KEY;
+      else if (provider === 'openrouter') apiKey = process.env.OPENROUTER_API_KEY;
     }
 
     if (!apiKey) {
@@ -448,6 +451,7 @@ router.post('/notes/generate', async (req: Request, res: Response) => {
       if (provider === 'groq') apiKey = process.env.GROQ_API_KEY;
       else if (provider === 'gemini') apiKey = process.env.GEMINI_API_KEY;
       else if (provider === 'openai') apiKey = process.env.OPENAI_API_KEY;
+      else if (provider === 'openrouter') apiKey = process.env.OPENROUTER_API_KEY;
     }
 
     if (!apiKey) {
@@ -851,17 +855,25 @@ router.get('/schedule', async (_req: Request, res: Response) => {
 // ─── POST /api/schedule ───
 router.post('/schedule', async (req: Request, res: Response) => {
   try {
-    const { title, subtitle, body, isDraft, scheduledAt, recurrence, postType, noteLink } = req.body;
+    const { 
+      title, subtitle, body, isDraft, scheduledAt, recurrence, postType, noteLink,
+      enableSearch, provider, model, apiKey, systemPrompt
+    } = req.body;
 
     const payload = {
       title: title || '',
       subtitle: subtitle || '',
-      body,
+      body: body || '',
       isDraft: isDraft !== false,
       scheduledAt,
       recurrence: recurrence || 'once',
       postType: postType || 'newsletter',
       noteLink: noteLink || '',
+      enableSearch: enableSearch === true,
+      provider,
+      model,
+      apiKey,
+      systemPrompt,
     };
 
     const validationError = validateScheduledPost(payload);
@@ -942,6 +954,79 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
 
     // 2. Perform execution
     try {
+      let finalTitle = post.title;
+      let finalSubtitle = post.subtitle || '';
+      let finalBody = post.body;
+
+      if (post.enableSearch) {
+        const searchQuery = post.postType === 'note' ? post.body : post.title || 'latest hot topics news';
+        addLog(`Performing internet research on topic: "${searchQuery}"...`);
+        const searchResults = await searchInternet(searchQuery);
+        addLog(`Research complete. Retrieved search results (first 200 chars): "${searchResults.substring(0, 200)}..."`);
+
+        // Resolve AI Provider & Key
+        let provider = post.provider;
+        if (!provider) {
+          if (process.env.GROQ_API_KEY) provider = 'groq';
+          else if (process.env.GEMINI_API_KEY) provider = 'gemini';
+          else if (process.env.OPENAI_API_KEY) provider = 'openai';
+          else if (process.env.OPENROUTER_API_KEY) provider = 'openrouter';
+          else {
+            throw new Error('No AI provider found. Please configure GROQ_API_KEY, GEMINI_API_KEY, OPENAI_API_KEY, or OPENROUTER_API_KEY in environment.');
+          }
+        }
+
+        let apiKey = post.apiKey;
+        if (!apiKey) {
+          if (provider === 'groq') apiKey = process.env.GROQ_API_KEY;
+          else if (provider === 'gemini') apiKey = process.env.GEMINI_API_KEY;
+          else if (provider === 'openai') apiKey = process.env.OPENAI_API_KEY;
+          else if (provider === 'openrouter') apiKey = process.env.OPENROUTER_API_KEY;
+        }
+
+        if (!apiKey) {
+          throw new Error(`API key is missing for provider: ${provider}. Please configure it in your environment or scheduler settings.`);
+        }
+
+        let model = post.model;
+        if (!model) {
+          if (provider === 'groq') model = 'llama3-70b-8192';
+          else if (provider === 'gemini') model = 'gemini-2.5-flash';
+          else if (provider === 'openai') model = 'gpt-4o-mini';
+          else if (provider === 'openrouter') model = 'google/gemini-2.5-flash';
+        }
+
+        addLog(`Generating dynamic content using provider "${provider}" and model "${model}"...`);
+
+        if (post.postType === 'note') {
+          const userPrompt = `Write a Substack Note about: ${post.body}. You MUST incorporate these latest news/search results:\n\n${searchResults}`;
+          const genNote = await generateNote({
+            topic: userPrompt,
+            provider,
+            model,
+            apiKey,
+            systemPrompt: post.systemPrompt
+          });
+          finalBody = genNote.body;
+          finalTitle = '';
+          finalSubtitle = '';
+          addLog(`Dynamic note generated successfully (first 50 chars): "${finalBody.substring(0, 50)}..."`);
+        } else {
+          const userPrompt = `Write a Substack newsletter post about: ${post.title}. You MUST incorporate these latest news/search results:\n\n${searchResults}`;
+          const genPost = await generatePost({
+            topic: userPrompt,
+            provider,
+            model,
+            apiKey,
+            systemPrompt: post.systemPrompt
+          });
+          finalTitle = genPost.title;
+          finalSubtitle = genPost.subtitle;
+          finalBody = genPost.body;
+          addLog(`Dynamic newsletter post generated successfully: "${finalTitle}"`);
+        }
+      }
+
       if (!isSubstackConnected) {
         addLog('Initializing Substack connection...');
         const conn = await ensureConnected();
@@ -953,24 +1038,24 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
       }
 
       if (post.postType === 'note') {
-        addLog(`Publishing note: "${post.body.substring(0, 50)}..."`);
+        addLog(`Publishing note: "${finalBody.substring(0, 50)}..."`);
         let response;
         if (post.noteLink) {
-          response = await ownProfile.newNoteWithLink(post.noteLink).paragraph().text(post.body).publish();
+          response = await ownProfile.newNoteWithLink(post.noteLink).paragraph().text(finalBody).publish();
         } else {
-          response = await ownProfile.newNote().paragraph().text(post.body).publish();
+          response = await ownProfile.newNote().paragraph().text(finalBody).publish();
         }
         if (!response?.id) {
           throw new Error('Failed to create note on Substack');
         }
         addLog(`Note published successfully (ID: ${response.id}).`);
       } else {
-        addLog(`Creating newsletter draft: "${post.title}"`);
-        const docJson = markdownToProseMirror(post.body);
+        addLog(`Creating newsletter draft: "${finalTitle}"`);
+        const docJson = markdownToProseMirror(finalBody);
         const bylines = [{ id: ownProfile.id, is_guest: false }];
         const payload = {
-          draft_title: post.title,
-          draft_subtitle: post.subtitle || undefined,
+          draft_title: finalTitle,
+          draft_subtitle: finalSubtitle || undefined,
           draft_body: docJson,
           draft_bylines: bylines,
           type: 'newsletter',

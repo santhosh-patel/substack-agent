@@ -118,6 +118,7 @@
                 <option value="groq">Groq</option>
                 <option value="gemini">Gemini</option>
                 <option value="openai">OpenAI</option>
+                <option value="openrouter">OpenRouter</option>
               </select>
             </div>
 
@@ -468,9 +469,70 @@
                 <input type="text" id="schedNoteLink" placeholder="https://example.com/some-link" />
               </div>
 
+              <!-- Internet Research & Custom AI Settings -->
+              <div style="background-color: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); padding: 16px; border-radius: var(--radius-md); margin-bottom: 20px;">
+                <!-- Toggle Switch for Auto Search -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                  <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label for="schedEnableSearch" style="margin-bottom: 0; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                      <i data-lucide="search" style="width: 16px; height: 16px; color: var(--accent);"></i>
+                      Enable Internet Research / Web Search
+                    </label>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">
+                      DDG search for latest news on the topic/keywords at execution time to generate real-time content.
+                    </span>
+                  </div>
+                  <input type="checkbox" class="toggle" id="schedEnableSearch" onchange="toggleSchedSearchFields()" />
+                </div>
+
+                <!-- Custom AI settings -->
+                <details style="margin-top: 10px; border-top: 1px dashed var(--border); padding-top: 12px;" id="schedAiCustomizer">
+                  <summary style="font-size: 0.8rem; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 6px; user-select: none;">
+                    <i data-lucide="sliders" style="width: 14px; height: 14px;"></i>
+                    <span>Customize AI Settings for this Schedule (Optional)</span>
+                    <i data-lucide="chevron-down" style="width: 14px; height: 14px; margin-left: auto;"></i>
+                  </summary>
+                  
+                  <div class="post-meta" style="margin-top: 16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
+                    <div class="form-group">
+                      <label for="schedProvider">AI Provider</label>
+                      <select id="schedProvider" onchange="updateSchedModelOptions()" style="background-color: var(--bg-input); border: 1px solid var(--border); padding: 8px 12px; border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.9rem;">
+                        <option value="">(Use System Default)</option>
+                        <option value="groq">Groq</option>
+                        <option value="gemini">Gemini</option>
+                        <option value="openai">OpenAI</option>
+                        <option value="openrouter">OpenRouter</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="schedModel">AI Model</label>
+                      <select id="schedModel" style="background-color: var(--bg-input); border: 1px solid var(--border); padding: 8px 12px; border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.9rem;">
+                        <option value="">(Use System Default)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group" style="margin-top: 12px;">
+                    <label for="schedApiKey">API Key override (Optional)</label>
+                    <div class="input-password-wrapper">
+                      <input type="password" id="schedApiKey" placeholder="Use default key or override here…" autocomplete="off" />
+                      <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('schedApiKey', this)" title="Toggle visibility">
+                        <i data-lucide="eye"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="form-group" style="margin-top: 12px;">
+                    <label for="schedSystemPrompt">Custom System Prompt instructions (Optional)</label>
+                    <textarea id="schedSystemPrompt" style="min-height: 80px; font-size: 0.85rem;" placeholder="e.g. Write in a sarcastic tone..."></textarea>
+                  </div>
+                </details>
+              </div>
+
               <!-- Content Editor -->
-              <div class="form-group" style="margin-bottom: 20px;">
-                <label for="schedBody">Content / Body (Supports Markdown for Newsletters)</label>
+              <div class="form-group" style="margin-bottom: 20px;" id="schedBodyGroup">
+                <label for="schedBody" id="schedBodyLabel">Content / Body (Supports Markdown for Newsletters)</label>
                 <textarea class="editor-textarea" id="schedBody" style="min-height: 180px;" placeholder="Write post content here..."></textarea>
               </div>
 
