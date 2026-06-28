@@ -2362,6 +2362,14 @@ body.light-theme .toggle:checked {
   background: rgba(245, 158, 11, 0.1) !important;
   color: #b45309 !important;
 }
+.history-badge.badge-scheduled {
+  background: rgba(134, 167, 137, 0.14) !important;
+  color: var(--accent) !important;
+}
+.history-badge.badge-draft {
+  background: rgba(96, 165, 250, 0.12) !important;
+  color: #2563eb !important;
+}
 
 .history-item .history-item-date {
   color: #64748b !important;

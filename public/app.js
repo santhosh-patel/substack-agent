@@ -1107,18 +1107,48 @@ async function loadHistory() {
   const btn = document.getElementById('loadHistoryBtn');
   const listEl = document.getElementById('historyList');
 
-  if (!isConnected) {
-    showToast('Please connect your Substack account first', 'error');
-    return;
-  }
-
   setButtonLoading(btn, true, 'Fetching…');
   listEl.innerHTML = '<div class="history-empty"><span class="spinner"></span> Loading publication history...</div>';
 
   let newsletters = [];
   let notes = [];
   let comments = [];
+  let publications = [];
   let errors = [];
+
+  if (!isConnected) {
+    try {
+      const res = await fetch('/api/publications/history');
+      if (res.ok) {
+        const data = await res.json();
+        publications = (data.publications || []).map(p => ({
+          id: `pub-${p.id}`,
+          type: p.type,
+          title: p.title,
+          body: p.body,
+          url: p.url,
+          publishedAt: p.publishedAt,
+          source: p.source || 'manual',
+          isDraft: p.isDraft,
+        }));
+      }
+    } catch (e) {
+      errors.push('Publications');
+    }
+
+    allHistoryItems = dedupeHistoryItems(publications);
+    filterAndRenderHistory();
+    setButtonLoading(btn, false, '<i data-lucide="rotate-ccw"></i> Fetch History');
+
+    if (errors.length > 0) {
+      showToast('Failed to load local publication history', 'error');
+    } else if (publications.length === 0) {
+      showToast('Connect Substack to load archive history', 'info');
+    } else {
+      showToast(`Loaded ${publications.length} local publication(s)`, 'success');
+    }
+    return;
+  }
 
   // 1. Fetch Newsletters
   try {
@@ -1180,17 +1210,53 @@ async function loadHistory() {
     errors.push('Comments');
   }
 
+  // 4. Fetch local publication history (manual + scheduled runs)
+  try {
+    const res = await fetch('/api/publications/history');
+    if (res.ok) {
+      const data = await res.json();
+      publications = (data.publications || []).map(p => ({
+        id: `pub-${p.id}`,
+        type: p.type,
+        title: p.title,
+        body: p.body,
+        url: p.url,
+        publishedAt: p.publishedAt,
+        source: p.source || 'manual',
+        isDraft: p.isDraft,
+      }));
+    } else {
+      errors.push('Publications');
+    }
+  } catch (e) {
+    errors.push('Publications');
+  }
+
+  // Merge all items, dedupe by URL, prefer scheduled/local entries
+  allHistoryItems = dedupeHistoryItems([...publications, ...newsletters, ...notes, ...comments]);
+
   if (errors.length > 0) {
     showToast(`Failed to load: ${errors.join(', ')}`, 'warning');
   } else {
     showToast('History loaded successfully!', 'success');
   }
 
-  // Merge all items
-  allHistoryItems = [...newsletters, ...notes, ...comments];
-  
   filterAndRenderHistory();
   setButtonLoading(btn, false, '<i data-lucide="rotate-ccw"></i> Fetch History');
+}
+
+function dedupeHistoryItems(items) {
+  const seen = new Set();
+  const merged = [];
+
+  for (const item of items) {
+    const key = item.url || item.id;
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    merged.push(item);
+  }
+
+  return merged;
 }
 
 function filterAndRenderHistory() {
@@ -1221,7 +1287,9 @@ function filterAndRenderHistory() {
 
   // 2. Filter list of items
   let items = allHistoryItems;
-  if (typeFilter !== 'all') {
+  if (typeFilter === 'scheduled') {
+    items = items.filter(item => item.source === 'scheduled');
+  } else if (typeFilter !== 'all') {
     items = items.filter(item => item.type === typeFilter);
   }
 
@@ -1274,6 +1342,21 @@ function filterAndRenderHistory() {
     const badgeClass = `badge-${item.type}`;
     const categoryClass = `category-${item.type}`;
     const displayType = item.type === 'newsletter' ? 'Newsletter' : (item.type === 'note' ? 'Note' : 'Comment');
+    const sourceBadge = item.source === 'scheduled'
+      ? '<span class="history-badge badge-scheduled">Scheduled</span>'
+      : '';
+    const draftBadge = item.isDraft
+      ? '<span class="history-badge badge-draft">Draft</span>'
+      : '';
+    const hasPublicUrl = item.url && !item.url.startsWith('schedule://');
+    const viewActions = hasPublicUrl ? `
+            <a href="${escapeHtml(item.url)}" target="_blank" class="btn btn-secondary btn-sm" title="Open on Substack" style="padding: 4px 8px; font-size: 0.72rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 4px; text-decoration: none; border-color: var(--border);">
+              <i data-lucide="external-link" style="width: 12px; height: 12px; stroke-width: 2.2px;"></i> View
+            </a>
+            <button class="btn btn-secondary btn-sm" onclick="copyHistoryLink('${escapeHtml(item.url)}')" title="Copy Link" style="padding: 4px 8px; font-size: 0.72rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 4px; border-color: var(--border);">
+              <i data-lucide="copy" style="width: 12px; height: 12px; stroke-width: 2.2px;"></i> Link
+            </button>
+    ` : '';
 
     // Handle body text truncation / read-more toggle
     const longBody = item.body && item.body.length > 180;
@@ -1291,17 +1374,14 @@ function filterAndRenderHistory() {
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; flex-wrap: wrap;">
           <div style="display: flex; align-items: center; gap: 8px;">
             <span class="history-badge ${badgeClass}">${displayType}</span>
+            ${sourceBadge}
+            ${draftBadge}
             <span class="history-item-date" style="color: var(--text-muted); font-size: 0.76rem;">${escapeHtml(pubDate)}</span>
           </div>
           
           <!-- Actions bar (CTAs) -->
           <div style="display: flex; align-items: center; gap: 8px;">
-            <a href="${escapeHtml(item.url)}" target="_blank" class="btn btn-secondary btn-sm" title="Open on Substack" style="padding: 4px 8px; font-size: 0.72rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 4px; text-decoration: none; border-color: var(--border);">
-              <i data-lucide="external-link" style="width: 12px; height: 12px; stroke-width: 2.2px;"></i> View
-            </a>
-            <button class="btn btn-secondary btn-sm" onclick="copyHistoryLink('${escapeHtml(item.url)}')" title="Copy Link" style="padding: 4px 8px; font-size: 0.72rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 4px; border-color: var(--border);">
-              <i data-lucide="copy" style="width: 12px; height: 12px; stroke-width: 2.2px;"></i> Link
-            </button>
+            ${viewActions}
             <button class="btn btn-primary btn-sm" onclick="reuseHistoryItem('${escapeHtml(item.id)}')" title="Load into Composer" style="padding: 4px 8px; font-size: 0.72rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 4px; background: var(--accent); color: var(--bg-primary);">
               <i data-lucide="refresh-cw" style="width: 12px; height: 12px; stroke-width: 2.2px;"></i> Reuse
             </button>
@@ -1310,11 +1390,13 @@ function filterAndRenderHistory() {
         
         <!-- Content section -->
         <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0; width: 100%;">
-          ${item.type === 'newsletter' ? `
-            <a href="${escapeHtml(item.url)}" target="_blank" style="text-decoration: none; color: inherit; font-weight: 600; font-size: 1rem; width: fit-content; max-width: 100%; display: flex; align-items: center; gap: 6px;">
+          ${item.type === 'newsletter' ? (
+            hasPublicUrl
+              ? `<a href="${escapeHtml(item.url)}" target="_blank" style="text-decoration: none; color: inherit; font-weight: 600; font-size: 1rem; width: fit-content; max-width: 100%; display: flex; align-items: center; gap: 6px;">
               <span>${escapeHtml(item.title)}</span>
-            </a>
-          ` : `<div style="font-weight: 600; color: inherit; font-size: 0.9rem;">${escapeHtml(item.title)}</div>`}
+            </a>`
+              : `<div style="font-weight: 600; color: inherit; font-size: 1rem;">${escapeHtml(item.title)}</div>`
+          ) : `<div style="font-weight: 600; color: inherit; font-size: 0.9rem;">${escapeHtml(item.title)}</div>`}
           
           <div style="font-size: 0.88rem; color: inherit; opacity: 0.9; line-height: 1.55; white-space: pre-wrap; word-break: break-word; margin-top: 2px;">
             ${displayBody}
@@ -1722,6 +1804,12 @@ async function loadSchedules() {
                   <span>Error: ${escapeHtml(item.errorMessage)}</span>
                 </div>
               ` : ''}
+              ${item.publishedUrl ? `
+                <div class="schedule-item-meta-item" title="Published post link">
+                  <i data-lucide="external-link"></i>
+                  <span>Published: <a href="${escapeHtml(item.publishedUrl)}" target="_blank" rel="noopener noreferrer" style="color: var(--accent); font-weight: 600;">View post</a></span>
+                </div>
+              ` : ''}
             </div>
           </div>
           <div class="schedule-item-actions">
@@ -1920,6 +2008,9 @@ async function retryScheduleItem(id, btnEl) {
     if (data.processed?.status === 'success') {
       showToast('Post processed successfully on retry!', 'success');
       appendSchedulerLog(`Retry succeeded for schedule ${id}.`, 'success');
+      if (document.getElementById('view-history')?.style.display !== 'none') {
+        loadHistory();
+      }
     } else if (data.processed?.status === 'failed') {
       showToast(`Retry failed: ${data.processed.error}`, 'error');
       appendSchedulerLog(`Retry failed for schedule ${id}: ${data.processed.error}`, 'error');
@@ -2057,6 +2148,9 @@ async function runManualCron() {
       appendSchedulerLog('Queue check finished — no due posts found.', 'info');
     }
     await loadSchedules();
+    if (count > 0 && document.getElementById('view-history')?.style.display !== 'none') {
+      loadHistory();
+    }
   } catch (err) {
     appendSchedulerLog(`Queue check failed: ${err.message}`, 'error');
     showToast(err.message, 'error');
@@ -2225,6 +2319,9 @@ async function runSilentQueueCheck() {
       appendSchedulerLog(`Auto-poll processed ${data.processedCount} due post(s).`, 'success');
       showToast(`Automatically processed ${data.processedCount} due scheduled post(s)!`, 'success');
       await loadSchedules();
+      if (document.getElementById('view-history')?.style.display !== 'none') {
+        loadHistory();
+      }
     } else if (res.ok) {
       await loadSchedules();
     } else {

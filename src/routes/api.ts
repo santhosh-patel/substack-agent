@@ -30,6 +30,7 @@ import {
   type ScheduledPost,
 } from '../lib/storage.js';
 import { searchInternet } from '../lib/search.js';
+import { getPublicationHistory, savePublicationToHistory } from '../lib/publication-history.js';
 
 const router = Router();
 const marked = new Marked();
@@ -340,6 +341,16 @@ router.post('/publish', async (req: Request, res: Response) => {
       const slug = publishResponse?.slug || response.slug || '';
       const postUrl = slug ? `https://${pubHostname}/p/${slug}` : `https://${pubHostname}/publish/post/${response.id}`;
 
+      savePublicationToHistory({
+        type: 'newsletter',
+        title: response.title || title,
+        body: subtitle || body.substring(0, 280),
+        url: postUrl,
+        publishedAt: new Date().toISOString(),
+        source: 'manual',
+        isDraft: false,
+      });
+
       res.json({
         success: true,
         post: {
@@ -353,6 +364,16 @@ router.post('/publish', async (req: Request, res: Response) => {
     }
 
     const draftUrl = `https://${pubHostname}/publish/post/${response.id}`;
+
+    savePublicationToHistory({
+      type: 'newsletter',
+      title: response.title || title,
+      body: subtitle || body.substring(0, 280),
+      url: draftUrl,
+      publishedAt: new Date().toISOString(),
+      source: 'manual',
+      isDraft: true,
+    });
 
     res.json({
       success: true,
@@ -506,6 +527,15 @@ router.post('/notes/publish', async (req: Request, res: Response) => {
 
     const noteUrl = ownProfile.slug ? `https://substack.com/@${ownProfile.slug}/note/c-${response.id}` : 'https://substack.com/notes';
 
+    savePublicationToHistory({
+      type: 'note',
+      title: ownProfile.name ? `${ownProfile.name}'s Note` : 'Published Note',
+      body,
+      url: noteUrl,
+      publishedAt: new Date().toISOString(),
+      source: 'manual',
+    });
+
     res.json({
       success: true,
       note: {
@@ -589,6 +619,41 @@ router.get('/comments', (req: Request, res: Response) => {
     res.json({ success: true, comments: history });
   } catch (err: any) {
     res.status(500).json({ error: err.message || 'Failed to fetch comments history' });
+  }
+});
+
+router.get('/publications/history', async (_req: Request, res: Response) => {
+  try {
+    const publications = getPublicationHistory();
+    const knownUrls = new Set(publications.map(p => p.url));
+
+    const schedules = await getSchedules();
+    for (const schedule of schedules) {
+      if (schedule.status !== 'completed' || !schedule.lastRunAt) continue;
+      const url = schedule.publishedUrl || `schedule://${schedule.id}`;
+      if (knownUrls.has(url)) continue;
+
+      publications.push({
+        id: schedule.id,
+        type: schedule.postType,
+        title: schedule.publishedTitle || schedule.title || 'Scheduled Post',
+        body: schedule.subtitle || schedule.body.substring(0, 280),
+        url,
+        publishedAt: schedule.lastRunAt,
+        source: 'scheduled',
+        scheduleId: schedule.id,
+        isDraft: schedule.isDraft,
+      });
+      knownUrls.add(url);
+    }
+
+    publications.sort(
+      (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+    );
+
+    res.json({ success: true, publications });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to fetch publication history' });
   }
 });
 
@@ -1184,6 +1249,9 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
         addLog('Connected successfully.');
       }
 
+      let publishedUrl: string | undefined;
+      let publishedTitle: string | undefined;
+
       if (post.postType === 'note') {
         addLog(`Publishing note: "${finalBody.substring(0, 50)}..."`);
         let response;
@@ -1195,6 +1263,22 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
         if (!response?.id) {
           throw new Error('Failed to create note on Substack');
         }
+
+        publishedUrl = ownProfile.slug
+          ? `https://substack.com/@${ownProfile.slug}/note/c-${response.id}`
+          : 'https://substack.com/notes';
+        publishedTitle = ownProfile.name ? `${ownProfile.name}'s Note` : 'Scheduled Note';
+
+        savePublicationToHistory({
+          type: 'note',
+          title: publishedTitle,
+          body: finalBody,
+          url: publishedUrl,
+          publishedAt: new Date().toISOString(),
+          source: 'scheduled',
+          scheduleId: post.id,
+        });
+
         addLog(`Note published successfully (ID: ${response.id}).`);
       } else {
         addLog(`Creating newsletter draft: "${finalTitle}"`);
@@ -1214,7 +1298,12 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
           throw new Error('Failed to create draft on Substack');
         }
 
-        if (post.isDraft === false) {
+        const pubHostname = getPubHostname();
+        publishedUrl = `https://${pubHostname}/publish/post/${response.id}`;
+        publishedTitle = finalTitle || response.title || 'Scheduled Newsletter';
+        const isLivePublish = post.isDraft === false;
+
+        if (isLivePublish) {
           addLog(`Publishing draft ${response.id} live...`);
           try {
             await (substackClient as any).publicationClient.get(`/api/v1/drafts/${response.id}/prepublish`);
@@ -1226,10 +1315,25 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
             `/api/v1/drafts/${response.id}/publish`,
             { send: true, share_automatically: false }
           );
+          const slug = publishResponse?.slug || response.slug || '';
+          publishedUrl = slug
+            ? `https://${pubHostname}/p/${slug}`
+            : `https://${pubHostname}/publish/post/${response.id}`;
           addLog('Newsletter published live.');
         } else {
           addLog('Newsletter draft saved.');
         }
+
+        savePublicationToHistory({
+          type: 'newsletter',
+          title: publishedTitle || finalTitle || 'Scheduled Newsletter',
+          body: finalSubtitle || finalBody.substring(0, 280),
+          url: publishedUrl,
+          publishedAt: new Date().toISOString(),
+          source: 'scheduled',
+          scheduleId: post.id,
+          isDraft: !isLivePublish,
+        });
       }
 
       // Success: update status and recurrence on fresh list and save
@@ -1240,6 +1344,8 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
         freshPost.errorMessage = undefined;
         freshPost.retryCount = 0;
         freshPost.processingStartedAt = undefined;
+        if (publishedUrl) freshPost.publishedUrl = publishedUrl;
+        if (publishedTitle) freshPost.publishedTitle = publishedTitle;
         if (freshPost.recurrence === 'once') {
           freshPost.status = 'completed';
         } else {

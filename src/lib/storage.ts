@@ -29,6 +29,8 @@ export interface ScheduledPost {
   model?: string;
   apiKey?: string;
   systemPrompt?: string;
+  publishedUrl?: string;
+  publishedTitle?: string;
 }
 
 const LOCAL_DATA_DIR = process.env.VERCEL === '1' ? '/tmp' : path.join(process.cwd(), 'src', 'data');
