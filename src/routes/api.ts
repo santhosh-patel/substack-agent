@@ -959,11 +959,6 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
       let finalBody = post.body;
 
       if (post.enableSearch) {
-        const searchQuery = post.postType === 'note' ? post.body : post.title || 'latest hot topics news';
-        addLog(`Performing internet research on topic: "${searchQuery}"...`);
-        const searchResults = await searchInternet(searchQuery);
-        addLog(`Research complete. Retrieved search results (first 200 chars): "${searchResults.substring(0, 200)}..."`);
-
         // Resolve AI Provider & Key
         let provider: 'groq' | 'gemini' | 'openai' | 'openrouter';
         const postProvider = post.provider;
@@ -996,17 +991,37 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
           if (provider === 'groq') model = 'llama3-70b-8192';
           else if (provider === 'gemini') model = 'gemini-2.5-flash';
           else if (provider === 'openai') model = 'gpt-4o-mini';
-          else if (provider === 'openrouter') model = 'google/gemini-2.5-flash';
+          else if (provider === 'openrouter') model = 'openrouter/free:online';
         }
 
         if (!model) {
           throw new Error(`Model selection is missing for provider: ${provider}.`);
         }
 
+        let userPrompt = '';
+        if (provider === 'openrouter' && model === 'openrouter/free:online') {
+          addLog(`Using OpenRouter native online search model "${model}"...`);
+          if (post.postType === 'note') {
+            userPrompt = `Write a Substack Note about: ${post.body}.`;
+          } else {
+            userPrompt = `Write a Substack newsletter post about: ${post.title}.`;
+          }
+        } else {
+          const searchQuery = post.postType === 'note' ? post.body : post.title || 'latest hot topics news';
+          addLog(`Performing local internet research on topic: "${searchQuery}"...`);
+          const searchResults = await searchInternet(searchQuery);
+          addLog(`Research complete. Retrieved search results (first 200 chars): "${searchResults.substring(0, 200)}..."`);
+
+          if (post.postType === 'note') {
+            userPrompt = `Write a Substack Note about: ${post.body}. You MUST incorporate these latest news/search results:\n\n${searchResults}`;
+          } else {
+            userPrompt = `Write a Substack newsletter post about: ${post.title}. You MUST incorporate these latest news/search results:\n\n${searchResults}`;
+          }
+        }
+
         addLog(`Generating dynamic content using provider "${provider}" and model "${model}"...`);
 
         if (post.postType === 'note') {
-          const userPrompt = `Write a Substack Note about: ${post.body}. You MUST incorporate these latest news/search results:\n\n${searchResults}`;
           const genNote = await generateNote({
             topic: userPrompt,
             provider,
@@ -1019,7 +1034,6 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
           finalSubtitle = '';
           addLog(`Dynamic note generated successfully (first 50 chars): "${finalBody.substring(0, 50)}..."`);
         } else {
-          const userPrompt = `Write a Substack newsletter post about: ${post.title}. You MUST incorporate these latest news/search results:\n\n${searchResults}`;
           const genPost = await generatePost({
             topic: userPrompt,
             provider,
