@@ -965,8 +965,11 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
         addLog(`Research complete. Retrieved search results (first 200 chars): "${searchResults.substring(0, 200)}..."`);
 
         // Resolve AI Provider & Key
-        let provider = post.provider;
-        if (!provider) {
+        let provider: 'groq' | 'gemini' | 'openai' | 'openrouter';
+        const postProvider = post.provider;
+        if (postProvider) {
+          provider = postProvider;
+        } else {
           if (process.env.GROQ_API_KEY) provider = 'groq';
           else if (process.env.GEMINI_API_KEY) provider = 'gemini';
           else if (process.env.OPENAI_API_KEY) provider = 'openai';
@@ -994,6 +997,10 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
           else if (provider === 'gemini') model = 'gemini-2.5-flash';
           else if (provider === 'openai') model = 'gpt-4o-mini';
           else if (provider === 'openrouter') model = 'google/gemini-2.5-flash';
+        }
+
+        if (!model) {
+          throw new Error(`Model selection is missing for provider: ${provider}.`);
         }
 
         addLog(`Generating dynamic content using provider "${provider}" and model "${model}"...`);

@@ -16,6 +16,12 @@ const MODELS = {
     { value: 'gpt-4.1-mini', label: 'GPT-4.1 Mini' },
     { value: 'gpt-5.5-mini', label: 'GPT-5.5 Mini' },
   ],
+  openrouter: [
+    { value: 'google/gemini-2.5-flash', label: 'Gemini 2.5 Flash (via OpenRouter)' },
+    { value: 'meta-llama/llama-3.3-70b-instruct', label: 'Llama 3.3 70B (via OpenRouter)' },
+    { value: 'anthropic/claude-3.5-sonnet', label: 'Claude 3.5 Sonnet (via OpenRouter)' },
+    { value: 'deepseek/deepseek-chat', label: 'DeepSeek Chat (via OpenRouter)' },
+  ],
 };
 
 // ─── State ───
@@ -97,6 +103,7 @@ function hasBackendApiKey(provider) {
     groq: 'hasGroqApiKey',
     gemini: 'hasGeminiApiKey',
     openai: 'hasOpenAiApiKey',
+    openrouter: 'hasOpenrouterApiKey',
   };
   return Boolean(window.backendConfig[flags[provider]]);
 }
@@ -757,6 +764,7 @@ function switchTab(tabId) {
     }
   } else if (tabId === 'scheduler') {
     loadSchedules();
+    updateSchedModelOptions();
   }
 
   if (tabId === 'scheduler') {
@@ -1516,6 +1524,12 @@ async function loadSchedules() {
                 <i data-lucide="check-square"></i>
                 <span>Last Run: ${lastRun}</span>
               </div>
+              ${item.enableSearch ? `
+                <div class="schedule-item-meta-item" style="color: var(--accent);" title="Web research enabled">
+                  <i data-lucide="search" style="color: var(--accent);"></i>
+                  <span>Internet Research: <strong>Enabled</strong></span>
+                </div>
+              ` : ''}
               ${item.errorMessage ? `
                 <div class="schedule-item-meta-item" style="color: var(--error);" title="Error message">
                   <i data-lucide="alert-triangle"></i>
@@ -1551,19 +1565,27 @@ async function handleCreateSchedule() {
   const noteLink = document.getElementById('schedNoteLink').value.trim();
   const body = document.getElementById('schedBody').value.trim();
   const scheduledAt = document.getElementById('schedTime').value;
-  const recurrence = document.getElementById('schedRecurrence').value;
-  const isDraft = document.getElementById('schedDraftToggle').checked;
+  // New fields
+  const enableSearch = document.getElementById('schedEnableSearch').checked;
+  const provider = document.getElementById('schedProvider').value;
+  const model = document.getElementById('schedModel').value;
+  const apiKey = document.getElementById('schedApiKey').value.trim();
+  const systemPrompt = document.getElementById('schedSystemPrompt').value.trim();
 
   const btn = document.getElementById('schedSubmitBtn');
 
   if (postType === 'note') {
     if (!body) {
-      showToast('Note body is required', 'error');
+      showToast('Research topic/keywords is required for notes', 'error');
       return;
     }
   } else {
-    if (!title || !body) {
-      showToast('Title and body are required for newsletters', 'error');
+    if (!title) {
+      showToast('Title/Topic is required for newsletters', 'error');
+      return;
+    }
+    if (!enableSearch && !body) {
+      showToast('Body content is required for newsletters when search is disabled', 'error');
       return;
     }
   }
@@ -1589,8 +1611,13 @@ async function handleCreateSchedule() {
         scheduledAt: isoTime,
         recurrence,
         postType,
-        noteLink
-      })
+        noteLink,
+        enableSearch,
+        provider: provider || undefined,
+        model: model || undefined,
+        apiKey: apiKey || undefined,
+        systemPrompt: systemPrompt || undefined,
+      }),
     });
 
     const data = await res.json();
