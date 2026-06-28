@@ -942,6 +942,7 @@ function switchTab(tabId, skipPush) {
     loadSchedules();
     updateSchedModelOptions();
     syncSchedApiKeyFromStorage();
+    requestAnimationFrame(() => dtRefreshTimeWheel());
   }
 
   if (tabId === 'scheduler') {
@@ -2636,10 +2637,11 @@ let dtState = {
 };
 
 const DT_WHEEL_ITEM_HEIGHT = 36;
-const DT_WHEEL_PAD = 2;
+const DT_WHEEL_COL_IDS = ['dtWheelHour', 'dtWheelMinute', 'dtWheelAmPm'];
 let dtWheelReady = false;
 let dtWheelScrolling = false;
 let dtWheelScrollTimer = null;
+let dtWheelUnlockTimer = null;
 
 function dtPad(n) {
   return String(n).padStart(2, '0');
@@ -2773,60 +2775,42 @@ function dtRenderCalendar() {
   grid.innerHTML = html;
 }
 
-function dtWheelSpacers() {
-  return '<div class="dt-wheel-item dt-wheel-spacer" aria-hidden="true"></div>'.repeat(DT_WHEEL_PAD);
-}
-
 function dtWheelItemsHtml(items) {
   return items.map(({ value, label }) =>
-    `<div class="dt-wheel-item" data-value="${value}">${label}</div>`
+    `<button type="button" class="dt-wheel-item" data-value="${value}">${label}</button>`
   ).join('');
 }
 
-function dtBuildTimeWheel() {
-  const container = document.getElementById('dtTimeList');
-  if (!container || dtWheelReady) return;
-
-  const hours = Array.from({ length: 12 }, (_, i) => ({ value: i + 1, label: String(i + 1) }));
-  const minutes = Array.from({ length: 60 }, (_, i) => ({ value: i, label: dtPad(i) }));
-  const ampm = [{ value: 0, label: 'AM' }, { value: 1, label: 'PM' }];
-
-  container.innerHTML = `
-    <div class="dt-wheel-fade dt-wheel-fade-top"></div>
-    <div class="dt-wheel-fade dt-wheel-fade-bottom"></div>
-    <div class="dt-wheel-highlight" aria-hidden="true"></div>
-    <div class="dt-wheel-columns">
-      <div class="dt-wheel-col" id="dtWheelHour" aria-label="Hour">${dtWheelSpacers()}${dtWheelItemsHtml(hours)}${dtWheelSpacers()}</div>
-      <span class="dt-wheel-sep" aria-hidden="true">:</span>
-      <div class="dt-wheel-col" id="dtWheelMinute" aria-label="Minute">${dtWheelSpacers()}${dtWheelItemsHtml(minutes)}${dtWheelSpacers()}</div>
-      <div class="dt-wheel-col dt-wheel-col-ampm" id="dtWheelAmPm" aria-label="AM or PM">${dtWheelSpacers()}${dtWheelItemsHtml(ampm)}${dtWheelSpacers()}</div>
-    </div>
-  `;
-
-  ['dtWheelHour', 'dtWheelMinute', 'dtWheelAmPm'].forEach((id) => {
-    const col = document.getElementById(id);
-    if (!col) return;
-    col.addEventListener('scroll', dtOnWheelScroll, { passive: true });
-    col.addEventListener('scrollend', dtOnWheelScrollEnd);
-  });
-
-  dtWheelReady = true;
+function dtWheelCol(id) {
+  return document.getElementById(id);
 }
 
 function dtWheelItems(col) {
-  return col ? [...col.querySelectorAll('.dt-wheel-item:not(.dt-wheel-spacer)')] : [];
+  return col ? [...col.querySelectorAll('.dt-wheel-item')] : [];
 }
 
-function dtWheelIndex(col) {
+function dtWheelDataIndex(col) {
   if (!col) return 0;
   const items = dtWheelItems(col);
+  if (!items.length) return 0;
   const idx = Math.round(col.scrollTop / DT_WHEEL_ITEM_HEIGHT);
   return Math.max(0, Math.min(items.length - 1, idx));
 }
 
+function dtSetWheelScrolling(ms = 120) {
+  dtWheelScrolling = true;
+  clearTimeout(dtWheelUnlockTimer);
+  dtWheelUnlockTimer = setTimeout(() => {
+    dtWheelScrolling = false;
+  }, ms);
+}
+
 function dtScrollWheelTo(col, index, smooth = false) {
   if (!col) return;
-  const top = index * DT_WHEEL_ITEM_HEIGHT;
+  const items = dtWheelItems(col);
+  if (!items.length) return;
+  const clamped = Math.max(0, Math.min(items.length - 1, index));
+  const top = clamped * DT_WHEEL_ITEM_HEIGHT;
   if (smooth) {
     col.scrollTo({ top, behavior: 'smooth' });
   } else {
@@ -2835,10 +2819,10 @@ function dtScrollWheelTo(col, index, smooth = false) {
 }
 
 function dtUpdateWheelItemStyles() {
-  ['dtWheelHour', 'dtWheelMinute', 'dtWheelAmPm'].forEach((id) => {
-    const col = document.getElementById(id);
+  DT_WHEEL_COL_IDS.forEach((id) => {
+    const col = dtWheelCol(id);
     if (!col) return;
-    const activeIdx = dtWheelIndex(col);
+    const activeIdx = dtWheelDataIndex(col);
     dtWheelItems(col).forEach((item, i) => {
       item.classList.toggle('dt-wheel-item-active', i === activeIdx);
     });
@@ -2851,15 +2835,25 @@ function dtMinutesFromWheelParts(hour12, minute, isPm) {
   return hour24 * 60 + minute;
 }
 
+function dtWheelPartsFromMinutes(totalMinutes) {
+  const hour24 = Math.floor(totalMinutes / 60) % 24;
+  const minute = totalMinutes % 60;
+  return {
+    hourIndex: (hour24 % 12 || 12) - 1,
+    minuteIndex: minute,
+    ampmIndex: hour24 >= 12 ? 1 : 0,
+  };
+}
+
 function dtReadWheelsToState() {
-  const hourCol = document.getElementById('dtWheelHour');
-  const minCol = document.getElementById('dtWheelMinute');
-  const ampmCol = document.getElementById('dtWheelAmPm');
+  const hourCol = dtWheelCol('dtWheelHour');
+  const minCol = dtWheelCol('dtWheelMinute');
+  const ampmCol = dtWheelCol('dtWheelAmPm');
   if (!hourCol || !minCol || !ampmCol) return;
 
-  const hour12 = parseInt(dtWheelItems(hourCol)[dtWheelIndex(hourCol)]?.dataset.value || '12', 10);
-  const minute = parseInt(dtWheelItems(minCol)[dtWheelIndex(minCol)]?.dataset.value || '0', 10);
-  const isPm = parseInt(dtWheelItems(ampmCol)[dtWheelIndex(ampmCol)]?.dataset.value || '0', 10) === 1;
+  const hour12 = parseInt(dtWheelItems(hourCol)[dtWheelDataIndex(hourCol)]?.dataset.value || '12', 10);
+  const minute = parseInt(dtWheelItems(minCol)[dtWheelDataIndex(minCol)]?.dataset.value || '0', 10);
+  const isPm = parseInt(dtWheelItems(ampmCol)[dtWheelDataIndex(ampmCol)]?.dataset.value || '0', 10) === 1;
 
   dtState.selectedMinutes = dtMinutesFromWheelParts(hour12, minute, isPm);
   dtSyncHiddenInput();
@@ -2870,32 +2864,27 @@ function dtReadWheelsToState() {
 function dtSyncWheelFromState() {
   if (!dtWheelReady) return;
 
-  const totalMin = dtState.selectedMinutes;
-  const hour24 = Math.floor(totalMin / 60) % 24;
-  const minute = totalMin % 60;
-  const hour12 = hour24 % 12 || 12;
-  const isPm = hour24 >= 12 ? 1 : 0;
+  const { hourIndex, minuteIndex, ampmIndex } = dtWheelPartsFromMinutes(dtState.selectedMinutes);
 
-  dtWheelScrolling = true;
-  dtScrollWheelTo(document.getElementById('dtWheelHour'), hour12 - 1);
-  dtScrollWheelTo(document.getElementById('dtWheelMinute'), minute);
-  dtScrollWheelTo(document.getElementById('dtWheelAmPm'), isPm);
+  dtSetWheelScrolling(80);
+  dtScrollWheelTo(dtWheelCol('dtWheelHour'), hourIndex, false);
+  dtScrollWheelTo(dtWheelCol('dtWheelMinute'), minuteIndex, false);
+  dtScrollWheelTo(dtWheelCol('dtWheelAmPm'), ampmIndex, false);
   dtUpdateWheelItemStyles();
-
-  requestAnimationFrame(() => {
-    dtWheelScrolling = false;
-  });
 }
 
-function dtSnapWheels(smooth = true) {
-  ['dtWheelHour', 'dtWheelMinute', 'dtWheelAmPm'].forEach((id) => {
-    dtScrollWheelTo(document.getElementById(id), dtWheelIndex(document.getElementById(id)), smooth);
-  });
+function dtSnapWheelCol(col, smooth = true) {
+  if (!col) return;
+  dtScrollWheelTo(col, dtWheelDataIndex(col), smooth);
 }
 
-function dtOnWheelScrollEnd() {
+function dtSnapAllWheels(smooth = true) {
+  DT_WHEEL_COL_IDS.forEach((id) => dtSnapWheelCol(dtWheelCol(id), smooth));
+}
+
+function dtFinishWheelInteraction() {
   if (dtWheelScrolling) return;
-  dtSnapWheels(true);
+  dtSnapAllWheels(true);
   dtReadWheelsToState();
 }
 
@@ -2903,20 +2892,81 @@ function dtOnWheelScroll() {
   if (dtWheelScrolling) return;
   dtUpdateWheelItemStyles();
   clearTimeout(dtWheelScrollTimer);
-  dtWheelScrollTimer = setTimeout(() => {
-    dtSnapWheels(true);
-    dtReadWheelsToState();
-  }, 100);
+  dtWheelScrollTimer = setTimeout(dtFinishWheelInteraction, 120);
 }
 
-function dtRenderTimeList() {
+function dtOnWheelScrollEnd() {
+  if (dtWheelScrolling) return;
+  clearTimeout(dtWheelScrollTimer);
+  dtFinishWheelInteraction();
+}
+
+function dtBindWheelColumn(col) {
+  if (!col || col.dataset.bound === '1') return;
+  col.dataset.bound = '1';
+  col.addEventListener('scroll', dtOnWheelScroll, { passive: true });
+  col.addEventListener('scrollend', dtOnWheelScrollEnd);
+
+  dtWheelItems(col).forEach((item, index) => {
+    item.addEventListener('click', () => {
+      dtScrollWheelTo(col, index, true);
+      clearTimeout(dtWheelScrollTimer);
+      dtWheelScrollTimer = setTimeout(dtFinishWheelInteraction, 160);
+    });
+  });
+}
+
+function dtBuildTimeWheel() {
+  const container = document.getElementById('dtTimeList');
+  if (!container) return;
+
+  if (!dtWheelReady) {
+    const hours = Array.from({ length: 12 }, (_, i) => ({ value: i + 1, label: String(i + 1) }));
+    const minutes = Array.from({ length: 60 }, (_, i) => ({ value: i, label: dtPad(i) }));
+    const ampm = [{ value: 0, label: 'AM' }, { value: 1, label: 'PM' }];
+
+    container.innerHTML = `
+      <div class="dt-wheel-fade dt-wheel-fade-top"></div>
+      <div class="dt-wheel-fade dt-wheel-fade-bottom"></div>
+      <div class="dt-wheel-highlight" aria-hidden="true"></div>
+      <div class="dt-wheel-columns">
+        <div class="dt-wheel-col" id="dtWheelHour" aria-label="Hour">
+          <div class="dt-wheel-inner">${dtWheelItemsHtml(hours)}</div>
+        </div>
+        <span class="dt-wheel-sep" aria-hidden="true">:</span>
+        <div class="dt-wheel-col" id="dtWheelMinute" aria-label="Minute">
+          <div class="dt-wheel-inner">${dtWheelItemsHtml(minutes)}</div>
+        </div>
+        <div class="dt-wheel-col dt-wheel-col-ampm" id="dtWheelAmPm" aria-label="AM or PM">
+          <div class="dt-wheel-inner">${dtWheelItemsHtml(ampm)}</div>
+        </div>
+      </div>
+    `;
+
+    DT_WHEEL_COL_IDS.forEach((id) => dtBindWheelColumn(dtWheelCol(id)));
+    dtWheelReady = true;
+  }
+
+  dtSyncWheelFromState();
+}
+
+function dtRefreshTimeWheel() {
   dtBuildTimeWheel();
+  dtSyncWheelFromState();
+  dtUpdateSummary();
+}
+
+function dtRenderTimeWheel() {
+  if (!dtWheelReady) {
+    dtBuildTimeWheel();
+    return;
+  }
   dtSyncWheelFromState();
 }
 
 function dtRenderAll() {
   dtRenderCalendar();
-  dtRenderTimeList();
+  dtRenderTimeWheel();
   dtUpdateSummary();
 }
 
@@ -2938,7 +2988,8 @@ function dtSelectDay(day) {
   dtState.selectedMonth = dtState.viewMonth;
   dtState.selectedDay = day;
   dtSyncHiddenInput();
-  dtRenderAll();
+  dtRenderCalendar();
+  dtUpdateSummary();
 }
 
 function dtSelectTime(minutes) {
@@ -2977,6 +3028,9 @@ function dtInitWidget() {
 
   dtApplyDateTime(defaultDate, true);
   if (window.lucide) lucide.createIcons();
+
+  // Scheduler tab may be hidden on load — sync wheels once layout is ready
+  requestAnimationFrame(() => dtRefreshTimeWheel());
 }
 
 function dtConfirm() {

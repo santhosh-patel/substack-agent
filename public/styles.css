@@ -805,6 +805,7 @@ select option {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  align-self: start;
 }
 
 .dt-picker-section-title {
@@ -940,10 +941,14 @@ select option {
 /* iOS-style scroll wheel time picker */
 .dt-time-wheel {
   position: relative;
-  flex: 1;
-  min-height: 180px;
+  flex: 0 0 auto;
+  width: 100%;
   height: 180px;
+  min-height: 180px;
+  max-height: 180px;
   overflow: hidden;
+  --dt-wheel-item-h: 36px;
+  --dt-wheel-pad: calc((180px - var(--dt-wheel-item-h)) / 2);
 }
 
 .dt-wheel-fade {
@@ -952,7 +957,7 @@ select option {
   right: 0;
   height: 38%;
   pointer-events: none;
-  z-index: 2;
+  z-index: 4;
 }
 
 .dt-wheel-fade-top {
@@ -971,7 +976,7 @@ select option {
   right: 6px;
   top: 50%;
   transform: translateY(-50%);
-  height: 36px;
+  height: var(--dt-wheel-item-h);
   border-radius: var(--radius-md);
   background: rgba(134, 167, 137, 0.14);
   border: 1px solid rgba(134, 167, 137, 0.32);
@@ -981,11 +986,12 @@ select option {
 
 .dt-wheel-columns {
   position: relative;
-  z-index: 0;
+  z-index: 2;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  height: 100%;
+  height: 180px;
+  max-height: 180px;
   gap: 0;
   padding: 0 4px;
 }
@@ -993,9 +999,12 @@ select option {
 .dt-wheel-col {
   flex: 1;
   max-width: 54px;
-  height: 100%;
+  height: 180px;
+  max-height: 180px;
   overflow-y: auto;
+  overflow-x: hidden;
   scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   overscroll-behavior: contain;
@@ -1006,6 +1015,11 @@ select option {
   display: none;
 }
 
+.dt-wheel-inner {
+  padding-top: var(--dt-wheel-pad);
+  padding-bottom: var(--dt-wheel-pad);
+}
+
 .dt-wheel-col-ampm {
   flex: 0 0 56px;
   max-width: 56px;
@@ -1013,20 +1027,27 @@ select option {
 
 .dt-wheel-sep {
   flex: 0 0 auto;
+  align-self: center;
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1;
   padding: 0 1px;
   user-select: none;
+  pointer-events: none;
 }
 
 .dt-wheel-item {
-  height: 36px;
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  height: var(--dt-wheel-item-h);
   display: flex;
   align-items: center;
   justify-content: center;
   scroll-snap-align: center;
+  scroll-snap-stop: always;
   font-size: 1.02rem;
   font-weight: 500;
   color: var(--text-muted);
@@ -1034,7 +1055,7 @@ select option {
   transform: scale(0.92);
   transition: color 0.12s, opacity 0.12s, transform 0.12s, font-weight 0.12s;
   user-select: none;
-  cursor: default;
+  cursor: pointer;
 }
 
 .dt-wheel-item.dt-wheel-item-active {
@@ -1042,11 +1063,6 @@ select option {
   opacity: 1;
   font-weight: 700;
   transform: scale(1);
-}
-
-.dt-wheel-spacer {
-  pointer-events: none;
-  visibility: hidden;
 }
 
 .dt-picker-footer {
