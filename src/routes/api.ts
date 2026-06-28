@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { Marked } from 'marked';
-import { generatePost, SYSTEM_PROMPT, analyzeAndGenerateComment, generateNote, NOTE_SYSTEM_PROMPT } from '../ai/generate.js';
+import { generatePost, SYSTEM_PROMPT, analyzeAndGenerateComment, generateNote, NOTE_SYSTEM_PROMPT, DEFAULT_AI_MODELS } from '../ai/generate.js';
 import fs from 'fs';
 import path from 'path';
 import {
@@ -21,8 +21,13 @@ import {
   addSchedule,
   deleteSchedule,
   toggleSchedule,
+  retrySchedule,
+  recoverStuckSchedules,
+  applyScheduleFailure,
   calculateNextRun,
   validateScheduledPost,
+  MAX_SCHEDULE_RETRIES,
+  type ScheduledPost,
 } from '../lib/storage.js';
 import { searchInternet } from '../lib/search.js';
 
@@ -917,8 +922,84 @@ router.post('/schedule/:id/toggle', async (req: Request, res: Response) => {
   }
 });
 
+// ─── POST /api/schedule/:id/retry ───
+router.post('/schedule/:id/retry', async (req: Request, res: Response) => {
+  try {
+    const { apiKey, provider, model } = req.body || {};
+    const schedule = await retrySchedule(req.params.id as string, {
+      apiKey: apiKey || undefined,
+      provider: provider || undefined,
+      model: model || undefined,
+    });
+    if (!schedule) {
+      res.status(404).json({ error: 'Failed schedule not found' });
+      return;
+    }
+    res.json({ success: true, schedule });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to retry schedule' });
+  }
+});
+
+type AIProvider = 'groq' | 'gemini' | 'openai' | 'openrouter';
+
+function resolveEnvApiKey(provider: AIProvider): string | undefined {
+  if (provider === 'groq') return process.env.GROQ_API_KEY;
+  if (provider === 'gemini') return process.env.GEMINI_API_KEY;
+  if (provider === 'openai') return process.env.OPENAI_API_KEY;
+  if (provider === 'openrouter') return process.env.OPENROUTER_API_KEY;
+  return undefined;
+}
+
+function detectProviderFromEnv(): AIProvider | null {
+  if (process.env.GROQ_API_KEY) return 'groq';
+  if (process.env.GEMINI_API_KEY) return 'gemini';
+  if (process.env.OPENAI_API_KEY) return 'openai';
+  if (process.env.OPENROUTER_API_KEY) return 'openrouter';
+  return null;
+}
+
+function resolveScheduleAIConfig(
+  post: ScheduledPost,
+  addLog: (msg: string) => void
+): { provider: AIProvider; model: string; apiKey: string } {
+  let provider: AIProvider | null = post.provider || detectProviderFromEnv();
+  if (!provider) {
+    throw new Error(
+      'No AI provider found. Set a provider on the schedule or configure GROQ_API_KEY, GEMINI_API_KEY, OPENAI_API_KEY, or OPENROUTER_API_KEY in environment.'
+    );
+  }
+
+  let apiKey = post.apiKey?.trim() || resolveEnvApiKey(provider);
+  if (!apiKey) {
+    throw new Error(
+      `API key is missing for provider "${provider}". Add your key in Scheduler AI settings when creating the job, or set it in server environment variables.`
+    );
+  }
+
+  if (post.apiKey?.trim()) {
+    addLog(`Using API key stored on schedule for provider "${provider}".`);
+  } else {
+    addLog(`Using server environment API key for provider "${provider}".`);
+  }
+
+  const model = post.model || DEFAULT_AI_MODELS[provider];
+  if (!model) {
+    throw new Error(`Model selection is missing for provider: ${provider}.`);
+  }
+
+  return { provider, model, apiKey };
+}
+
 // Core scheduler processor function
 export async function runScheduleProcessing(addLog: (msg: string) => void): Promise<{ processed: any[] }> {
+  const recovered = await recoverStuckSchedules((post) => {
+    addLog(`Recovered stuck schedule ${post.id} from processing state.`);
+  });
+  if (recovered > 0) {
+    addLog(`Recovered ${recovered} stuck schedule(s).`);
+  }
+
   const schedules = await getSchedules();
   const now = new Date();
   const processed: any[] = [];
@@ -946,6 +1027,7 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
       }
 
       freshPost.status = 'processing';
+      freshPost.processingStartedAt = new Date().toISOString();
       await saveSchedules(currentSchedules);
     } catch (lockErr: any) {
       addLog(`Locking error for schedule ${post.id}: ${lockErr.message}`);
@@ -959,44 +1041,7 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
       let finalBody = post.body;
 
       if (post.enableSearch) {
-        // Resolve AI Provider & Key
-        let provider: 'groq' | 'gemini' | 'openai' | 'openrouter';
-        const postProvider = post.provider;
-        if (postProvider) {
-          provider = postProvider;
-        } else {
-          if (process.env.GROQ_API_KEY) provider = 'groq';
-          else if (process.env.GEMINI_API_KEY) provider = 'gemini';
-          else if (process.env.OPENAI_API_KEY) provider = 'openai';
-          else if (process.env.OPENROUTER_API_KEY) provider = 'openrouter';
-          else {
-            throw new Error('No AI provider found. Please configure GROQ_API_KEY, GEMINI_API_KEY, OPENAI_API_KEY, or OPENROUTER_API_KEY in environment.');
-          }
-        }
-
-        let apiKey = post.apiKey;
-        if (!apiKey) {
-          if (provider === 'groq') apiKey = process.env.GROQ_API_KEY;
-          else if (provider === 'gemini') apiKey = process.env.GEMINI_API_KEY;
-          else if (provider === 'openai') apiKey = process.env.OPENAI_API_KEY;
-          else if (provider === 'openrouter') apiKey = process.env.OPENROUTER_API_KEY;
-        }
-
-        if (!apiKey) {
-          throw new Error(`API key is missing for provider: ${provider}. Please configure it in your environment or scheduler settings.`);
-        }
-
-        let model = post.model;
-        if (!model) {
-          if (provider === 'groq') model = 'llama3-70b-8192';
-          else if (provider === 'gemini') model = 'gemini-2.5-flash';
-          else if (provider === 'openai') model = 'gpt-4o-mini';
-          else if (provider === 'openrouter') model = 'openrouter/free:online';
-        }
-
-        if (!model) {
-          throw new Error(`Model selection is missing for provider: ${provider}.`);
-        }
+        const { provider, model, apiKey } = resolveScheduleAIConfig(post, addLog);
 
         let userPrompt = '';
         if (provider === 'openrouter' && model === 'openrouter/free:online') {
@@ -1112,6 +1157,8 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
       if (freshPost) {
         freshPost.lastRunAt = new Date().toISOString();
         freshPost.errorMessage = undefined;
+        freshPost.retryCount = 0;
+        freshPost.processingStartedAt = undefined;
         if (freshPost.recurrence === 'once') {
           freshPost.status = 'completed';
         } else {
@@ -1125,23 +1172,29 @@ export async function runScheduleProcessing(addLog: (msg: string) => void): Prom
 
       processed.push({ id: post.id, title: post.title || 'Note', status: 'success' });
     } catch (postErr: any) {
-      addLog(`Error processing schedule ${post.id}: ${postErr.message}`);
-      
-      // Failure: update status on fresh list and save
+      const errMsg = postErr.message || 'Publication failed';
+      addLog(`Error processing schedule ${post.id}: ${errMsg}`);
+
       try {
         const currentSchedules = await getSchedules();
         const freshPost = currentSchedules.find(p => p.id === post.id);
         if (freshPost) {
           freshPost.lastRunAt = new Date().toISOString();
-          freshPost.status = 'failed';
-          freshPost.errorMessage = postErr.message || 'Publication failed';
+          const { willRetry, nextRunAt } = applyScheduleFailure(freshPost, errMsg);
+          if (willRetry) {
+            addLog(
+              `Schedule ${post.id} will retry (attempt ${freshPost.retryCount}/${MAX_SCHEDULE_RETRIES}) at ${nextRunAt}.`
+            );
+          } else {
+            addLog(`Schedule ${post.id} permanently failed after ${MAX_SCHEDULE_RETRIES} attempts.`);
+          }
           await saveSchedules(currentSchedules);
         }
       } catch (saveErr: any) {
         addLog(`Failed to save error status for ${post.id}: ${saveErr.message}`);
       }
 
-      processed.push({ id: post.id, title: post.title || 'Note', status: 'failed', error: postErr.message });
+      processed.push({ id: post.id, title: post.title || 'Note', status: 'failed', error: errMsg });
     }
   }
 

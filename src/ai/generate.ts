@@ -195,6 +195,13 @@ function parseAIResponse(raw: string): GeneratedPost {
 
 // ─── Public API ───
 
+export const DEFAULT_AI_MODELS: Record<'groq' | 'gemini' | 'openai' | 'openrouter', string> = {
+  groq: 'llama-3.3-70b-versatile',
+  gemini: 'gemini-2.5-flash',
+  openai: 'gpt-4o-mini',
+  openrouter: 'openrouter/free:online',
+};
+
 export async function generatePost(req: GenerateRequest): Promise<GeneratedPost> {
   const { topic, provider, model, apiKey, systemPrompt } = req;
 

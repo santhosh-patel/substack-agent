@@ -2,17 +2,18 @@
   {
     "title": "",
     "subtitle": "",
-    "body": "Analyze the topic with a rigorous technical focus. Break down the core architectural patterns, implementation details, and key decisions. Provide illustrative code snippets (if applicable) and concrete examples. Critically contrast this technology with its leading alternatives on performance, complexity, and scalability. Maintain an authoritative, builder-focused, engineering-first tone.",
+    "body": "Write like you just read the news and are posting your honest reaction. Simple, direct, human. One key point plus a short personal opinion.",
     "isDraft": true,
-    "scheduledAt": "2026-06-28T07:00:00.000Z",
+    "scheduledAt": "2026-06-28T07:47:03.716Z",
     "recurrence": "once",
     "postType": "newsletter",
     "noteLink": "",
     "enableSearch": true,
-    "id": "a1aa6a73-19df-4c07-9062-0679df93fa49",
-    "status": "failed",
-    "createdAt": "2026-06-28T06:57:31.019Z",
-    "lastRunAt": "2026-06-28T07:00:54.626Z",
-    "errorMessage": "API error (401): {\"error\":{\"message\":\"Invalid API Key\",\"type\":\"invalid_request_error\",\"code\":\"invalid_api_key\"}}\n"
+    "id": "85f6e1d3-1c60-4b4a-b281-a187379fa08e",
+    "status": "pending",
+    "retryCount": 2,
+    "createdAt": "2026-06-28T07:35:41.571Z",
+    "lastRunAt": "2026-06-28T07:42:03.716Z",
+    "errorMessage": "Attempt 2/3 failed: API error (401): {\"error\":{\"message\":\"Invalid API Key\",\"type\":\"invalid_request_error\",\"code\":\"invalid_api_key\"}}\n"
   }
 ]

@@ -939,6 +939,7 @@ function switchTab(tabId, skipPush) {
   } else if (tabId === 'scheduler') {
     loadSchedules();
     updateSchedModelOptions();
+    syncSchedApiKeyFromStorage();
   }
 
   if (tabId === 'scheduler') {
@@ -1676,11 +1677,13 @@ async function loadSchedules() {
       const statusClass = `badge-${item.status}`;
 
       const isPaused = item.status === 'paused';
+      const isFailed = item.status === 'failed';
+      const retryCount = item.retryCount || 0;
       const toggleText = isPaused ? 'Resume' : 'Pause';
       const toggleIcon = isPaused ? 'play' : 'pause';
 
       return `
-        <div class="schedule-item">
+        <div class="schedule-item${isFailed ? ' schedule-item-failed' : ''}">
           <div class="schedule-item-info">
             <div class="schedule-item-header">
               <span class="schedule-item-type">${escapeHtml(item.postType)}</span>
@@ -1690,7 +1693,7 @@ async function loadSchedules() {
             <div class="schedule-item-meta">
               <div class="schedule-item-meta-item" title="Scheduled execution time">
                 <i data-lucide="clock"></i>
-                <span>Next Run: <strong>${date}</strong></span>
+                <span>${isFailed ? 'Last scheduled' : 'Next Run'}: <strong>${date}</strong></span>
               </div>
               <div class="schedule-item-meta-item" title="Recurrence pattern">
                 <i data-lucide="repeat"></i>
@@ -1700,6 +1703,12 @@ async function loadSchedules() {
                 <i data-lucide="check-square"></i>
                 <span>Last Run: ${lastRun}</span>
               </div>
+              ${retryCount > 0 ? `
+                <div class="schedule-item-meta-item" title="Retry attempts">
+                  <i data-lucide="refresh-cw"></i>
+                  <span>Retries: <strong>${retryCount}/3</strong></span>
+                </div>
+              ` : ''}
               ${item.enableSearch ? `
                 <div class="schedule-item-meta-item" style="color: var(--accent);" title="Web research enabled">
                   <i data-lucide="search" style="color: var(--accent);"></i>
@@ -1715,9 +1724,15 @@ async function loadSchedules() {
             </div>
           </div>
           <div class="schedule-item-actions">
-            <button class="btn btn-secondary btn-sm" onclick="toggleScheduleState('${item.id}')" title="${toggleText} Schedule" style="display: flex; align-items: center; gap: 4px;">
-              <i data-lucide="${toggleIcon}" style="width: 14px; height: 14px;"></i> ${toggleText}
-            </button>
+            ${isFailed ? `
+              <button class="btn btn-primary btn-sm" onclick="retryScheduleItem('${item.id}')" title="Retry this post" style="display: flex; align-items: center; gap: 4px;">
+                <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Retry
+              </button>
+            ` : `
+              <button class="btn btn-secondary btn-sm" onclick="toggleScheduleState('${item.id}')" title="${toggleText} Schedule" style="display: flex; align-items: center; gap: 4px;">
+                <i data-lucide="${toggleIcon}" style="width: 14px; height: 14px;"></i> ${toggleText}
+              </button>
+            `}
             <button class="btn btn-secondary btn-sm" style="color: var(--error); border-color: rgba(239, 68, 68, 0.2); display: flex; align-items: center; gap: 4px;" onclick="deleteScheduleItem('${item.id}')" title="Delete Schedule">
               <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Delete
             </button>
@@ -1746,9 +1761,15 @@ async function handleCreateSchedule() {
   
   // New fields
   const enableSearch = document.getElementById('schedEnableSearch').checked;
-  const provider = document.getElementById('schedProvider').value;
-  const model = document.getElementById('schedModel').value;
-  const apiKey = document.getElementById('schedApiKey').value.trim();
+  const schedProviderVal = document.getElementById('schedProvider').value;
+  const mainProvider = document.getElementById('provider').value;
+  const resolvedProvider = schedProviderVal || mainProvider;
+  const resolvedModel = document.getElementById('schedModel').value.trim()
+    || document.getElementById('model').value.trim();
+  let apiKey = document.getElementById('schedApiKey').value.trim();
+  if (!apiKey) {
+    apiKey = getStoredApiKey(resolvedProvider);
+  }
   const systemPrompt = document.getElementById('schedSystemPrompt').value.trim();
 
   const btn = document.getElementById('schedSubmitBtn');
@@ -1781,6 +1802,14 @@ async function handleCreateSchedule() {
     return;
   }
 
+  if (enableSearch && !apiKey && !hasBackendApiKey(resolvedProvider)) {
+    showToast(
+      `Add your ${resolvedProvider.toUpperCase()} API key in Settings — scheduled research posts store the key with the job so cron can run offline.`,
+      'error'
+    );
+    return;
+  }
+
   const isoTime = new Date(scheduledAt).toISOString();
 
   setButtonLoading(btn, true, 'Scheduling...');
@@ -1799,8 +1828,8 @@ async function handleCreateSchedule() {
         postType,
         noteLink,
         enableSearch,
-        provider: provider || undefined,
-        model: model || undefined,
+        provider: enableSearch ? (resolvedProvider || undefined) : (schedProviderVal || undefined),
+        model: enableSearch ? (resolvedModel || undefined) : (document.getElementById('schedModel').value || undefined),
         apiKey: apiKey || undefined,
         systemPrompt: systemPrompt || undefined,
       }),
@@ -1856,6 +1885,39 @@ async function deleteScheduleItem(id) {
   }
 }
 
+async function retryScheduleItem(id) {
+  try {
+    const schedProviderVal = document.getElementById('schedProvider')?.value || '';
+    const mainProvider = document.getElementById('provider')?.value || 'groq';
+    const resolvedProvider = schedProviderVal || mainProvider;
+    const resolvedModel = document.getElementById('schedModel')?.value.trim()
+      || document.getElementById('model')?.value.trim()
+      || '';
+    let apiKey = document.getElementById('schedApiKey')?.value.trim() || '';
+    if (!apiKey) {
+      apiKey = getStoredApiKey(resolvedProvider);
+    }
+
+    const res = await fetch(`/api/schedule/${id}/retry`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        apiKey: apiKey || undefined,
+        provider: resolvedProvider || undefined,
+        model: resolvedModel || undefined,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to retry schedule');
+
+    showToast('Post queued for retry with updated credentials', 'success');
+    appendSchedulerLog(`Manual retry queued for schedule ${id}.`, 'info');
+    await loadSchedules();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
 async function runManualCron() {
   appendSchedulerLog('Manual queue check triggered…', 'highlight');
   try {
@@ -1883,13 +1945,16 @@ async function runManualCron() {
 function updateSchedulerStats(schedules) {
   const pendingEl = document.getElementById('schedStatPending');
   const pausedEl = document.getElementById('schedStatPaused');
+  const failedEl = document.getElementById('schedStatFailed');
   const nextDueEl = document.getElementById('schedStatNextDue');
   if (!pendingEl || !pausedEl || !nextDueEl) return;
 
   const pending = schedules.filter(s => s.status === 'pending').length;
   const paused = schedules.filter(s => s.status === 'paused').length;
+  const failed = schedules.filter(s => s.status === 'failed').length;
   pendingEl.textContent = String(pending);
   pausedEl.textContent = String(paused);
+  if (failedEl) failedEl.textContent = String(failed);
 
   const now = Date.now();
   const upcoming = schedules
@@ -1909,7 +1974,7 @@ function classifySchedulerLogType(message) {
   const msg = message.toLowerCase();
   if (msg.includes('error') || msg.includes('failed') || msg.includes('fatal')) return 'error';
   if (msg.includes('success') || msg.includes('finished processing') || msg.includes('processed')) return 'success';
-  if (msg.includes('skipping') || msg.includes('no due')) return 'warning';
+  if (msg.includes('will retry') || msg.includes('skipping') || msg.includes('no due')) return 'warning';
   if (msg.includes('triggered') || msg.includes('running schedules')) return 'highlight';
   return 'info';
 }
@@ -1991,6 +2056,7 @@ window.loadSchedules = loadSchedules;
 window.handleCreateSchedule = handleCreateSchedule;
 window.toggleScheduleState = toggleScheduleState;
 window.deleteScheduleItem = deleteScheduleItem;
+window.retryScheduleItem = retryScheduleItem;
 window.runManualCron = runManualCron;
 window.clearSchedulerLogs = clearSchedulerLogs;
 window.copySchedulerLogs = copySchedulerLogs;
@@ -2110,6 +2176,20 @@ function toggleSchedSearchFields() {
   }
 }
 
+function syncSchedApiKeyFromStorage() {
+  const schedApiKey = document.getElementById('schedApiKey');
+  if (!schedApiKey || schedApiKey.dataset.userEdited === 'true') return;
+
+  const schedProvider = document.getElementById('schedProvider')?.value || '';
+  const mainProvider = document.getElementById('provider')?.value || 'groq';
+  const provider = schedProvider || mainProvider;
+  const storedKey = getStoredApiKey(provider);
+  if (storedKey) {
+    schedApiKey.value = storedKey;
+    schedApiKey.placeholder = 'Using key from Settings (saved with schedule on submit)';
+  }
+}
+
 function updateSchedModelOptions() {
   const provider = document.getElementById('schedProvider').value;
   const modelSelect = document.getElementById('schedModel');
@@ -2122,7 +2202,10 @@ function updateSchedModelOptions() {
   defaultOpt.textContent = '(Use System Default)';
   modelSelect.appendChild(defaultOpt);
   
-  if (!provider) return;
+  if (!provider) {
+    syncSchedApiKeyFromStorage();
+    return;
+  }
   
   const models = MODELS[provider] || [];
   models.forEach((m) => {
@@ -2131,6 +2214,8 @@ function updateSchedModelOptions() {
     opt.textContent = m.label;
     modelSelect.appendChild(opt);
   });
+
+  syncSchedApiKeyFromStorage();
 }
 
 window.togglePasswordVisibility = togglePasswordVisibility;
@@ -2165,10 +2250,9 @@ function dtInitWidget() {
   dtState.hour12 = h % 12 || 12;
   dtState.minute = now.getMinutes();
 
-  const tzHint = document.getElementById('dtTimezoneHint');
-  if (tzHint) {
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    tzHint.textContent = `Times shown in your local timezone (${tz})`;
+  const tzBadge = document.getElementById('dtTzBadge');
+  if (tzBadge) {
+    tzBadge.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
   }
 
   dtSyncHiddenInput();
@@ -2201,6 +2285,7 @@ function dtOpenWidget() {
   if (trigger) trigger.setAttribute('aria-expanded', 'true');
   dtRenderCalendar();
   dtUpdateTimeUI();
+  dtUpdateTriggerDisplay();
   if (window.lucide) lucide.createIcons();
 }
 
@@ -2353,7 +2438,8 @@ function dtConfirm() {
   dtSyncHiddenInput();
   dtUpdateTriggerDisplay();
   dtCloseWidget();
-  showToast(`Scheduled: ${dtGetFormattedDisplay().date} at ${dtGetFormattedDisplay().time}`, 'info');
+  const display = dtGetFormattedDisplay();
+  showToast(`Scheduled: ${display.full}`, 'info');
 }
 
 function dtUpdateTimeUI() {
@@ -2361,37 +2447,109 @@ function dtUpdateTimeUI() {
   const minEl = document.getElementById('dtMinuteInput');
   const amBtn = document.getElementById('dtAmBtn');
   const pmBtn = document.getElementById('dtPmBtn');
+  const timeDisplay = document.getElementById('dtTimeDisplay');
 
   if (hourEl) hourEl.value = String(dtState.hour12).padStart(2, '0');
   if (minEl) minEl.value = String(dtState.minute).padStart(2, '0');
   if (amBtn) amBtn.classList.toggle('active', dtState.ampm === 'AM');
   if (pmBtn) pmBtn.classList.toggle('active', dtState.ampm === 'PM');
+  if (timeDisplay) {
+    timeDisplay.textContent = `${dtState.hour12}:${String(dtState.minute).padStart(2, '0')} ${dtState.ampm}`;
+  }
+}
+
+function dtBuildSelectedDate() {
+  if (!dtState.selectedDate) return null;
+  let h24 = dtState.hour12 % 12;
+  if (dtState.ampm === 'PM') h24 += 12;
+  const d = dtState.selectedDate;
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate(), h24, dtState.minute, 0, 0);
+}
+
+function dtGetRelativeLabel(targetDate) {
+  if (!targetDate) return '';
+  const now = new Date();
+  const diffMs = targetDate.getTime() - now.getTime();
+  const diffMins = Math.round(diffMs / 60000);
+
+  if (diffMins < 0) return 'This time is in the past';
+  if (diffMins < 1) return 'Publishing in less than a minute';
+  if (diffMins < 60) return `Publishing in ${diffMins} minute${diffMins === 1 ? '' : 's'}`;
+
+  const diffHours = Math.round(diffMins / 60);
+  if (diffHours < 24) return `Publishing in ${diffHours} hour${diffHours === 1 ? '' : 's'}`;
+
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const startOfTarget = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+  const dayDiff = Math.round((startOfTarget - startOfToday) / 86400000);
+
+  if (dayDiff === 0) return 'Publishing today';
+  if (dayDiff === 1) return 'Publishing tomorrow';
+  if (dayDiff < 7) return `Publishing in ${dayDiff} days`;
+
+  const diffWeeks = Math.round(dayDiff / 7);
+  return `Publishing in ${diffWeeks} week${diffWeeks === 1 ? '' : 's'}`;
 }
 
 function dtGetFormattedDisplay() {
-  let dateStr = 'Select date';
-  let timeStr = 'Select time';
+  const empty = {
+    full: 'Select a date and time',
+    date: '—',
+    time: '—',
+    iso: '',
+    relative: '',
+  };
 
-  if (dtState.selectedDate) {
-    dateStr = dtState.selectedDate.toLocaleDateString(undefined, {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  }
+  if (!dtState.selectedDate) return empty;
 
-  timeStr = `${dtState.hour12}:${String(dtState.minute).padStart(2, '0')} ${dtState.ampm}`;
-  return { date: dateStr, time: timeStr };
+  const target = dtBuildSelectedDate();
+  const dateStr = dtState.selectedDate.toLocaleDateString(undefined, {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+  const dateShort = dtState.selectedDate.toLocaleDateString(undefined, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+  const timeStr = `${dtState.hour12}:${String(dtState.minute).padStart(2, '0')} ${dtState.ampm}`;
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  return {
+    full: `${dateStr} at ${timeStr}`,
+    date: dateShort,
+    time: timeStr,
+    iso: target ? target.toISOString() : '',
+    relative: dtGetRelativeLabel(target),
+    tz,
+  };
 }
 
 function dtUpdateTriggerDisplay() {
-  const { date, time } = dtGetFormattedDisplay();
+  const display = dtGetFormattedDisplay();
+  const fullEl = document.getElementById('dtWidgetFull');
   const dateEl = document.getElementById('dtWidgetDate');
   const timeEl = document.getElementById('dtWidgetTime');
+  const relativeEl = document.getElementById('dtRelative');
+  const isoEl = document.getElementById('dtIsoPreview');
+  const previewEl = document.getElementById('dtDropdownPreview');
+  const previewSubEl = document.getElementById('dtDropdownPreviewSub');
   const widget = document.getElementById('datetimeWidget');
-  if (dateEl) dateEl.textContent = date;
-  if (timeEl) timeEl.textContent = time;
+
+  if (fullEl) fullEl.textContent = display.full;
+  if (dateEl) dateEl.textContent = display.date;
+  if (timeEl) timeEl.textContent = display.time;
+  if (relativeEl) relativeEl.textContent = display.relative;
+  if (isoEl) isoEl.textContent = display.iso ? display.iso : '';
+  if (previewEl) previewEl.textContent = display.full;
+  if (previewSubEl) {
+    previewSubEl.textContent = display.relative
+      ? `${display.relative}${display.tz ? ` · ${display.tz}` : ''}`
+      : (display.tz || '');
+  }
   if (widget) {
     widget.classList.toggle('is-empty', !dtState.selectedDate);
   }

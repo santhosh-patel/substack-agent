@@ -19,6 +19,8 @@ export interface ScheduledPost {
   lastRunAt?: string; // ISO string
   status: 'pending' | 'processing' | 'completed' | 'failed' | 'paused';
   errorMessage?: string;
+  retryCount?: number;
+  processingStartedAt?: string; // ISO string — set while status is processing
   createdAt: string; // ISO string
   
   // Custom automated search & dynamic generation parameters
@@ -31,6 +33,15 @@ export interface ScheduledPost {
 
 const LOCAL_DATA_DIR = process.env.VERCEL === '1' ? '/tmp' : path.join(process.cwd(), 'src', 'data');
 const LOCAL_FILE_PATH = path.join(LOCAL_DATA_DIR, 'schedules.json');
+
+export const MAX_SCHEDULE_RETRIES = 3;
+const STUCK_PROCESSING_MS = 15 * 60 * 1000;
+
+/** Delay before each retry attempt: 1 min, 5 min, 15 min */
+export function calculateRetryDelayMs(retryCount: number): number {
+  const delays = [60_000, 5 * 60_000, 15 * 60_000];
+  return delays[Math.min(retryCount - 1, delays.length - 1)] ?? 15 * 60_000;
+}
 
 /**
  * Check if Vercel KV environment variables are configured.
@@ -239,6 +250,7 @@ export async function addSchedule(post: Omit<ScheduledPost, 'id' | 'createdAt' |
     ...post,
     id: randomUUID(),
     status: 'pending',
+    retryCount: 0,
     createdAt: new Date().toISOString(),
   };
   schedules.push(newPost);
@@ -284,6 +296,8 @@ export async function toggleSchedule(id: string): Promise<ScheduledPost | null> 
     // If completed or failed, reset to pending
     post.status = 'pending';
     post.errorMessage = undefined;
+    post.retryCount = 0;
+    post.processingStartedAt = undefined;
     const scheduledTime = new Date(post.scheduledAt);
     if (isNaN(scheduledTime.getTime()) || scheduledTime <= new Date()) {
       if (post.recurrence && post.recurrence !== 'once') {
@@ -338,4 +352,85 @@ export function calculateNextRun(currentScheduled: string, recurrence: Scheduled
   }
 
   return next.toISOString();
+}
+
+/**
+ * Recover schedules stuck in processing (e.g. after a server crash).
+ */
+export async function recoverStuckSchedules(
+  onRecover?: (post: ScheduledPost) => void
+): Promise<number> {
+  const schedules = await getSchedules();
+  const now = Date.now();
+  let recovered = 0;
+
+  for (const post of schedules) {
+    if (post.status !== 'processing') continue;
+    const startedAt = post.processingStartedAt
+      ? new Date(post.processingStartedAt).getTime()
+      : NaN;
+    const isStuck = !Number.isFinite(startedAt) || now - startedAt > STUCK_PROCESSING_MS;
+    if (!isStuck) continue;
+
+    post.status = 'pending';
+    post.processingStartedAt = undefined;
+    post.scheduledAt = new Date(now + 5000).toISOString();
+    recovered++;
+    onRecover?.(post);
+  }
+
+  if (recovered > 0) {
+    await saveSchedules(schedules);
+  }
+
+  return recovered;
+}
+
+/**
+ * Manually retry a permanently failed schedule.
+ */
+export async function retrySchedule(
+  id: string,
+  updates?: Partial<Pick<ScheduledPost, 'apiKey' | 'provider' | 'model'>>
+): Promise<ScheduledPost | null> {
+  const schedules = await getSchedules();
+  const post = schedules.find(p => p.id === id);
+  if (!post || post.status !== 'failed') return null;
+
+  if (updates?.apiKey) post.apiKey = updates.apiKey;
+  if (updates?.provider) post.provider = updates.provider;
+  if (updates?.model) post.model = updates.model;
+
+  post.status = 'pending';
+  post.retryCount = 0;
+  post.errorMessage = undefined;
+  post.processingStartedAt = undefined;
+  post.scheduledAt = new Date(Date.now() + 5000).toISOString();
+  await saveSchedules(schedules);
+  return post;
+}
+
+/**
+ * Apply retry or permanent failure after a processing error.
+ */
+export function applyScheduleFailure(
+  post: ScheduledPost,
+  errorMessage: string
+): { willRetry: boolean; nextRunAt?: string } {
+  const attempt = (post.retryCount || 0) + 1;
+  post.retryCount = attempt;
+  post.processingStartedAt = undefined;
+
+  if (attempt <= MAX_SCHEDULE_RETRIES) {
+    const delayMs = calculateRetryDelayMs(attempt);
+    const nextRunAt = new Date(Date.now() + delayMs).toISOString();
+    post.status = 'pending';
+    post.scheduledAt = nextRunAt;
+    post.errorMessage = `Attempt ${attempt}/${MAX_SCHEDULE_RETRIES} failed: ${errorMessage}`;
+    return { willRetry: true, nextRunAt };
+  }
+
+  post.status = 'failed';
+  post.errorMessage = `Failed after ${MAX_SCHEDULE_RETRIES} attempts: ${errorMessage}`;
+  return { willRetry: false };
 }

@@ -417,97 +417,13 @@
 
 
               <!-- Form: Type + Timing -->
-              <div class="scheduler-meta-grid">
+              <div class="scheduler-meta-grid scheduler-meta-grid--top">
                 <div class="form-group">
                   <label for="schedPostType">Post Type</label>
                   <select id="schedPostType" onchange="toggleSchedulerFields()">
                     <option value="newsletter">Newsletter Post</option>
                     <option value="note">Short Note</option>
                   </select>
-                </div>
-                <div class="form-group form-group-datetime">
-                  <label for="schedTime">Scheduled Date & Time</label>
-                  <div class="datetime-widget" id="datetimeWidget">
-                    <input type="hidden" id="schedTime" />
-                    <button type="button" class="datetime-widget-trigger" id="datetimeWidgetTrigger" onclick="toggleDatetimeWidget()" aria-haspopup="dialog" aria-expanded="false" aria-controls="datetimeDropdown">
-                      <div class="datetime-widget-display">
-                        <div class="datetime-widget-section datetime-widget-section--date">
-                          <span class="datetime-widget-icon-wrap" aria-hidden="true">
-                            <i data-lucide="calendar" class="datetime-widget-icon"></i>
-                          </span>
-                          <div class="datetime-widget-text">
-                            <span class="datetime-widget-label">Date</span>
-                            <span class="datetime-widget-date" id="dtWidgetDate">Select date</span>
-                          </div>
-                        </div>
-                        <div class="datetime-widget-divider" aria-hidden="true"></div>
-                        <div class="datetime-widget-section datetime-widget-section--time">
-                          <span class="datetime-widget-icon-wrap" aria-hidden="true">
-                            <i data-lucide="clock" class="datetime-widget-icon"></i>
-                          </span>
-                          <div class="datetime-widget-text">
-                            <span class="datetime-widget-label">Time</span>
-                            <span class="datetime-widget-time" id="dtWidgetTime">Select time</span>
-                          </div>
-                        </div>
-                      </div>
-                      <i data-lucide="chevron-down" class="datetime-widget-chevron" id="dtWidgetChevron" aria-hidden="true"></i>
-                    </button>
-                    <span class="datetime-widget-hint" id="dtTimezoneHint"></span>
-                    <div class="datetime-widget-dropdown" id="datetimeDropdown">
-                      <div class="datetime-widget-panel">
-                        <!-- Calendar Header -->
-                        <div class="dt-calendar-header">
-                          <button type="button" class="dt-nav-btn" onclick="dtNavigateMonth(-1)" title="Previous month">
-                            <i data-lucide="chevron-left"></i>
-                          </button>
-                          <span class="dt-month-year" id="dtMonthYear">June 2026</span>
-                          <button type="button" class="dt-nav-btn" onclick="dtNavigateMonth(1)" title="Next month">
-                            <i data-lucide="chevron-right"></i>
-                          </button>
-                        </div>
-                        <!-- Day-of-week header -->
-                        <div class="dt-weekdays">
-                          <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
-                        </div>
-                        <!-- Calendar Grid -->
-                        <div class="dt-calendar-grid" id="dtCalendarGrid"></div>
-                      </div>
-                      <div class="datetime-widget-panel dt-time-panel">
-                        <div class="dt-time-label">Set Time</div>
-                        <div class="dt-time-selectors">
-                          <div class="dt-time-col">
-                            <button type="button" class="dt-spin-btn" onclick="dtSpinTime('hour', 1)"><i data-lucide="chevron-up"></i></button>
-                            <input type="text" class="dt-time-input" id="dtHourInput" value="12" maxlength="2" oninput="dtValidateTimeInput(this, 'hour')" />
-                            <button type="button" class="dt-spin-btn" onclick="dtSpinTime('hour', -1)"><i data-lucide="chevron-down"></i></button>
-                          </div>
-                          <span class="dt-time-colon">:</span>
-                          <div class="dt-time-col">
-                            <button type="button" class="dt-spin-btn" onclick="dtSpinTime('minute', 1)"><i data-lucide="chevron-up"></i></button>
-                            <input type="text" class="dt-time-input" id="dtMinuteInput" value="00" maxlength="2" oninput="dtValidateTimeInput(this, 'minute')" />
-                            <button type="button" class="dt-spin-btn" onclick="dtSpinTime('minute', -1)"><i data-lucide="chevron-down"></i></button>
-                          </div>
-                          <div class="dt-ampm-toggle">
-                            <button type="button" class="dt-ampm-btn active" id="dtAmBtn" onclick="dtSetAmPm('AM')">AM</button>
-                            <button type="button" class="dt-ampm-btn" id="dtPmBtn" onclick="dtSetAmPm('PM')">PM</button>
-                          </div>
-                        </div>
-                        <!-- Quick-pick time chips -->
-                        <div class="dt-time-chips">
-                          <button type="button" class="dt-chip" onclick="dtQuickTime(9,0)">9:00 AM</button>
-                          <button type="button" class="dt-chip" onclick="dtQuickTime(12,0)">12:00 PM</button>
-                          <button type="button" class="dt-chip" onclick="dtQuickTime(17,0)">5:00 PM</button>
-                          <button type="button" class="dt-chip" onclick="dtQuickTime(20,0)">8:00 PM</button>
-                        </div>
-                      </div>
-                      <div class="dt-footer">
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="dtSetToday()">Today</button>
-                        <button type="button" class="btn btn-primary btn-sm" onclick="dtConfirm()">
-                          <i data-lucide="check"></i> Confirm
-                        </button>
-                      </div>
-                    </div>
-                  </div>
                 </div>
                 <div class="form-group">
                   <label for="schedRecurrence">Recurrence Pattern</label>
@@ -518,6 +434,119 @@
                     <option value="alternate_days">Alternate Days</option>
                     <option value="weekly">Weekly Once</option>
                   </select>
+                </div>
+              </div>
+
+              <div class="form-group form-group-datetime">
+                <div class="datetime-widget" id="datetimeWidget">
+                  <input type="hidden" id="schedTime" />
+
+                  <div class="datetime-widget-card">
+                    <div class="datetime-widget-card-header">
+                      <label for="datetimeWidgetTrigger" class="datetime-widget-card-title">
+                        <i data-lucide="calendar-clock" class="datetime-widget-title-icon"></i>
+                        Scheduled Date &amp; Time
+                      </label>
+                      <span class="datetime-widget-tz-badge" id="dtTzBadge"></span>
+                    </div>
+
+                    <button type="button" class="datetime-widget-trigger" id="datetimeWidgetTrigger" onclick="toggleDatetimeWidget()" aria-haspopup="dialog" aria-expanded="false" aria-controls="datetimeDropdown">
+                      <div class="datetime-widget-trigger-body">
+                        <div class="datetime-widget-primary">
+                          <span class="datetime-widget-primary-label">Scheduled for</span>
+                          <span class="datetime-widget-full" id="dtWidgetFull">Select a date and time</span>
+                        </div>
+                        <div class="datetime-widget-secondary">
+                          <div class="datetime-widget-pill datetime-widget-pill--date">
+                            <i data-lucide="calendar" class="datetime-widget-pill-icon"></i>
+                            <span id="dtWidgetDate">—</span>
+                          </div>
+                          <div class="datetime-widget-pill datetime-widget-pill--time">
+                            <i data-lucide="clock" class="datetime-widget-pill-icon"></i>
+                            <span id="dtWidgetTime">—</span>
+                          </div>
+                        </div>
+                        <div class="datetime-widget-meta">
+                          <span class="datetime-widget-relative" id="dtRelative"></span>
+                          <span class="datetime-widget-iso" id="dtIsoPreview"></span>
+                        </div>
+                      </div>
+                      <span class="datetime-widget-action">
+                        <span class="datetime-widget-action-text">Change</span>
+                        <i data-lucide="chevron-down" class="datetime-widget-chevron" id="dtWidgetChevron" aria-hidden="true"></i>
+                      </span>
+                    </button>
+                  </div>
+
+                  <div class="datetime-widget-dropdown" id="datetimeDropdown" role="dialog" aria-label="Pick date and time">
+                    <div class="dt-dropdown-preview">
+                      <div class="dt-dropdown-preview-label">Preview</div>
+                      <div class="dt-dropdown-preview-value" id="dtDropdownPreview">Select date and time</div>
+                      <div class="dt-dropdown-preview-sub" id="dtDropdownPreviewSub"></div>
+                    </div>
+
+                    <div class="datetime-widget-panel dt-date-panel">
+                      <div class="datetime-widget-panel-title">
+                        <i data-lucide="calendar"></i>
+                        <span>Select Date</span>
+                      </div>
+                      <div class="dt-calendar-header">
+                        <button type="button" class="dt-nav-btn" onclick="dtNavigateMonth(-1)" title="Previous month">
+                          <i data-lucide="chevron-left"></i>
+                        </button>
+                        <span class="dt-month-year" id="dtMonthYear">June 2026</span>
+                        <button type="button" class="dt-nav-btn" onclick="dtNavigateMonth(1)" title="Next month">
+                          <i data-lucide="chevron-right"></i>
+                        </button>
+                      </div>
+                      <div class="dt-weekdays">
+                        <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                      </div>
+                      <div class="dt-calendar-grid" id="dtCalendarGrid"></div>
+                    </div>
+
+                    <div class="datetime-widget-panel dt-time-panel">
+                      <div class="datetime-widget-panel-title">
+                        <i data-lucide="clock"></i>
+                        <span>Select Time</span>
+                      </div>
+                      <div class="dt-time-display" id="dtTimeDisplay">12:00 AM</div>
+                      <div class="dt-time-selectors">
+                        <div class="dt-time-col">
+                          <button type="button" class="dt-spin-btn" onclick="dtSpinTime('hour', 1)" aria-label="Increase hour"><i data-lucide="chevron-up"></i></button>
+                          <input type="text" class="dt-time-input" id="dtHourInput" value="12" maxlength="2" inputmode="numeric" aria-label="Hour" oninput="dtValidateTimeInput(this, 'hour')" />
+                          <button type="button" class="dt-spin-btn" onclick="dtSpinTime('hour', -1)" aria-label="Decrease hour"><i data-lucide="chevron-down"></i></button>
+                          <span class="dt-time-col-label">Hour</span>
+                        </div>
+                        <span class="dt-time-colon">:</span>
+                        <div class="dt-time-col">
+                          <button type="button" class="dt-spin-btn" onclick="dtSpinTime('minute', 1)" aria-label="Increase minute"><i data-lucide="chevron-up"></i></button>
+                          <input type="text" class="dt-time-input" id="dtMinuteInput" value="00" maxlength="2" inputmode="numeric" aria-label="Minute" oninput="dtValidateTimeInput(this, 'minute')" />
+                          <button type="button" class="dt-spin-btn" onclick="dtSpinTime('minute', -1)" aria-label="Decrease minute"><i data-lucide="chevron-down"></i></button>
+                          <span class="dt-time-col-label">Min</span>
+                        </div>
+                        <div class="dt-ampm-toggle">
+                          <button type="button" class="dt-ampm-btn active" id="dtAmBtn" onclick="dtSetAmPm('AM')">AM</button>
+                          <button type="button" class="dt-ampm-btn" id="dtPmBtn" onclick="dtSetAmPm('PM')">PM</button>
+                        </div>
+                      </div>
+                      <div class="dt-time-chips">
+                        <button type="button" class="dt-chip" onclick="dtQuickTime(9,0)">9:00 AM</button>
+                        <button type="button" class="dt-chip" onclick="dtQuickTime(12,0)">12:00 PM</button>
+                        <button type="button" class="dt-chip" onclick="dtQuickTime(17,0)">5:00 PM</button>
+                        <button type="button" class="dt-chip" onclick="dtQuickTime(20,0)">8:00 PM</button>
+                      </div>
+                    </div>
+
+                    <div class="dt-footer">
+                      <button type="button" class="btn btn-secondary btn-sm" onclick="dtSetToday()">
+                        <i data-lucide="calendar-days"></i> Today
+                      </button>
+                      <button type="button" class="btn btn-primary btn-sm" onclick="dtConfirm()">
+                        <i data-lucide="check"></i> Confirm Selection
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -584,13 +613,14 @@
                   </div>
 
                   <div class="form-group" style="margin-top: 12px;">
-                    <label for="schedApiKey">API Key override (Optional)</label>
+                    <label for="schedApiKey">API Key for scheduled runs</label>
                     <div class="input-password-wrapper">
-                      <input type="password" id="schedApiKey" placeholder="Use default key or override here…" autocomplete="off" />
+                      <input type="password" id="schedApiKey" placeholder="Auto-filled from Settings, or paste override…" autocomplete="off" oninput="this.dataset.userEdited='true'" />
                       <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('schedApiKey', this)" title="Toggle visibility">
                         <i data-lucide="eye"></i>
                       </button>
                     </div>
+                    <span class="field-hint">Stored with the schedule so cron can generate content without your browser open</span>
                   </div>
 
                   <div class="form-group" style="margin-top: 12px;">
@@ -676,6 +706,10 @@
                 <div class="scheduler-inspect-stat">
                   <span class="scheduler-inspect-stat-label">Paused</span>
                   <span class="scheduler-inspect-stat-value" id="schedStatPaused">0</span>
+                </div>
+                <div class="scheduler-inspect-stat">
+                  <span class="scheduler-inspect-stat-label">Failed</span>
+                  <span class="scheduler-inspect-stat-value" id="schedStatFailed" style="color: var(--error);">0</span>
                 </div>
                 <div class="scheduler-inspect-stat">
                   <span class="scheduler-inspect-stat-label">Next Due</span>
