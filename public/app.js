@@ -95,6 +95,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const localISOTime = (new Date(now.getTime() - tzoffset)).toISOString().slice(0, 16);
     schedTimeInput.value = localISOTime;
   }
+
+  // Restore Active Tab on reload
+  const activeTab = localStorage.getItem('active_tab') || 'newsletters';
+  switchTab(activeTab);
 });
 
 // ─── Settings Persistence (localStorage & Backend Env) ───
@@ -721,6 +725,7 @@ function updatePublishButtonLabel() {
 
 // ─── Tab Switching ───
 function switchTab(tabId) {
+  localStorage.setItem('active_tab', tabId);
   const tabs = ['newsletters', 'comments', 'notes', 'scheduler', 'history'];
   tabs.forEach(t => {
     const btn = document.getElementById(`tab-${t}`);
