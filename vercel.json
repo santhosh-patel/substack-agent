@@ -24,8 +24,12 @@
       "dest": "/public/openapi.json"
     },
     {
-      "src": "/(.*)",
+      "src": "/(.*\\..*)",
       "dest": "/public/$1"
+    },
+    {
+      "src": "/(newsletter|history|notes|comments|scheduler)?$",
+      "dest": "/public/index.html"
     }
   ]
 }
