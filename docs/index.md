@@ -7,7 +7,7 @@ Substack Agent connects your publication to AI assistants and automation tools. 
 | Mode | Best for | Command |
 |------|----------|---------|
 | **Local Dashboard** | Hands-on publishing, AI compose, scheduler | `npm run dev` → `/playground` |
-| **Tools API** | n8n, Custom GPTs, webhooks | Deploy to Vercel + `API_SECRET` |
+| **Tools API** | n8n, Custom GPTs, webhooks | Any Node host + `API_SECRET` |
 | **MCP Server** | Claude Desktop, Cursor chat workflows | `npm run mcp` |
 
 ## Quick links

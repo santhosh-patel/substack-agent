@@ -1,4 +1,6 @@
-# Deploy to Vercel
+# Deploy to Vercel (optional)
+
+Vercel is one way to host the **Tools API**. For a platform-agnostic guide, see [Deploy the Tools API](/docs/deployment/deploy).
 
 Deploy the **Tools API** for production integrations. The playground UI can be served statically but **scheduler and history are limited** on serverless.
 
@@ -39,5 +41,6 @@ If `SUBSTACK_SID` is in Vercel env and your deployment is public, unauthenticate
 
 ## Next steps
 
+- [Deploy the Tools API](/docs/deployment/deploy)
 - [Tools API overview](/docs/api/overview)
 - [Scheduler & Cron](/docs/deployment/scheduler-cron)

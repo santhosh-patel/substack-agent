@@ -7,7 +7,7 @@ HTTP endpoints for external agents, n8n, Custom GPTs, and webhooks.
 | Environment | URL |
 |-------------|-----|
 | Local | `http://localhost:3456` |
-| Vercel | `https://your-deployment.vercel.app` |
+| Deployed | `https://your-domain` |
 
 ## Authentication
 
@@ -47,4 +47,4 @@ Machine-readable spec: [/openapi.json](/openapi.json)
 ## Next steps
 
 - [Endpoints reference](/docs/api/endpoints)
-- [Deploy to Vercel](/docs/deployment/vercel)
+- [Deploy the Tools API](/docs/deployment/deploy)

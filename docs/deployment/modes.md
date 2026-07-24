@@ -5,7 +5,7 @@ Substack Agent is three products in one. Pick the mode that matches your workflo
 | Mode | Command | Works on Vercel | Best for |
 |------|---------|-----------------|----------|
 | **Local Dashboard** | `npm run dev` | Partial | Full UI, scheduler, AI compose, history |
-| **Tools API** | `vercel` + `API_SECRET` | Yes | n8n, GPTs, webhooks, stateless automation |
+| **Tools API** | any Node host + `API_SECRET` | Yes | n8n, GPTs, webhooks, stateless automation |
 | **MCP Server** | `npm run mcp` | No (stdio/local) | Claude Desktop, Cursor |
 
 ## Local Dashboard
@@ -21,14 +21,16 @@ Substack Agent is three products in one. Pick the mode that matches your workflo
 - Auth: `Authorization: Bearer <API_SECRET>`
 - OpenAPI: [/openapi.json](/openapi.json)
 - Stateless tool calls — no playground UI required
+- Point HTTP clients at your deployment domain
 
 ## MCP Server
 
-- Stdio transport only
+- Stdio transport only — runs locally alongside Claude Desktop or Cursor
 - Configure in Claude Desktop or Cursor
 - 9 native tools — see [MCP Tools](/docs/mcp/tools)
 
 ## Next steps
 
-- [Deploy to Vercel](/docs/deployment/vercel)
+- [Deploy the Tools API](/docs/deployment/deploy)
+- [Deploy to Vercel](/docs/deployment/vercel) (optional)
 - [Scheduler & Cron](/docs/deployment/scheduler-cron)

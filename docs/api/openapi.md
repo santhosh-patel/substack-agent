@@ -8,8 +8,8 @@ Substack Agent exposes an OpenAPI 3.1 spec for AI agent discovery.
 
 ## Using with Custom GPTs
 
-1. Deploy to Vercel with `API_SECRET` set
-2. In GPT Actions, import schema from `https://your-app.vercel.app/openapi.json`
+1. Deploy Substack Agent to any Node host with `API_SECRET`, `SUBSTACK_SID`, and `SUBSTACK_PUB_URL` set — see [Deploy the Tools API](/docs/deployment/deploy)
+2. In GPT Actions, import schema from `https://your-domain/openapi.json`
 3. Set authentication: **Bearer** with your `API_SECRET`
 
 See [Custom GPT integration](/docs/integrations/custom-gpt).

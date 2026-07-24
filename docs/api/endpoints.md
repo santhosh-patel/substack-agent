@@ -29,7 +29,7 @@ All routes under `/api/tools/*`. Method and path:
 ## Example: publish newsletter
 
 ```bash
-curl -X POST https://your-app.vercel.app/api/tools/publish-newsletter \
+curl -X POST https://your-domain/api/tools/publish-newsletter \
   -H "Authorization: Bearer $API_SECRET" \
   -H "Content-Type: application/json" \
   -d '{
@@ -42,7 +42,7 @@ curl -X POST https://your-app.vercel.app/api/tools/publish-newsletter \
 ## Example: schedule post
 
 ```bash
-curl -X POST https://your-app.vercel.app/api/tools/schedule-post \
+curl -X POST https://your-domain/api/tools/schedule-post \
   -H "Authorization: Bearer $API_SECRET" \
   -H "Content-Type: application/json" \
   -d '{
