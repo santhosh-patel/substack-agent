@@ -13,6 +13,8 @@
   "type": "module",
   "scripts": {
     "dev": "npx tsx watch src/server.ts",
+    "build:landing": "cd landing-page && npm run build && cp dist/index.html ../public/index.html && cp -r dist/assets/* ../public/assets/",
+    "build": "npm run build:landing",
     "mcp": "npx tsx src/mcp-server.ts",
     "test:api": "node scripts/test-apis.js"
   },

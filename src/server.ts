@@ -74,8 +74,8 @@ app.get(['/playground', '/newsletter', '/comments', '/notes', '/scheduler', '/hi
   res.sendFile(path.join(__dirname, '..', 'public', 'playground.html'));
 });
 
-// ─── Fallback to index.html for Landing Page (skip API and static files with extensions) ───
-app.get('*', (req, res) => {
+// ─── Fallback Handler for Landing Page ───
+app.use((req, res) => {
   if (req.path.includes('.')) {
     res.status(404).json({ error: 'Not found' });
     return;
@@ -86,7 +86,7 @@ app.get('*', (req, res) => {
 // ─── Start ───
 app.listen(PORT, () => {
   console.log(`\n Substack Automation running at:\n`);
-  console.log(`     Landing Page: http://localhost:${PORT}/`);
+  console.log(`     Landing Page:   http://localhost:${PORT}/`);
   console.log(`     Playground App: http://localhost:${PORT}/playground\n`);
   console.log(`  Tool API:     http://localhost:${PORT}/api/tools/`);
   console.log(`  OpenAPI Spec: http://localhost:${PORT}/openapi.json`);
