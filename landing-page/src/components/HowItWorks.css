@@ -65,30 +65,6 @@
   word-break: break-word;
 }
 
-.step-code-box {
-  background: var(--bg-dark);
-  border: 1px solid var(--border-dark);
-  border-radius: var(--radius-sm);
-  padding: clamp(10px, 2vw, 14px);
-  width: 100%;
-  min-width: 0;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.step-code-box pre {
-  margin: 0;
-  overflow-x: auto;
-}
-
-.step-code-box code {
-  font-size: clamp(11px, 1.8vw, 12px);
-  line-height: 1.5;
-  color: #A3E635;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
 @media (max-width: 640px) {
   .steps-grid {
     grid-template-columns: 1fr;
