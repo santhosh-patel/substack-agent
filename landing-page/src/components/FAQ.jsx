@@ -4,7 +4,7 @@ import './FAQ.css';
 const faqs = [
   {
     q: 'Is Substack Agent free & open source?',
-    a: 'Yes. It is published under the MIT license. You can deploy it locally, host it on Vercel, or include it in proprietary agent pipelines without restrictions.',
+    a: 'Yes. It is published under the MIT license. You can deploy it locally, host it on any Node host (for example Vercel), or include it in proprietary agent pipelines without restrictions.',
   },
   {
     q: 'How does it communicate with Substack without an official API?',
@@ -20,11 +20,11 @@ const faqs = [
   },
   {
     q: 'Is it safe to store my SUBSTACK_SID session cookie?',
-    a: 'Your connect.sid cookie is equivalent to your Substack password. In the playground, it is saved in browser localStorage and sent to your Substack Agent server when you connect. In MCP/API mode, store it in .env or Vercel env vars only. Never share it publicly — rotate immediately if exposed.',
+    a: 'Your connect.sid cookie is equivalent to your Substack password. In the playground, it is saved in browser localStorage and sent to your Substack Agent server when you connect. In MCP/API mode, store it in .env or your host environment variables only. Never share it publicly — rotate immediately if exposed.',
   },
   {
     q: 'Can I integrate Substack Agent into n8n or Zapier workflows?',
-    a: 'Yes. Deploy the REST API endpoints to Vercel and use standard HTTP Request nodes with Bearer authorization.',
+    a: 'Yes. Deploy the REST API endpoints to any Node host and point HTTP Request nodes at your domain with Bearer authorization.',
   },
 ];
 

@@ -16,8 +16,8 @@ const steps = [
   {
     step: '03',
     title: 'Launch & Connect',
-    desc: 'Start the MCP server or deploy to Vercel for HTTP API tool access.',
-    code: 'npm run mcp        # For Claude / Cursor\nnpm run dev        # For Dashboard',
+    desc: 'Start the MCP server locally, or deploy the Tools API to any Node host and use your domain for HTTP tool clients.',
+    code: 'npm run mcp        # For Claude / Cursor\nnpm run dev        # For Dashboard / Tools API',
   },
 ];
 

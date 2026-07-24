@@ -6,7 +6,7 @@ const integrations = [
   { name: 'Cursor' },
   { name: 'ChatGPT' },
   { name: 'n8n Workflows' },
-  { name: 'Vercel' },
+  { name: 'OpenAPI' },
   { name: 'Substack' },
 ];
 
