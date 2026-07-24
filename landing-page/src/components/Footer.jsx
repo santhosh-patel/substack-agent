@@ -39,7 +39,6 @@ export default function Footer() {
             <div className="link-group">
               <span className="group-title">COMMUNITY</span>
               <a href="https://santhosh-patel.vercel.app/" target="_blank" rel="noopener noreferrer">Creator Portfolio</a>
-              <a href="https://github.com/santhosh-patel" target="_blank" rel="noopener noreferrer">GitHub Profile</a>
               <a href="https://github.com/santhosh-patel/substack-agent/issues" target="_blank" rel="noopener noreferrer">Issues & Feedback</a>
             </div>
           </div>
