@@ -1,54 +1,60 @@
 /* ═══════════════════════════════════════════════════════
-   SUBSTACK AGENT — Landing Page Design System
-   Premium glassmorphism + clean morphism aesthetic
+   SUBSTACK AGENT — Minimalist & Elegant Design System
+   Inspired by Vercel, Linear, and modern SaaS typography
    ═══════════════════════════════════════════════════════ */
 
-/* ─── CSS Variables ─── */
 :root {
+  /* Brand & Accents */
   --primary: #FF6719;
-  --primary-light: #FF8A50;
-  --primary-dark: #E55A10;
+  --primary-hover: #E55A10;
+  --primary-light: rgba(255, 103, 25, 0.08);
 
-  --accent-purple: #8B5CF6;
-  --accent-teal: #14B8A6;
-  --accent-blue: #3B82F6;
-  --accent-amber: #F59E0B;
-  --accent-emerald: #10B981;
-  --accent-pink: #EC4899;
+  /* Clean Neutral Palette */
+  --bg-page: #FFFFFF;
+  --bg-subtle: #FAFAFA;
+  --bg-card: #FFFFFF;
+  --bg-dark: #0A0A0C;
+  --bg-dark-card: #121215;
 
-  --bg: #FAFAFA;
-  --bg-white: #FFFFFF;
-  --bg-subtle: #F5F5F5;
-  --bg-muted: #F0F0F0;
-  --border: #E5E5E5;
-  --border-light: #F0F0F0;
-  --border-hover: #D4D4D4;
+  --border: #EAEAEA;
+  --border-subtle: #F2F2F2;
+  --border-strong: #D1D1D6;
+  --border-dark: rgba(255, 255, 255, 0.1);
 
-  --text-primary: #0A0A0A;
-  --text-secondary: #525252;
-  --text-tertiary: #737373;
-  --text-muted: #A3A3A3;
+  --text-primary: #111111;
+  --text-secondary: #666666;
+  --text-muted: #8E8E93;
+  --text-inverse: #FFFFFF;
 
-  --glass-bg: rgba(255, 255, 255, 0.72);
-  --glass-border: rgba(255, 255, 255, 0.5);
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(0, 0, 0, 0.06);
 
+  /* Radius - Crisp & Structured */
+  --radius-xs: 6px;
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  --radius-xl: 24px;
-  --radius-2xl: 32px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
 
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.06);
+
+  /* Animation & Fonts */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --duration: 0.4s;
+  --duration: 0.3s;
 
-  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
 
-  --section-pad: 120px;
-  --container-max: 1200px;
+  --section-pad: 110px;
+  --container-max: 1140px;
 }
 
-/* ─── Reset ─── */
+/* ─── Reset & Base ─── */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -59,11 +65,13 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
 }
 
 body {
   font-family: var(--font);
-  background: var(--bg);
+  background: var(--bg-page);
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
@@ -73,116 +81,135 @@ a { text-decoration: none; color: inherit; }
 code { font-family: var(--font-mono); }
 img { max-width: 100%; display: block; }
 
-/* ─── Container ─── */
+/* ─── Layout ─── */
 .container {
   max-width: var(--container-max);
   margin: 0 auto;
   padding: 0 24px;
 }
 
-/* ─── Buttons ─── */
+/* ─── Minimalist Buttons ─── */
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   padding: 10px 20px;
-  border-radius: 100px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   font-family: var(--font);
   cursor: pointer;
-  border: none;
+  border: 1px solid transparent;
   transition: all var(--duration) var(--ease);
   white-space: nowrap;
 }
 
 .btn-primary {
   background: var(--text-primary);
-  color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-sm);
 }
 .btn-primary:hover {
-  background: #262626;
+  background: #222222;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-accent {
+  background: var(--primary);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-sm);
+}
+.btn-accent:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-outline {
-  background: transparent;
+  background: var(--bg-page);
   color: var(--text-primary);
-  border: 1.5px solid var(--border);
+  border-color: var(--border);
 }
 .btn-outline:hover {
-  border-color: var(--border-hover);
-  background: var(--bg-white);
+  border-color: var(--border-strong);
+  background: var(--bg-subtle);
   transform: translateY(-1px);
 }
 
 .btn-ghost {
   background: transparent;
   color: var(--text-secondary);
-  border: 1.5px solid var(--border);
 }
 .btn-ghost:hover {
-  border-color: var(--border-hover);
-  background: var(--bg-white);
   color: var(--text-primary);
+  background: var(--bg-subtle);
 }
 
 .btn-lg {
-  padding: 14px 28px;
+  padding: 12px 24px;
   font-size: 15px;
+  border-radius: var(--radius-md);
 }
 
-/* ─── Gradient text ─── */
+/* ─── Typography & Section Headers ─── */
 .gradient-text {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--accent-purple) 50%, var(--accent-blue) 100%);
+  background: linear-gradient(135deg, var(--text-primary) 30%, var(--text-secondary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* ─── Section Header ─── */
+.brand-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, #FF8A50 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .section-header {
   text-align: center;
-  margin-bottom: 64px;
+  margin-bottom: 60px;
 }
 
 .section-badge {
-  display: inline-block;
-  padding: 5px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
   background: var(--bg-subtle);
   border: 1px solid var(--border);
-  border-radius: 100px;
+  border-radius: var(--radius-full);
   font-size: 12px;
-  font-weight: 600;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 20px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+  margin-bottom: 16px;
 }
 
 .section-title {
-  font-size: clamp(32px, 4vw, 48px);
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  margin-bottom: 16px;
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+  color: var(--text-primary);
 }
 
 .section-subtitle {
   font-size: 16px;
   color: var(--text-secondary);
-  max-width: 560px;
+  max-width: 540px;
   margin: 0 auto;
-  line-height: 1.7;
+  line-height: 1.6;
 }
 
-/* ─── Scroll Animations ─── */
+/* ─── Minimal Scroll Animations ─── */
 .animate-in {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  transform: translateY(16px);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
 }
 
 .animate-in.visible {
@@ -190,7 +217,8 @@ img { max-width: 100%; display: block; }
   transform: translateY(0);
 }
 
-/* ─── Responsive ─── */
 @media (max-width: 768px) {
-  :root { --section-pad: 80px; }
+  :root {
+    --section-pad: 70px;
+  }
 }
