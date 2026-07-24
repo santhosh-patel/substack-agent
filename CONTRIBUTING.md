@@ -14,8 +14,13 @@ Thanks for your interest in contributing! This guide covers how to get started, 
 
 1. Create a branch from `main` with a descriptive name (e.g. `fix/connect-timeout`, `feat/list-drafts`).
 2. Make focused changes — one logical change per pull request when possible.
-3. Run smoke tests if you touched API routes: `npm run test:api` and `npm run test:auth` (server must be running on port 3456).
-4. Open a pull request against `main` and fill out the PR template.
+3. Run local checks before opening a PR:
+   - `npm run typecheck`
+   - `npm run lint`
+   - `npm run build && npm run ci:static`
+   - With the server running (`npm run dev`): `npm run test:auth` and `npm run test:smoke`
+   - Optional live Substack checks: `npm run test:api` (skips cases that need missing credentials)
+4. Open a pull request against `main` and fill out the PR template. GitHub Actions runs static checks on Node 18/20/22 plus HTTP smoke tests.
 
 ## Changelog discipline
 
