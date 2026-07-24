@@ -24,7 +24,15 @@ const modes = [
     command: 'npm run mcp',
     bestFor: 'Claude Desktop, Cursor, chat-native workflows',
     limits: 'Stdio transport. Runs locally alongside your MCP client.',
-    cta: { label: 'GitHub Setup', href: 'https://github.com/santhosh-patel/substack-agent#2-mcp-server' },
+    cta: { label: 'MCP Setup', href: '/docs/mcp/setup' },
+  },
+  {
+    id: 'mcp-remote',
+    title: 'Remote MCP (HTTP)',
+    command: 'https://your-domain/api/mcp',
+    bestFor: 'Cursor remote, cloud agents, deployed MCP clients',
+    limits: 'Same tools as stdio MCP. Requires Bearer auth and SUBSTACK_SID on the host.',
+    cta: { label: 'Remote MCP Docs', href: '/docs/mcp/remote' },
   },
 ];
 
@@ -35,7 +43,7 @@ export default function DeploymentModes() {
         <div className="section-header">
           <span className="section-badge">Deployment</span>
           <h2 className="section-title">
-            Three ways to <span className="brand-gradient">run Substack Agent</span>
+            Four ways to <span className="brand-gradient">run Substack Agent</span>
           </h2>
           <p className="section-subtitle">
             Pick the mode that matches your workflow. Each has different capabilities and limits.

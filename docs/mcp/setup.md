@@ -34,6 +34,10 @@ Restart Claude Desktop. You should see 9 Substack tools available.
 
 Add the same `mcpServers` entry in Cursor MCP settings (stdio transport).
 
+## Remote MCP (deployed)
+
+If the app runs on your domain with `API_SECRET` and `SUBSTACK_SID`, point MCP clients at **`https://your-domain/api/mcp`** with Bearer auth. See [Remote MCP over HTTP](/docs/mcp/remote).
+
 ## Run manually
 
 ```bash
@@ -48,6 +52,7 @@ Same as `.env.example`. MCP reads `SUBSTACK_SID` and `SUBSTACK_PUB_URL` from the
 
 ## Next steps
 
+- [Remote MCP (HTTP)](/docs/mcp/remote)
 - [Tools reference](/docs/mcp/tools)
 - [Limitations](/docs/mcp/limitations)
 - [Claude Desktop cookbook](/docs/integrations/claude-desktop)
