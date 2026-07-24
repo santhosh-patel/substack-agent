@@ -5,10 +5,11 @@ Thanks for your interest in contributing! This guide covers how to get started, 
 ## Getting started
 
 1. Fork the repository and clone your fork.
-2. Install dependencies: `npm install`
-3. Copy the environment template: `cp .env.example .env`
-4. Fill in your local `.env` values (never commit this file).
-5. Start the dev server: `npm run dev`
+2. Use Node.js **20.19+** or **22.12+** (required by Vite 8).
+3. Install dependencies: `npm install` and `npm install --prefix landing-page`
+4. Copy the environment template: `cp .env.example .env`
+5. Fill in your local `.env` values (never commit this file).
+6. Start the dev server: `npm run dev`
 
 ## Development workflow
 
