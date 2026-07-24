@@ -2,7 +2,7 @@
 
 Host the **Tools API** on any Node platform — Vercel, Railway, a VPS, or your own server. Then use **your domain** with agents, automations, and MCP-style tool clients (n8n, custom GPTs, webhooks).
 
-For Claude Desktop and Cursor, continue using the local MCP server (`npm run mcp`) — MCP in this repo uses stdio transport, not a remote HTTP endpoint.
+For Claude Desktop and Cursor locally, use stdio MCP (`npm run mcp`). For deployed instances, connect remote MCP clients to **`https://your-domain/api/mcp`** with Bearer auth — see [Remote MCP](../mcp/remote.md).
 
 ## Required environment variables
 

@@ -14,8 +14,17 @@ Thanks for your interest in contributing! This guide covers how to get started, 
 
 1. Create a branch from `main` with a descriptive name (e.g. `fix/connect-timeout`, `feat/list-drafts`).
 2. Make focused changes — one logical change per pull request when possible.
-3. Run smoke tests if you touched API routes: `npm run test:api`
+3. Run smoke tests if you touched API routes: `npm run test:api` and `npm run test:auth` (server must be running on port 3456).
 4. Open a pull request against `main` and fill out the PR template.
+
+## Changelog discipline
+
+On each release, sync both changelog files so they stay identical:
+
+- [`CHANGELOG.md`](CHANGELOG.md) (repo root)
+- [`docs/changelog.md`](docs/changelog.md) (docs site)
+
+Add a dated section with user-facing bullets (features, fixes, breaking changes). CI does not auto-generate changelogs — update them in the same PR as the release or immediately before tagging.
 
 ## Code guidelines
 
