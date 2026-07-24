@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Substack Agent.
+All notable changes to Substack Agent are documented here.
 
 ## [2.2.0] — 2026
 

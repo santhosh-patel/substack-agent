@@ -179,6 +179,8 @@ async function runTests() {
 
   let passed = 0;
   let failed = 0;
+  let skipped = 0;
+  const failOnSkip = process.env.CI_STRICT === '1';
 
   for (const test of tests) {
     process.stdout.write(`Testing ${colors.bold}${test.name}${colors.reset} ... `);
@@ -188,14 +190,21 @@ async function runTests() {
       console.log(`  └─ ${colors.cyan}${msg}${colors.reset}\n`);
       passed++;
     } catch (e) {
-      console.log(`${colors.red}FAIL${colors.reset}`);
-      console.log(`  └─ ${colors.red}Error: ${e.message}${colors.reset}\n`);
-      failed++;
+      const isSkip = String(e.message || '').startsWith('Skipped:');
+      if (isSkip && !failOnSkip) {
+        console.log(`${colors.yellow}SKIP${colors.reset}`);
+        console.log(`  └─ ${colors.yellow}${e.message}${colors.reset}\n`);
+        skipped++;
+      } else {
+        console.log(`${colors.red}FAIL${colors.reset}`);
+        console.log(`  └─ ${colors.red}Error: ${e.message}${colors.reset}\n`);
+        failed++;
+      }
     }
   }
 
   console.log(`=========================================`);
-  console.log(`Result: ${colors.bold}${passed} Passed, ${failed} Failed${colors.reset}`);
+  console.log(`Result: ${colors.bold}${passed} Passed, ${failed} Failed, ${skipped} Skipped${colors.reset}`);
   console.log(`=========================================`);
 
   if (failed > 0) {

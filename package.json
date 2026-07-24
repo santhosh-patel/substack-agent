@@ -16,9 +16,14 @@
     "start": "tsx src/server.ts",
     "build:landing": "cd landing-page && npm run build && rm -f ../public/assets/index-* ../public/assets/DocsLayout-* ../public/assets/rolldown-runtime-* ../public/assets/lib-* ../public/assets/rehype-highlight-* ../public/assets/atom-one-dark-* && cp dist/index.html ../public/index.html && cp -f dist/favicon.svg dist/icons.svg ../public/ && cp -r dist/assets/* ../public/assets/",
     "build": "npm run build:landing",
+    "typecheck": "tsc --noEmit",
+    "lint": "npm run lint --prefix landing-page",
     "mcp": "npx tsx src/mcp-server.ts",
+    "ci:static": "node scripts/ci-static.js",
     "test:api": "node scripts/test-apis.js",
-    "test:auth": "node scripts/test-auth.js"
+    "test:auth": "node scripts/test-auth.js",
+    "test:smoke": "node scripts/test-smoke.js",
+    "test": "npm run typecheck && npm run lint && npm run build && npm run ci:static"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",
