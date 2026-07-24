@@ -106,6 +106,26 @@
     <!-- ─── Main Grid ─── -->
     <div class="main-grid">
 
+      <div class="onboarding-panel" id="onboardingChecklist" hidden>
+        <div class="onboarding-header">
+          <h3>Get started in 3 steps</h3>
+          <button type="button" class="onboarding-dismiss" id="onboardingDismiss" aria-label="Dismiss checklist">×</button>
+        </div>
+        <ol class="onboarding-steps">
+          <li id="onboardStep1"><span>Paste <code>connect.sid</code> → Test → Connect</span></li>
+          <li id="onboardStep2"><span>Add an AI provider key → Test API Key</span></li>
+          <li id="onboardStep3"><span>Publish your first draft from Newsletters</span></li>
+        </ol>
+      </div>
+
+      <div class="deployment-banner" id="deploymentBanner" hidden role="alert">
+        <strong>Hosted deployment:</strong> Scheduler and history use ephemeral storage on Vercel. Run <code>npm run dev</code> locally for full scheduling support.
+      </div>
+
+      <div class="deployment-banner deployment-banner--warn" id="serverSidBanner" hidden role="alert">
+        <strong>Server session configured:</strong> This deployment has a Substack session in environment variables. Dashboard API routes are unauthenticated — restrict access to trusted users only.
+      </div>
+
       <!-- ─── Left: Settings Panel ─── -->
       <aside class="card">
         <div class="card-header">
@@ -474,6 +494,9 @@
               <h2><i data-lucide="calendar" class="header-icon"></i> Schedule a Post</h2>
             </div>
             <div class="card-body">
+              <div class="deployment-banner deployment-banner--warn" id="schedulerDeployBanner" hidden role="alert">
+                Scheduling on Vercel requires local <code>npm run dev</code> or external cron with durable storage. Queue data may be lost on cold starts.
+              </div>
               <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.9rem;">
                 Schedule a Substack newsletter or note to be published at a future time. Support for one-off and recurring intervals.
               </p>

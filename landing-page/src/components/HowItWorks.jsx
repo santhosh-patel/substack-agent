@@ -10,7 +10,7 @@ const steps = [
   {
     step: '02',
     title: 'Configure Environment',
-    desc: 'Extract your Substack connect.sid session cookie and save it to .env.',
+    desc: 'Extract your Substack connect.sid session cookie from browser DevTools and save it to .env or paste it in the playground settings.',
     code: 'SUBSTACK_SID=your-connect-sid-cookie\nSUBSTACK_PUB_URL=yourpub.substack.com',
   },
   {
@@ -31,7 +31,7 @@ export default function HowItWorks() {
             Getting started in <span className="brand-gradient">three simple steps</span>
           </h2>
           <p className="section-subtitle">
-            Zero complicated configuration. Works right out of the box.
+            Clone, configure your session cookie, and connect in a few minutes.
           </p>
         </div>
 
@@ -46,6 +46,18 @@ export default function HowItWorks() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="how-it-works-cta">
+          <a href="/playground" className="btn btn-accent btn-lg">Open Playground</a>
+          <a
+            href="https://github.com/santhosh-patel/substack-agent"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-outline btn-lg"
+          >
+            View on GitHub
+          </a>
         </div>
       </div>
     </section>

@@ -94,3 +94,23 @@
     grid-template-columns: 1fr;
   }
 }
+
+.how-it-works-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .how-it-works-cta {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .how-it-works-cta .btn {
+    width: 100%;
+  }
+}

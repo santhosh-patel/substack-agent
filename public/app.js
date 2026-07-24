@@ -42,6 +42,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   await loadConfigFromBackend();
   loadPublishHistory();
+  initOnboardingChecklist();
+
+  // Auto-open settings on first visit if no SID
+  if (!getStoredSid() && !window.backendConfig?.hasSubstackSid) {
+    const grid = document.querySelector('.main-grid');
+    if (grid) grid.classList.remove('sidebar-collapsed');
+  }
 
   // Load sidebar state from localStorage
   const sidebarCollapsed = localStorage.getItem('sidebar_collapsed') === 'true';
@@ -156,6 +163,8 @@ async function loadConfigFromBackend() {
     const config = await res.json();
     window.backendConfig = config;
 
+    applyDeploymentMode(config);
+
     const pubUrlInput = document.getElementById('pubUrl');
     if (config.publicationUrl && pubUrlInput && !pubUrlInput.value.trim()) {
       pubUrlInput.value = config.publicationUrl;
@@ -164,8 +173,78 @@ async function loadConfigFromBackend() {
 
     loadSystemPromptForTab('newsletters');
     await restorePersistedSession();
+    updateOnboardingChecklist();
   } catch (err) {
     console.error('Failed to load backend config:', err);
+  }
+}
+
+function applyDeploymentMode(config) {
+  const isVercel = config.deploymentMode === 'vercel';
+
+  const deployBanner = document.getElementById('deploymentBanner');
+  if (deployBanner) {
+    deployBanner.hidden = !isVercel;
+  }
+
+  const serverSidBanner = document.getElementById('serverSidBanner');
+  if (serverSidBanner) {
+    serverSidBanner.hidden = !(config.hasSubstackSid && isVercel);
+  }
+
+  const schedBanner = document.getElementById('schedulerDeployBanner');
+  if (schedBanner) {
+    schedBanner.hidden = !isVercel;
+  }
+
+  if (isVercel) {
+    document.querySelectorAll('.scheduler-create-action').forEach((el) => {
+      el.disabled = true;
+      el.title = 'Scheduling requires local npm run dev or durable storage + external cron on Vercel';
+    });
+  }
+}
+
+const ONBOARDING_KEY = 'onboarding_checklist_v1';
+
+function initOnboardingChecklist() {
+  const panel = document.getElementById('onboardingChecklist');
+  if (!panel) return;
+
+  if (localStorage.getItem(ONBOARDING_KEY) === 'done') {
+    panel.hidden = true;
+    return;
+  }
+
+  panel.hidden = false;
+  updateOnboardingChecklist();
+
+  document.getElementById('onboardingDismiss')?.addEventListener('click', () => {
+    localStorage.setItem(ONBOARDING_KEY, 'done');
+    panel.hidden = true;
+  });
+}
+
+function updateOnboardingChecklist() {
+  const step1 = document.getElementById('onboardStep1');
+  const step2 = document.getElementById('onboardStep2');
+  const step3 = document.getElementById('onboardStep3');
+  if (!step1) return;
+
+  const hasSid = Boolean(getStoredSid()) || Boolean(window.backendConfig?.hasSubstackSid);
+  const hasAiKey = ['groq', 'gemini', 'openai', 'openrouter'].some((p) =>
+    Boolean(getStoredApiKey(p)) || hasBackendApiKey(p)
+  );
+  const hasPublished = (JSON.parse(localStorage.getItem('substack_publish_history') || '[]')).length > 0;
+
+  step1?.classList.toggle('is-done', isConnected || hasSid);
+  step2?.classList.toggle('is-done', hasAiKey);
+  step3?.classList.toggle('is-done', hasPublished);
+
+  if (isConnected && hasAiKey && hasPublished) {
+    localStorage.setItem(ONBOARDING_KEY, 'done');
+    const panel = document.getElementById('onboardingChecklist');
+    if (panel) panel.hidden = true;
   }
 }
 
@@ -1631,6 +1710,12 @@ async function handlePublishNote() {
 
   if (!body) {
     showToast('Please enter some content for the note', 'error');
+    return;
+  }
+
+  if (!isConnected) {
+    showToast('Connect to Substack first', 'error');
+    openSidebarAndFocusSid();
     return;
   }
 

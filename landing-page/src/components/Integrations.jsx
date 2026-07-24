@@ -47,7 +47,7 @@ Content-Type: application/json
     desc: 'Launch the local browser interface to draft posts, test prompts with Groq/Gemini/OpenAI, and manage scheduled publications.',
     code: `npm run dev
 # Server running at http://localhost:3456`,
-    highlights: ['Browser UI', 'Live Preview', 'AI Prompts', 'Local Database'],
+    highlights: ['Browser UI', 'Live Preview', 'AI Prompts', 'Local JSON Storage'],
   },
 ];
 
