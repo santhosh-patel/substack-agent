@@ -78,6 +78,11 @@
   min-width: 0;
 }
 
+.tools-openapi-link {
+  color: var(--primary);
+  font-weight: 600;
+}
+
 @media (max-width: 768px) {
   .tools-header-row { display: none; }
 

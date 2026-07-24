@@ -400,8 +400,8 @@
     "/api/tools/list-comments": {
       "get": {
         "operationId": "listComments",
-        "summary": "List your comment history",
-        "description": "Returns the history of comments you have posted through the automation system, in reverse chronological order.",
+        "summary": "List comment automation log",
+        "description": "Returns the local log of comments posted through the automation system (not Substack's full comment inbox), in reverse chronological order.",
         "responses": {
           "200": {
             "description": "Comments history retrieved",
@@ -433,6 +433,50 @@
               }
             }
           },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/tools/schedule-post": {
+      "post": {
+        "operationId": "schedulePost",
+        "summary": "Schedule a newsletter or note for future publishing",
+        "description": "Queues a post for one-off or recurring publication. Requires local server or durable storage for reliable execution.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["body", "scheduledAt", "postType"],
+                "properties": {
+                  "title": { "type": "string" },
+                  "subtitle": { "type": "string" },
+                  "body": { "type": "string" },
+                  "isDraft": { "type": "boolean", "default": true },
+                  "scheduledAt": { "type": "string", "format": "date-time" },
+                  "recurrence": { "type": "string", "enum": ["once", "daily", "twice_daily", "alternate_days", "weekly"], "default": "once" },
+                  "postType": { "type": "string", "enum": ["newsletter", "note"] },
+                  "noteLink": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Post scheduled successfully" },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/tools/list-schedules": {
+      "get": {
+        "operationId": "listSchedules",
+        "summary": "List scheduled publishing queue",
+        "description": "Returns all posts in the scheduling queue with status and recurrence metadata.",
+        "responses": {
+          "200": { "description": "Schedules retrieved" },
           "500": { "$ref": "#/components/responses/ServerError" }
         }
       }

@@ -24,6 +24,7 @@ import {
 import { analyzeAndGenerateComment } from '../ai/generate.js';
 import fs from 'fs';
 import path from 'path';
+import { addSchedule, getSchedules } from '../lib/storage.js';
 
 const router = Router();
 
@@ -699,6 +700,51 @@ router.get('/list-comments', (_req: Request, res: Response) => {
     res.json({ success: true, data: { comments: history } });
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message || 'Failed to fetch comments history' });
+  }
+});
+
+
+// ─── POST /api/tools/schedule-post ───
+router.post('/schedule-post', async (req: Request, res: Response) => {
+  try {
+    const { title, subtitle, body, isDraft, scheduledAt, recurrence, postType, noteLink } = req.body;
+
+    if (!body || !scheduledAt || !postType) {
+      res.status(400).json({ success: false, error: 'body, scheduledAt, and postType are required' });
+      return;
+    }
+    if (postType === 'newsletter' && !title) {
+      res.status(400).json({ success: false, error: 'title is required for newsletters' });
+      return;
+    }
+
+    const scheduledPost = await addSchedule({
+      title: title || '',
+      subtitle: subtitle || '',
+      body,
+      isDraft: isDraft !== false,
+      scheduledAt,
+      recurrence: recurrence || 'once',
+      postType,
+      noteLink: noteLink || '',
+    });
+
+    res.json({ success: true, data: scheduledPost });
+  } catch (err: any) {
+    console.error('Tool schedule-post error:', err);
+    res.status(500).json({ success: false, error: err.message || 'Failed to schedule post' });
+  }
+});
+
+
+// ─── GET /api/tools/list-schedules ───
+router.get('/list-schedules', async (_req: Request, res: Response) => {
+  try {
+    const schedules = await getSchedules();
+    res.json({ success: true, data: { schedules } });
+  } catch (err: any) {
+    console.error('Tool list-schedules error:', err);
+    res.status(500).json({ success: false, error: err.message || 'Failed to fetch schedules' });
   }
 });
 

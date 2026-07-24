@@ -8,7 +8,7 @@ const tools = [
   { name: 'schedule_post', category: 'Scheduling', desc: 'Queue newsletter drafts or live posts with recurring cron settings' },
   { name: 'list_newsletters', category: 'Content Query', desc: 'Fetch recent newsletter archive posts and metadata' },
   { name: 'list_notes', category: 'Content Query', desc: 'Query published notes history and subscriber like counts' },
-  { name: 'list_comments', category: 'Content Query', desc: 'Review automated comment log and activity history' },
+  { name: 'list_comments', category: 'Automation Log', desc: 'Review local comment automation log (not Substack inbox)' },
   { name: 'list_schedules', category: 'Scheduling', desc: 'View current scheduled publishing queue status' },
 ];
 
@@ -22,7 +22,10 @@ export default function ToolsGrid() {
             9 Native <span className="brand-gradient">Agent Tools</span>
           </h2>
           <p className="section-subtitle">
-            Exposed via Model Context Protocol and OpenAPI specifications.
+            Exposed via Model Context Protocol and OpenAPI specifications.{' '}
+            <a href="/openapi.json" target="_blank" rel="noopener noreferrer" className="tools-openapi-link">
+              View OpenAPI spec
+            </a>
           </p>
         </div>
 
