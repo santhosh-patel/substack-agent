@@ -25,6 +25,26 @@
     }
   ],
   "paths": {
+    "/api/mcp": {
+      "get": {
+        "operationId": "mcpStreamableHttp",
+        "summary": "Remote MCP (Streamable HTTP)",
+        "description": "MCP Streamable HTTP transport for Claude/Cursor remote clients. Uses JSON-RPC over HTTP — not a REST CRUD endpoint. Requires Bearer auth. See /docs/mcp/remote.",
+        "responses": {
+          "401": { "description": "Missing or invalid Bearer token" },
+          "200": { "description": "MCP stream response" }
+        }
+      },
+      "post": {
+        "operationId": "mcpStreamableHttpPost",
+        "summary": "Remote MCP messages (POST)",
+        "description": "Send MCP JSON-RPC messages. Requires Bearer auth.",
+        "responses": {
+          "401": { "description": "Missing or invalid Bearer token" },
+          "200": { "description": "MCP response" }
+        }
+      }
+    },
     "/api/tools/health": {
       "get": {
         "operationId": "healthCheck",

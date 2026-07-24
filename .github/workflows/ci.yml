@@ -37,11 +37,12 @@ jobs:
 
       - name: Start server
         run: |
-          npm start &
+          API_SECRET=ci-test-secret NODE_ENV=production npm start &
           for i in $(seq 1 30); do
             curl -sf http://localhost:3456/api/config && break
             sleep 1
           done
+          curl -sf -o /dev/null -w "health_no_auth:%{http_code}\n" http://localhost:3456/api/tools/health | grep -q 'health_no_auth:401'
 
       - name: Auth and health tests
         run: API_SECRET=ci-test-secret node scripts/test-auth.js

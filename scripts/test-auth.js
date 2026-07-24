@@ -40,9 +40,9 @@ async function run() {
       },
     },
     {
-      name: 'POST /api/mcp rejects missing Bearer',
+      name: 'GET /api/mcp rejects missing Bearer',
       run: async () => {
-        const res = await fetch(`${BASE_URL}/api/mcp`, { method: 'POST' });
+        const res = await fetch(`${BASE_URL}/api/mcp`, { method: 'GET' });
         if (res.status !== 401) {
           throw new Error(`Expected 401, got ${res.status}`);
         }
