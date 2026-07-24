@@ -3,7 +3,7 @@
   "info": {
     "title": "Substack Automation Tools API",
     "description": "AI-callable tool endpoints for automating Substack operations — publish newsletters, post notes, comment on posts, and list content. Designed for Claude MCP, N8N, ChatGPT GPTs, and any OpenAPI-aware AI agent.",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "contact": {
       "name": "Substack Automation"
     }
@@ -25,6 +25,36 @@
     }
   ],
   "paths": {
+    "/api/tools/health": {
+      "get": {
+        "operationId": "healthCheck",
+        "summary": "Tools API health check",
+        "description": "Returns app version and whether the server has a healthy Substack session.",
+        "responses": {
+          "200": {
+            "description": "Health status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "version": { "type": "string" },
+                        "connected": { "type": "boolean" },
+                        "publication": { "type": "string", "nullable": true }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/tools/publish-newsletter": {
       "post": {
         "operationId": "publishNewsletter",

@@ -12,6 +12,7 @@ All notable changes to Substack Agent.
 - GitHub stars in trust bar, OpenAPI link in tools grid
 - Vercel deployment mode warnings in playground
 - FAQ accordion, responsive CSS rewrite
+- macOS-style code window cards across landing, docs, and playground
 
 ### Changed
 - Deploy messaging reframed as any-host Tools API; use your domain with agents and automations (Vercel optional)

@@ -5,22 +5,25 @@ All notable changes to Substack Agent are documented here.
 ## [2.0.0] — 2026
 
 ### Added
-- Full product upgrade: deployment modes section, use cases, comparison table, deploy CTA
+- In-app documentation site at `/docs`
+- Full product upgrade: deployment modes, use cases, comparison, deploy CTA
 - Playground onboarding checklist and cookie extraction guide
-- REST API endpoints: `POST /api/tools/schedule-post`, `GET /api/tools/list-schedules`
+- REST API: `POST /api/tools/schedule-post`, `GET /api/tools/list-schedules`
 - GitHub stars in trust bar, OpenAPI link in tools grid
 - Vercel deployment mode warnings in playground
-- FAQ accordion, responsive CSS rewrite across landing page
+- FAQ accordion, responsive CSS rewrite
+- macOS-style code window cards across landing, docs, and playground
 
 ### Changed
+- Deploy messaging reframed as any-host Tools API; use your domain with agents and automations (Vercel optional)
 - Removed simulated playground modal; all CTAs route to `/playground`
-- Updated security documentation to reflect localStorage behavior
-- Hero showcase status relabeled from "Connected" to "Example"
-- `list_comments` documented as automation log, not Substack inbox
+- Updated security documentation for localStorage behavior
+- Hero showcase status relabeled to "Example"
+- `list_comments` documented as automation log
 
 ### Fixed
-- Note publish gated on Substack connection state
-- Footer brand link, anchor scroll offset for fixed navbar
+- Note publish gated on connection state
+- Footer brand link, anchor scroll offset
 
 ## [1.0.0] — Initial release
 

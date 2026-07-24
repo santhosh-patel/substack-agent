@@ -154,7 +154,7 @@ export default function Hero() {
               <div className="showcase-view">
                 <div className="code-pane">
                   <div className="code-label">POST /api/tools/publish-newsletter</div>
-                  <pre><code>{`curl -X POST https://your-agent.vercel.app/api/tools/publish-newsletter \\
+                  <pre><code>{`curl -X POST https://your-domain/api/tools/publish-newsletter \\
   -H "Authorization: Bearer $API_SECRET" \\
   -H "Content-Type: application/json" \\
   -d '{
