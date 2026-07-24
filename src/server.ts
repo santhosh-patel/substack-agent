@@ -69,9 +69,13 @@ app.use('/api', apiRoutes);
 // ─── Tool routes (AI agent routes — with bearer auth) ───
 app.use('/api/tools', authMiddleware, toolRoutes);
 
-// ─── Fallback to index.html for SPA (skip API and static files) ───
-app.get('/{*path}', (req, res) => {
-  // Don't serve index.html for file-like requests (have extensions)
+// ─── Main Substack Automation App (Playground Dashboard) ───
+app.get(['/playground', '/newsletter', '/comments', '/notes', '/scheduler', '/history'], (_req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'playground.html'));
+});
+
+// ─── Fallback to index.html for Landing Page (skip API and static files with extensions) ───
+app.get('*', (req, res) => {
   if (req.path.includes('.')) {
     res.status(404).json({ error: 'Not found' });
     return;
@@ -82,7 +86,8 @@ app.get('/{*path}', (req, res) => {
 // ─── Start ───
 app.listen(PORT, () => {
   console.log(`\n Substack Automation running at:\n`);
-  console.log(`     http://localhost:${PORT}\n`);
+  console.log(`     Landing Page: http://localhost:${PORT}/`);
+  console.log(`     Playground App: http://localhost:${PORT}/playground\n`);
   console.log(`  Tool API:     http://localhost:${PORT}/api/tools/`);
   console.log(`  OpenAPI Spec: http://localhost:${PORT}/openapi.json`);
   console.log(`  AI Plugin:    http://localhost:${PORT}/.well-known/ai-plugin.json\n`);

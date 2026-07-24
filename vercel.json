@@ -24,11 +24,15 @@
       "dest": "/public/openapi.json"
     },
     {
+      "src": "/(playground|newsletter|history|notes|comments|scheduler)",
+      "dest": "/public/playground.html"
+    },
+    {
       "src": "/(.*\\..*)",
       "dest": "/public/$1"
     },
     {
-      "src": "/(newsletter|history|notes|comments|scheduler)?$",
+      "src": "/(.*)",
       "dest": "/public/index.html"
     }
   ]
