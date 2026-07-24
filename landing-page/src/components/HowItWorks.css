@@ -1,12 +1,16 @@
 .how-it-works {
   padding: var(--section-pad) 0;
   background: var(--bg-page);
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .steps-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
+  width: 100%;
+  min-width: 0;
 }
 
 .step-card {
@@ -16,6 +20,10 @@
   padding: 28px;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   transition: all var(--duration) var(--ease);
 }
 
@@ -36,6 +44,7 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 20px;
+  flex-shrink: 0;
 }
 
 .step-heading {
@@ -43,6 +52,7 @@
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 8px;
+  word-break: break-word;
 }
 
 .step-desc {
@@ -51,6 +61,7 @@
   line-height: 1.55;
   margin-bottom: 20px;
   flex-grow: 1;
+  word-break: break-word;
 }
 
 .step-code-box {
@@ -58,17 +69,26 @@
   border: 1px solid var(--border-dark);
   border-radius: var(--radius-sm);
   padding: 14px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .step-code-box pre {
   margin: 0;
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
 }
 
 .step-code-box code {
   font-size: 12px;
   line-height: 1.5;
   color: #A3E635;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 @media (max-width: 900px) {
@@ -96,4 +116,3 @@
     font-size: 11.5px;
   }
 }
-

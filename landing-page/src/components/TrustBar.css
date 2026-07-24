@@ -3,6 +3,8 @@
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   background: var(--bg-subtle);
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .trust-container {
@@ -10,6 +12,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+  width: 100%;
+  min-width: 0;
 }
 
 .trust-title {
@@ -18,6 +22,7 @@
   color: var(--text-muted);
   letter-spacing: 0.08em;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .trust-pills {
@@ -25,6 +30,8 @@
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .trust-pill {
@@ -45,6 +52,7 @@
   height: 5px;
   border-radius: 50%;
   background: var(--text-muted);
+  flex-shrink: 0;
 }
 
 @media (max-width: 768px) {
@@ -73,4 +81,3 @@
     font-size: 12px;
   }
 }
-
