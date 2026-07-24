@@ -9,6 +9,9 @@
   justify-content: center;
   padding: 24px;
   animation: fadeIn 0.2s ease;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
 }
 
 .playground-modal {
@@ -19,6 +22,8 @@
   border-radius: var(--radius-lg);
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
   overflow: hidden;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .modal-header {
@@ -28,12 +33,15 @@
   padding: 16px 24px;
   border-bottom: 1px solid var(--border);
   background: var(--bg-subtle);
+  width: 100%;
+  min-width: 0;
 }
 
 .modal-title-group {
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
 }
 
 .modal-status-dot {
@@ -41,12 +49,14 @@
   height: 8px;
   border-radius: 50%;
   background: #34D399;
+  flex-shrink: 0;
 }
 
 .modal-title-group h3 {
   font-size: 16px;
   font-weight: 700;
   color: var(--text-primary);
+  word-break: break-word;
 }
 
 .modal-badge {
@@ -56,12 +66,14 @@
   background: var(--primary-light);
   padding: 2px 8px;
   border-radius: var(--radius-full);
+  flex-shrink: 0;
 }
 
 .modal-header-actions {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 .external-link-btn {
@@ -85,8 +97,10 @@
 
 .modal-body {
   display: grid;
-  grid-template-columns: 220px 1fr;
+  grid-template-columns: 220px minmax(0, 1fr);
   min-height: 380px;
+  width: 100%;
+  min-width: 0;
 }
 
 .playground-sidebar {
@@ -96,6 +110,8 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
+  min-width: 0;
 }
 
 .sidebar-item {
@@ -109,6 +125,7 @@
   text-align: left;
   cursor: pointer;
   transition: all 0.15s ease;
+  word-break: break-word;
 }
 
 .sidebar-item:hover {
@@ -128,18 +145,24 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 100%;
+  min-width: 0;
 }
 
 .playground-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
+  min-width: 0;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  width: 100%;
+  min-width: 0;
 }
 
 .form-group label {
@@ -158,6 +181,7 @@
   background: var(--bg-page);
   color: var(--text-primary);
   transition: border-color 0.15s ease;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
@@ -175,6 +199,7 @@
   display: flex;
   gap: 10px;
   margin-top: 8px;
+  flex-wrap: wrap;
 }
 
 .playground-logs {
@@ -188,6 +213,8 @@
   color: #34D399;
   max-height: 120px;
   overflow-y: auto;
+  width: 100%;
+  min-width: 0;
 }
 
 .logs-header {
@@ -200,6 +227,7 @@
 
 .log-line {
   line-height: 1.5;
+  word-break: break-word;
 }
 
 @keyframes fadeIn {
@@ -248,4 +276,3 @@
     padding: 16px;
   }
 }
-
