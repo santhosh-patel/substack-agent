@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import './Navbar.css';
 
-export default function Navbar({ onOpenPlayground }) {
+export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -33,12 +33,6 @@ export default function Navbar({ onOpenPlayground }) {
         </div>
 
         <div className="nav-actions">
-          <a href="/playground" className="btn btn-outline nav-playground-btn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polygon points="5 3 19 12 5 21 5 3" />
-            </svg>
-            Playground
-          </a>
           <a href="/playground" className="btn btn-primary nav-cta">Try in Playground</a>
 
           <button 
