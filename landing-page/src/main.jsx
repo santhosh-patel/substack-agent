@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './index.css';
 import MarketingApp from './MarketingApp.jsx';
+import RouteErrorBoundary from './components/RouteErrorBoundary.jsx';
 
 const DocsLayout = lazy(() => import('./docs/DocsLayout.jsx'));
 
@@ -15,9 +16,11 @@ createRoot(document.getElementById('root')).render(
         <Route
           path="/docs/*"
           element={
-            <Suspense fallback={<div className="docs-loading">Loading docs…</div>}>
-              <DocsLayout />
-            </Suspense>
+            <RouteErrorBoundary fallbackHref="/docs">
+              <Suspense fallback={<div className="docs-loading">Loading docs…</div>}>
+                <DocsLayout />
+              </Suspense>
+            </RouteErrorBoundary>
           }
         />
       </Routes>

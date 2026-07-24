@@ -17,6 +17,15 @@ import Footer from './components/Footer';
 
 export default function MarketingApp() {
   useEffect(() => {
+    const hash = window.location.hash?.slice(1);
+    if (hash) {
+      requestAnimationFrame(() => {
+        document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     const elements = document.querySelectorAll('.animate-in');
     if (!elements.length) return;
 

@@ -1,5 +1,5 @@
 const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/rehype-highlight-CsfONlRn.js","assets/rolldown-runtime-QTnfLwEv.js","assets/lib-DX30Qe9a.js","assets/atom-one-dark-B-oHczHB.css"])))=>i.map(i=>d[i]);
-import{n as e,r as t,t as n}from"./rolldown-runtime-QTnfLwEv.js";import{a as r,c as i,i as a,n as o,o as s,r as c,s as l,t as u}from"./index-B3KHt5A5.js";import{a as d,n as f,t as p}from"./lib-DX30Qe9a.js";function m(e,t){let n=t||{};return(e[e.length-1]===``?[...e,``]:e).join((n.padRight?` `:``)+`,`+(n.padLeft===!1?``:` `)).trim()}var h=/^[$_\p{ID_Start}][$_\u{200C}\u{200D}\p{ID_Continue}]*$/u,g=/^[$_\p{ID_Start}][-$_\u{200C}\u{200D}\p{ID_Continue}]*$/u,_={};function v(e,t){return((t||_).jsx?g:h).test(e)}var y=/[ \t\n\f\r]/g;function b(e){return typeof e==`object`?e.type===`text`&&x(e.value):x(e)}function x(e){return e.replace(y,``)===``}var S=class{constructor(e,t,n){this.normal=t,this.property=e,n&&(this.space=n)}};S.prototype.normal={},S.prototype.property={},S.prototype.space=void 0;function C(e,t){let n={},r={};for(let t of e)Object.assign(n,t.property),Object.assign(r,t.normal);return new S(n,r,t)}function w(e){return e.toLowerCase()}var T=class{constructor(e,t){this.attribute=t,this.property=e}};T.prototype.attribute=``,T.prototype.booleanish=!1,T.prototype.boolean=!1,T.prototype.commaOrSpaceSeparated=!1,T.prototype.commaSeparated=!1,T.prototype.defined=!1,T.prototype.mustUseProperty=!1,T.prototype.number=!1,T.prototype.overloadedBoolean=!1,T.prototype.property=``,T.prototype.spaceSeparated=!1,T.prototype.space=void 0;var E=e({boolean:()=>D,booleanish:()=>O,commaOrSpaceSeparated:()=>M,commaSeparated:()=>j,number:()=>k,overloadedBoolean:()=>te,spaceSeparated:()=>A}),ee=0,D=N(),O=N(),te=N(),k=N(),A=N(),j=N(),M=N();function N(){return 2**++ee}var P=Object.keys(E),F=class extends T{constructor(e,t,n,r){let i=-1;if(super(e,t),ne(this,`space`,r),typeof n==`number`)for(;++i<P.length;){let e=P[i];ne(this,P[i],(n&E[e])===E[e])}}};F.prototype.defined=!0;function ne(e,t,n){n&&(e[t]=n)}function re(e){let t={},n={};for(let[r,i]of Object.entries(e.properties)){let a=new F(r,e.transform(e.attributes||{},r),i,e.space);e.mustUseProperty&&e.mustUseProperty.includes(r)&&(a.mustUseProperty=!0),t[r]=a,n[w(r)]=r,n[w(a.attribute)]=r}return new S(t,n,e.space)}var ie=re({properties:{ariaActiveDescendant:null,ariaAtomic:O,ariaAutoComplete:null,ariaBusy:O,ariaChecked:O,ariaColCount:k,ariaColIndex:k,ariaColSpan:k,ariaControls:A,ariaCurrent:null,ariaDescribedBy:A,ariaDetails:null,ariaDisabled:O,ariaDropEffect:A,ariaErrorMessage:null,ariaExpanded:O,ariaFlowTo:A,ariaGrabbed:O,ariaHasPopup:null,ariaHidden:O,ariaInvalid:null,ariaKeyShortcuts:null,ariaLabel:null,ariaLabelledBy:A,ariaLevel:k,ariaLive:null,ariaModal:O,ariaMultiLine:O,ariaMultiSelectable:O,ariaOrientation:null,ariaOwns:A,ariaPlaceholder:null,ariaPosInSet:k,ariaPressed:O,ariaReadOnly:O,ariaRelevant:null,ariaRequired:O,ariaRoleDescription:A,ariaRowCount:k,ariaRowIndex:k,ariaRowSpan:k,ariaSelected:O,ariaSetSize:k,ariaSort:null,ariaValueMax:k,ariaValueMin:k,ariaValueNow:k,ariaValueText:null,role:null},transform(e,t){return t===`role`?t:`aria-`+t.slice(4).toLowerCase()}});function ae(e,t){return t in e?e[t]:t}function oe(e,t){return ae(e,t.toLowerCase())}var se=re({attributes:{acceptcharset:`accept-charset`,classname:`class`,htmlfor:`for`,httpequiv:`http-equiv`},mustUseProperty:[`checked`,`multiple`,`muted`,`selected`],properties:{abbr:null,accept:j,acceptCharset:A,accessKey:A,action:null,allow:null,allowFullScreen:D,allowPaymentRequest:D,allowUserMedia:D,alpha:D,alt:null,as:null,async:D,autoCapitalize:null,autoComplete:A,autoFocus:D,autoPlay:D,blocking:A,capture:null,charSet:null,checked:D,cite:null,className:A,closedBy:null,colorSpace:null,cols:k,colSpan:k,command:null,commandFor:null,content:null,contentEditable:O,controls:D,controlsList:A,coords:k|j,crossOrigin:null,data:null,dateTime:null,decoding:null,default:D,defer:D,dir:null,dirName:null,disabled:D,download:te,draggable:O,encType:null,enterKeyHint:null,fetchPriority:null,form:null,formAction:null,formEncType:null,formMethod:null,formNoValidate:D,formTarget:null,headers:A,height:k,hidden:te,high:k,href:null,hrefLang:null,htmlFor:A,httpEquiv:A,id:null,imageSizes:null,imageSrcSet:null,inert:D,inputMode:null,integrity:null,is:null,isMap:D,itemId:null,itemProp:A,itemRef:A,itemScope:D,itemType:A,kind:null,label:null,lang:null,language:null,list:null,loading:null,loop:D,low:k,manifest:null,max:null,maxLength:k,media:null,method:null,min:null,minLength:k,multiple:D,muted:D,name:null,nonce:null,noModule:D,noValidate:D,onAbort:null,onAfterPrint:null,onAuxClick:null,onBeforeMatch:null,onBeforePrint:null,onBeforeToggle:null,onBeforeUnload:null,onBlur:null,onCancel:null,onCanPlay:null,onCanPlayThrough:null,onChange:null,onClick:null,onClose:null,onContextLost:null,onContextMenu:null,onContextRestored:null,onCopy:null,onCueChange:null,onCut:null,onDblClick:null,onDrag:null,onDragEnd:null,onDragEnter:null,onDragExit:null,onDragLeave:null,onDragOver:null,onDragStart:null,onDrop:null,onDurationChange:null,onEmptied:null,onEnded:null,onError:null,onFocus:null,onFormData:null,onHashChange:null,onInput:null,onInvalid:null,onKeyDown:null,onKeyPress:null,onKeyUp:null,onLanguageChange:null,onLoad:null,onLoadedData:null,onLoadedMetadata:null,onLoadEnd:null,onLoadStart:null,onMessage:null,onMessageError:null,onMouseDown:null,onMouseEnter:null,onMouseLeave:null,onMouseMove:null,onMouseOut:null,onMouseOver:null,onMouseUp:null,onOffline:null,onOnline:null,onPageHide:null,onPageShow:null,onPaste:null,onPause:null,onPlay:null,onPlaying:null,onPopState:null,onProgress:null,onRateChange:null,onRejectionHandled:null,onReset:null,onResize:null,onScroll:null,onScrollEnd:null,onSecurityPolicyViolation:null,onSeeked:null,onSeeking:null,onSelect:null,onSlotChange:null,onStalled:null,onStorage:null,onSubmit:null,onSuspend:null,onTimeUpdate:null,onToggle:null,onUnhandledRejection:null,onUnload:null,onVolumeChange:null,onWaiting:null,onWheel:null,open:D,optimum:k,pattern:null,ping:A,placeholder:null,playsInline:D,popover:null,popoverTarget:null,popoverTargetAction:null,poster:null,preload:null,readOnly:D,referrerPolicy:null,rel:A,required:D,reversed:D,rows:k,rowSpan:k,sandbox:A,scope:null,scoped:D,seamless:D,selected:D,shadowRootClonable:D,shadowRootCustomElementRegistry:D,shadowRootDelegatesFocus:D,shadowRootMode:null,shadowRootSerializable:D,shape:null,size:k,sizes:null,slot:null,span:k,spellCheck:O,src:null,srcDoc:null,srcLang:null,srcSet:null,start:k,step:null,style:null,tabIndex:k,target:null,title:null,translate:null,type:null,typeMustMatch:D,useMap:null,value:O,width:k,wrap:null,writingSuggestions:null,align:null,aLink:null,archive:A,axis:null,background:null,bgColor:null,border:k,borderColor:null,bottomMargin:k,cellPadding:null,cellSpacing:null,char:null,charOff:null,classId:null,clear:null,code:null,codeBase:null,codeType:null,color:null,compact:D,declare:D,event:null,face:null,frame:null,frameBorder:null,hSpace:k,leftMargin:k,link:null,longDesc:null,lowSrc:null,marginHeight:k,marginWidth:k,noResize:D,noHref:D,noShade:D,noWrap:D,object:null,profile:null,prompt:null,rev:null,rightMargin:k,rules:null,scheme:null,scrolling:O,standby:null,summary:null,text:null,topMargin:k,valueType:null,version:null,vAlign:null,vLink:null,vSpace:k,allowTransparency:null,autoCorrect:null,autoSave:null,credentialless:D,disablePictureInPicture:D,disableRemotePlayback:D,exportParts:j,part:A,prefix:null,property:null,results:k,security:null,unselectable:null},space:`html`,transform:oe}),ce=re({attributes:{accentHeight:`accent-height`,alignmentBaseline:`alignment-baseline`,arabicForm:`arabic-form`,baselineShift:`baseline-shift`,capHeight:`cap-height`,className:`class`,clipPath:`clip-path`,clipRule:`clip-rule`,colorInterpolation:`color-interpolation`,colorInterpolationFilters:`color-interpolation-filters`,colorProfile:`color-profile`,colorRendering:`color-rendering`,crossOrigin:`crossorigin`,dataType:`datatype`,dominantBaseline:`dominant-baseline`,enableBackground:`enable-background`,fillOpacity:`fill-opacity`,fillRule:`fill-rule`,floodColor:`flood-color`,floodOpacity:`flood-opacity`,fontFamily:`font-family`,fontSize:`font-size`,fontSizeAdjust:`font-size-adjust`,fontStretch:`font-stretch`,fontStyle:`font-style`,fontVariant:`font-variant`,fontWeight:`font-weight`,glyphName:`glyph-name`,glyphOrientationHorizontal:`glyph-orientation-horizontal`,glyphOrientationVertical:`glyph-orientation-vertical`,hrefLang:`hreflang`,horizAdvX:`horiz-adv-x`,horizOriginX:`horiz-origin-x`,horizOriginY:`horiz-origin-y`,imageRendering:`image-rendering`,letterSpacing:`letter-spacing`,lightingColor:`lighting-color`,markerEnd:`marker-end`,markerMid:`marker-mid`,markerStart:`marker-start`,maskType:`mask-type`,navDown:`nav-down`,navDownLeft:`nav-down-left`,navDownRight:`nav-down-right`,navLeft:`nav-left`,navNext:`nav-next`,navPrev:`nav-prev`,navRight:`nav-right`,navUp:`nav-up`,navUpLeft:`nav-up-left`,navUpRight:`nav-up-right`,onAbort:`onabort`,onActivate:`onactivate`,onAfterPrint:`onafterprint`,onBeforePrint:`onbeforeprint`,onBegin:`onbegin`,onCancel:`oncancel`,onCanPlay:`oncanplay`,onCanPlayThrough:`oncanplaythrough`,onChange:`onchange`,onClick:`onclick`,onClose:`onclose`,onCopy:`oncopy`,onCueChange:`oncuechange`,onCut:`oncut`,onDblClick:`ondblclick`,onDrag:`ondrag`,onDragEnd:`ondragend`,onDragEnter:`ondragenter`,onDragExit:`ondragexit`,onDragLeave:`ondragleave`,onDragOver:`ondragover`,onDragStart:`ondragstart`,onDrop:`ondrop`,onDurationChange:`ondurationchange`,onEmptied:`onemptied`,onEnd:`onend`,onEnded:`onended`,onError:`onerror`,onFocus:`onfocus`,onFocusIn:`onfocusin`,onFocusOut:`onfocusout`,onHashChange:`onhashchange`,onInput:`oninput`,onInvalid:`oninvalid`,onKeyDown:`onkeydown`,onKeyPress:`onkeypress`,onKeyUp:`onkeyup`,onLoad:`onload`,onLoadedData:`onloadeddata`,onLoadedMetadata:`onloadedmetadata`,onLoadStart:`onloadstart`,onMessage:`onmessage`,onMouseDown:`onmousedown`,onMouseEnter:`onmouseenter`,onMouseLeave:`onmouseleave`,onMouseMove:`onmousemove`,onMouseOut:`onmouseout`,onMouseOver:`onmouseover`,onMouseUp:`onmouseup`,onMouseWheel:`onmousewheel`,onOffline:`onoffline`,onOnline:`ononline`,onPageHide:`onpagehide`,onPageShow:`onpageshow`,onPaste:`onpaste`,onPause:`onpause`,onPlay:`onplay`,onPlaying:`onplaying`,onPopState:`onpopstate`,onProgress:`onprogress`,onRateChange:`onratechange`,onRepeat:`onrepeat`,onReset:`onreset`,onResize:`onresize`,onScroll:`onscroll`,onSeeked:`onseeked`,onSeeking:`onseeking`,onSelect:`onselect`,onShow:`onshow`,onStalled:`onstalled`,onStorage:`onstorage`,onSubmit:`onsubmit`,onSuspend:`onsuspend`,onTimeUpdate:`ontimeupdate`,onToggle:`ontoggle`,onUnload:`onunload`,onVolumeChange:`onvolumechange`,onWaiting:`onwaiting`,onZoom:`onzoom`,overlinePosition:`overline-position`,overlineThickness:`overline-thickness`,paintOrder:`paint-order`,panose1:`panose-1`,pointerEvents:`pointer-events`,referrerPolicy:`referrerpolicy`,renderingIntent:`rendering-intent`,shapeRendering:`shape-rendering`,stopColor:`stop-color`,stopOpacity:`stop-opacity`,strikethroughPosition:`strikethrough-position`,strikethroughThickness:`strikethrough-thickness`,strokeDashArray:`stroke-dasharray`,strokeDashOffset:`stroke-dashoffset`,strokeLineCap:`stroke-linecap`,strokeLineJoin:`stroke-linejoin`,strokeMiterLimit:`stroke-miterlimit`,strokeOpacity:`stroke-opacity`,strokeWidth:`stroke-width`,tabIndex:`tabindex`,textAnchor:`text-anchor`,textDecoration:`text-decoration`,textRendering:`text-rendering`,transformOrigin:`transform-origin`,typeOf:`typeof`,underlinePosition:`underline-position`,underlineThickness:`underline-thickness`,unicodeBidi:`unicode-bidi`,unicodeRange:`unicode-range`,unitsPerEm:`units-per-em`,vAlphabetic:`v-alphabetic`,vHanging:`v-hanging`,vIdeographic:`v-ideographic`,vMathematical:`v-mathematical`,vectorEffect:`vector-effect`,vertAdvY:`vert-adv-y`,vertOriginX:`vert-origin-x`,vertOriginY:`vert-origin-y`,wordSpacing:`word-spacing`,writingMode:`writing-mode`,xHeight:`x-height`,playbackOrder:`playbackorder`,timelineBegin:`timelinebegin`},properties:{about:M,accentHeight:k,accumulate:null,additive:null,alignmentBaseline:null,alphabetic:k,amplitude:k,arabicForm:null,ascent:k,attributeName:null,attributeType:null,azimuth:k,bandwidth:null,baselineShift:null,baseFrequency:null,baseProfile:null,bbox:null,begin:null,bias:k,by:null,calcMode:null,capHeight:k,className:A,clip:null,clipPath:null,clipPathUnits:null,clipRule:null,color:null,colorInterpolation:null,colorInterpolationFilters:null,colorProfile:null,colorRendering:null,content:null,contentScriptType:null,contentStyleType:null,crossOrigin:null,cursor:null,cx:null,cy:null,d:null,dataType:null,defaultAction:null,descent:k,diffuseConstant:k,direction:null,display:null,dur:null,divisor:k,dominantBaseline:null,download:D,dx:null,dy:null,edgeMode:null,editable:null,elevation:k,enableBackground:null,end:null,event:null,exponent:k,externalResourcesRequired:null,fill:null,fillOpacity:k,fillRule:null,filter:null,filterRes:null,filterUnits:null,floodColor:null,floodOpacity:null,focusable:null,focusHighlight:null,fontFamily:null,fontSize:null,fontSizeAdjust:null,fontStretch:null,fontStyle:null,fontVariant:null,fontWeight:null,format:null,fr:null,from:null,fx:null,fy:null,g1:j,g2:j,glyphName:j,glyphOrientationHorizontal:null,glyphOrientationVertical:null,glyphRef:null,gradientTransform:null,gradientUnits:null,handler:null,hanging:k,hatchContentUnits:null,hatchUnits:null,height:null,href:null,hrefLang:null,horizAdvX:k,horizOriginX:k,horizOriginY:k,id:null,ideographic:k,imageRendering:null,initialVisibility:null,in:null,in2:null,intercept:k,k,k1:k,k2:k,k3:k,k4:k,kernelMatrix:M,kernelUnitLength:null,keyPoints:null,keySplines:null,keyTimes:null,kerning:null,lang:null,lengthAdjust:null,letterSpacing:null,lightingColor:null,limitingConeAngle:k,local:null,markerEnd:null,markerMid:null,markerStart:null,markerHeight:null,markerUnits:null,markerWidth:null,mask:null,maskContentUnits:null,maskType:null,maskUnits:null,mathematical:null,max:null,media:null,mediaCharacterEncoding:null,mediaContentEncodings:null,mediaSize:k,mediaTime:null,method:null,min:null,mode:null,name:null,navDown:null,navDownLeft:null,navDownRight:null,navLeft:null,navNext:null,navPrev:null,navRight:null,navUp:null,navUpLeft:null,navUpRight:null,numOctaves:null,observer:null,offset:null,onAbort:null,onActivate:null,onAfterPrint:null,onBeforePrint:null,onBegin:null,onCancel:null,onCanPlay:null,onCanPlayThrough:null,onChange:null,onClick:null,onClose:null,onCopy:null,onCueChange:null,onCut:null,onDblClick:null,onDrag:null,onDragEnd:null,onDragEnter:null,onDragExit:null,onDragLeave:null,onDragOver:null,onDragStart:null,onDrop:null,onDurationChange:null,onEmptied:null,onEnd:null,onEnded:null,onError:null,onFocus:null,onFocusIn:null,onFocusOut:null,onHashChange:null,onInput:null,onInvalid:null,onKeyDown:null,onKeyPress:null,onKeyUp:null,onLoad:null,onLoadedData:null,onLoadedMetadata:null,onLoadStart:null,onMessage:null,onMouseDown:null,onMouseEnter:null,onMouseLeave:null,onMouseMove:null,onMouseOut:null,onMouseOver:null,onMouseUp:null,onMouseWheel:null,onOffline:null,onOnline:null,onPageHide:null,onPageShow:null,onPaste:null,onPause:null,onPlay:null,onPlaying:null,onPopState:null,onProgress:null,onRateChange:null,onRepeat:null,onReset:null,onResize:null,onScroll:null,onSeeked:null,onSeeking:null,onSelect:null,onShow:null,onStalled:null,onStorage:null,onSubmit:null,onSuspend:null,onTimeUpdate:null,onToggle:null,onUnload:null,onVolumeChange:null,onWaiting:null,onZoom:null,opacity:null,operator:null,order:null,orient:null,orientation:null,origin:null,overflow:null,overlay:null,overlinePosition:k,overlineThickness:k,paintOrder:null,panose1:null,path:null,pathLength:k,patternContentUnits:null,patternTransform:null,patternUnits:null,phase:null,ping:A,pitch:null,playbackOrder:null,pointerEvents:null,points:null,pointsAtX:k,pointsAtY:k,pointsAtZ:k,preserveAlpha:null,preserveAspectRatio:null,primitiveUnits:null,propagate:null,property:M,r:null,radius:null,referrerPolicy:null,refX:null,refY:null,rel:M,rev:M,renderingIntent:null,repeatCount:null,repeatDur:null,requiredExtensions:M,requiredFeatures:M,requiredFonts:M,requiredFormats:M,resource:null,restart:null,result:null,rotate:null,rx:null,ry:null,scale:null,seed:null,shapeRendering:null,side:null,slope:null,snapshotTime:null,specularConstant:k,specularExponent:k,spreadMethod:null,spacing:null,startOffset:null,stdDeviation:null,stemh:null,stemv:null,stitchTiles:null,stopColor:null,stopOpacity:null,strikethroughPosition:k,strikethroughThickness:k,string:null,stroke:null,strokeDashArray:M,strokeDashOffset:null,strokeLineCap:null,strokeLineJoin:null,strokeMiterLimit:k,strokeOpacity:k,strokeWidth:null,style:null,surfaceScale:k,syncBehavior:null,syncBehaviorDefault:null,syncMaster:null,syncTolerance:null,syncToleranceDefault:null,systemLanguage:M,tabIndex:k,tableValues:null,target:null,targetX:k,targetY:k,textAnchor:null,textDecoration:null,textRendering:null,textLength:null,timelineBegin:null,title:null,transformBehavior:null,type:null,typeOf:M,to:null,transform:null,transformOrigin:null,u1:null,u2:null,underlinePosition:k,underlineThickness:k,unicode:null,unicodeBidi:null,unicodeRange:null,unitsPerEm:k,values:null,vAlphabetic:k,vMathematical:k,vectorEffect:null,vHanging:k,vIdeographic:k,version:null,vertAdvY:k,vertOriginX:k,vertOriginY:k,viewBox:null,viewTarget:null,visibility:null,width:null,widths:null,wordSpacing:null,writingMode:null,x:null,x1:null,x2:null,xChannelSelector:null,xHeight:k,y:null,y1:null,y2:null,yChannelSelector:null,z:null,zoomAndPan:null},space:`svg`,transform:ae}),le=re({properties:{xLinkActuate:null,xLinkArcRole:null,xLinkHref:null,xLinkRole:null,xLinkShow:null,xLinkTitle:null,xLinkType:null},space:`xlink`,transform(e,t){return`xlink:`+t.slice(5).toLowerCase()}}),ue=re({attributes:{xmlnsxlink:`xmlns:xlink`},properties:{xmlnsXLink:null,xmlns:null},space:`xmlns`,transform:oe}),de=re({properties:{xmlBase:null,xmlLang:null,xmlSpace:null},space:`xml`,transform(e,t){return`xml:`+t.slice(3).toLowerCase()}}),fe={classId:`classID`,dataType:`datatype`,itemId:`itemID`,strokeDashArray:`strokeDasharray`,strokeDashOffset:`strokeDashoffset`,strokeLineCap:`strokeLinecap`,strokeLineJoin:`strokeLinejoin`,strokeMiterLimit:`strokeMiterlimit`,typeOf:`typeof`,xLinkActuate:`xlinkActuate`,xLinkArcRole:`xlinkArcrole`,xLinkHref:`xlinkHref`,xLinkRole:`xlinkRole`,xLinkShow:`xlinkShow`,xLinkTitle:`xlinkTitle`,xLinkType:`xlinkType`,xmlnsXLink:`xmlnsXlink`},pe=/[A-Z]/g,me=/-[a-z]/g,he=/^data[-\w.:]+$/i;function ge(e,t){let n=w(t),r=t,i=T;if(n in e.normal)return e.property[e.normal[n]];if(n.length>4&&n.slice(0,4)===`data`&&he.test(t)){if(t.charAt(4)===`-`){let e=t.slice(5).replace(me,ve);r=`data`+e.charAt(0).toUpperCase()+e.slice(1)}else{let e=t.slice(4);if(!me.test(e)){let n=e.replace(pe,_e);n.charAt(0)!==`-`&&(n=`-`+n),t=`data`+n}}i=F}return new i(r,t)}function _e(e){return`-`+e.toLowerCase()}function ve(e){return e.charAt(1).toUpperCase()}var ye=C([ie,se,le,ue,de],`html`),be=C([ie,ce,le,ue,de],`svg`);function xe(e){return e.join(` `).trim()}var Se=n(((e,t)=>{var n=/\/\*[^*]*\*+([^/*][^*]*\*+)*\//g,r=/\n/g,i=/^\s*/,a=/^(\*?[-#/*\\\w]+(\[[0-9a-z_-]+\])?)\s*/,o=/^:\s*/,s=/^((?:'(?:\\'|.)*?'|"(?:\\"|.)*?"|\([^)]*?\)|[^};])+)/,c=/^[;\s]*/,l=/^\s+|\s+$/g;function u(e,t){if(typeof e!=`string`)throw TypeError(`First argument must be a string`);if(!e)return[];t||={};var l=1,u=1;function f(e){var t=e.match(r);t&&(l+=t.length);var n=e.lastIndexOf(`
+import{n as e,r as t,t as n}from"./rolldown-runtime-QTnfLwEv.js";import{a as r,c as i,i as a,n as o,o as s,r as c,s as l,t as u}from"./index-BWZPLSaw.js";import{a as d,n as f,t as p}from"./lib-DX30Qe9a.js";function m(e,t){let n=t||{};return(e[e.length-1]===``?[...e,``]:e).join((n.padRight?` `:``)+`,`+(n.padLeft===!1?``:` `)).trim()}var h=/^[$_\p{ID_Start}][$_\u{200C}\u{200D}\p{ID_Continue}]*$/u,g=/^[$_\p{ID_Start}][-$_\u{200C}\u{200D}\p{ID_Continue}]*$/u,_={};function v(e,t){return((t||_).jsx?g:h).test(e)}var y=/[ \t\n\f\r]/g;function b(e){return typeof e==`object`?e.type===`text`&&x(e.value):x(e)}function x(e){return e.replace(y,``)===``}var S=class{constructor(e,t,n){this.normal=t,this.property=e,n&&(this.space=n)}};S.prototype.normal={},S.prototype.property={},S.prototype.space=void 0;function C(e,t){let n={},r={};for(let t of e)Object.assign(n,t.property),Object.assign(r,t.normal);return new S(n,r,t)}function w(e){return e.toLowerCase()}var T=class{constructor(e,t){this.attribute=t,this.property=e}};T.prototype.attribute=``,T.prototype.booleanish=!1,T.prototype.boolean=!1,T.prototype.commaOrSpaceSeparated=!1,T.prototype.commaSeparated=!1,T.prototype.defined=!1,T.prototype.mustUseProperty=!1,T.prototype.number=!1,T.prototype.overloadedBoolean=!1,T.prototype.property=``,T.prototype.spaceSeparated=!1,T.prototype.space=void 0;var E=e({boolean:()=>D,booleanish:()=>O,commaOrSpaceSeparated:()=>M,commaSeparated:()=>j,number:()=>k,overloadedBoolean:()=>te,spaceSeparated:()=>A}),ee=0,D=N(),O=N(),te=N(),k=N(),A=N(),j=N(),M=N();function N(){return 2**++ee}var P=Object.keys(E),F=class extends T{constructor(e,t,n,r){let i=-1;if(super(e,t),ne(this,`space`,r),typeof n==`number`)for(;++i<P.length;){let e=P[i];ne(this,P[i],(n&E[e])===E[e])}}};F.prototype.defined=!0;function ne(e,t,n){n&&(e[t]=n)}function re(e){let t={},n={};for(let[r,i]of Object.entries(e.properties)){let a=new F(r,e.transform(e.attributes||{},r),i,e.space);e.mustUseProperty&&e.mustUseProperty.includes(r)&&(a.mustUseProperty=!0),t[r]=a,n[w(r)]=r,n[w(a.attribute)]=r}return new S(t,n,e.space)}var ie=re({properties:{ariaActiveDescendant:null,ariaAtomic:O,ariaAutoComplete:null,ariaBusy:O,ariaChecked:O,ariaColCount:k,ariaColIndex:k,ariaColSpan:k,ariaControls:A,ariaCurrent:null,ariaDescribedBy:A,ariaDetails:null,ariaDisabled:O,ariaDropEffect:A,ariaErrorMessage:null,ariaExpanded:O,ariaFlowTo:A,ariaGrabbed:O,ariaHasPopup:null,ariaHidden:O,ariaInvalid:null,ariaKeyShortcuts:null,ariaLabel:null,ariaLabelledBy:A,ariaLevel:k,ariaLive:null,ariaModal:O,ariaMultiLine:O,ariaMultiSelectable:O,ariaOrientation:null,ariaOwns:A,ariaPlaceholder:null,ariaPosInSet:k,ariaPressed:O,ariaReadOnly:O,ariaRelevant:null,ariaRequired:O,ariaRoleDescription:A,ariaRowCount:k,ariaRowIndex:k,ariaRowSpan:k,ariaSelected:O,ariaSetSize:k,ariaSort:null,ariaValueMax:k,ariaValueMin:k,ariaValueNow:k,ariaValueText:null,role:null},transform(e,t){return t===`role`?t:`aria-`+t.slice(4).toLowerCase()}});function ae(e,t){return t in e?e[t]:t}function oe(e,t){return ae(e,t.toLowerCase())}var se=re({attributes:{acceptcharset:`accept-charset`,classname:`class`,htmlfor:`for`,httpequiv:`http-equiv`},mustUseProperty:[`checked`,`multiple`,`muted`,`selected`],properties:{abbr:null,accept:j,acceptCharset:A,accessKey:A,action:null,allow:null,allowFullScreen:D,allowPaymentRequest:D,allowUserMedia:D,alpha:D,alt:null,as:null,async:D,autoCapitalize:null,autoComplete:A,autoFocus:D,autoPlay:D,blocking:A,capture:null,charSet:null,checked:D,cite:null,className:A,closedBy:null,colorSpace:null,cols:k,colSpan:k,command:null,commandFor:null,content:null,contentEditable:O,controls:D,controlsList:A,coords:k|j,crossOrigin:null,data:null,dateTime:null,decoding:null,default:D,defer:D,dir:null,dirName:null,disabled:D,download:te,draggable:O,encType:null,enterKeyHint:null,fetchPriority:null,form:null,formAction:null,formEncType:null,formMethod:null,formNoValidate:D,formTarget:null,headers:A,height:k,hidden:te,high:k,href:null,hrefLang:null,htmlFor:A,httpEquiv:A,id:null,imageSizes:null,imageSrcSet:null,inert:D,inputMode:null,integrity:null,is:null,isMap:D,itemId:null,itemProp:A,itemRef:A,itemScope:D,itemType:A,kind:null,label:null,lang:null,language:null,list:null,loading:null,loop:D,low:k,manifest:null,max:null,maxLength:k,media:null,method:null,min:null,minLength:k,multiple:D,muted:D,name:null,nonce:null,noModule:D,noValidate:D,onAbort:null,onAfterPrint:null,onAuxClick:null,onBeforeMatch:null,onBeforePrint:null,onBeforeToggle:null,onBeforeUnload:null,onBlur:null,onCancel:null,onCanPlay:null,onCanPlayThrough:null,onChange:null,onClick:null,onClose:null,onContextLost:null,onContextMenu:null,onContextRestored:null,onCopy:null,onCueChange:null,onCut:null,onDblClick:null,onDrag:null,onDragEnd:null,onDragEnter:null,onDragExit:null,onDragLeave:null,onDragOver:null,onDragStart:null,onDrop:null,onDurationChange:null,onEmptied:null,onEnded:null,onError:null,onFocus:null,onFormData:null,onHashChange:null,onInput:null,onInvalid:null,onKeyDown:null,onKeyPress:null,onKeyUp:null,onLanguageChange:null,onLoad:null,onLoadedData:null,onLoadedMetadata:null,onLoadEnd:null,onLoadStart:null,onMessage:null,onMessageError:null,onMouseDown:null,onMouseEnter:null,onMouseLeave:null,onMouseMove:null,onMouseOut:null,onMouseOver:null,onMouseUp:null,onOffline:null,onOnline:null,onPageHide:null,onPageShow:null,onPaste:null,onPause:null,onPlay:null,onPlaying:null,onPopState:null,onProgress:null,onRateChange:null,onRejectionHandled:null,onReset:null,onResize:null,onScroll:null,onScrollEnd:null,onSecurityPolicyViolation:null,onSeeked:null,onSeeking:null,onSelect:null,onSlotChange:null,onStalled:null,onStorage:null,onSubmit:null,onSuspend:null,onTimeUpdate:null,onToggle:null,onUnhandledRejection:null,onUnload:null,onVolumeChange:null,onWaiting:null,onWheel:null,open:D,optimum:k,pattern:null,ping:A,placeholder:null,playsInline:D,popover:null,popoverTarget:null,popoverTargetAction:null,poster:null,preload:null,readOnly:D,referrerPolicy:null,rel:A,required:D,reversed:D,rows:k,rowSpan:k,sandbox:A,scope:null,scoped:D,seamless:D,selected:D,shadowRootClonable:D,shadowRootCustomElementRegistry:D,shadowRootDelegatesFocus:D,shadowRootMode:null,shadowRootSerializable:D,shape:null,size:k,sizes:null,slot:null,span:k,spellCheck:O,src:null,srcDoc:null,srcLang:null,srcSet:null,start:k,step:null,style:null,tabIndex:k,target:null,title:null,translate:null,type:null,typeMustMatch:D,useMap:null,value:O,width:k,wrap:null,writingSuggestions:null,align:null,aLink:null,archive:A,axis:null,background:null,bgColor:null,border:k,borderColor:null,bottomMargin:k,cellPadding:null,cellSpacing:null,char:null,charOff:null,classId:null,clear:null,code:null,codeBase:null,codeType:null,color:null,compact:D,declare:D,event:null,face:null,frame:null,frameBorder:null,hSpace:k,leftMargin:k,link:null,longDesc:null,lowSrc:null,marginHeight:k,marginWidth:k,noResize:D,noHref:D,noShade:D,noWrap:D,object:null,profile:null,prompt:null,rev:null,rightMargin:k,rules:null,scheme:null,scrolling:O,standby:null,summary:null,text:null,topMargin:k,valueType:null,version:null,vAlign:null,vLink:null,vSpace:k,allowTransparency:null,autoCorrect:null,autoSave:null,credentialless:D,disablePictureInPicture:D,disableRemotePlayback:D,exportParts:j,part:A,prefix:null,property:null,results:k,security:null,unselectable:null},space:`html`,transform:oe}),ce=re({attributes:{accentHeight:`accent-height`,alignmentBaseline:`alignment-baseline`,arabicForm:`arabic-form`,baselineShift:`baseline-shift`,capHeight:`cap-height`,className:`class`,clipPath:`clip-path`,clipRule:`clip-rule`,colorInterpolation:`color-interpolation`,colorInterpolationFilters:`color-interpolation-filters`,colorProfile:`color-profile`,colorRendering:`color-rendering`,crossOrigin:`crossorigin`,dataType:`datatype`,dominantBaseline:`dominant-baseline`,enableBackground:`enable-background`,fillOpacity:`fill-opacity`,fillRule:`fill-rule`,floodColor:`flood-color`,floodOpacity:`flood-opacity`,fontFamily:`font-family`,fontSize:`font-size`,fontSizeAdjust:`font-size-adjust`,fontStretch:`font-stretch`,fontStyle:`font-style`,fontVariant:`font-variant`,fontWeight:`font-weight`,glyphName:`glyph-name`,glyphOrientationHorizontal:`glyph-orientation-horizontal`,glyphOrientationVertical:`glyph-orientation-vertical`,hrefLang:`hreflang`,horizAdvX:`horiz-adv-x`,horizOriginX:`horiz-origin-x`,horizOriginY:`horiz-origin-y`,imageRendering:`image-rendering`,letterSpacing:`letter-spacing`,lightingColor:`lighting-color`,markerEnd:`marker-end`,markerMid:`marker-mid`,markerStart:`marker-start`,maskType:`mask-type`,navDown:`nav-down`,navDownLeft:`nav-down-left`,navDownRight:`nav-down-right`,navLeft:`nav-left`,navNext:`nav-next`,navPrev:`nav-prev`,navRight:`nav-right`,navUp:`nav-up`,navUpLeft:`nav-up-left`,navUpRight:`nav-up-right`,onAbort:`onabort`,onActivate:`onactivate`,onAfterPrint:`onafterprint`,onBeforePrint:`onbeforeprint`,onBegin:`onbegin`,onCancel:`oncancel`,onCanPlay:`oncanplay`,onCanPlayThrough:`oncanplaythrough`,onChange:`onchange`,onClick:`onclick`,onClose:`onclose`,onCopy:`oncopy`,onCueChange:`oncuechange`,onCut:`oncut`,onDblClick:`ondblclick`,onDrag:`ondrag`,onDragEnd:`ondragend`,onDragEnter:`ondragenter`,onDragExit:`ondragexit`,onDragLeave:`ondragleave`,onDragOver:`ondragover`,onDragStart:`ondragstart`,onDrop:`ondrop`,onDurationChange:`ondurationchange`,onEmptied:`onemptied`,onEnd:`onend`,onEnded:`onended`,onError:`onerror`,onFocus:`onfocus`,onFocusIn:`onfocusin`,onFocusOut:`onfocusout`,onHashChange:`onhashchange`,onInput:`oninput`,onInvalid:`oninvalid`,onKeyDown:`onkeydown`,onKeyPress:`onkeypress`,onKeyUp:`onkeyup`,onLoad:`onload`,onLoadedData:`onloadeddata`,onLoadedMetadata:`onloadedmetadata`,onLoadStart:`onloadstart`,onMessage:`onmessage`,onMouseDown:`onmousedown`,onMouseEnter:`onmouseenter`,onMouseLeave:`onmouseleave`,onMouseMove:`onmousemove`,onMouseOut:`onmouseout`,onMouseOver:`onmouseover`,onMouseUp:`onmouseup`,onMouseWheel:`onmousewheel`,onOffline:`onoffline`,onOnline:`ononline`,onPageHide:`onpagehide`,onPageShow:`onpageshow`,onPaste:`onpaste`,onPause:`onpause`,onPlay:`onplay`,onPlaying:`onplaying`,onPopState:`onpopstate`,onProgress:`onprogress`,onRateChange:`onratechange`,onRepeat:`onrepeat`,onReset:`onreset`,onResize:`onresize`,onScroll:`onscroll`,onSeeked:`onseeked`,onSeeking:`onseeking`,onSelect:`onselect`,onShow:`onshow`,onStalled:`onstalled`,onStorage:`onstorage`,onSubmit:`onsubmit`,onSuspend:`onsuspend`,onTimeUpdate:`ontimeupdate`,onToggle:`ontoggle`,onUnload:`onunload`,onVolumeChange:`onvolumechange`,onWaiting:`onwaiting`,onZoom:`onzoom`,overlinePosition:`overline-position`,overlineThickness:`overline-thickness`,paintOrder:`paint-order`,panose1:`panose-1`,pointerEvents:`pointer-events`,referrerPolicy:`referrerpolicy`,renderingIntent:`rendering-intent`,shapeRendering:`shape-rendering`,stopColor:`stop-color`,stopOpacity:`stop-opacity`,strikethroughPosition:`strikethrough-position`,strikethroughThickness:`strikethrough-thickness`,strokeDashArray:`stroke-dasharray`,strokeDashOffset:`stroke-dashoffset`,strokeLineCap:`stroke-linecap`,strokeLineJoin:`stroke-linejoin`,strokeMiterLimit:`stroke-miterlimit`,strokeOpacity:`stroke-opacity`,strokeWidth:`stroke-width`,tabIndex:`tabindex`,textAnchor:`text-anchor`,textDecoration:`text-decoration`,textRendering:`text-rendering`,transformOrigin:`transform-origin`,typeOf:`typeof`,underlinePosition:`underline-position`,underlineThickness:`underline-thickness`,unicodeBidi:`unicode-bidi`,unicodeRange:`unicode-range`,unitsPerEm:`units-per-em`,vAlphabetic:`v-alphabetic`,vHanging:`v-hanging`,vIdeographic:`v-ideographic`,vMathematical:`v-mathematical`,vectorEffect:`vector-effect`,vertAdvY:`vert-adv-y`,vertOriginX:`vert-origin-x`,vertOriginY:`vert-origin-y`,wordSpacing:`word-spacing`,writingMode:`writing-mode`,xHeight:`x-height`,playbackOrder:`playbackorder`,timelineBegin:`timelinebegin`},properties:{about:M,accentHeight:k,accumulate:null,additive:null,alignmentBaseline:null,alphabetic:k,amplitude:k,arabicForm:null,ascent:k,attributeName:null,attributeType:null,azimuth:k,bandwidth:null,baselineShift:null,baseFrequency:null,baseProfile:null,bbox:null,begin:null,bias:k,by:null,calcMode:null,capHeight:k,className:A,clip:null,clipPath:null,clipPathUnits:null,clipRule:null,color:null,colorInterpolation:null,colorInterpolationFilters:null,colorProfile:null,colorRendering:null,content:null,contentScriptType:null,contentStyleType:null,crossOrigin:null,cursor:null,cx:null,cy:null,d:null,dataType:null,defaultAction:null,descent:k,diffuseConstant:k,direction:null,display:null,dur:null,divisor:k,dominantBaseline:null,download:D,dx:null,dy:null,edgeMode:null,editable:null,elevation:k,enableBackground:null,end:null,event:null,exponent:k,externalResourcesRequired:null,fill:null,fillOpacity:k,fillRule:null,filter:null,filterRes:null,filterUnits:null,floodColor:null,floodOpacity:null,focusable:null,focusHighlight:null,fontFamily:null,fontSize:null,fontSizeAdjust:null,fontStretch:null,fontStyle:null,fontVariant:null,fontWeight:null,format:null,fr:null,from:null,fx:null,fy:null,g1:j,g2:j,glyphName:j,glyphOrientationHorizontal:null,glyphOrientationVertical:null,glyphRef:null,gradientTransform:null,gradientUnits:null,handler:null,hanging:k,hatchContentUnits:null,hatchUnits:null,height:null,href:null,hrefLang:null,horizAdvX:k,horizOriginX:k,horizOriginY:k,id:null,ideographic:k,imageRendering:null,initialVisibility:null,in:null,in2:null,intercept:k,k,k1:k,k2:k,k3:k,k4:k,kernelMatrix:M,kernelUnitLength:null,keyPoints:null,keySplines:null,keyTimes:null,kerning:null,lang:null,lengthAdjust:null,letterSpacing:null,lightingColor:null,limitingConeAngle:k,local:null,markerEnd:null,markerMid:null,markerStart:null,markerHeight:null,markerUnits:null,markerWidth:null,mask:null,maskContentUnits:null,maskType:null,maskUnits:null,mathematical:null,max:null,media:null,mediaCharacterEncoding:null,mediaContentEncodings:null,mediaSize:k,mediaTime:null,method:null,min:null,mode:null,name:null,navDown:null,navDownLeft:null,navDownRight:null,navLeft:null,navNext:null,navPrev:null,navRight:null,navUp:null,navUpLeft:null,navUpRight:null,numOctaves:null,observer:null,offset:null,onAbort:null,onActivate:null,onAfterPrint:null,onBeforePrint:null,onBegin:null,onCancel:null,onCanPlay:null,onCanPlayThrough:null,onChange:null,onClick:null,onClose:null,onCopy:null,onCueChange:null,onCut:null,onDblClick:null,onDrag:null,onDragEnd:null,onDragEnter:null,onDragExit:null,onDragLeave:null,onDragOver:null,onDragStart:null,onDrop:null,onDurationChange:null,onEmptied:null,onEnd:null,onEnded:null,onError:null,onFocus:null,onFocusIn:null,onFocusOut:null,onHashChange:null,onInput:null,onInvalid:null,onKeyDown:null,onKeyPress:null,onKeyUp:null,onLoad:null,onLoadedData:null,onLoadedMetadata:null,onLoadStart:null,onMessage:null,onMouseDown:null,onMouseEnter:null,onMouseLeave:null,onMouseMove:null,onMouseOut:null,onMouseOver:null,onMouseUp:null,onMouseWheel:null,onOffline:null,onOnline:null,onPageHide:null,onPageShow:null,onPaste:null,onPause:null,onPlay:null,onPlaying:null,onPopState:null,onProgress:null,onRateChange:null,onRepeat:null,onReset:null,onResize:null,onScroll:null,onSeeked:null,onSeeking:null,onSelect:null,onShow:null,onStalled:null,onStorage:null,onSubmit:null,onSuspend:null,onTimeUpdate:null,onToggle:null,onUnload:null,onVolumeChange:null,onWaiting:null,onZoom:null,opacity:null,operator:null,order:null,orient:null,orientation:null,origin:null,overflow:null,overlay:null,overlinePosition:k,overlineThickness:k,paintOrder:null,panose1:null,path:null,pathLength:k,patternContentUnits:null,patternTransform:null,patternUnits:null,phase:null,ping:A,pitch:null,playbackOrder:null,pointerEvents:null,points:null,pointsAtX:k,pointsAtY:k,pointsAtZ:k,preserveAlpha:null,preserveAspectRatio:null,primitiveUnits:null,propagate:null,property:M,r:null,radius:null,referrerPolicy:null,refX:null,refY:null,rel:M,rev:M,renderingIntent:null,repeatCount:null,repeatDur:null,requiredExtensions:M,requiredFeatures:M,requiredFonts:M,requiredFormats:M,resource:null,restart:null,result:null,rotate:null,rx:null,ry:null,scale:null,seed:null,shapeRendering:null,side:null,slope:null,snapshotTime:null,specularConstant:k,specularExponent:k,spreadMethod:null,spacing:null,startOffset:null,stdDeviation:null,stemh:null,stemv:null,stitchTiles:null,stopColor:null,stopOpacity:null,strikethroughPosition:k,strikethroughThickness:k,string:null,stroke:null,strokeDashArray:M,strokeDashOffset:null,strokeLineCap:null,strokeLineJoin:null,strokeMiterLimit:k,strokeOpacity:k,strokeWidth:null,style:null,surfaceScale:k,syncBehavior:null,syncBehaviorDefault:null,syncMaster:null,syncTolerance:null,syncToleranceDefault:null,systemLanguage:M,tabIndex:k,tableValues:null,target:null,targetX:k,targetY:k,textAnchor:null,textDecoration:null,textRendering:null,textLength:null,timelineBegin:null,title:null,transformBehavior:null,type:null,typeOf:M,to:null,transform:null,transformOrigin:null,u1:null,u2:null,underlinePosition:k,underlineThickness:k,unicode:null,unicodeBidi:null,unicodeRange:null,unitsPerEm:k,values:null,vAlphabetic:k,vMathematical:k,vectorEffect:null,vHanging:k,vIdeographic:k,version:null,vertAdvY:k,vertOriginX:k,vertOriginY:k,viewBox:null,viewTarget:null,visibility:null,width:null,widths:null,wordSpacing:null,writingMode:null,x:null,x1:null,x2:null,xChannelSelector:null,xHeight:k,y:null,y1:null,y2:null,yChannelSelector:null,z:null,zoomAndPan:null},space:`svg`,transform:ae}),le=re({properties:{xLinkActuate:null,xLinkArcRole:null,xLinkHref:null,xLinkRole:null,xLinkShow:null,xLinkTitle:null,xLinkType:null},space:`xlink`,transform(e,t){return`xlink:`+t.slice(5).toLowerCase()}}),ue=re({attributes:{xmlnsxlink:`xmlns:xlink`},properties:{xmlnsXLink:null,xmlns:null},space:`xmlns`,transform:oe}),de=re({properties:{xmlBase:null,xmlLang:null,xmlSpace:null},space:`xml`,transform(e,t){return`xml:`+t.slice(3).toLowerCase()}}),fe={classId:`classID`,dataType:`datatype`,itemId:`itemID`,strokeDashArray:`strokeDasharray`,strokeDashOffset:`strokeDashoffset`,strokeLineCap:`strokeLinecap`,strokeLineJoin:`strokeLinejoin`,strokeMiterLimit:`strokeMiterlimit`,typeOf:`typeof`,xLinkActuate:`xlinkActuate`,xLinkArcRole:`xlinkArcrole`,xLinkHref:`xlinkHref`,xLinkRole:`xlinkRole`,xLinkShow:`xlinkShow`,xLinkTitle:`xlinkTitle`,xLinkType:`xlinkType`,xmlnsXLink:`xmlnsXlink`},pe=/[A-Z]/g,me=/-[a-z]/g,he=/^data[-\w.:]+$/i;function ge(e,t){let n=w(t),r=t,i=T;if(n in e.normal)return e.property[e.normal[n]];if(n.length>4&&n.slice(0,4)===`data`&&he.test(t)){if(t.charAt(4)===`-`){let e=t.slice(5).replace(me,ve);r=`data`+e.charAt(0).toUpperCase()+e.slice(1)}else{let e=t.slice(4);if(!me.test(e)){let n=e.replace(pe,_e);n.charAt(0)!==`-`&&(n=`-`+n),t=`data`+n}}i=F}return new i(r,t)}function _e(e){return`-`+e.toLowerCase()}function ve(e){return e.charAt(1).toUpperCase()}var ye=C([ie,se,le,ue,de],`html`),be=C([ie,ce,le,ue,de],`svg`);function xe(e){return e.join(` `).trim()}var Se=n(((e,t)=>{var n=/\/\*[^*]*\*+([^/*][^*]*\*+)*\//g,r=/\n/g,i=/^\s*/,a=/^(\*?[-#/*\\\w]+(\[[0-9a-z_-]+\])?)\s*/,o=/^:\s*/,s=/^((?:'(?:\\'|.)*?'|"(?:\\"|.)*?"|\([^)]*?\)|[^};])+)/,c=/^[;\s]*/,l=/^\s+|\s+$/g;function u(e,t){if(typeof e!=`string`)throw TypeError(`First argument must be a string`);if(!e)return[];t||={};var l=1,u=1;function f(e){var t=e.match(r);t&&(l+=t.length);var n=e.lastIndexOf(`
 `);u=~n?e.length-n:u+e.length}function p(){var e={line:l,column:u};return function(t){return t.position=new m(e),_(),t}}function m(e){this.start=e,this.end={line:l,column:u},this.source=t.source}m.prototype.content=e;function h(n){var r=Error(t.source+`:`+l+`:`+u+`: `+n);if(r.reason=n,r.filename=t.source,r.line=l,r.column=u,r.source=e,!t.silent)throw r}function g(t){var n=t.exec(e);if(n){var r=n[0];return f(r),e=e.slice(r.length),n}}function _(){g(i)}function v(e){var t;for(e||=[];t=y();)t!==!1&&e.push(t);return e}function y(){var t=p();if(!(e.charAt(0)!=`/`||e.charAt(1)!=`*`)){for(var n=2;e.charAt(n)!=``&&(e.charAt(n)!=`*`||e.charAt(n+1)!=`/`);)++n;if(n+=2,e.charAt(n-1)===``)return h(`End of comment missing`);var r=e.slice(2,n-2);return u+=2,f(r),e=e.slice(n),u+=2,t({type:`comment`,comment:r})}}function b(){var e=p(),t=g(a);if(t){if(y(),!g(o))return h(`property missing ':'`);var r=g(s),i=e({type:`declaration`,property:d(t[0].replace(n,``)),value:r?d(r[0].replace(n,``)):``});return g(c),i}}function x(){var e=[];v(e);for(var t;t=b();)t!==!1&&(e.push(t),v(e));return e}return _(),x()}function d(e){return e?e.replace(l,``):``}t.exports=u})),Ce=n((e=>{var t=e&&e.__importDefault||function(e){return e&&e.__esModule?e:{default:e}};Object.defineProperty(e,"__esModule",{value:!0}),e.default=r;var n=t(Se());function r(e,t){let r=null;if(!e||typeof e!=`string`)return r;let i=(0,n.default)(e),a=typeof t==`function`;return i.forEach(e=>{if(e.type!==`declaration`)return;let{property:n,value:i}=e;a?t(n,i,e):i&&(r||={},r[n]=i)}),r}})),we=n((e=>{Object.defineProperty(e,"__esModule",{value:!0}),e.camelCase=void 0;var t=/^--[a-zA-Z0-9_-]+$/,n=/-([a-z])/g,r=/^[^-]+$/,i=/^-(webkit|moz|ms|o|khtml)-/,a=/^-(ms)-/,o=function(e){return!e||r.test(e)||t.test(e)},s=function(e,t){return t.toUpperCase()},c=function(e,t){return`${t}-`};e.camelCase=function(e,t){return t===void 0&&(t={}),o(e)?e:(e=e.toLowerCase(),e=t.reactCompat?e.replace(a,c):e.replace(i,c),e.replace(n,s))}})),Te=n(((e,t)=>{var n=(e&&e.__importDefault||function(e){return e&&e.__esModule?e:{default:e}})(Ce()),r=we();function i(e,t){var i={};return!e||typeof e!=`string`||(0,n.default)(e,function(e,n){e&&n&&(i[(0,r.camelCase)(e,t)]=n)}),i}i.default=i,t.exports=i})),Ee=Oe(`end`),De=Oe(`start`);function Oe(e){return t;function t(t){let n=t&&t.position&&t.position[e]||{};if(typeof n.line==`number`&&n.line>0&&typeof n.column==`number`&&n.column>0)return{line:n.line,column:n.column,offset:typeof n.offset==`number`&&n.offset>-1?n.offset:void 0}}}function ke(e){let t=De(e),n=Ee(e);if(t&&n)return{start:t,end:n}}function Ae(e){return!e||typeof e!=`object`?``:`position`in e||`type`in e?Me(e.position):`start`in e||`end`in e?Me(e):`line`in e||`column`in e?je(e):``}function je(e){return Ne(e&&e.line)+`:`+Ne(e&&e.column)}function Me(e){return je(e&&e.start)+`-`+je(e&&e.end)}function Ne(e){return e&&typeof e==`number`?e:1}var I=class extends Error{constructor(e,t,n){super(),typeof t==`string`&&(n=t,t=void 0);let r=``,i={},a=!1;if(t&&(i=`line`in t&&`column`in t||`start`in t&&`end`in t?{place:t}:`type`in t?{ancestors:[t],place:t.position}:{...t}),typeof e==`string`?r=e:!i.cause&&e&&(a=!0,r=e.message,i.cause=e),!i.ruleId&&!i.source&&typeof n==`string`){let e=n.indexOf(`:`);e===-1?i.ruleId=n:(i.source=n.slice(0,e),i.ruleId=n.slice(e+1))}if(!i.place&&i.ancestors&&i.ancestors){let e=i.ancestors[i.ancestors.length-1];e&&(i.place=e.position)}let o=i.place&&`start`in i.place?i.place.start:i.place;this.ancestors=i.ancestors||void 0,this.cause=i.cause||void 0,this.column=o?o.column:void 0,this.fatal=void 0,this.file=``,this.message=r,this.line=o?o.line:void 0,this.name=Ae(i.place)||`1:1`,this.place=i.place||void 0,this.reason=this.message,this.ruleId=i.ruleId||void 0,this.source=i.source||void 0,this.stack=a&&i.cause&&typeof i.cause.stack==`string`?i.cause.stack:``,this.actual=void 0,this.expected=void 0,this.note=void 0,this.url=void 0}};I.prototype.file=``,I.prototype.name=``,I.prototype.reason=``,I.prototype.message=``,I.prototype.stack=``,I.prototype.column=void 0,I.prototype.line=void 0,I.prototype.ancestors=void 0,I.prototype.cause=void 0,I.prototype.fatal=void 0,I.prototype.place=void 0,I.prototype.ruleId=void 0,I.prototype.source=void 0;var Pe=t(Te(),1),Fe={}.hasOwnProperty,Ie=new Map,Le=/[A-Z]/g,Re=new Set([`table`,`tbody`,`thead`,`tfoot`,`tr`]),ze=new Set([`td`,`th`]);function Be(e,t){if(!t||t.Fragment===void 0)throw TypeError("Expected `Fragment` in options");let n=t.filePath||void 0,r;if(t.development){if(typeof t.jsxDEV!=`function`)throw TypeError("Expected `jsxDEV` in options when `development: true`");r=Ze(n,t.jsxDEV)}else{if(typeof t.jsx!=`function`)throw TypeError("Expected `jsx` in production options");if(typeof t.jsxs!=`function`)throw TypeError("Expected `jsxs` in production options");r=Xe(n,t.jsx,t.jsxs)}let i={Fragment:t.Fragment,ancestors:[],components:t.components||{},create:r,elementAttributeNameCase:t.elementAttributeNameCase||`react`,evaluater:t.createEvaluater?t.createEvaluater():void 0,filePath:n,ignoreInvalidStyle:t.ignoreInvalidStyle||!1,passKeys:t.passKeys!==!1,passNode:t.passNode||!1,schema:t.space===`svg`?be:ye,stylePropertyNameCase:t.stylePropertyNameCase||`dom`,tableCellAlignToStyle:t.tableCellAlignToStyle!==!1},a=Ve(i,e,void 0);return a&&typeof a!=`string`?a:i.create(e,i.Fragment,{children:a||void 0},void 0)}function Ve(e,t,n){if(t.type===`element`)return He(e,t,n);if(t.type===`mdxFlowExpression`||t.type===`mdxTextExpression`)return Ue(e,t);if(t.type===`mdxJsxFlowElement`||t.type===`mdxJsxTextElement`)return Ge(e,t,n);if(t.type===`mdxjsEsm`)return We(e,t);if(t.type===`root`)return Ke(e,t,n);if(t.type===`text`)return qe(e,t)}function He(e,t,n){let r=e.schema,i=r;t.tagName.toLowerCase()===`svg`&&r.space===`html`&&(i=be,e.schema=i),e.ancestors.push(t);let a=rt(e,t.tagName,!1),o=Qe(e,t),s=et(e,t);return Re.has(t.tagName)&&(s=s.filter(function(e){return typeof e!=`string`||!b(e)})),Je(e,o,a,t),Ye(o,s),e.ancestors.pop(),e.schema=r,e.create(t,a,o,n)}function Ue(e,t){if(t.data&&t.data.estree&&e.evaluater){let n=t.data.estree.body[0];return n.type,e.evaluater.evaluateExpression(n.expression)}it(e,t.position)}function We(e,t){if(t.data&&t.data.estree&&e.evaluater)return e.evaluater.evaluateProgram(t.data.estree);it(e,t.position)}function Ge(e,t,n){let r=e.schema,i=r;t.name===`svg`&&r.space===`html`&&(i=be,e.schema=i),e.ancestors.push(t);let a=t.name===null?e.Fragment:rt(e,t.name,!0),o=$e(e,t),s=et(e,t);return Je(e,o,a,t),Ye(o,s),e.ancestors.pop(),e.schema=r,e.create(t,a,o,n)}function Ke(e,t,n){let r={};return Ye(r,et(e,t)),e.create(t,e.Fragment,r,n)}function qe(e,t){return t.value}function Je(e,t,n,r){typeof n!=`string`&&n!==e.Fragment&&e.passNode&&(t.node=r)}function Ye(e,t){if(t.length>0){let n=t.length>1?t:t[0];n&&(e.children=n)}}function Xe(e,t,n){return r;function r(e,r,i,a){let o=Array.isArray(i.children)?n:t;return a?o(r,i,a):o(r,i)}}function Ze(e,t){return n;function n(n,r,i,a){let o=Array.isArray(i.children),s=De(n);return t(r,i,a,o,{columnNumber:s?s.column-1:void 0,fileName:e,lineNumber:s?s.line:void 0},void 0)}}function Qe(e,t){let n={},r,i;for(i in t.properties)if(i!==`children`&&Fe.call(t.properties,i)){let a=tt(e,i,t.properties[i]);if(a){let[i,o]=a;e.tableCellAlignToStyle&&i===`align`&&typeof o==`string`&&ze.has(t.tagName)?r=o:n[i]=o}}if(r){let t=n.style||={};t[e.stylePropertyNameCase===`css`?`text-align`:`textAlign`]=r}return n}function $e(e,t){let n={};for(let r of t.attributes)if(r.type===`mdxJsxExpressionAttribute`)if(r.data&&r.data.estree&&e.evaluater){let t=r.data.estree.body[0];t.type;let i=t.expression;i.type;let a=i.properties[0];a.type,Object.assign(n,e.evaluater.evaluateExpression(a.argument))}else it(e,t.position);else{let i=r.name,a;if(r.value&&typeof r.value==`object`)if(r.value.data&&r.value.data.estree&&e.evaluater){let t=r.value.data.estree.body[0];t.type,a=e.evaluater.evaluateExpression(t.expression)}else it(e,t.position);else a=r.value===null||r.value;n[i]=a}return n}function et(e,t){let n=[],r=-1,i=e.passKeys?new Map:Ie;for(;++r<t.children.length;){let a=t.children[r],o;if(e.passKeys){let e=a.type===`element`?a.tagName:a.type===`mdxJsxFlowElement`||a.type===`mdxJsxTextElement`?a.name:void 0;if(e){let t=i.get(e)||0;o=e+`-`+t,i.set(e,t+1)}}let s=Ve(e,a,o);s!==void 0&&n.push(s)}return n}function tt(e,t,n){let r=ge(e.schema,t);if(!(n==null||typeof n==`number`&&Number.isNaN(n))){if(Array.isArray(n)&&(n=r.commaSeparated?m(n):xe(n)),r.property===`style`){let t=typeof n==`object`?n:nt(e,String(n));return e.stylePropertyNameCase===`css`&&(t=at(t)),[`style`,t]}return[e.elementAttributeNameCase===`react`&&r.space?fe[r.property]||r.property:r.attribute,n]}}function nt(e,t){try{return(0,Pe.default)(t,{reactCompat:!0})}catch(t){if(e.ignoreInvalidStyle)return{};let n=t,r=new I("Cannot parse `style` attribute",{ancestors:e.ancestors,cause:n,ruleId:`style`,source:`hast-util-to-jsx-runtime`});throw r.file=e.filePath||void 0,r.url=`https://github.com/syntax-tree/hast-util-to-jsx-runtime#cannot-parse-style-attribute`,r}}function rt(e,t,n){let r;if(!n)r={type:`Literal`,value:t};else if(t.includes(`.`)){let e=t.split(`.`),n=-1,i;for(;++n<e.length;){let t=v(e[n])?{type:`Identifier`,name:e[n]}:{type:`Literal`,value:e[n]};i=i?{type:`MemberExpression`,object:i,property:t,computed:!!(n&&t.type===`Literal`),optional:!1}:t}r=i}else r=v(t)&&!/^[a-z]/.test(t)?{type:`Identifier`,name:t}:{type:`Literal`,value:t};if(r.type===`Literal`){let t=r.value;return Fe.call(e.components,t)?e.components[t]:t}if(e.evaluater)return e.evaluater.evaluateExpression(r);it(e)}function it(e,t){let n=new I("Cannot handle MDX estrees without `createEvaluater`",{ancestors:e.ancestors,place:t,ruleId:`mdx-estree`,source:`hast-util-to-jsx-runtime`});throw n.file=e.filePath||void 0,n.url=`https://github.com/syntax-tree/hast-util-to-jsx-runtime#cannot-handle-mdx-estrees-without-createevaluater`,n}function at(e){let t={},n;for(n in e)Fe.call(e,n)&&(t[ot(n)]=e[n]);return t}function ot(e){let t=e.replace(Le,st);return t.slice(0,3)===`ms-`&&(t=`-`+t),t}function st(e){return`-`+e.toLowerCase()}var ct={action:[`form`],cite:[`blockquote`,`del`,`ins`,`q`],data:[`object`],formAction:[`button`,`input`],href:[`a`,`area`,`base`,`link`],icon:[`menuitem`],itemId:null,manifest:[`html`],ping:[`a`,`area`],poster:[`video`],src:[`audio`,`embed`,`iframe`,`img`,`input`,`script`,`source`,`track`,`video`]},lt={};function ut(e,t){let n=t||lt;return dt(e,typeof n.includeImageAlt!=`boolean`||n.includeImageAlt,typeof n.includeHtml!=`boolean`||n.includeHtml)}function dt(e,t,n){if(pt(e)){if(`value`in e)return e.type===`html`&&!n?``:e.value;if(t&&`alt`in e&&e.alt)return e.alt;if(`children`in e)return ft(e.children,t,n)}return Array.isArray(e)?ft(e,t,n):``}function ft(e,t,n){let r=[],i=-1;for(;++i<e.length;)r[i]=dt(e[i],t,n);return r.join(``)}function pt(e){return!!(e&&typeof e==`object`)}var mt=document.createElement(`i`);function ht(e){let t=`&`+e+`;`;mt.innerHTML=t;let n=mt.textContent;return n.charCodeAt(n.length-1)===59&&e!==`semi`?!1:n!==t&&n}function L(e,t,n,r){let i=e.length,a=0,o;if(t=t<0?-t>i?0:i+t:t>i?i:t,n=n>0?n:0,r.length<1e4)o=Array.from(r),o.unshift(t,n),e.splice(...o);else for(n&&e.splice(t,n);a<r.length;)o=r.slice(a,a+1e4),o.unshift(t,0),e.splice(...o),a+=1e4,t+=1e4}function R(e,t){return e.length>0?(L(e,e.length,0,t),e):t}var gt={}.hasOwnProperty;function _t(e){let t={},n=-1;for(;++n<e.length;)vt(t,e[n]);return t}function vt(e,t){let n;for(n in t){let r=(gt.call(e,n)?e[n]:void 0)||(e[n]={}),i=t[n],a;if(i)for(a in i){gt.call(r,a)||(r[a]=[]);let e=i[a];yt(r[a],Array.isArray(e)?e:e?[e]:[])}}}function yt(e,t){let n=-1,r=[];for(;++n<t.length;)(t[n].add===`after`?e:r).push(t[n]);L(e,0,0,r)}function bt(e,t){let n=Number.parseInt(e,t);return n<9||n===11||n>13&&n<32||n>126&&n<160||n>55295&&n<57344||n>64975&&n<65008||(n&65535)==65535||(n&65535)==65534||n>1114111?`�`:String.fromCodePoint(n)}function z(e){return e.replace(/[\t\n\r ]+/g,` `).replace(/^ | $/g,``).toLowerCase().toUpperCase()}var B=G(/[A-Za-z]/),V=G(/[\dA-Za-z]/),xt=G(/[#-'*+\--9=?A-Z^-~]/);function St(e){return e!==null&&(e<32||e===127)}var Ct=G(/\d/),wt=G(/[\dA-Fa-f]/),Tt=G(/[!-/:-@[-`{-~]/);function H(e){return e!==null&&e<-2}function U(e){return e!==null&&(e<0||e===32)}function W(e){return e===-2||e===-1||e===32}var Et=G(/\p{P}|\p{S}/u),Dt=G(/\s/);function G(e){return t;function t(t){return t!==null&&t>-1&&e.test(String.fromCharCode(t))}}function Ot(e){let t=[],n=-1,r=0,i=0;for(;++n<e.length;){let a=e.charCodeAt(n),o=``;if(a===37&&V(e.charCodeAt(n+1))&&V(e.charCodeAt(n+2)))i=2;else if(a<128)/[!#$&-;=?-Z_a-z~]/.test(String.fromCharCode(a))||(o=String.fromCharCode(a));else if(a>55295&&a<57344){let t=e.charCodeAt(n+1);a<56320&&t>56319&&t<57344?(o=String.fromCharCode(a,t),i=1):o=`�`}else o=String.fromCharCode(a);o&&=(t.push(e.slice(r,n),encodeURIComponent(o)),r=n+i+1,``),i&&=(n+=i,0)}return t.join(``)+e.slice(r)}function K(e,t,n,r){let i=r?r-1:1/0,a=0;return o;function o(r){return W(r)?(e.enter(n),s(r)):t(r)}function s(r){return W(r)&&a++<i?(e.consume(r),s):(e.exit(n),t(r))}}var kt={tokenize:At};function At(e){let t=e.attempt(this.parser.constructs.contentInitial,r,i),n;return t;function r(n){if(n===null){e.consume(n);return}return e.enter(`lineEnding`),e.consume(n),e.exit(`lineEnding`),K(e,t,`linePrefix`)}function i(t){return e.enter(`paragraph`),a(t)}function a(t){let r=e.enter(`chunkText`,{contentType:`text`,previous:n});return n&&(n.next=r),n=r,o(t)}function o(t){if(t===null){e.exit(`chunkText`),e.exit(`paragraph`),e.consume(t);return}return H(t)?(e.consume(t),e.exit(`chunkText`),a):(e.consume(t),o)}}var jt={tokenize:Nt},Mt={tokenize:Pt};function Nt(e){let t=this,n=[],r=0,i,a,o;return s;function s(i){if(r<n.length){let a=n[r];return t.containerState=a[1],e.attempt(a[0].continuation,c,l)(i)}return l(i)}function c(e){if(r++,t.containerState._closeFlow){t.containerState._closeFlow=void 0,i&&v();let n=t.events.length,a=n,o;for(;a--;)if(t.events[a][0]===`exit`&&t.events[a][1].type===`chunkFlow`){o=t.events[a][1].end;break}_(r);let s=n;for(;s<t.events.length;)t.events[s][1].end={...o},s++;return L(t.events,a+1,0,t.events.slice(n)),t.events.length=s,l(e)}return s(e)}function l(a){if(r===n.length){if(!i)return f(a);if(i.currentConstruct&&i.currentConstruct.concrete)return m(a);t.interrupt=!!(i.currentConstruct&&!i._gfmTableDynamicInterruptHack)}return t.containerState={},e.check(Mt,u,d)(a)}function u(e){return i&&v(),_(r),f(e)}function d(e){return t.parser.lazy[t.now().line]=r!==n.length,o=t.now().offset,m(e)}function f(n){return t.containerState={},e.attempt(Mt,p,m)(n)}function p(e){return r++,n.push([t.currentConstruct,t.containerState]),f(e)}function m(n){if(n===null){i&&v(),_(0),e.consume(n);return}return i||=t.parser.flow(t.now()),e.enter(`chunkFlow`,{_tokenizer:i,contentType:`flow`,previous:a}),h(n)}function h(n){if(n===null){g(e.exit(`chunkFlow`),!0),_(0),e.consume(n);return}return H(n)?(e.consume(n),g(e.exit(`chunkFlow`)),r=0,t.interrupt=void 0,s):(e.consume(n),h)}function g(e,n){let s=t.sliceStream(e);if(n&&s.push(null),e.previous=a,a&&(a.next=e),a=e,i.defineSkip(e.start),i.write(s),t.parser.lazy[e.start.line]){let e=i.events.length;for(;e--;)if(i.events[e][1].start.offset<o&&(!i.events[e][1].end||i.events[e][1].end.offset>o))return;let n=t.events.length,a=n,s,c;for(;a--;)if(t.events[a][0]===`exit`&&t.events[a][1].type===`chunkFlow`){if(s){c=t.events[a][1].end;break}s=!0}for(_(r),e=n;e<t.events.length;)t.events[e][1].end={...c},e++;L(t.events,a+1,0,t.events.slice(n)),t.events.length=e}}function _(r){let i=n.length;for(;i-->r;){let r=n[i];t.containerState=r[1],r[0].exit.call(t,e)}n.length=r}function v(){i.write([null]),a=void 0,i=void 0,t.containerState._closeFlow=void 0}}function Pt(e,t,n){return K(e,e.attempt(this.parser.constructs.document,t,n),`linePrefix`,this.parser.constructs.disable.null.includes(`codeIndented`)?void 0:4)}function Ft(e){if(e===null||U(e)||Dt(e))return 1;if(Et(e))return 2}function It(e,t,n){let r=[],i=-1;for(;++i<e.length;){let a=e[i].resolveAll;a&&!r.includes(a)&&(t=a(t,n),r.push(a))}return t}var Lt={name:`attention`,resolveAll:Rt,tokenize:zt};function Rt(e,t){let n=-1,r,i,a,o,s,c,l,u;for(;++n<e.length;)if(e[n][0]===`enter`&&e[n][1].type===`attentionSequence`&&e[n][1]._close){for(r=n;r--;)if(e[r][0]===`exit`&&e[r][1].type===`attentionSequence`&&e[r][1]._open&&t.sliceSerialize(e[r][1]).charCodeAt(0)===t.sliceSerialize(e[n][1]).charCodeAt(0)){if((e[r][1]._close||e[n][1]._open)&&(e[n][1].end.offset-e[n][1].start.offset)%3&&!((e[r][1].end.offset-e[r][1].start.offset+e[n][1].end.offset-e[n][1].start.offset)%3))continue;c=e[r][1].end.offset-e[r][1].start.offset>1&&e[n][1].end.offset-e[n][1].start.offset>1?2:1;let d={...e[r][1].end},f={...e[n][1].start};Bt(d,-c),Bt(f,c),o={type:c>1?`strongSequence`:`emphasisSequence`,start:d,end:{...e[r][1].end}},s={type:c>1?`strongSequence`:`emphasisSequence`,start:{...e[n][1].start},end:f},a={type:c>1?`strongText`:`emphasisText`,start:{...e[r][1].end},end:{...e[n][1].start}},i={type:c>1?`strong`:`emphasis`,start:{...o.start},end:{...s.end}},e[r][1].end={...o.start},e[n][1].start={...s.end},l=[],e[r][1].end.offset-e[r][1].start.offset&&(l=R(l,[[`enter`,e[r][1],t],[`exit`,e[r][1],t]])),l=R(l,[[`enter`,i,t],[`enter`,o,t],[`exit`,o,t],[`enter`,a,t]]),l=R(l,It(t.parser.constructs.insideSpan.null,e.slice(r+1,n),t)),l=R(l,[[`exit`,a,t],[`enter`,s,t],[`exit`,s,t],[`exit`,i,t]]),e[n][1].end.offset-e[n][1].start.offset?(u=2,l=R(l,[[`enter`,e[n][1],t],[`exit`,e[n][1],t]])):u=0,L(e,r-1,n-r+3,l),n=r+l.length-u-2;break}}for(n=-1;++n<e.length;)e[n][1].type===`attentionSequence`&&(e[n][1].type=`data`);return e}function zt(e,t){let n=this.parser.constructs.attentionMarkers.null,r=this.previous,i=Ft(r),a;return o;function o(t){return a=t,e.enter(`attentionSequence`),s(t)}function s(o){if(o===a)return e.consume(o),s;let c=e.exit(`attentionSequence`),l=Ft(o),u=!l||l===2&&i||n.includes(o),d=!i||i===2&&l||n.includes(r);return c._open=!!(a===42?u:u&&(i||!d)),c._close=!!(a===42?d:d&&(l||!u)),t(o)}}function Bt(e,t){e.column+=t,e.offset+=t,e._bufferIndex+=t}var Vt={name:`autolink`,tokenize:Ht};function Ht(e,t,n){let r=0;return i;function i(t){return e.enter(`autolink`),e.enter(`autolinkMarker`),e.consume(t),e.exit(`autolinkMarker`),e.enter(`autolinkProtocol`),a}function a(t){return B(t)?(e.consume(t),o):t===64?n(t):l(t)}function o(e){return e===43||e===45||e===46||V(e)?(r=1,s(e)):l(e)}function s(t){return t===58?(e.consume(t),r=0,c):(t===43||t===45||t===46||V(t))&&r++<32?(e.consume(t),s):(r=0,l(t))}function c(r){return r===62?(e.exit(`autolinkProtocol`),e.enter(`autolinkMarker`),e.consume(r),e.exit(`autolinkMarker`),e.exit(`autolink`),t):r===null||r===32||r===60||St(r)?n(r):(e.consume(r),c)}function l(t){return t===64?(e.consume(t),u):xt(t)?(e.consume(t),l):n(t)}function u(e){return V(e)?d(e):n(e)}function d(n){return n===46?(e.consume(n),r=0,u):n===62?(e.exit(`autolinkProtocol`).type=`autolinkEmail`,e.enter(`autolinkMarker`),e.consume(n),e.exit(`autolinkMarker`),e.exit(`autolink`),t):f(n)}function f(t){if((t===45||V(t))&&r++<63){let n=t===45?f:d;return e.consume(t),n}return n(t)}}var Ut={partial:!0,tokenize:Wt};function Wt(e,t,n){return r;function r(t){return W(t)?K(e,i,`linePrefix`)(t):i(t)}function i(e){return e===null||H(e)?t(e):n(e)}}var Gt={continuation:{tokenize:qt},exit:Jt,name:`blockQuote`,tokenize:Kt};function Kt(e,t,n){let r=this;return i;function i(t){if(t===62){let n=r.containerState;return n.open||=(e.enter(`blockQuote`,{_container:!0}),!0),e.enter(`blockQuotePrefix`),e.enter(`blockQuoteMarker`),e.consume(t),e.exit(`blockQuoteMarker`),a}return n(t)}function a(n){return W(n)?(e.enter(`blockQuotePrefixWhitespace`),e.consume(n),e.exit(`blockQuotePrefixWhitespace`),e.exit(`blockQuotePrefix`),t):(e.exit(`blockQuotePrefix`),t(n))}}function qt(e,t,n){let r=this;return i;function i(t){return W(t)?K(e,a,`linePrefix`,r.parser.constructs.disable.null.includes(`codeIndented`)?void 0:4)(t):a(t)}function a(r){return e.attempt(Gt,t,n)(r)}}function Jt(e){e.exit(`blockQuote`)}var Yt={name:`characterEscape`,tokenize:Xt};function Xt(e,t,n){return r;function r(t){return e.enter(`characterEscape`),e.enter(`escapeMarker`),e.consume(t),e.exit(`escapeMarker`),i}function i(r){return Tt(r)?(e.enter(`characterEscapeValue`),e.consume(r),e.exit(`characterEscapeValue`),e.exit(`characterEscape`),t):n(r)}}var Zt={name:`characterReference`,tokenize:Qt};function Qt(e,t,n){let r=this,i=0,a,o;return s;function s(t){return e.enter(`characterReference`),e.enter(`characterReferenceMarker`),e.consume(t),e.exit(`characterReferenceMarker`),c}function c(t){return t===35?(e.enter(`characterReferenceMarkerNumeric`),e.consume(t),e.exit(`characterReferenceMarkerNumeric`),l):(e.enter(`characterReferenceValue`),a=31,o=V,u(t))}function l(t){return t===88||t===120?(e.enter(`characterReferenceMarkerHexadecimal`),e.consume(t),e.exit(`characterReferenceMarkerHexadecimal`),e.enter(`characterReferenceValue`),a=6,o=wt,u):(e.enter(`characterReferenceValue`),a=7,o=Ct,u(t))}function u(s){if(s===59&&i){let i=e.exit(`characterReferenceValue`);return o===V&&!ht(r.sliceSerialize(i))?n(s):(e.enter(`characterReferenceMarker`),e.consume(s),e.exit(`characterReferenceMarker`),e.exit(`characterReference`),t)}return o(s)&&i++<a?(e.consume(s),u):n(s)}}var $t={partial:!0,tokenize:nn},en={concrete:!0,name:`codeFenced`,tokenize:tn};function tn(e,t,n){let r=this,i={partial:!0,tokenize:x},a=0,o=0,s;return c;function c(e){return l(e)}function l(t){let n=r.events[r.events.length-1];return a=n&&n[1].type===`linePrefix`?n[2].sliceSerialize(n[1],!0).length:0,s=t,e.enter(`codeFenced`),e.enter(`codeFencedFence`),e.enter(`codeFencedFenceSequence`),u(t)}function u(t){return t===s?(o++,e.consume(t),u):o<3?n(t):(e.exit(`codeFencedFenceSequence`),W(t)?K(e,d,`whitespace`)(t):d(t))}function d(n){return n===null||H(n)?(e.exit(`codeFencedFence`),r.interrupt?t(n):e.check($t,h,b)(n)):(e.enter(`codeFencedFenceInfo`),e.enter(`chunkString`,{contentType:`string`}),f(n))}function f(t){return t===null||H(t)?(e.exit(`chunkString`),e.exit(`codeFencedFenceInfo`),d(t)):W(t)?(e.exit(`chunkString`),e.exit(`codeFencedFenceInfo`),K(e,p,`whitespace`)(t)):t===96&&t===s?n(t):(e.consume(t),f)}function p(t){return t===null||H(t)?d(t):(e.enter(`codeFencedFenceMeta`),e.enter(`chunkString`,{contentType:`string`}),m(t))}function m(t){return t===null||H(t)?(e.exit(`chunkString`),e.exit(`codeFencedFenceMeta`),d(t)):t===96&&t===s?n(t):(e.consume(t),m)}function h(t){return e.attempt(i,b,g)(t)}function g(t){return e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),_}function _(t){return a>0&&W(t)?K(e,v,`linePrefix`,a+1)(t):v(t)}function v(t){return t===null||H(t)?e.check($t,h,b)(t):(e.enter(`codeFlowValue`),y(t))}function y(t){return t===null||H(t)?(e.exit(`codeFlowValue`),v(t)):(e.consume(t),y)}function b(n){return e.exit(`codeFenced`),t(n)}function x(e,t,n){let i=0;return a;function a(t){return e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),c}function c(t){return e.enter(`codeFencedFence`),W(t)?K(e,l,`linePrefix`,r.parser.constructs.disable.null.includes(`codeIndented`)?void 0:4)(t):l(t)}function l(t){return t===s?(e.enter(`codeFencedFenceSequence`),u(t)):n(t)}function u(t){return t===s?(i++,e.consume(t),u):i>=o?(e.exit(`codeFencedFenceSequence`),W(t)?K(e,d,`whitespace`)(t):d(t)):n(t)}function d(r){return r===null||H(r)?(e.exit(`codeFencedFence`),t(r)):n(r)}}}function nn(e,t,n){let r=this;return i;function i(t){return t===null?n(t):(e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),a)}function a(e){return r.parser.lazy[r.now().line]?n(e):t(e)}}var rn={name:`codeIndented`,tokenize:on},an={partial:!0,tokenize:sn};function on(e,t,n){let r=this;return i;function i(t){return e.enter(`codeIndented`),K(e,a,`linePrefix`,5)(t)}function a(e){let t=r.events[r.events.length-1];return t&&t[1].type===`linePrefix`&&t[2].sliceSerialize(t[1],!0).length>=4?o(e):n(e)}function o(t){return t===null?c(t):H(t)?e.attempt(an,o,c)(t):(e.enter(`codeFlowValue`),s(t))}function s(t){return t===null||H(t)?(e.exit(`codeFlowValue`),o(t)):(e.consume(t),s)}function c(n){return e.exit(`codeIndented`),t(n)}}function sn(e,t,n){let r=this;return i;function i(t){return r.parser.lazy[r.now().line]?n(t):H(t)?(e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),i):K(e,a,`linePrefix`,5)(t)}function a(e){let a=r.events[r.events.length-1];return a&&a[1].type===`linePrefix`&&a[2].sliceSerialize(a[1],!0).length>=4?t(e):H(e)?i(e):n(e)}}var cn={name:`codeText`,previous:un,resolve:ln,tokenize:dn};function ln(e){let t=e.length-4,n=3,r,i;if((e[n][1].type===`lineEnding`||e[n][1].type===`space`)&&(e[t][1].type===`lineEnding`||e[t][1].type===`space`)){for(r=n;++r<t;)if(e[r][1].type===`codeTextData`){e[n][1].type=`codeTextPadding`,e[t][1].type=`codeTextPadding`,n+=2,t-=2;break}}for(r=n-1,t++;++r<=t;)i===void 0?r!==t&&e[r][1].type!==`lineEnding`&&(i=r):(r===t||e[r][1].type===`lineEnding`)&&(e[i][1].type=`codeTextData`,r!==i+2&&(e[i][1].end=e[r-1][1].end,e.splice(i+2,r-i-2),t-=r-i-2,r=i+2),i=void 0);return e}function un(e){return e!==96||this.events[this.events.length-1][1].type===`characterEscape`}function dn(e,t,n){let r=0,i,a;return o;function o(t){return e.enter(`codeText`),e.enter(`codeTextSequence`),s(t)}function s(t){return t===96?(e.consume(t),r++,s):(e.exit(`codeTextSequence`),c(t))}function c(t){return t===null?n(t):t===32?(e.enter(`space`),e.consume(t),e.exit(`space`),c):t===96?(a=e.enter(`codeTextSequence`),i=0,u(t)):H(t)?(e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),c):(e.enter(`codeTextData`),l(t))}function l(t){return t===null||t===32||t===96||H(t)?(e.exit(`codeTextData`),c(t)):(e.consume(t),l)}function u(n){return n===96?(e.consume(n),i++,u):i===r?(e.exit(`codeTextSequence`),e.exit(`codeText`),t(n)):(a.type=`codeTextData`,l(n))}}var fn=class{constructor(e){this.left=e?[...e]:[],this.right=[]}get(e){if(e<0||e>=this.left.length+this.right.length)throw RangeError("Cannot access index `"+e+"` in a splice buffer of size `"+(this.left.length+this.right.length)+"`");return e<this.left.length?this.left[e]:this.right[this.right.length-e+this.left.length-1]}get length(){return this.left.length+this.right.length}shift(){return this.setCursor(0),this.right.pop()}slice(e,t){let n=t??1/0;return n<this.left.length?this.left.slice(e,n):e>this.left.length?this.right.slice(this.right.length-n+this.left.length,this.right.length-e+this.left.length).reverse():this.left.slice(e).concat(this.right.slice(this.right.length-n+this.left.length).reverse())}splice(e,t,n){let r=t||0;this.setCursor(Math.trunc(e));let i=this.right.splice(this.right.length-r,1/0);return n&&pn(this.left,n),i.reverse()}pop(){return this.setCursor(1/0),this.left.pop()}push(e){this.setCursor(1/0),this.left.push(e)}pushMany(e){this.setCursor(1/0),pn(this.left,e)}unshift(e){this.setCursor(0),this.right.push(e)}unshiftMany(e){this.setCursor(0),pn(this.right,e.reverse())}setCursor(e){if(!(e===this.left.length||e>this.left.length&&this.right.length===0||e<0&&this.left.length===0))if(e<this.left.length){let t=this.left.splice(e,1/0);pn(this.right,t.reverse())}else{let t=this.right.splice(this.left.length+this.right.length-e,1/0);pn(this.left,t.reverse())}}};function pn(e,t){let n=0;if(t.length<1e4)e.push(...t);else for(;n<t.length;)e.push(...t.slice(n,n+1e4)),n+=1e4}function mn(e){let t={},n=-1,r,i,a,o,s,c,l,u=new fn(e);for(;++n<u.length;){for(;n in t;)n=t[n];if(r=u.get(n),n&&r[1].type===`chunkFlow`&&u.get(n-1)[1].type===`listItemPrefix`&&(c=r[1]._tokenizer.events,a=0,a<c.length&&c[a][1].type===`lineEndingBlank`&&(a+=2),a<c.length&&c[a][1].type===`content`))for(;++a<c.length&&c[a][1].type!==`content`;)c[a][1].type===`chunkText`&&(c[a][1]._isInFirstContentOfListItem=!0,a++);if(r[0]===`enter`)r[1].contentType&&(Object.assign(t,hn(u,n)),n=t[n],l=!0);else if(r[1]._container){for(a=n,i=void 0;a--;)if(o=u.get(a),o[1].type===`lineEnding`||o[1].type===`lineEndingBlank`)o[0]===`enter`&&(i&&(u.get(i)[1].type=`lineEndingBlank`),o[1].type=`lineEnding`,i=a);else if(!(o[1].type===`linePrefix`||o[1].type===`listItemIndent`))break;i&&(r[1].end={...u.get(i)[1].start},s=u.slice(i,n),s.unshift(r),u.splice(i,n-i+1,s))}}return L(e,0,1/0,u.slice(0)),!l}function hn(e,t){let n=e.get(t)[1],r=e.get(t)[2],i=t-1,a=[],o=n._tokenizer;o||(o=r.parser[n.contentType](n.start),n._contentTypeTextTrailing&&(o._contentTypeTextTrailing=!0));let s=o.events,c=[],l={},u,d,f=-1,p=n,m=0,h=0,g=[h];for(;p;){for(;e.get(++i)[1]!==p;);a.push(i),p._tokenizer||(u=r.sliceStream(p),p.next||u.push(null),d&&o.defineSkip(p.start),p._isInFirstContentOfListItem&&(o._gfmTasklistFirstContentOfListItem=!0),o.write(u),p._isInFirstContentOfListItem&&(o._gfmTasklistFirstContentOfListItem=void 0)),d=p,p=p.next}for(p=n;++f<s.length;)s[f][0]===`exit`&&s[f-1][0]===`enter`&&s[f][1].type===s[f-1][1].type&&s[f][1].start.line!==s[f][1].end.line&&(h=f+1,g.push(h),p._tokenizer=void 0,p.previous=void 0,p=p.next);for(o.events=[],p?(p._tokenizer=void 0,p.previous=void 0):g.pop(),f=g.length;f--;){let t=s.slice(g[f],g[f+1]),n=a.pop();c.push([n,n+t.length-1]),e.splice(n,2,t)}for(c.reverse(),f=-1;++f<c.length;)l[m+c[f][0]]=m+c[f][1],m+=c[f][1]-c[f][0]-1;return l}var gn={resolve:vn,tokenize:yn},_n={partial:!0,tokenize:bn};function vn(e){return mn(e),e}function yn(e,t){let n;return r;function r(t){return e.enter(`content`),n=e.enter(`chunkContent`,{contentType:`content`}),i(t)}function i(t){return t===null?a(t):H(t)?e.check(_n,o,a)(t):(e.consume(t),i)}function a(n){return e.exit(`chunkContent`),e.exit(`content`),t(n)}function o(t){return e.consume(t),e.exit(`chunkContent`),n.next=e.enter(`chunkContent`,{contentType:`content`,previous:n}),n=n.next,i}}function bn(e,t,n){let r=this;return i;function i(t){return e.exit(`chunkContent`),e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),K(e,a,`linePrefix`)}function a(i){if(i===null||H(i))return n(i);let a=r.events[r.events.length-1];return!r.parser.constructs.disable.null.includes(`codeIndented`)&&a&&a[1].type===`linePrefix`&&a[2].sliceSerialize(a[1],!0).length>=4?t(i):e.interrupt(r.parser.constructs.flow,n,t)(i)}}function xn(e,t,n,r,i,a,o,s,c){let l=c||1/0,u=0;return d;function d(t){return t===60?(e.enter(r),e.enter(i),e.enter(a),e.consume(t),e.exit(a),f):t===null||t===32||t===41||St(t)?n(t):(e.enter(r),e.enter(o),e.enter(s),e.enter(`chunkString`,{contentType:`string`}),h(t))}function f(n){return n===62?(e.enter(a),e.consume(n),e.exit(a),e.exit(i),e.exit(r),t):(e.enter(s),e.enter(`chunkString`,{contentType:`string`}),p(n))}function p(t){return t===62?(e.exit(`chunkString`),e.exit(s),f(t)):t===null||t===60||H(t)?n(t):(e.consume(t),t===92?m:p)}function m(t){return t===60||t===62||t===92?(e.consume(t),p):p(t)}function h(i){return!u&&(i===null||i===41||U(i))?(e.exit(`chunkString`),e.exit(s),e.exit(o),e.exit(r),t(i)):u<l&&i===40?(e.consume(i),u++,h):i===41?(e.consume(i),u--,h):i===null||i===32||i===40||St(i)?n(i):(e.consume(i),i===92?g:h)}function g(t){return t===40||t===41||t===92?(e.consume(t),h):h(t)}}function Sn(e,t,n,r,i,a){let o=this,s=0,c;return l;function l(t){return e.enter(r),e.enter(i),e.consume(t),e.exit(i),e.enter(a),u}function u(l){return s>999||l===null||l===91||l===93&&!c||l===94&&!s&&`_hiddenFootnoteSupport`in o.parser.constructs?n(l):l===93?(e.exit(a),e.enter(i),e.consume(l),e.exit(i),e.exit(r),t):H(l)?(e.enter(`lineEnding`),e.consume(l),e.exit(`lineEnding`),u):(e.enter(`chunkString`,{contentType:`string`}),d(l))}function d(t){return t===null||t===91||t===93||H(t)||s++>999?(e.exit(`chunkString`),u(t)):(e.consume(t),c||=!W(t),t===92?f:d)}function f(t){return t===91||t===92||t===93?(e.consume(t),s++,d):d(t)}}function Cn(e,t,n,r,i,a){let o;return s;function s(t){return t===34||t===39||t===40?(e.enter(r),e.enter(i),e.consume(t),e.exit(i),o=t===40?41:t,c):n(t)}function c(n){return n===o?(e.enter(i),e.consume(n),e.exit(i),e.exit(r),t):(e.enter(a),l(n))}function l(t){return t===o?(e.exit(a),c(o)):t===null?n(t):H(t)?(e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),K(e,l,`linePrefix`)):(e.enter(`chunkString`,{contentType:`string`}),u(t))}function u(t){return t===o||t===null||H(t)?(e.exit(`chunkString`),l(t)):(e.consume(t),t===92?d:u)}function d(t){return t===o||t===92?(e.consume(t),u):u(t)}}function wn(e,t){let n;return r;function r(i){return H(i)?(e.enter(`lineEnding`),e.consume(i),e.exit(`lineEnding`),n=!0,r):W(i)?K(e,r,n?`linePrefix`:`lineSuffix`)(i):t(i)}}var Tn={name:`definition`,tokenize:Dn},En={partial:!0,tokenize:On};function Dn(e,t,n){let r=this,i;return a;function a(t){return e.enter(`definition`),o(t)}function o(t){return Sn.call(r,e,s,n,`definitionLabel`,`definitionLabelMarker`,`definitionLabelString`)(t)}function s(t){return i=z(r.sliceSerialize(r.events[r.events.length-1][1]).slice(1,-1)),t===58?(e.enter(`definitionMarker`),e.consume(t),e.exit(`definitionMarker`),c):n(t)}function c(t){return U(t)?wn(e,l)(t):l(t)}function l(t){return xn(e,u,n,`definitionDestination`,`definitionDestinationLiteral`,`definitionDestinationLiteralMarker`,`definitionDestinationRaw`,`definitionDestinationString`)(t)}function u(t){return e.attempt(En,d,d)(t)}function d(t){return W(t)?K(e,f,`whitespace`)(t):f(t)}function f(a){return a===null||H(a)?(e.exit(`definition`),r.parser.defined.push(i),t(a)):n(a)}}function On(e,t,n){return r;function r(t){return U(t)?wn(e,i)(t):n(t)}function i(t){return Cn(e,a,n,`definitionTitle`,`definitionTitleMarker`,`definitionTitleString`)(t)}function a(t){return W(t)?K(e,o,`whitespace`)(t):o(t)}function o(e){return e===null||H(e)?t(e):n(e)}}var kn={name:`hardBreakEscape`,tokenize:An};function An(e,t,n){return r;function r(t){return e.enter(`hardBreakEscape`),e.consume(t),i}function i(r){return H(r)?(e.exit(`hardBreakEscape`),t(r)):n(r)}}var jn={name:`headingAtx`,resolve:Mn,tokenize:Nn};function Mn(e,t){let n=e.length-2,r=3,i,a;return e[r][1].type===`whitespace`&&(r+=2),n-2>r&&e[n][1].type===`whitespace`&&(n-=2),e[n][1].type===`atxHeadingSequence`&&(r===n-1||n-4>r&&e[n-2][1].type===`whitespace`)&&(n-=r+1===n?2:4),n>r&&(i={type:`atxHeadingText`,start:e[r][1].start,end:e[n][1].end},a={type:`chunkText`,start:e[r][1].start,end:e[n][1].end,contentType:`text`},L(e,r,n-r+1,[[`enter`,i,t],[`enter`,a,t],[`exit`,a,t],[`exit`,i,t]])),e}function Nn(e,t,n){let r=0;return i;function i(t){return e.enter(`atxHeading`),a(t)}function a(t){return e.enter(`atxHeadingSequence`),o(t)}function o(t){return t===35&&r++<6?(e.consume(t),o):t===null||U(t)?(e.exit(`atxHeadingSequence`),s(t)):n(t)}function s(n){return n===35?(e.enter(`atxHeadingSequence`),c(n)):n===null||H(n)?(e.exit(`atxHeading`),t(n)):W(n)?K(e,s,`whitespace`)(n):(e.enter(`atxHeadingText`),l(n))}function c(t){return t===35?(e.consume(t),c):(e.exit(`atxHeadingSequence`),s(t))}function l(t){return t===null||t===35||U(t)?(e.exit(`atxHeadingText`),s(t)):(e.consume(t),l)}}var Pn=`address.article.aside.base.basefont.blockquote.body.caption.center.col.colgroup.dd.details.dialog.dir.div.dl.dt.fieldset.figcaption.figure.footer.form.frame.frameset.h1.h2.h3.h4.h5.h6.head.header.hr.html.iframe.legend.li.link.main.menu.menuitem.nav.noframes.ol.optgroup.option.p.param.search.section.summary.table.tbody.td.tfoot.th.thead.title.tr.track.ul`.split(`.`),Fn=[`pre`,`script`,`style`,`textarea`],In={concrete:!0,name:`htmlFlow`,resolveTo:zn,tokenize:Bn},Ln={partial:!0,tokenize:Hn},Rn={partial:!0,tokenize:Vn};function zn(e){let t=e.length;for(;t--&&!(e[t][0]===`enter`&&e[t][1].type===`htmlFlow`););return t>1&&e[t-2][1].type===`linePrefix`&&(e[t][1].start=e[t-2][1].start,e[t+1][1].start=e[t-2][1].start,e.splice(t-2,2)),e}function Bn(e,t,n){let r=this,i,a,o,s,c;return l;function l(e){return u(e)}function u(t){return e.enter(`htmlFlow`),e.enter(`htmlFlowData`),e.consume(t),d}function d(s){return s===33?(e.consume(s),f):s===47?(e.consume(s),a=!0,h):s===63?(e.consume(s),i=3,r.interrupt?t:P):B(s)?(e.consume(s),o=String.fromCharCode(s),g):n(s)}function f(a){return a===45?(e.consume(a),i=2,p):a===91?(e.consume(a),i=5,s=0,m):B(a)?(e.consume(a),i=4,r.interrupt?t:P):n(a)}function p(i){return i===45?(e.consume(i),r.interrupt?t:P):n(i)}function m(i){return i===`CDATA[`.charCodeAt(s++)?(e.consume(i),s===6?r.interrupt?t:D:m):n(i)}function h(t){return B(t)?(e.consume(t),o=String.fromCharCode(t),g):n(t)}function g(s){if(s===null||s===47||s===62||U(s)){let c=s===47,l=o.toLowerCase();return!c&&!a&&Fn.includes(l)?(i=1,r.interrupt?t(s):D(s)):Pn.includes(o.toLowerCase())?(i=6,c?(e.consume(s),_):r.interrupt?t(s):D(s)):(i=7,r.interrupt&&!r.parser.lazy[r.now().line]?n(s):a?v(s):y(s))}return s===45||V(s)?(e.consume(s),o+=String.fromCharCode(s),g):n(s)}function _(i){return i===62?(e.consume(i),r.interrupt?t:D):n(i)}function v(t){return W(t)?(e.consume(t),v):E(t)}function y(t){return t===47?(e.consume(t),E):t===58||t===95||B(t)?(e.consume(t),b):W(t)?(e.consume(t),y):E(t)}function b(t){return t===45||t===46||t===58||t===95||V(t)?(e.consume(t),b):x(t)}function x(t){return t===61?(e.consume(t),S):W(t)?(e.consume(t),x):y(t)}function S(t){return t===null||t===60||t===61||t===62||t===96?n(t):t===34||t===39?(e.consume(t),c=t,C):W(t)?(e.consume(t),S):w(t)}function C(t){return t===c?(e.consume(t),c=null,T):t===null||H(t)?n(t):(e.consume(t),C)}function w(t){return t===null||t===34||t===39||t===47||t===60||t===61||t===62||t===96||U(t)?x(t):(e.consume(t),w)}function T(e){return e===47||e===62||W(e)?y(e):n(e)}function E(t){return t===62?(e.consume(t),ee):n(t)}function ee(t){return t===null||H(t)?D(t):W(t)?(e.consume(t),ee):n(t)}function D(t){return t===45&&i===2?(e.consume(t),A):t===60&&i===1?(e.consume(t),j):t===62&&i===4?(e.consume(t),F):t===63&&i===3?(e.consume(t),P):t===93&&i===5?(e.consume(t),N):H(t)&&(i===6||i===7)?(e.exit(`htmlFlowData`),e.check(Ln,ne,O)(t)):t===null||H(t)?(e.exit(`htmlFlowData`),O(t)):(e.consume(t),D)}function O(t){return e.check(Rn,te,ne)(t)}function te(t){return e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),k}function k(t){return t===null||H(t)?O(t):(e.enter(`htmlFlowData`),D(t))}function A(t){return t===45?(e.consume(t),P):D(t)}function j(t){return t===47?(e.consume(t),o=``,M):D(t)}function M(t){if(t===62){let n=o.toLowerCase();return Fn.includes(n)?(e.consume(t),F):D(t)}return B(t)&&o.length<8?(e.consume(t),o+=String.fromCharCode(t),M):D(t)}function N(t){return t===93?(e.consume(t),P):D(t)}function P(t){return t===62?(e.consume(t),F):t===45&&i===2?(e.consume(t),P):D(t)}function F(t){return t===null||H(t)?(e.exit(`htmlFlowData`),ne(t)):(e.consume(t),F)}function ne(n){return e.exit(`htmlFlow`),t(n)}}function Vn(e,t,n){let r=this;return i;function i(t){return H(t)?(e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),a):n(t)}function a(e){return r.parser.lazy[r.now().line]?n(e):t(e)}}function Hn(e,t,n){return r;function r(r){return e.enter(`lineEnding`),e.consume(r),e.exit(`lineEnding`),e.attempt(Ut,t,n)}}var Un={name:`htmlText`,tokenize:Wn};function Wn(e,t,n){let r=this,i,a,o;return s;function s(t){return e.enter(`htmlText`),e.enter(`htmlTextData`),e.consume(t),c}function c(t){return t===33?(e.consume(t),l):t===47?(e.consume(t),x):t===63?(e.consume(t),y):B(t)?(e.consume(t),w):n(t)}function l(t){return t===45?(e.consume(t),u):t===91?(e.consume(t),a=0,m):B(t)?(e.consume(t),v):n(t)}function u(t){return t===45?(e.consume(t),p):n(t)}function d(t){return t===null?n(t):t===45?(e.consume(t),f):H(t)?(o=d,j(t)):(e.consume(t),d)}function f(t){return t===45?(e.consume(t),p):d(t)}function p(e){return e===62?A(e):e===45?f(e):d(e)}function m(t){return t===`CDATA[`.charCodeAt(a++)?(e.consume(t),a===6?h:m):n(t)}function h(t){return t===null?n(t):t===93?(e.consume(t),g):H(t)?(o=h,j(t)):(e.consume(t),h)}function g(t){return t===93?(e.consume(t),_):h(t)}function _(t){return t===62?A(t):t===93?(e.consume(t),_):h(t)}function v(t){return t===null||t===62?A(t):H(t)?(o=v,j(t)):(e.consume(t),v)}function y(t){return t===null?n(t):t===63?(e.consume(t),b):H(t)?(o=y,j(t)):(e.consume(t),y)}function b(e){return e===62?A(e):y(e)}function x(t){return B(t)?(e.consume(t),S):n(t)}function S(t){return t===45||V(t)?(e.consume(t),S):C(t)}function C(t){return H(t)?(o=C,j(t)):W(t)?(e.consume(t),C):A(t)}function w(t){return t===45||V(t)?(e.consume(t),w):t===47||t===62||U(t)?T(t):n(t)}function T(t){return t===47?(e.consume(t),A):t===58||t===95||B(t)?(e.consume(t),E):H(t)?(o=T,j(t)):W(t)?(e.consume(t),T):A(t)}function E(t){return t===45||t===46||t===58||t===95||V(t)?(e.consume(t),E):ee(t)}function ee(t){return t===61?(e.consume(t),D):H(t)?(o=ee,j(t)):W(t)?(e.consume(t),ee):T(t)}function D(t){return t===null||t===60||t===61||t===62||t===96?n(t):t===34||t===39?(e.consume(t),i=t,O):H(t)?(o=D,j(t)):W(t)?(e.consume(t),D):(e.consume(t),te)}function O(t){return t===i?(e.consume(t),i=void 0,k):t===null?n(t):H(t)?(o=O,j(t)):(e.consume(t),O)}function te(t){return t===null||t===34||t===39||t===60||t===61||t===96?n(t):t===47||t===62||U(t)?T(t):(e.consume(t),te)}function k(e){return e===47||e===62||U(e)?T(e):n(e)}function A(r){return r===62?(e.consume(r),e.exit(`htmlTextData`),e.exit(`htmlText`),t):n(r)}function j(t){return e.exit(`htmlTextData`),e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),M}function M(t){return W(t)?K(e,N,`linePrefix`,r.parser.constructs.disable.null.includes(`codeIndented`)?void 0:4)(t):N(t)}function N(t){return e.enter(`htmlTextData`),o(t)}}var Gn={name:`labelEnd`,resolveAll:Yn,resolveTo:Xn,tokenize:Zn},Kn={tokenize:Qn},qn={tokenize:$n},Jn={tokenize:er};function Yn(e){let t=-1,n=[];for(;++t<e.length;){let r=e[t][1];if(n.push(e[t]),r.type===`labelImage`||r.type===`labelLink`||r.type===`labelEnd`){let e=r.type===`labelImage`?4:2;r.type=`data`,t+=e}}return e.length!==n.length&&L(e,0,e.length,n),e}function Xn(e,t){let n=e.length,r=0,i,a,o,s;for(;n--;)if(i=e[n][1],a){if(i.type===`link`||i.type===`labelLink`&&i._inactive)break;e[n][0]===`enter`&&i.type===`labelLink`&&(i._inactive=!0)}else if(o){if(e[n][0]===`enter`&&(i.type===`labelImage`||i.type===`labelLink`)&&!i._balanced&&(a=n,i.type!==`labelLink`)){r=2;break}}else i.type===`labelEnd`&&(o=n);let c={type:e[a][1].type===`labelLink`?`link`:`image`,start:{...e[a][1].start},end:{...e[e.length-1][1].end}},l={type:`label`,start:{...e[a][1].start},end:{...e[o][1].end}},u={type:`labelText`,start:{...e[a+r+2][1].end},end:{...e[o-2][1].start}};return s=[[`enter`,c,t],[`enter`,l,t]],s=R(s,e.slice(a+1,a+r+3)),s=R(s,[[`enter`,u,t]]),s=R(s,It(t.parser.constructs.insideSpan.null,e.slice(a+r+4,o-3),t)),s=R(s,[[`exit`,u,t],e[o-2],e[o-1],[`exit`,l,t]]),s=R(s,e.slice(o+1)),s=R(s,[[`exit`,c,t]]),L(e,a,e.length,s),e}function Zn(e,t,n){let r=this,i=r.events.length,a,o;for(;i--;)if((r.events[i][1].type===`labelImage`||r.events[i][1].type===`labelLink`)&&!r.events[i][1]._balanced){a=r.events[i][1];break}return s;function s(t){return a?a._inactive?d(t):(o=r.parser.defined.includes(z(r.sliceSerialize({start:a.end,end:r.now()}))),e.enter(`labelEnd`),e.enter(`labelMarker`),e.consume(t),e.exit(`labelMarker`),e.exit(`labelEnd`),c):n(t)}function c(t){return t===40?e.attempt(Kn,u,o?u:d)(t):t===91?e.attempt(qn,u,o?l:d)(t):o?u(t):d(t)}function l(t){return e.attempt(Jn,u,d)(t)}function u(e){return t(e)}function d(e){return a._balanced=!0,n(e)}}function Qn(e,t,n){return r;function r(t){return e.enter(`resource`),e.enter(`resourceMarker`),e.consume(t),e.exit(`resourceMarker`),i}function i(t){return U(t)?wn(e,a)(t):a(t)}function a(t){return t===41?u(t):xn(e,o,s,`resourceDestination`,`resourceDestinationLiteral`,`resourceDestinationLiteralMarker`,`resourceDestinationRaw`,`resourceDestinationString`,32)(t)}function o(t){return U(t)?wn(e,c)(t):u(t)}function s(e){return n(e)}function c(t){return t===34||t===39||t===40?Cn(e,l,n,`resourceTitle`,`resourceTitleMarker`,`resourceTitleString`)(t):u(t)}function l(t){return U(t)?wn(e,u)(t):u(t)}function u(r){return r===41?(e.enter(`resourceMarker`),e.consume(r),e.exit(`resourceMarker`),e.exit(`resource`),t):n(r)}}function $n(e,t,n){let r=this;return i;function i(t){return Sn.call(r,e,a,o,`reference`,`referenceMarker`,`referenceString`)(t)}function a(e){return r.parser.defined.includes(z(r.sliceSerialize(r.events[r.events.length-1][1]).slice(1,-1)))?t(e):n(e)}function o(e){return n(e)}}function er(e,t,n){return r;function r(t){return e.enter(`reference`),e.enter(`referenceMarker`),e.consume(t),e.exit(`referenceMarker`),i}function i(r){return r===93?(e.enter(`referenceMarker`),e.consume(r),e.exit(`referenceMarker`),e.exit(`reference`),t):n(r)}}var tr={name:`labelStartImage`,resolveAll:Gn.resolveAll,tokenize:nr};function nr(e,t,n){let r=this;return i;function i(t){return e.enter(`labelImage`),e.enter(`labelImageMarker`),e.consume(t),e.exit(`labelImageMarker`),a}function a(t){return t===91?(e.enter(`labelMarker`),e.consume(t),e.exit(`labelMarker`),e.exit(`labelImage`),o):n(t)}function o(e){return e===94&&`_hiddenFootnoteSupport`in r.parser.constructs?n(e):t(e)}}var rr={name:`labelStartLink`,resolveAll:Gn.resolveAll,tokenize:ir};function ir(e,t,n){let r=this;return i;function i(t){return e.enter(`labelLink`),e.enter(`labelMarker`),e.consume(t),e.exit(`labelMarker`),e.exit(`labelLink`),a}function a(e){return e===94&&`_hiddenFootnoteSupport`in r.parser.constructs?n(e):t(e)}}var ar={name:`lineEnding`,tokenize:or};function or(e,t){return n;function n(n){return e.enter(`lineEnding`),e.consume(n),e.exit(`lineEnding`),K(e,t,`linePrefix`)}}var sr={name:`thematicBreak`,tokenize:cr};function cr(e,t,n){let r=0,i;return a;function a(t){return e.enter(`thematicBreak`),o(t)}function o(e){return i=e,s(e)}function s(a){return a===i?(e.enter(`thematicBreakSequence`),c(a)):r>=3&&(a===null||H(a))?(e.exit(`thematicBreak`),t(a)):n(a)}function c(t){return t===i?(e.consume(t),r++,c):(e.exit(`thematicBreakSequence`),W(t)?K(e,s,`whitespace`)(t):s(t))}}var q={continuation:{tokenize:fr},exit:mr,name:`list`,tokenize:dr},lr={partial:!0,tokenize:hr},ur={partial:!0,tokenize:pr};function dr(e,t,n){let r=this,i=r.events[r.events.length-1],a=i&&i[1].type===`linePrefix`?i[2].sliceSerialize(i[1],!0).length:0,o=0;return s;function s(t){let i=r.containerState.type||(t===42||t===43||t===45?`listUnordered`:`listOrdered`);if(i===`listUnordered`?!r.containerState.marker||t===r.containerState.marker:Ct(t)){if(r.containerState.type||(r.containerState.type=i,e.enter(i,{_container:!0})),i===`listUnordered`)return e.enter(`listItemPrefix`),t===42||t===45?e.check(sr,n,l)(t):l(t);if(!r.interrupt||t===49)return e.enter(`listItemPrefix`),e.enter(`listItemValue`),c(t)}return n(t)}function c(t){return Ct(t)&&++o<10?(e.consume(t),c):(!r.interrupt||o<2)&&(r.containerState.marker?t===r.containerState.marker:t===41||t===46)?(e.exit(`listItemValue`),l(t)):n(t)}function l(t){return e.enter(`listItemMarker`),e.consume(t),e.exit(`listItemMarker`),r.containerState.marker=r.containerState.marker||t,e.check(Ut,r.interrupt?n:u,e.attempt(lr,f,d))}function u(e){return r.containerState.initialBlankLine=!0,a++,f(e)}function d(t){return W(t)?(e.enter(`listItemPrefixWhitespace`),e.consume(t),e.exit(`listItemPrefixWhitespace`),f):n(t)}function f(n){return r.containerState.size=a+r.sliceSerialize(e.exit(`listItemPrefix`),!0).length,t(n)}}function fr(e,t,n){let r=this;return r.containerState._closeFlow=void 0,e.check(Ut,i,a);function i(n){return r.containerState.furtherBlankLines=r.containerState.furtherBlankLines||r.containerState.initialBlankLine,K(e,t,`listItemIndent`,r.containerState.size+1)(n)}function a(n){return r.containerState.furtherBlankLines||!W(n)?(r.containerState.furtherBlankLines=void 0,r.containerState.initialBlankLine=void 0,o(n)):(r.containerState.furtherBlankLines=void 0,r.containerState.initialBlankLine=void 0,e.attempt(ur,t,o)(n))}function o(i){return r.containerState._closeFlow=!0,r.interrupt=void 0,K(e,e.attempt(q,t,n),`linePrefix`,r.parser.constructs.disable.null.includes(`codeIndented`)?void 0:4)(i)}}function pr(e,t,n){let r=this;return K(e,i,`listItemIndent`,r.containerState.size+1);function i(e){let i=r.events[r.events.length-1];return i&&i[1].type===`listItemIndent`&&i[2].sliceSerialize(i[1],!0).length===r.containerState.size?t(e):n(e)}}function mr(e){e.exit(this.containerState.type)}function hr(e,t,n){let r=this;return K(e,i,`listItemPrefixWhitespace`,r.parser.constructs.disable.null.includes(`codeIndented`)?void 0:5);function i(e){let i=r.events[r.events.length-1];return!W(e)&&i&&i[1].type===`listItemPrefixWhitespace`?t(e):n(e)}}var gr={name:`setextUnderline`,resolveTo:_r,tokenize:vr};function _r(e,t){let n=e.length,r,i,a;for(;n--;)if(e[n][0]===`enter`){if(e[n][1].type===`content`){r=n;break}e[n][1].type===`paragraph`&&(i=n)}else e[n][1].type===`content`&&e.splice(n,1),!a&&e[n][1].type===`definition`&&(a=n);let o={type:`setextHeading`,start:{...e[r][1].start},end:{...e[e.length-1][1].end}};return e[i][1].type=`setextHeadingText`,a?(e.splice(i,0,[`enter`,o,t]),e.splice(a+1,0,[`exit`,e[r][1],t]),e[r][1].end={...e[a][1].end}):e[r][1]=o,e.push([`exit`,o,t]),e}function vr(e,t,n){let r=this,i;return a;function a(t){let a=r.events.length,s;for(;a--;)if(r.events[a][1].type!==`lineEnding`&&r.events[a][1].type!==`linePrefix`&&r.events[a][1].type!==`content`){s=r.events[a][1].type===`paragraph`;break}return!r.parser.lazy[r.now().line]&&(r.interrupt||s)?(e.enter(`setextHeadingLine`),i=t,o(t)):n(t)}function o(t){return e.enter(`setextHeadingLineSequence`),s(t)}function s(t){return t===i?(e.consume(t),s):(e.exit(`setextHeadingLineSequence`),W(t)?K(e,c,`lineSuffix`)(t):c(t))}function c(r){return r===null||H(r)?(e.exit(`setextHeadingLine`),t(r)):n(r)}}var yr={tokenize:br};function br(e){let t=this,n=e.attempt(Ut,r,e.attempt(this.parser.constructs.flowInitial,i,K(e,e.attempt(this.parser.constructs.flow,i,e.attempt(gn,i)),`linePrefix`)));return n;function r(r){if(r===null){e.consume(r);return}return e.enter(`lineEndingBlank`),e.consume(r),e.exit(`lineEndingBlank`),t.currentConstruct=void 0,n}function i(r){if(r===null){e.consume(r);return}return e.enter(`lineEnding`),e.consume(r),e.exit(`lineEnding`),t.currentConstruct=void 0,n}}var xr={resolveAll:Tr()},Sr=wr(`string`),Cr=wr(`text`);function wr(e){return{resolveAll:Tr(e===`text`?Er:void 0),tokenize:t};function t(t){let n=this,r=this.parser.constructs[e],i=t.attempt(r,a,o);return a;function a(e){return c(e)?i(e):o(e)}function o(e){if(e===null){t.consume(e);return}return t.enter(`data`),t.consume(e),s}function s(e){return c(e)?(t.exit(`data`),i(e)):(t.consume(e),s)}function c(e){if(e===null)return!0;let t=r[e],i=-1;if(t)for(;++i<t.length;){let e=t[i];if(!e.previous||e.previous.call(n,n.previous))return!0}return!1}}}function Tr(e){return t;function t(t,n){let r=-1,i;for(;++r<=t.length;)i===void 0?t[r]&&t[r][1].type===`data`&&(i=r,r++):(!t[r]||t[r][1].type!==`data`)&&(r!==i+2&&(t[i][1].end=t[r-1][1].end,t.splice(i+2,r-i-2),r=i+2),i=void 0);return e?e(t,n):t}}function Er(e,t){let n=0;for(;++n<=e.length;)if((n===e.length||e[n][1].type===`lineEnding`)&&e[n-1][1].type===`data`){let r=e[n-1][1],i=t.sliceStream(r),a=i.length,o=-1,s=0,c;for(;a--;){let e=i[a];if(typeof e==`string`){for(o=e.length;e.charCodeAt(o-1)===32;)s++,o--;if(o)break;o=-1}else if(e===-2)c=!0,s++;else if(e!==-1){a++;break}}if(t._contentTypeTextTrailing&&n===e.length&&(s=0),s){let i={type:n===e.length||c||s<2?`lineSuffix`:`hardBreakTrailing`,start:{_bufferIndex:a?o:r.start._bufferIndex+o,_index:r.start._index+a,line:r.end.line,column:r.end.column-s,offset:r.end.offset-s},end:{...r.end}};r.end={...i.start},r.start.offset===r.end.offset?Object.assign(r,i):(e.splice(n,0,[`enter`,i,t],[`exit`,i,t]),n+=2)}n++}return e}var Dr=e({attentionMarkers:()=>Fr,contentInitial:()=>kr,disable:()=>Ir,document:()=>Or,flow:()=>jr,flowInitial:()=>Ar,insideSpan:()=>Pr,string:()=>Mr,text:()=>Nr}),Or={42:q,43:q,45:q,48:q,49:q,50:q,51:q,52:q,53:q,54:q,55:q,56:q,57:q,62:Gt},kr={91:Tn},Ar={[-2]:rn,[-1]:rn,32:rn},jr={35:jn,42:sr,45:[gr,sr],60:In,61:gr,95:sr,96:en,126:en},Mr={38:Zt,92:Yt},Nr={[-5]:ar,[-4]:ar,[-3]:ar,33:tr,38:Zt,42:Lt,60:[Vt,Un],91:rr,92:[kn,Yt],93:Gn,95:Lt,96:cn},Pr={null:[Lt,xr]},Fr={null:[42,95]},Ir={null:[]};function Lr(e,t,n){let r={_bufferIndex:-1,_index:0,line:n&&n.line||1,column:n&&n.column||1,offset:n&&n.offset||0},i={},a=[],o=[],s=[],c={attempt:C(x),check:C(S),consume:v,enter:y,exit:b,interrupt:C(S,{interrupt:!0})},l={code:null,containerState:{},defineSkip:h,events:[],now:m,parser:e,previous:null,sliceSerialize:f,sliceStream:p,write:d},u=t.tokenize.call(l,c);return t.resolveAll&&a.push(t),l;function d(e){return o=R(o,e),g(),o[o.length-1]===null?(w(t,0),l.events=It(a,l.events,l),l.events):[]}function f(e,t){return zr(p(e),t)}function p(e){return Rr(o,e)}function m(){let{_bufferIndex:e,_index:t,line:n,column:i,offset:a}=r;return{_bufferIndex:e,_index:t,line:n,column:i,offset:a}}function h(e){i[e.line]=e.column,E()}function g(){let e;for(;r._index<o.length;){let t=o[r._index];if(typeof t==`string`)for(e=r._index,r._bufferIndex<0&&(r._bufferIndex=0);r._index===e&&r._bufferIndex<t.length;)_(t.charCodeAt(r._bufferIndex));else _(t)}}function _(e){u=u(e)}function v(e){H(e)?(r.line++,r.column=1,r.offset+=e===-3?2:1,E()):e!==-1&&(r.column++,r.offset++),r._bufferIndex<0?r._index++:(r._bufferIndex++,r._bufferIndex===o[r._index].length&&(r._bufferIndex=-1,r._index++)),l.previous=e}function y(e,t){let n=t||{};return n.type=e,n.start=m(),l.events.push([`enter`,n,l]),s.push(n),n}function b(e){let t=s.pop();return t.end=m(),l.events.push([`exit`,t,l]),t}function x(e,t){w(e,t.from)}function S(e,t){t.restore()}function C(e,t){return n;function n(n,r,i){let a,o,s,u;return Array.isArray(n)?f(n):`tokenize`in n?f([n]):d(n);function d(e){return t;function t(t){let n=t!==null&&e[t],r=t!==null&&e.null;return f([...Array.isArray(n)?n:n?[n]:[],...Array.isArray(r)?r:r?[r]:[]])(t)}}function f(e){return a=e,o=0,e.length===0?i:p(e[o])}function p(e){return n;function n(n){return u=T(),s=e,e.partial||(l.currentConstruct=e),e.name&&l.parser.constructs.disable.null.includes(e.name)?h(n):e.tokenize.call(t?Object.assign(Object.create(l),t):l,c,m,h)(n)}}function m(t){return e(s,u),r}function h(e){return u.restore(),++o<a.length?p(a[o]):i}}}function w(e,t){e.resolveAll&&!a.includes(e)&&a.push(e),e.resolve&&L(l.events,t,l.events.length-t,e.resolve(l.events.slice(t),l)),e.resolveTo&&(l.events=e.resolveTo(l.events,l))}function T(){let e=m(),t=l.previous,n=l.currentConstruct,i=l.events.length,a=Array.from(s);return{from:i,restore:o};function o(){r=e,l.previous=t,l.currentConstruct=n,l.events.length=i,s=a,E()}}function E(){r.line in i&&r.column<2&&(r.column=i[r.line],r.offset+=i[r.line]-1)}}function Rr(e,t){let n=t.start._index,r=t.start._bufferIndex,i=t.end._index,a=t.end._bufferIndex,o;if(n===i)o=[e[n].slice(r,a)];else{if(o=e.slice(n,i),r>-1){let e=o[0];typeof e==`string`?o[0]=e.slice(r):o.shift()}a>0&&o.push(e[i].slice(0,a))}return o}function zr(e,t){let n=-1,r=[],i;for(;++n<e.length;){let a=e[n],o;if(typeof a==`string`)o=a;else switch(a){case-5:o=`\r`;break;case-4:o=`
 `;break;case-3:o=`\r
 `;break;case-2:o=t?` `:`	`;break;case-1:if(!t&&i)continue;o=` `;break;default:o=String.fromCharCode(a)}i=a===-2,r.push(o)}return r.join(``)}function Br(e){let t={constructs:_t([Dr,...(e||{}).extensions||[]]),content:n(kt),defined:[],document:n(jt),flow:n(yr),lazy:{},string:n(Sr),text:n(Cr)};return t;function n(e){return n;function n(n){return Lr(t,e,n)}}}function Vr(e){for(;!mn(e););return e}var Hr=/[\0\t\n\r]/g;function Ur(){let e=1,t=``,n=!0,r;return i;function i(i,a,o){let s=[],c,l,u,d,f;for(i=t+(typeof i==`string`?i.toString():new TextDecoder(a||void 0).decode(i)),u=0,t=``,n&&=(i.charCodeAt(0)===65279&&u++,void 0);u<i.length;){if(Hr.lastIndex=u,c=Hr.exec(i),d=c&&c.index!==void 0?c.index:i.length,f=i.charCodeAt(d),!c){t=i.slice(u);break}if(f===10&&u===d&&r)s.push(-3),r=void 0;else switch(r&&=(s.push(-5),void 0),u<d&&(s.push(i.slice(u,d)),e+=d-u),f){case 0:s.push(65533),e++;break;case 9:for(l=Math.ceil(e/4)*4,s.push(-2);e++<l;)s.push(-1);break;case 10:s.push(-4),e=1;break;default:r=!0,e=1}u=d+1}return o&&(r&&s.push(-5),t&&s.push(t),s.push(null)),s}}var Wr=/\\([!-/:-@[-`{-~])|&(#(?:\d{1,7}|x[\da-f]{1,6})|[\da-z]{1,31});/gi;function Gr(e){return e.replace(Wr,Kr)}function Kr(e,t,n){if(t)return t;if(n.charCodeAt(0)===35){let e=n.charCodeAt(1),t=e===120||e===88;return bt(n.slice(t?2:1),t?16:10)}return ht(n)||e}var qr={}.hasOwnProperty;function Jr(e,t,n){return t&&typeof t==`object`&&(n=t,t=void 0),Yr(n)(Vr(Br(n).document().write(Ur()(e,t,!0))))}function Yr(e){let t={transforms:[],canContainEols:[`emphasis`,`fragment`,`heading`,`paragraph`,`strong`],enter:{autolink:a(ye),autolinkProtocol:T,autolinkEmail:T,atxHeading:a(he),blockQuote:a(ue),characterEscape:T,characterReference:T,codeFenced:a(de),codeFencedFenceInfo:o,codeFencedFenceMeta:o,codeIndented:a(de,o),codeText:a(fe,o),codeTextData:T,data:T,codeFlowValue:T,definition:a(pe),definitionDestinationString:o,definitionLabelString:o,definitionTitleString:o,emphasis:a(me),hardBreakEscape:a(ge),hardBreakTrailing:a(ge),htmlFlow:a(_e,o),htmlFlowData:T,htmlText:a(_e,o),htmlTextData:T,image:a(ve),label:o,link:a(ye),listItem:a(xe),listItemValue:f,listOrdered:a(be,d),listUnordered:a(be),paragraph:a(Se),reference:re,referenceString:o,resourceDestinationString:o,resourceTitleString:o,setextHeading:a(he),strong:a(Ce),thematicBreak:a(Te)},exit:{atxHeading:c(),atxHeadingSequence:x,autolink:c(),autolinkEmail:le,autolinkProtocol:ce,blockQuote:c(),characterEscapeValue:E,characterReferenceMarkerHexadecimal:ae,characterReferenceMarkerNumeric:ae,characterReferenceValue:oe,characterReference:se,codeFenced:c(g),codeFencedFence:h,codeFencedFenceInfo:p,codeFencedFenceMeta:m,codeFlowValue:E,codeIndented:c(_),codeText:c(k),codeTextData:E,data:E,definition:c(),definitionDestinationString:b,definitionLabelString:v,definitionTitleString:y,emphasis:c(),hardBreakEscape:c(D),hardBreakTrailing:c(D),htmlFlow:c(O),htmlFlowData:E,htmlText:c(te),htmlTextData:E,image:c(j),label:N,labelText:M,lineEnding:ee,link:c(A),listItem:c(),listOrdered:c(),listUnordered:c(),paragraph:c(),referenceString:ie,resourceDestinationString:P,resourceTitleString:F,resource:ne,setextHeading:c(w),setextHeadingLineSequence:C,setextHeadingText:S,strong:c(),thematicBreak:c()}};Xr(t,(e||{}).mdastExtensions||[]);let n={};return r;function r(e){let r={type:`root`,children:[]},a={stack:[r],tokenStack:[],config:t,enter:s,exit:l,buffer:o,resume:u,data:n},c=[],d=-1;for(;++d<e.length;)(e[d][1].type===`listOrdered`||e[d][1].type===`listUnordered`)&&(e[d][0]===`enter`?c.push(d):d=i(e,c.pop(),d));for(d=-1;++d<e.length;){let n=t[e[d][0]];qr.call(n,e[d][1].type)&&n[e[d][1].type].call(Object.assign({sliceSerialize:e[d][2].sliceSerialize},a),e[d][1])}if(a.tokenStack.length>0){let e=a.tokenStack[a.tokenStack.length-1];(e[1]||Qr).call(a,void 0,e[0])}for(r.position={start:J(e.length>0?e[0][1].start:{line:1,column:1,offset:0}),end:J(e.length>0?e[e.length-2][1].end:{line:1,column:1,offset:0})},d=-1;++d<t.transforms.length;)r=t.transforms[d](r)||r;return r}function i(e,t,n){let r=t-1,i=-1,a=!1,o,s,c,l;for(;++r<=n;){let t=e[r];switch(t[1].type){case`listUnordered`:case`listOrdered`:case`blockQuote`:t[0]===`enter`?i++:i--,l=void 0;break;case`lineEndingBlank`:t[0]===`enter`&&(o&&!l&&!i&&!c&&(c=r),l=void 0);break;case`linePrefix`:case`listItemValue`:case`listItemMarker`:case`listItemPrefix`:case`listItemPrefixWhitespace`:break;default:l=void 0}if(!i&&t[0]===`enter`&&t[1].type===`listItemPrefix`||i===-1&&t[0]===`exit`&&(t[1].type===`listUnordered`||t[1].type===`listOrdered`)){if(o){let i=r;for(s=void 0;i--;){let t=e[i];if(t[1].type===`lineEnding`||t[1].type===`lineEndingBlank`){if(t[0]===`exit`)continue;s&&(e[s][1].type=`lineEndingBlank`,a=!0),t[1].type=`lineEnding`,s=i}else if(!(t[1].type===`linePrefix`||t[1].type===`blockQuotePrefix`||t[1].type===`blockQuotePrefixWhitespace`||t[1].type===`blockQuoteMarker`||t[1].type===`listItemIndent`))break}c&&(!s||c<s)&&(o._spread=!0),o.end=Object.assign({},s?e[s][1].start:t[1].end),e.splice(s||r,0,[`exit`,o,t[2]]),r++,n++}if(t[1].type===`listItemPrefix`){let i={type:`listItem`,_spread:!1,start:Object.assign({},t[1].start),end:void 0};o=i,e.splice(r,0,[`enter`,i,t[2]]),r++,n++,c=void 0,l=!0}}}return e[t][1]._spread=a,n}function a(e,t){return n;function n(n){s.call(this,e(n),n),t&&t.call(this,n)}}function o(){this.stack.push({type:`fragment`,children:[]})}function s(e,t,n){this.stack[this.stack.length-1].children.push(e),this.stack.push(e),this.tokenStack.push([t,n||void 0]),e.position={start:J(t.start),end:void 0}}function c(e){return t;function t(t){e&&e.call(this,t),l.call(this,t)}}function l(e,t){let n=this.stack.pop(),r=this.tokenStack.pop();if(r)r[0].type!==e.type&&(t?t.call(this,e,r[0]):(r[1]||Qr).call(this,e,r[0]));else throw Error("Cannot close `"+e.type+"` ("+Ae({start:e.start,end:e.end})+`): it’s not open`);n.position.end=J(e.end)}function u(){return ut(this.stack.pop())}function d(){this.data.expectingFirstListItemValue=!0}function f(e){if(this.data.expectingFirstListItemValue){let t=this.stack[this.stack.length-2];t.start=Number.parseInt(this.sliceSerialize(e),10),this.data.expectingFirstListItemValue=void 0}}function p(){let e=this.resume(),t=this.stack[this.stack.length-1];t.lang=e}function m(){let e=this.resume(),t=this.stack[this.stack.length-1];t.meta=e}function h(){this.data.flowCodeInside||(this.buffer(),this.data.flowCodeInside=!0)}function g(){let e=this.resume(),t=this.stack[this.stack.length-1];t.value=e.replace(/^(\r?\n|\r)|(\r?\n|\r)$/g,``),this.data.flowCodeInside=void 0}function _(){let e=this.resume(),t=this.stack[this.stack.length-1];t.value=e.replace(/(\r?\n|\r)$/g,``)}function v(e){let t=this.resume(),n=this.stack[this.stack.length-1];n.label=t,n.identifier=z(this.sliceSerialize(e)).toLowerCase()}function y(){let e=this.resume(),t=this.stack[this.stack.length-1];t.title=e}function b(){let e=this.resume(),t=this.stack[this.stack.length-1];t.url=e}function x(e){let t=this.stack[this.stack.length-1];t.depth||=this.sliceSerialize(e).length}function S(){this.data.setextHeadingSlurpLineEnding=!0}function C(e){let t=this.stack[this.stack.length-1];t.depth=this.sliceSerialize(e).codePointAt(0)===61?1:2}function w(){this.data.setextHeadingSlurpLineEnding=void 0}function T(e){let t=this.stack[this.stack.length-1].children,n=t[t.length-1];(!n||n.type!==`text`)&&(n=we(),n.position={start:J(e.start),end:void 0},t.push(n)),this.stack.push(n)}function E(e){let t=this.stack.pop();t.value+=this.sliceSerialize(e),t.position.end=J(e.end)}function ee(e){let n=this.stack[this.stack.length-1];if(this.data.atHardBreak){let t=n.children[n.children.length-1];t.position.end=J(e.end),this.data.atHardBreak=void 0;return}!this.data.setextHeadingSlurpLineEnding&&t.canContainEols.includes(n.type)&&(T.call(this,e),E.call(this,e))}function D(){this.data.atHardBreak=!0}function O(){let e=this.resume(),t=this.stack[this.stack.length-1];t.value=e}function te(){let e=this.resume(),t=this.stack[this.stack.length-1];t.value=e}function k(){let e=this.resume(),t=this.stack[this.stack.length-1];t.value=e}function A(){let e=this.stack[this.stack.length-1];if(this.data.inReference){let t=this.data.referenceType||`shortcut`;e.type+=`Reference`,e.referenceType=t,delete e.url,delete e.title}else delete e.identifier,delete e.label;this.data.referenceType=void 0}function j(){let e=this.stack[this.stack.length-1];if(this.data.inReference){let t=this.data.referenceType||`shortcut`;e.type+=`Reference`,e.referenceType=t,delete e.url,delete e.title}else delete e.identifier,delete e.label;this.data.referenceType=void 0}function M(e){let t=this.sliceSerialize(e),n=this.stack[this.stack.length-2];n.label=Gr(t),n.identifier=z(t).toLowerCase()}function N(){let e=this.stack[this.stack.length-1],t=this.resume(),n=this.stack[this.stack.length-1];this.data.inReference=!0,n.type===`link`?n.children=e.children:n.alt=t}function P(){let e=this.resume(),t=this.stack[this.stack.length-1];t.url=e}function F(){let e=this.resume(),t=this.stack[this.stack.length-1];t.title=e}function ne(){this.data.inReference=void 0}function re(){this.data.referenceType=`collapsed`}function ie(e){let t=this.resume(),n=this.stack[this.stack.length-1];n.label=t,n.identifier=z(this.sliceSerialize(e)).toLowerCase(),this.data.referenceType=`full`}function ae(e){this.data.characterReferenceType=e.type}function oe(e){let t=this.sliceSerialize(e),n=this.data.characterReferenceType,r;n?(r=bt(t,n===`characterReferenceMarkerNumeric`?10:16),this.data.characterReferenceType=void 0):r=ht(t);let i=this.stack[this.stack.length-1];i.value+=r}function se(e){let t=this.stack.pop();t.position.end=J(e.end)}function ce(e){E.call(this,e);let t=this.stack[this.stack.length-1];t.url=this.sliceSerialize(e)}function le(e){E.call(this,e);let t=this.stack[this.stack.length-1];t.url=`mailto:`+this.sliceSerialize(e)}function ue(){return{type:`blockquote`,children:[]}}function de(){return{type:`code`,lang:null,meta:null,value:``}}function fe(){return{type:`inlineCode`,value:``}}function pe(){return{type:`definition`,identifier:``,label:null,title:null,url:``}}function me(){return{type:`emphasis`,children:[]}}function he(){return{type:`heading`,depth:0,children:[]}}function ge(){return{type:`break`}}function _e(){return{type:`html`,value:``}}function ve(){return{type:`image`,title:null,url:``,alt:null}}function ye(){return{type:`link`,title:null,url:``,children:[]}}function be(e){return{type:`list`,ordered:e.type===`listOrdered`,start:null,spread:e._spread,children:[]}}function xe(e){return{type:`listItem`,spread:e._spread,checked:null,children:[]}}function Se(){return{type:`paragraph`,children:[]}}function Ce(){return{type:`strong`,children:[]}}function we(){return{type:`text`,value:``}}function Te(){return{type:`thematicBreak`}}}function J(e){return{line:e.line,column:e.column,offset:e.offset}}function Xr(e,t){let n=-1;for(;++n<t.length;){let r=t[n];Array.isArray(r)?Xr(e,r):Zr(e,r)}}function Zr(e,t){let n;for(n in t)if(qr.call(t,n))switch(n){case`canContainEols`:{let r=t[n];r&&e[n].push(...r);break}case`transforms`:{let r=t[n];r&&e[n].push(...r);break}case`enter`:case`exit`:{let r=t[n];r&&Object.assign(e[n],r);break}}}function Qr(e,t){throw Error(e?"Cannot close `"+e.type+"` ("+Ae({start:e.start,end:e.end})+"): a different token (`"+t.type+"`, "+Ae({start:t.start,end:t.end})+`) is open`:"Cannot close document, a token (`"+t.type+"`, "+Ae({start:t.start,end:t.end})+`) is still open`)}function $r(e){let t=this;t.parser=n;function n(n){return Jr(n,{...t.data(`settings`),...e,extensions:t.data(`micromarkExtensions`)||[],mdastExtensions:t.data(`fromMarkdownExtensions`)||[]})}}function ei(e,t){let n={type:`element`,tagName:`blockquote`,properties:{},children:e.wrap(e.all(t),!0)};return e.patch(t,n),e.applyData(t,n)}function ti(e,t){let n={type:`element`,tagName:`br`,properties:{},children:[]};return e.patch(t,n),[e.applyData(t,n),{type:`text`,value:`
@@ -27,7 +27,7 @@ import{n as e,r as t,t as n}from"./rolldown-runtime-QTnfLwEv.js";import{a as r,c
 `))+1))}let o=`#`.repeat(i),s=n.enter(`headingAtx`),c=n.enter(`phrasing`);a.move(o+` `);let l=n.containerPhrasing(e,{before:`# `,after:`
 `,...a.current()});return/^[\t ]/.test(l)&&(l=ns(l.charCodeAt(0))+l.slice(1)),l=l?o+` `+l:o,n.options.closeAtx&&(l+=` `+o),c(),s(),l}cs.peek=ls;function cs(e){return e.value||``}function ls(){return`<`}us.peek=ds;function us(e,t,n,r){let i=$o(n),a=i===`"`?`Quote`:`Apostrophe`,o=n.enter(`image`),s=n.enter(`label`),c=n.createTracker(r),l=c.move(`![`);return l+=c.move(n.safe(e.alt,{before:l,after:`]`,...c.current()})),l+=c.move(`](`),s(),!e.url&&e.title||/[\0- \u007F]/.test(e.url)?(s=n.enter(`destinationLiteral`),l+=c.move(`<`),l+=c.move(n.safe(e.url,{before:l,after:`>`,...c.current()})),l+=c.move(`>`)):(s=n.enter(`destinationRaw`),l+=c.move(n.safe(e.url,{before:l,after:e.title?` `:`)`,...c.current()}))),s(),e.title&&(s=n.enter(`title${a}`),l+=c.move(` `+i),l+=c.move(n.safe(e.title,{before:l,after:i,...c.current()})),l+=c.move(i),s()),l+=c.move(`)`),o(),l}function ds(){return`!`}fs.peek=ps;function fs(e,t,n,r){let i=e.referenceType,a=n.enter(`imageReference`),o=n.enter(`label`),s=n.createTracker(r),c=s.move(`![`),l=n.safe(e.alt,{before:c,after:`]`,...s.current()});c+=s.move(l+`][`),o();let u=n.stack;n.stack=[],o=n.enter(`reference`);let d=n.safe(n.associationId(e),{before:c,after:`]`,...s.current()});return o(),n.stack=u,a(),i===`full`||!l||l!==d?c+=s.move(d+`]`):i===`shortcut`?c=c.slice(0,-1):c+=s.move(`]`),c}function ps(){return`!`}ms.peek=hs;function ms(e,t,n){let r=e.value||``,i="`",a=-1;for(;RegExp("(^|[^`])"+i+"([^`]|$)").test(r);)i+="`";for(/[^ \r\n]/.test(r)&&(/^[ \r\n]/.test(r)&&/[ \r\n]$/.test(r)||/^`|`$/.test(r))&&(r=` `+r+` `);++a<n.unsafe.length;){let e=n.unsafe[a],t=n.compilePattern(e),i;if(e.atBreak)for(;i=t.exec(r);){let e=i.index;r.charCodeAt(e)===10&&r.charCodeAt(e-1)===13&&e--,r=r.slice(0,e)+` `+r.slice(i.index+1)}}return i+r+i}function hs(){return"`"}function gs(e,t){let n=ut(e);return!!(!t.options.resourceLink&&e.url&&!e.title&&e.children&&e.children.length===1&&e.children[0].type===`text`&&(n===e.url||`mailto:`+n===e.url)&&/^[a-z][a-z+.-]+:/i.test(e.url)&&!/[\0- <>\u007F]/.test(e.url))}_s.peek=vs;function _s(e,t,n,r){let i=$o(n),a=i===`"`?`Quote`:`Apostrophe`,o=n.createTracker(r),s,c;if(gs(e,n)){let t=n.stack;n.stack=[],s=n.enter(`autolink`);let r=o.move(`<`);return r+=o.move(n.containerPhrasing(e,{before:r,after:`>`,...o.current()})),r+=o.move(`>`),s(),n.stack=t,r}s=n.enter(`link`),c=n.enter(`label`);let l=o.move(`[`);return l+=o.move(n.containerPhrasing(e,{before:l,after:`](`,...o.current()})),l+=o.move(`](`),c(),!e.url&&e.title||/[\0- \u007F]/.test(e.url)?(c=n.enter(`destinationLiteral`),l+=o.move(`<`),l+=o.move(n.safe(e.url,{before:l,after:`>`,...o.current()})),l+=o.move(`>`)):(c=n.enter(`destinationRaw`),l+=o.move(n.safe(e.url,{before:l,after:e.title?` `:`)`,...o.current()}))),c(),e.title&&(c=n.enter(`title${a}`),l+=o.move(` `+i),l+=o.move(n.safe(e.title,{before:l,after:i,...o.current()})),l+=o.move(i),c()),l+=o.move(`)`),s(),l}function vs(e,t,n){return gs(e,n)?`<`:`[`}ys.peek=bs;function ys(e,t,n,r){let i=e.referenceType,a=n.enter(`linkReference`),o=n.enter(`label`),s=n.createTracker(r),c=s.move(`[`),l=n.containerPhrasing(e,{before:c,after:`]`,...s.current()});c+=s.move(l+`][`),o();let u=n.stack;n.stack=[],o=n.enter(`reference`);let d=n.safe(n.associationId(e),{before:c,after:`]`,...s.current()});return o(),n.stack=u,a(),i===`full`||!l||l!==d?c+=s.move(d+`]`):i===`shortcut`?c=c.slice(0,-1):c+=s.move(`]`),c}function bs(){return`[`}function xs(e){let t=e.options.bullet||`*`;if(t!==`*`&&t!==`+`&&t!==`-`)throw Error("Cannot serialize items with `"+t+"` for `options.bullet`, expected `*`, `+`, or `-`");return t}function Ss(e){let t=xs(e),n=e.options.bulletOther;if(!n)return t===`*`?`-`:`*`;if(n!==`*`&&n!==`+`&&n!==`-`)throw Error("Cannot serialize items with `"+n+"` for `options.bulletOther`, expected `*`, `+`, or `-`");if(n===t)throw Error("Expected `bullet` (`"+t+"`) and `bulletOther` (`"+n+"`) to be different");return n}function Cs(e){let t=e.options.bulletOrdered||`.`;if(t!==`.`&&t!==`)`)throw Error("Cannot serialize items with `"+t+"` for `options.bulletOrdered`, expected `.` or `)`");return t}function ws(e){let t=e.options.rule||`*`;if(t!==`*`&&t!==`-`&&t!==`_`)throw Error("Cannot serialize rules with `"+t+"` for `options.rule`, expected `*`, `-`, or `_`");return t}function Ts(e,t,n,r){let i=n.enter(`list`),a=n.bulletCurrent,o=e.ordered?Cs(n):xs(n),s=e.ordered?o===`.`?`)`:`.`:Ss(n),c=t&&n.bulletLastUsed?o===n.bulletLastUsed:!1;if(!e.ordered){let t=e.children?e.children[0]:void 0;if((o===`*`||o===`-`)&&t&&(!t.children||!t.children[0])&&n.stack[n.stack.length-1]===`list`&&n.stack[n.stack.length-2]===`listItem`&&n.stack[n.stack.length-3]===`list`&&n.stack[n.stack.length-4]===`listItem`&&n.indexStack[n.indexStack.length-1]===0&&n.indexStack[n.indexStack.length-2]===0&&n.indexStack[n.indexStack.length-3]===0&&(c=!0),ws(n)===o&&t){let t=-1;for(;++t<e.children.length;){let n=e.children[t];if(n&&n.type===`listItem`&&n.children&&n.children[0]&&n.children[0].type===`thematicBreak`){c=!0;break}}}}c&&(o=s),n.bulletCurrent=o;let l=n.containerFlow(e,r);return n.bulletLastUsed=o,n.bulletCurrent=a,i(),l}function Es(e){let t=e.options.listItemIndent||`one`;if(t!==`tab`&&t!==`one`&&t!==`mixed`)throw Error("Cannot serialize items with `"+t+"` for `options.listItemIndent`, expected `tab`, `one`, or `mixed`");return t}function Ds(e,t,n,r){let i=Es(n),a=n.bulletCurrent||xs(n);t&&t.type===`list`&&t.ordered&&(a=(typeof t.start==`number`&&t.start>-1?t.start:1)+(n.options.incrementListMarker===!1?0:t.children.indexOf(e))+a);let o=a.length+1;(i===`tab`||i===`mixed`&&(t&&t.type===`list`&&t.spread||e.spread))&&(o=Math.ceil(o/4)*4);let s=n.createTracker(r);s.move(a+` `.repeat(o-a.length)),s.shift(o);let c=n.enter(`listItem`),l=n.indentLines(n.containerFlow(e,s.current()),u);return c(),l;function u(e,t,n){return t?(n?``:` `.repeat(o))+e:(n?a:a+` `.repeat(o-a.length))+e}}function Os(e,t,n,r){let i=n.enter(`paragraph`),a=n.enter(`phrasing`),o=n.containerPhrasing(e,r);return a(),i(),o}var ks=d([`break`,`delete`,`emphasis`,`footnote`,`footnoteReference`,`image`,`imageReference`,`inlineCode`,`inlineMath`,`link`,`linkReference`,`mdxJsxTextElement`,`mdxTextExpression`,`strong`,`text`,`textDirective`]);function As(e,t,n,r){return(e.children.some(function(e){return ks(e)})?n.containerPhrasing:n.containerFlow).call(n,e,r)}function js(e){let t=e.options.strong||`*`;if(t!==`*`&&t!==`_`)throw Error("Cannot serialize strong with `"+t+"` for `options.strong`, expected `*`, or `_`");return t}Ms.peek=Ns;function Ms(e,t,n,r){let i=js(n),a=n.enter(`strong`),o=n.createTracker(r),s=o.move(i+i),c=o.move(n.containerPhrasing(e,{after:i,before:s,...o.current()})),l=c.charCodeAt(0),u=rs(r.before.charCodeAt(r.before.length-1),l,i);u.inside&&(c=ns(l)+c.slice(1));let d=c.charCodeAt(c.length-1),f=rs(r.after.charCodeAt(0),d,i);f.inside&&(c=c.slice(0,-1)+ns(d));let p=o.move(i+i);return a(),n.attentionEncodeSurroundingInfo={after:f.outside,before:u.outside},s+c+p}function Ns(e,t,n){return n.options.strong||`*`}function Ps(e,t,n,r){return n.safe(e.value,r)}function Fs(e){let t=e.options.ruleRepetition||3;if(t<3)throw Error("Cannot serialize rules with repetition `"+t+"` for `options.ruleRepetition`, expected `3` or more");return t}function Is(e,t,n){let r=(ws(n)+(n.options.ruleSpaces?` `:``)).repeat(Fs(n));return n.options.ruleSpaces?r.slice(0,-1):r}var Ls={blockquote:Uo,break:qo,code:Zo,definition:es,emphasis:is,hardBreak:qo,heading:ss,html:cs,image:us,imageReference:fs,inlineCode:ms,link:_s,linkReference:ys,list:Ts,listItem:Ds,paragraph:Os,root:As,strong:Ms,text:Ps,thematicBreak:Is};function Rs(){return{enter:{table:zs,tableData:Us,tableHeader:Us,tableRow:Vs},exit:{codeText:Ws,table:Bs,tableData:Hs,tableHeader:Hs,tableRow:Hs}}}function zs(e){let t=e._align;this.enter({type:`table`,align:t.map(function(e){return e===`none`?null:e}),children:[]},e),this.data.inTable=!0}function Bs(e){this.exit(e),this.data.inTable=void 0}function Vs(e){this.enter({type:`tableRow`,children:[]},e)}function Hs(e){this.exit(e)}function Us(e){this.enter({type:`tableCell`,children:[]},e)}function Ws(e){let t=this.resume();this.data.inTable&&(t=t.replace(/\\([\\|])/g,Gs));let n=this.stack[this.stack.length-1];n.type,n.value=t,this.exit(e)}function Gs(e,t){return t===`|`?t:e}function Ks(e){let t=e||{},n=t.tableCellPadding,r=t.tablePipeAlign,i=t.stringLength,a=n?` `:`|`;return{unsafe:[{character:`\r`,inConstruct:`tableCell`},{character:`
 `,inConstruct:`tableCell`},{atBreak:!0,character:`|`,after:`[	 :-]`},{character:`|`,inConstruct:`tableCell`},{atBreak:!0,character:`:`,after:`-`},{atBreak:!0,character:`-`,after:`[:|-]`}],handlers:{inlineCode:f,table:o,tableCell:c,tableRow:s}};function o(e,t,n,r){return l(u(e,n,r),e.align)}function s(e,t,n,r){let i=l([d(e,n,r)]);return i.slice(0,i.indexOf(`
-`))}function c(e,t,n,r){let i=n.enter(`tableCell`),o=n.enter(`phrasing`),s=n.containerPhrasing(e,{...r,before:a,after:a});return o(),i(),s}function l(e,t){return Bo(e,{align:t,alignDelimiters:r,padding:n,stringLength:i})}function u(e,t,n){let r=e.children,i=-1,a=[],o=t.enter(`table`);for(;++i<r.length;)a[i]=d(r[i],t,n);return o(),a}function d(e,t,n){let r=e.children,i=-1,a=[],o=t.enter(`tableRow`);for(;++i<r.length;)a[i]=c(r[i],e,t,n);return o(),a}function f(e,t,n){let r=Ls.inlineCode(e,t,n);return n.stack.includes(`tableCell`)&&(r=r.replace(/\|/g,`\\$&`)),r}}function qs(){return{exit:{taskListCheckValueChecked:Ys,taskListCheckValueUnchecked:Ys,paragraph:Xs}}}function Js(){return{unsafe:[{atBreak:!0,character:`-`,after:`[:|-]`}],handlers:{listItem:Zs}}}function Ys(e){let t=this.stack[this.stack.length-2];t.type,t.checked=e.type===`taskListCheckValueChecked`}function Xs(e){let t=this.stack[this.stack.length-2];if(t&&t.type===`listItem`&&typeof t.checked==`boolean`){let e=this.stack[this.stack.length-1];e.type;let n=e.children[0];if(n&&n.type===`text`){let r=t.children,i=-1,a;for(;++i<r.length;){let e=r[i];if(e.type===`paragraph`){a=e;break}}a===e&&(n.value=n.value.slice(1),n.value.length===0?e.children.shift():e.position&&n.position&&typeof n.position.start.offset==`number`&&(n.position.start.column++,n.position.start.offset++,e.position.start=Object.assign({},n.position.start)))}}this.exit(e)}function Zs(e,t,n,r){let i=e.children[0],a=typeof e.checked==`boolean`&&i&&i.type===`paragraph`,o=`[`+(e.checked?`x`:` `)+`] `,s=n.createTracker(r);a&&s.move(o);let c=Ls.listItem(e,t,n,{...r,...s.current()});return a&&(c=c.replace(/^(?:[*+-]|\d+\.)([\r\n]| {1,3})/,l)),c;function l(e){return e+o}}function Qs(){return[ro(),Oo(),No(),Rs(),qs()]}function $s(e){return{extensions:[io(),ko(e),Po(),Ks(e),Js()]}}var ec={tokenize:fc,partial:!0},tc={tokenize:pc,partial:!0},nc={tokenize:mc,partial:!0},rc={tokenize:hc,partial:!0},ic={tokenize:gc,partial:!0},ac={name:`wwwAutolink`,tokenize:uc,previous:_c},oc={name:`protocolAutolink`,tokenize:dc,previous:vc},Z={name:`emailAutolink`,tokenize:lc,previous:yc},Q={};function sc(){return{text:Q}}for(var cc=48;cc<123;)Q[cc]=Z,cc++,cc===58?cc=65:cc===91&&(cc=97);Q[43]=Z,Q[45]=Z,Q[46]=Z,Q[95]=Z,Q[72]=[Z,oc],Q[104]=[Z,oc],Q[87]=[Z,ac],Q[119]=[Z,ac];function lc(e,t,n){let r=this,i,a;return o;function o(t){return!bc(t)||!yc.call(r,r.previous)||xc(r.events)?n(t):(e.enter(`literalAutolink`),e.enter(`literalAutolinkEmail`),s(t))}function s(t){return bc(t)?(e.consume(t),s):t===64?(e.consume(t),c):n(t)}function c(t){return t===46?e.check(ic,u,l)(t):t===45||t===95||V(t)?(a=!0,e.consume(t),c):u(t)}function l(t){return e.consume(t),i=!0,c}function u(o){return a&&i&&B(r.previous)?(e.exit(`literalAutolinkEmail`),e.exit(`literalAutolink`),t(o)):n(o)}}function uc(e,t,n){let r=this;return i;function i(t){return t!==87&&t!==119||!_c.call(r,r.previous)||xc(r.events)?n(t):(e.enter(`literalAutolink`),e.enter(`literalAutolinkWww`),e.check(ec,e.attempt(tc,e.attempt(nc,a),n),n)(t))}function a(n){return e.exit(`literalAutolinkWww`),e.exit(`literalAutolink`),t(n)}}function dc(e,t,n){let r=this,i=``,a=!1;return o;function o(t){return(t===72||t===104)&&vc.call(r,r.previous)&&!xc(r.events)?(e.enter(`literalAutolink`),e.enter(`literalAutolinkHttp`),i+=String.fromCodePoint(t),e.consume(t),s):n(t)}function s(t){if(B(t)&&i.length<5)return i+=String.fromCodePoint(t),e.consume(t),s;if(t===58){let n=i.toLowerCase();if(n===`http`||n===`https`)return e.consume(t),c}return n(t)}function c(t){return t===47?(e.consume(t),a?l:(a=!0,c)):n(t)}function l(t){return t===null||St(t)||U(t)||Dt(t)||Et(t)?n(t):e.attempt(tc,e.attempt(nc,u),n)(t)}function u(n){return e.exit(`literalAutolinkHttp`),e.exit(`literalAutolink`),t(n)}}function fc(e,t,n){let r=0;return i;function i(t){return(t===87||t===119)&&r<3?(r++,e.consume(t),i):t===46&&r===3?(e.consume(t),a):n(t)}function a(e){return e===null?n(e):t(e)}}function pc(e,t,n){let r,i,a;return o;function o(t){return t===46||t===95?e.check(rc,c,s)(t):t===null||U(t)||Dt(t)||t!==45&&Et(t)?c(t):(a=!0,e.consume(t),o)}function s(t){return t===95?r=!0:(i=r,r=void 0),e.consume(t),o}function c(e){return i||r||!a?n(e):t(e)}}function mc(e,t){let n=0,r=0;return i;function i(o){return o===40?(n++,e.consume(o),i):o===41&&r<n?a(o):o===33||o===34||o===38||o===39||o===41||o===42||o===44||o===46||o===58||o===59||o===60||o===63||o===93||o===95||o===126?e.check(rc,t,a)(o):o===null||U(o)||Dt(o)?t(o):(e.consume(o),i)}function a(t){return t===41&&r++,e.consume(t),i}}function hc(e,t,n){return r;function r(o){return o===33||o===34||o===39||o===41||o===42||o===44||o===46||o===58||o===59||o===63||o===95||o===126?(e.consume(o),r):o===38?(e.consume(o),a):o===93?(e.consume(o),i):o===60||o===null||U(o)||Dt(o)?t(o):n(o)}function i(e){return e===null||e===40||e===91||U(e)||Dt(e)?t(e):r(e)}function a(e){return B(e)?o(e):n(e)}function o(t){return t===59?(e.consume(t),r):B(t)?(e.consume(t),o):n(t)}}function gc(e,t,n){return r;function r(t){return e.consume(t),i}function i(e){return V(e)?n(e):t(e)}}function _c(e){return e===null||e===40||e===42||e===95||e===91||e===93||e===126||U(e)}function vc(e){return!B(e)}function yc(e){return!(e===47||bc(e))}function bc(e){return e===43||e===45||e===46||e===95||V(e)}function xc(e){let t=e.length,n=!1;for(;t--;){let r=e[t][1];if((r.type===`labelLink`||r.type===`labelImage`)&&!r._balanced){n=!0;break}if(r._gfmAutolinkLiteralWalkedInto){n=!1;break}}return e.length>0&&!n&&(e[e.length-1][1]._gfmAutolinkLiteralWalkedInto=!0),n}var Sc={tokenize:Ac,partial:!0};function Cc(){return{document:{91:{name:`gfmFootnoteDefinition`,tokenize:Dc,continuation:{tokenize:Oc},exit:kc}},text:{91:{name:`gfmFootnoteCall`,tokenize:Ec},93:{name:`gfmPotentialFootnoteCall`,add:`after`,tokenize:wc,resolveTo:Tc}}}}function wc(e,t,n){let r=this,i=r.events.length,a=r.parser.gfmFootnotes||(r.parser.gfmFootnotes=[]),o;for(;i--;){let e=r.events[i][1];if(e.type===`labelImage`){o=e;break}if(e.type===`gfmFootnoteCall`||e.type===`labelLink`||e.type===`label`||e.type===`image`||e.type===`link`)break}return s;function s(i){if(!o||!o._balanced)return n(i);let s=z(r.sliceSerialize({start:o.end,end:r.now()}));return s.codePointAt(0)!==94||!a.includes(s.slice(1))?n(i):(e.enter(`gfmFootnoteCallLabelMarker`),e.consume(i),e.exit(`gfmFootnoteCallLabelMarker`),t(i))}}function Tc(e,t){let n=e.length;for(;n--;)if(e[n][1].type===`labelImage`&&e[n][0]===`enter`){e[n][1];break}e[n+1][1].type=`data`,e[n+3][1].type=`gfmFootnoteCallLabelMarker`;let r={type:`gfmFootnoteCall`,start:Object.assign({},e[n+3][1].start),end:Object.assign({},e[e.length-1][1].end)},i={type:`gfmFootnoteCallMarker`,start:Object.assign({},e[n+3][1].end),end:Object.assign({},e[n+3][1].end)};i.end.column++,i.end.offset++,i.end._bufferIndex++;let a={type:`gfmFootnoteCallString`,start:Object.assign({},i.end),end:Object.assign({},e[e.length-1][1].start)},o={type:`chunkString`,contentType:`string`,start:Object.assign({},a.start),end:Object.assign({},a.end)},s=[e[n+1],e[n+2],[`enter`,r,t],e[n+3],e[n+4],[`enter`,i,t],[`exit`,i,t],[`enter`,a,t],[`enter`,o,t],[`exit`,o,t],[`exit`,a,t],e[e.length-2],e[e.length-1],[`exit`,r,t]];return e.splice(n,e.length-n+1,...s),e}function Ec(e,t,n){let r=this,i=r.parser.gfmFootnotes||(r.parser.gfmFootnotes=[]),a=0,o;return s;function s(t){return e.enter(`gfmFootnoteCall`),e.enter(`gfmFootnoteCallLabelMarker`),e.consume(t),e.exit(`gfmFootnoteCallLabelMarker`),c}function c(t){return t===94?(e.enter(`gfmFootnoteCallMarker`),e.consume(t),e.exit(`gfmFootnoteCallMarker`),e.enter(`gfmFootnoteCallString`),e.enter(`chunkString`).contentType=`string`,l):n(t)}function l(s){if(a>999||s===93&&!o||s===null||s===91||U(s))return n(s);if(s===93){e.exit(`chunkString`);let a=e.exit(`gfmFootnoteCallString`);return i.includes(z(r.sliceSerialize(a)))?(e.enter(`gfmFootnoteCallLabelMarker`),e.consume(s),e.exit(`gfmFootnoteCallLabelMarker`),e.exit(`gfmFootnoteCall`),t):n(s)}return U(s)||(o=!0),a++,e.consume(s),s===92?u:l}function u(t){return t===91||t===92||t===93?(e.consume(t),a++,l):l(t)}}function Dc(e,t,n){let r=this,i=r.parser.gfmFootnotes||(r.parser.gfmFootnotes=[]),a,o=0,s;return c;function c(t){return e.enter(`gfmFootnoteDefinition`)._container=!0,e.enter(`gfmFootnoteDefinitionLabel`),e.enter(`gfmFootnoteDefinitionLabelMarker`),e.consume(t),e.exit(`gfmFootnoteDefinitionLabelMarker`),l}function l(t){return t===94?(e.enter(`gfmFootnoteDefinitionMarker`),e.consume(t),e.exit(`gfmFootnoteDefinitionMarker`),e.enter(`gfmFootnoteDefinitionLabelString`),e.enter(`chunkString`).contentType=`string`,u):n(t)}function u(t){if(o>999||t===93&&!s||t===null||t===91||U(t))return n(t);if(t===93){e.exit(`chunkString`);let n=e.exit(`gfmFootnoteDefinitionLabelString`);return a=z(r.sliceSerialize(n)),e.enter(`gfmFootnoteDefinitionLabelMarker`),e.consume(t),e.exit(`gfmFootnoteDefinitionLabelMarker`),e.exit(`gfmFootnoteDefinitionLabel`),f}return U(t)||(s=!0),o++,e.consume(t),t===92?d:u}function d(t){return t===91||t===92||t===93?(e.consume(t),o++,u):u(t)}function f(t){return t===58?(e.enter(`definitionMarker`),e.consume(t),e.exit(`definitionMarker`),i.includes(a)||i.push(a),K(e,p,`gfmFootnoteDefinitionWhitespace`)):n(t)}function p(e){return t(e)}}function Oc(e,t,n){return e.check(Ut,t,e.attempt(Sc,t,n))}function kc(e){e.exit(`gfmFootnoteDefinition`)}function Ac(e,t,n){let r=this;return K(e,i,`gfmFootnoteDefinitionIndent`,5);function i(e){let i=r.events[r.events.length-1];return i&&i[1].type===`gfmFootnoteDefinitionIndent`&&i[2].sliceSerialize(i[1],!0).length===4?t(e):n(e)}}function jc(e){let t=(e||{}).singleTilde,n={name:`strikethrough`,tokenize:i,resolveAll:r};return t??=!0,{text:{126:n},insideSpan:{null:[n]},attentionMarkers:{null:[126]}};function r(e,t){let n=-1;for(;++n<e.length;)if(e[n][0]===`enter`&&e[n][1].type===`strikethroughSequenceTemporary`&&e[n][1]._close){let r=n;for(;r--;)if(e[r][0]===`exit`&&e[r][1].type===`strikethroughSequenceTemporary`&&e[r][1]._open&&e[n][1].end.offset-e[n][1].start.offset===e[r][1].end.offset-e[r][1].start.offset){e[n][1].type=`strikethroughSequence`,e[r][1].type=`strikethroughSequence`;let i={type:`strikethrough`,start:Object.assign({},e[r][1].start),end:Object.assign({},e[n][1].end)},a={type:`strikethroughText`,start:Object.assign({},e[r][1].end),end:Object.assign({},e[n][1].start)},o=[[`enter`,i,t],[`enter`,e[r][1],t],[`exit`,e[r][1],t],[`enter`,a,t]],s=t.parser.constructs.insideSpan.null;s&&L(o,o.length,0,It(s,e.slice(r+1,n),t)),L(o,o.length,0,[[`exit`,a,t],[`enter`,e[n][1],t],[`exit`,e[n][1],t],[`exit`,i,t]]),L(e,r-1,n-r+3,o),n=r+o.length-2;break}}for(n=-1;++n<e.length;)e[n][1].type===`strikethroughSequenceTemporary`&&(e[n][1].type=`data`);return e}function i(e,n,r){let i=this.previous,a=this.events,o=0;return s;function s(t){return i===126&&a[a.length-1][1].type!==`characterEscape`?r(t):(e.enter(`strikethroughSequenceTemporary`),c(t))}function c(a){let s=Ft(i);if(a===126)return o>1?r(a):(e.consume(a),o++,c);if(o<2&&!t)return r(a);let l=e.exit(`strikethroughSequenceTemporary`),u=Ft(a);return l._open=!u||u===2&&!!s,l._close=!s||s===2&&!!u,n(a)}}}var Mc=class{constructor(){this.map=[]}add(e,t,n){Nc(this,e,t,n)}consume(e){if(this.map.sort(function(e,t){return e[0]-t[0]}),this.map.length===0)return;let t=this.map.length,n=[];for(;t>0;)--t,n.push(e.slice(this.map[t][0]+this.map[t][1]),this.map[t][2]),e.length=this.map[t][0];n.push(e.slice()),e.length=0;let r=n.pop();for(;r;){for(let t of r)e.push(t);r=n.pop()}this.map.length=0}};function Nc(e,t,n,r){let i=0;if(!(n===0&&r.length===0)){for(;i<e.map.length;){if(e.map[i][0]===t){e.map[i][1]+=n,e.map[i][2].push(...r);return}i+=1}e.map.push([t,n,r])}}function Pc(e,t){let n=!1,r=[];for(;t<e.length;){let i=e[t];if(n){if(i[0]===`enter`)i[1].type===`tableContent`&&r.push(e[t+1][1].type===`tableDelimiterMarker`?`left`:`none`);else if(i[1].type===`tableContent`){if(e[t-1][1].type===`tableDelimiterMarker`){let e=r.length-1;r[e]=r[e]===`left`?`center`:`right`}}else if(i[1].type===`tableDelimiterRow`)break}else i[0]===`enter`&&i[1].type===`tableDelimiterRow`&&(n=!0);t+=1}return r}function Fc(){return{flow:{null:{name:`table`,tokenize:Ic,resolveAll:Lc}}}}function Ic(e,t,n){let r=this,i=0,a=0,o;return s;function s(e){let t=r.events.length-1;for(;t>-1;){let e=r.events[t][1].type;if(e===`lineEnding`||e===`linePrefix`)t--;else break}let i=t>-1?r.events[t][1].type:null,a=i===`tableHead`||i===`tableRow`?S:c;return a===S&&r.parser.lazy[r.now().line]?n(e):a(e)}function c(t){return e.enter(`tableHead`),e.enter(`tableRow`),l(t)}function l(e){return e===124?u(e):(o=!0,a+=1,u(e))}function u(t){return t===null?n(t):H(t)?a>1?(a=0,r.interrupt=!0,e.exit(`tableRow`),e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),p):n(t):W(t)?K(e,u,`whitespace`)(t):(a+=1,o&&(o=!1,i+=1),t===124?(e.enter(`tableCellDivider`),e.consume(t),e.exit(`tableCellDivider`),o=!0,u):(e.enter(`data`),d(t)))}function d(t){return t===null||t===124||U(t)?(e.exit(`data`),u(t)):(e.consume(t),t===92?f:d)}function f(t){return t===92||t===124?(e.consume(t),d):d(t)}function p(t){return r.interrupt=!1,r.parser.lazy[r.now().line]?n(t):(e.enter(`tableDelimiterRow`),o=!1,W(t)?K(e,m,`linePrefix`,r.parser.constructs.disable.null.includes(`codeIndented`)?void 0:4)(t):m(t))}function m(t){return t===45||t===58?g(t):t===124?(o=!0,e.enter(`tableCellDivider`),e.consume(t),e.exit(`tableCellDivider`),h):x(t)}function h(t){return W(t)?K(e,g,`whitespace`)(t):g(t)}function g(t){return t===58?(a+=1,o=!0,e.enter(`tableDelimiterMarker`),e.consume(t),e.exit(`tableDelimiterMarker`),_):t===45?(a+=1,_(t)):t===null||H(t)?b(t):x(t)}function _(t){return t===45?(e.enter(`tableDelimiterFiller`),v(t)):x(t)}function v(t){return t===45?(e.consume(t),v):t===58?(o=!0,e.exit(`tableDelimiterFiller`),e.enter(`tableDelimiterMarker`),e.consume(t),e.exit(`tableDelimiterMarker`),y):(e.exit(`tableDelimiterFiller`),y(t))}function y(t){return W(t)?K(e,b,`whitespace`)(t):b(t)}function b(n){return n===124?m(n):n===null||H(n)?!o||i!==a?x(n):(e.exit(`tableDelimiterRow`),e.exit(`tableHead`),t(n)):x(n)}function x(e){return n(e)}function S(t){return e.enter(`tableRow`),C(t)}function C(n){return n===124?(e.enter(`tableCellDivider`),e.consume(n),e.exit(`tableCellDivider`),C):n===null||H(n)?(e.exit(`tableRow`),t(n)):W(n)?K(e,C,`whitespace`)(n):(e.enter(`data`),w(n))}function w(t){return t===null||t===124||U(t)?(e.exit(`data`),C(t)):(e.consume(t),t===92?T:w)}function T(t){return t===92||t===124?(e.consume(t),w):w(t)}}function Lc(e,t){let n=-1,r=!0,i=0,a=[0,0,0,0],o=[0,0,0,0],s=!1,c=0,l,u,d,f=new Mc;for(;++n<e.length;){let p=e[n],m=p[1];p[0]===`enter`?m.type===`tableHead`?(s=!1,c!==0&&(zc(f,t,c,l,u),u=void 0,c=0),l={type:`table`,start:Object.assign({},m.start),end:Object.assign({},m.end)},f.add(n,0,[[`enter`,l,t]])):m.type===`tableRow`||m.type===`tableDelimiterRow`?(r=!0,d=void 0,a=[0,0,0,0],o=[0,n+1,0,0],s&&(s=!1,u={type:`tableBody`,start:Object.assign({},m.start),end:Object.assign({},m.end)},f.add(n,0,[[`enter`,u,t]])),i=m.type===`tableDelimiterRow`?2:u?3:1):i&&(m.type===`data`||m.type===`tableDelimiterMarker`||m.type===`tableDelimiterFiller`)?(r=!1,o[2]===0&&(a[1]!==0&&(o[0]=o[1],d=Rc(f,t,a,i,void 0,d),a=[0,0,0,0]),o[2]=n)):m.type===`tableCellDivider`&&(r?r=!1:(a[1]!==0&&(o[0]=o[1],d=Rc(f,t,a,i,void 0,d)),a=o,o=[a[1],n,0,0])):m.type===`tableHead`?(s=!0,c=n):m.type===`tableRow`||m.type===`tableDelimiterRow`?(c=n,a[1]===0?o[1]!==0&&(d=Rc(f,t,o,i,n,d)):(o[0]=o[1],d=Rc(f,t,a,i,n,d)),i=0):i&&(m.type===`data`||m.type===`tableDelimiterMarker`||m.type===`tableDelimiterFiller`)&&(o[3]=n)}for(c!==0&&zc(f,t,c,l,u),f.consume(t.events),n=-1;++n<t.events.length;){let e=t.events[n];e[0]===`enter`&&e[1].type===`table`&&(e[1]._align=Pc(t.events,n))}return e}function Rc(e,t,n,r,i,a){let o=r===1?`tableHeader`:r===2?`tableDelimiter`:`tableData`;n[0]!==0&&(a.end=Object.assign({},Bc(t.events,n[0])),e.add(n[0],0,[[`exit`,a,t]]));let s=Bc(t.events,n[1]);if(a={type:o,start:Object.assign({},s),end:Object.assign({},s)},e.add(n[1],0,[[`enter`,a,t]]),n[2]!==0){let i=Bc(t.events,n[2]),a=Bc(t.events,n[3]),o={type:`tableContent`,start:Object.assign({},i),end:Object.assign({},a)};if(e.add(n[2],0,[[`enter`,o,t]]),r!==2){let r=t.events[n[2]],i=t.events[n[3]];if(r[1].end=Object.assign({},i[1].end),r[1].type=`chunkText`,r[1].contentType=`text`,n[3]>n[2]+1){let t=n[2]+1,r=n[3]-n[2]-1;e.add(t,r,[])}}e.add(n[3]+1,0,[[`exit`,o,t]])}return i!==void 0&&(a.end=Object.assign({},Bc(t.events,i)),e.add(i,0,[[`exit`,a,t]]),a=void 0),a}function zc(e,t,n,r,i){let a=[],o=Bc(t.events,n);i&&(i.end=Object.assign({},o),a.push([`exit`,i,t])),r.end=Object.assign({},o),a.push([`exit`,r,t]),e.add(n+1,0,a)}function Bc(e,t){let n=e[t],r=n[0]===`enter`?`start`:`end`;return n[1][r]}var Vc={name:`tasklistCheck`,tokenize:Uc};function Hc(){return{text:{91:Vc}}}function Uc(e,t,n){let r=this;return i;function i(t){return r.previous!==null||!r._gfmTasklistFirstContentOfListItem?n(t):(e.enter(`taskListCheck`),e.enter(`taskListCheckMarker`),e.consume(t),e.exit(`taskListCheckMarker`),a)}function a(t){return U(t)?(e.enter(`taskListCheckValueUnchecked`),e.consume(t),e.exit(`taskListCheckValueUnchecked`),o):t===88||t===120?(e.enter(`taskListCheckValueChecked`),e.consume(t),e.exit(`taskListCheckValueChecked`),o):n(t)}function o(t){return t===93?(e.enter(`taskListCheckMarker`),e.consume(t),e.exit(`taskListCheckMarker`),e.exit(`taskListCheck`),s):n(t)}function s(r){return H(r)?t(r):W(r)?e.check({tokenize:Wc},t,n)(r):n(r)}}function Wc(e,t,n){return K(e,r,`whitespace`);function r(e){return e===null?n(e):t(e)}}function Gc(e){return _t([sc(),Cc(),jc(e),Fc(),Hc()])}var Kc={};function qc(e){let t=this,n=e||Kc,r=t.data(),i=r.micromarkExtensions||=[],a=r.fromMarkdownExtensions||=[],o=r.toMarkdownExtensions||=[];i.push(Gc(n)),a.push(Qs()),o.push($s(n))}var Jc=`https://github.com/santhosh-patel/substack-agent/edit/main/docs`,Yc=[{title:`Introduction`,items:[{title:`Overview`,path:``,file:`index.md`,modes:[]}]},{title:`Getting Started`,items:[{title:`Install`,path:`getting-started/install`,file:`getting-started/install.md`,modes:[]},{title:`Session Cookie`,path:`getting-started/session-cookie`,file:`getting-started/session-cookie.md`,modes:[`Local Dashboard`,`MCP`]},{title:`Environment Variables`,path:`getting-started/environment-variables`,file:`getting-started/environment-variables.md`,modes:[]},{title:`First Publish`,path:`getting-started/first-publish`,file:`getting-started/first-publish.md`,modes:[`Local Dashboard`]}]},{title:`Local Dashboard`,items:[{title:`Overview`,path:`dashboard/overview`,file:`dashboard/overview.md`,modes:[`Local Dashboard`]},{title:`Settings`,path:`dashboard/settings`,file:`dashboard/settings.md`,modes:[`Local Dashboard`]},{title:`Newsletters`,path:`dashboard/newsletters`,file:`dashboard/newsletters.md`,modes:[`Local Dashboard`]},{title:`Notes`,path:`dashboard/notes`,file:`dashboard/notes.md`,modes:[`Local Dashboard`]},{title:`Comments`,path:`dashboard/comments`,file:`dashboard/comments.md`,modes:[`Local Dashboard`]},{title:`Scheduler`,path:`dashboard/scheduler`,file:`dashboard/scheduler.md`,modes:[`Local Dashboard`]},{title:`History`,path:`dashboard/history`,file:`dashboard/history.md`,modes:[`Local Dashboard`]}]},{title:`MCP Server`,items:[{title:`Setup`,path:`mcp/setup`,file:`mcp/setup.md`,modes:[`MCP`]},{title:`Remote MCP (HTTP)`,path:`mcp/remote`,file:`mcp/remote.md`,modes:[`MCP`,`Tools API`]},{title:`Tools Reference`,path:`mcp/tools`,file:`mcp/tools.md`,modes:[`MCP`]},{title:`Limitations`,path:`mcp/limitations`,file:`mcp/limitations.md`,modes:[`MCP`]}]},{title:`Tools API`,items:[{title:`Overview`,path:`api/overview`,file:`api/overview.md`,modes:[`Tools API`]},{title:`Endpoints`,path:`api/endpoints`,file:`api/endpoints.md`,modes:[`Tools API`]},{title:`OpenAPI`,path:`api/openapi`,file:`api/openapi.md`,modes:[`Tools API`]},{title:`Dashboard API`,path:`api/dashboard-api`,file:`api/dashboard-api.md`,modes:[`Local Dashboard`]}]},{title:`Deployment`,items:[{title:`Deployment Modes`,path:`deployment/modes`,file:`deployment/modes.md`,modes:[]},{title:`Deploy Tools API`,path:`deployment/deploy`,file:`deployment/deploy.md`,modes:[`Tools API`]},{title:`Vercel (optional)`,path:`deployment/vercel`,file:`deployment/vercel.md`,modes:[`Tools API`]},{title:`Scheduler & Cron`,path:`deployment/scheduler-cron`,file:`deployment/scheduler-cron.md`,modes:[`Local Dashboard`]}]},{title:`Integrations`,items:[{title:`Claude Desktop`,path:`integrations/claude-desktop`,file:`integrations/claude-desktop.md`,modes:[`MCP`]},{title:`Cursor`,path:`integrations/cursor`,file:`integrations/cursor.md`,modes:[`MCP`]},{title:`n8n`,path:`integrations/n8n`,file:`integrations/n8n.md`,modes:[`Tools API`]},{title:`Custom GPT`,path:`integrations/custom-gpt`,file:`integrations/custom-gpt.md`,modes:[`Tools API`]}]},{title:`Operations`,items:[{title:`Security`,path:`security`,file:`security.md`,modes:[]},{title:`Troubleshooting`,path:`troubleshooting`,file:`troubleshooting.md`,modes:[]},{title:`Changelog`,path:`changelog`,file:`changelog.md`,modes:[]}]}],$=Yc.flatMap(e=>e.items.map(t=>({...t,section:e.title})));function Xc(e){let t=e.replace(/^\/docs\/?/,``).replace(/\/$/,``);return $.find(e=>e.path===t)??$[0]}function Zc(e){let t=e.replace(/^\/docs\/?/,``).replace(/\/$/,``),n=$.findIndex(e=>e.path===t);return n===-1?{prev:null,next:$[1]??null}:{prev:n>0?$[n-1]:null,next:n<$.length-1?$[n+1]:null}}function Qc(e){return e?`/docs/${e}`:`/docs`}var $c=Object.assign({"../../../docs/api/dashboard-api.md":`# Dashboard API Reference
+`))}function c(e,t,n,r){let i=n.enter(`tableCell`),o=n.enter(`phrasing`),s=n.containerPhrasing(e,{...r,before:a,after:a});return o(),i(),s}function l(e,t){return Bo(e,{align:t,alignDelimiters:r,padding:n,stringLength:i})}function u(e,t,n){let r=e.children,i=-1,a=[],o=t.enter(`table`);for(;++i<r.length;)a[i]=d(r[i],t,n);return o(),a}function d(e,t,n){let r=e.children,i=-1,a=[],o=t.enter(`tableRow`);for(;++i<r.length;)a[i]=c(r[i],e,t,n);return o(),a}function f(e,t,n){let r=Ls.inlineCode(e,t,n);return n.stack.includes(`tableCell`)&&(r=r.replace(/\|/g,`\\$&`)),r}}function qs(){return{exit:{taskListCheckValueChecked:Ys,taskListCheckValueUnchecked:Ys,paragraph:Xs}}}function Js(){return{unsafe:[{atBreak:!0,character:`-`,after:`[:|-]`}],handlers:{listItem:Zs}}}function Ys(e){let t=this.stack[this.stack.length-2];t.type,t.checked=e.type===`taskListCheckValueChecked`}function Xs(e){let t=this.stack[this.stack.length-2];if(t&&t.type===`listItem`&&typeof t.checked==`boolean`){let e=this.stack[this.stack.length-1];e.type;let n=e.children[0];if(n&&n.type===`text`){let r=t.children,i=-1,a;for(;++i<r.length;){let e=r[i];if(e.type===`paragraph`){a=e;break}}a===e&&(n.value=n.value.slice(1),n.value.length===0?e.children.shift():e.position&&n.position&&typeof n.position.start.offset==`number`&&(n.position.start.column++,n.position.start.offset++,e.position.start=Object.assign({},n.position.start)))}}this.exit(e)}function Zs(e,t,n,r){let i=e.children[0],a=typeof e.checked==`boolean`&&i&&i.type===`paragraph`,o=`[`+(e.checked?`x`:` `)+`] `,s=n.createTracker(r);a&&s.move(o);let c=Ls.listItem(e,t,n,{...r,...s.current()});return a&&(c=c.replace(/^(?:[*+-]|\d+\.)([\r\n]| {1,3})/,l)),c;function l(e){return e+o}}function Qs(){return[ro(),Oo(),No(),Rs(),qs()]}function $s(e){return{extensions:[io(),ko(e),Po(),Ks(e),Js()]}}var ec={tokenize:fc,partial:!0},tc={tokenize:pc,partial:!0},nc={tokenize:mc,partial:!0},rc={tokenize:hc,partial:!0},ic={tokenize:gc,partial:!0},ac={name:`wwwAutolink`,tokenize:uc,previous:_c},oc={name:`protocolAutolink`,tokenize:dc,previous:vc},Z={name:`emailAutolink`,tokenize:lc,previous:yc},Q={};function sc(){return{text:Q}}for(var cc=48;cc<123;)Q[cc]=Z,cc++,cc===58?cc=65:cc===91&&(cc=97);Q[43]=Z,Q[45]=Z,Q[46]=Z,Q[95]=Z,Q[72]=[Z,oc],Q[104]=[Z,oc],Q[87]=[Z,ac],Q[119]=[Z,ac];function lc(e,t,n){let r=this,i,a;return o;function o(t){return!bc(t)||!yc.call(r,r.previous)||xc(r.events)?n(t):(e.enter(`literalAutolink`),e.enter(`literalAutolinkEmail`),s(t))}function s(t){return bc(t)?(e.consume(t),s):t===64?(e.consume(t),c):n(t)}function c(t){return t===46?e.check(ic,u,l)(t):t===45||t===95||V(t)?(a=!0,e.consume(t),c):u(t)}function l(t){return e.consume(t),i=!0,c}function u(o){return a&&i&&B(r.previous)?(e.exit(`literalAutolinkEmail`),e.exit(`literalAutolink`),t(o)):n(o)}}function uc(e,t,n){let r=this;return i;function i(t){return t!==87&&t!==119||!_c.call(r,r.previous)||xc(r.events)?n(t):(e.enter(`literalAutolink`),e.enter(`literalAutolinkWww`),e.check(ec,e.attempt(tc,e.attempt(nc,a),n),n)(t))}function a(n){return e.exit(`literalAutolinkWww`),e.exit(`literalAutolink`),t(n)}}function dc(e,t,n){let r=this,i=``,a=!1;return o;function o(t){return(t===72||t===104)&&vc.call(r,r.previous)&&!xc(r.events)?(e.enter(`literalAutolink`),e.enter(`literalAutolinkHttp`),i+=String.fromCodePoint(t),e.consume(t),s):n(t)}function s(t){if(B(t)&&i.length<5)return i+=String.fromCodePoint(t),e.consume(t),s;if(t===58){let n=i.toLowerCase();if(n===`http`||n===`https`)return e.consume(t),c}return n(t)}function c(t){return t===47?(e.consume(t),a?l:(a=!0,c)):n(t)}function l(t){return t===null||St(t)||U(t)||Dt(t)||Et(t)?n(t):e.attempt(tc,e.attempt(nc,u),n)(t)}function u(n){return e.exit(`literalAutolinkHttp`),e.exit(`literalAutolink`),t(n)}}function fc(e,t,n){let r=0;return i;function i(t){return(t===87||t===119)&&r<3?(r++,e.consume(t),i):t===46&&r===3?(e.consume(t),a):n(t)}function a(e){return e===null?n(e):t(e)}}function pc(e,t,n){let r,i,a;return o;function o(t){return t===46||t===95?e.check(rc,c,s)(t):t===null||U(t)||Dt(t)||t!==45&&Et(t)?c(t):(a=!0,e.consume(t),o)}function s(t){return t===95?r=!0:(i=r,r=void 0),e.consume(t),o}function c(e){return i||r||!a?n(e):t(e)}}function mc(e,t){let n=0,r=0;return i;function i(o){return o===40?(n++,e.consume(o),i):o===41&&r<n?a(o):o===33||o===34||o===38||o===39||o===41||o===42||o===44||o===46||o===58||o===59||o===60||o===63||o===93||o===95||o===126?e.check(rc,t,a)(o):o===null||U(o)||Dt(o)?t(o):(e.consume(o),i)}function a(t){return t===41&&r++,e.consume(t),i}}function hc(e,t,n){return r;function r(o){return o===33||o===34||o===39||o===41||o===42||o===44||o===46||o===58||o===59||o===63||o===95||o===126?(e.consume(o),r):o===38?(e.consume(o),a):o===93?(e.consume(o),i):o===60||o===null||U(o)||Dt(o)?t(o):n(o)}function i(e){return e===null||e===40||e===91||U(e)||Dt(e)?t(e):r(e)}function a(e){return B(e)?o(e):n(e)}function o(t){return t===59?(e.consume(t),r):B(t)?(e.consume(t),o):n(t)}}function gc(e,t,n){return r;function r(t){return e.consume(t),i}function i(e){return V(e)?n(e):t(e)}}function _c(e){return e===null||e===40||e===42||e===95||e===91||e===93||e===126||U(e)}function vc(e){return!B(e)}function yc(e){return!(e===47||bc(e))}function bc(e){return e===43||e===45||e===46||e===95||V(e)}function xc(e){let t=e.length,n=!1;for(;t--;){let r=e[t][1];if((r.type===`labelLink`||r.type===`labelImage`)&&!r._balanced){n=!0;break}if(r._gfmAutolinkLiteralWalkedInto){n=!1;break}}return e.length>0&&!n&&(e[e.length-1][1]._gfmAutolinkLiteralWalkedInto=!0),n}var Sc={tokenize:Ac,partial:!0};function Cc(){return{document:{91:{name:`gfmFootnoteDefinition`,tokenize:Dc,continuation:{tokenize:Oc},exit:kc}},text:{91:{name:`gfmFootnoteCall`,tokenize:Ec},93:{name:`gfmPotentialFootnoteCall`,add:`after`,tokenize:wc,resolveTo:Tc}}}}function wc(e,t,n){let r=this,i=r.events.length,a=r.parser.gfmFootnotes||(r.parser.gfmFootnotes=[]),o;for(;i--;){let e=r.events[i][1];if(e.type===`labelImage`){o=e;break}if(e.type===`gfmFootnoteCall`||e.type===`labelLink`||e.type===`label`||e.type===`image`||e.type===`link`)break}return s;function s(i){if(!o||!o._balanced)return n(i);let s=z(r.sliceSerialize({start:o.end,end:r.now()}));return s.codePointAt(0)!==94||!a.includes(s.slice(1))?n(i):(e.enter(`gfmFootnoteCallLabelMarker`),e.consume(i),e.exit(`gfmFootnoteCallLabelMarker`),t(i))}}function Tc(e,t){let n=e.length;for(;n--;)if(e[n][1].type===`labelImage`&&e[n][0]===`enter`){e[n][1];break}e[n+1][1].type=`data`,e[n+3][1].type=`gfmFootnoteCallLabelMarker`;let r={type:`gfmFootnoteCall`,start:Object.assign({},e[n+3][1].start),end:Object.assign({},e[e.length-1][1].end)},i={type:`gfmFootnoteCallMarker`,start:Object.assign({},e[n+3][1].end),end:Object.assign({},e[n+3][1].end)};i.end.column++,i.end.offset++,i.end._bufferIndex++;let a={type:`gfmFootnoteCallString`,start:Object.assign({},i.end),end:Object.assign({},e[e.length-1][1].start)},o={type:`chunkString`,contentType:`string`,start:Object.assign({},a.start),end:Object.assign({},a.end)},s=[e[n+1],e[n+2],[`enter`,r,t],e[n+3],e[n+4],[`enter`,i,t],[`exit`,i,t],[`enter`,a,t],[`enter`,o,t],[`exit`,o,t],[`exit`,a,t],e[e.length-2],e[e.length-1],[`exit`,r,t]];return e.splice(n,e.length-n+1,...s),e}function Ec(e,t,n){let r=this,i=r.parser.gfmFootnotes||(r.parser.gfmFootnotes=[]),a=0,o;return s;function s(t){return e.enter(`gfmFootnoteCall`),e.enter(`gfmFootnoteCallLabelMarker`),e.consume(t),e.exit(`gfmFootnoteCallLabelMarker`),c}function c(t){return t===94?(e.enter(`gfmFootnoteCallMarker`),e.consume(t),e.exit(`gfmFootnoteCallMarker`),e.enter(`gfmFootnoteCallString`),e.enter(`chunkString`).contentType=`string`,l):n(t)}function l(s){if(a>999||s===93&&!o||s===null||s===91||U(s))return n(s);if(s===93){e.exit(`chunkString`);let a=e.exit(`gfmFootnoteCallString`);return i.includes(z(r.sliceSerialize(a)))?(e.enter(`gfmFootnoteCallLabelMarker`),e.consume(s),e.exit(`gfmFootnoteCallLabelMarker`),e.exit(`gfmFootnoteCall`),t):n(s)}return U(s)||(o=!0),a++,e.consume(s),s===92?u:l}function u(t){return t===91||t===92||t===93?(e.consume(t),a++,l):l(t)}}function Dc(e,t,n){let r=this,i=r.parser.gfmFootnotes||(r.parser.gfmFootnotes=[]),a,o=0,s;return c;function c(t){return e.enter(`gfmFootnoteDefinition`)._container=!0,e.enter(`gfmFootnoteDefinitionLabel`),e.enter(`gfmFootnoteDefinitionLabelMarker`),e.consume(t),e.exit(`gfmFootnoteDefinitionLabelMarker`),l}function l(t){return t===94?(e.enter(`gfmFootnoteDefinitionMarker`),e.consume(t),e.exit(`gfmFootnoteDefinitionMarker`),e.enter(`gfmFootnoteDefinitionLabelString`),e.enter(`chunkString`).contentType=`string`,u):n(t)}function u(t){if(o>999||t===93&&!s||t===null||t===91||U(t))return n(t);if(t===93){e.exit(`chunkString`);let n=e.exit(`gfmFootnoteDefinitionLabelString`);return a=z(r.sliceSerialize(n)),e.enter(`gfmFootnoteDefinitionLabelMarker`),e.consume(t),e.exit(`gfmFootnoteDefinitionLabelMarker`),e.exit(`gfmFootnoteDefinitionLabel`),f}return U(t)||(s=!0),o++,e.consume(t),t===92?d:u}function d(t){return t===91||t===92||t===93?(e.consume(t),o++,u):u(t)}function f(t){return t===58?(e.enter(`definitionMarker`),e.consume(t),e.exit(`definitionMarker`),i.includes(a)||i.push(a),K(e,p,`gfmFootnoteDefinitionWhitespace`)):n(t)}function p(e){return t(e)}}function Oc(e,t,n){return e.check(Ut,t,e.attempt(Sc,t,n))}function kc(e){e.exit(`gfmFootnoteDefinition`)}function Ac(e,t,n){let r=this;return K(e,i,`gfmFootnoteDefinitionIndent`,5);function i(e){let i=r.events[r.events.length-1];return i&&i[1].type===`gfmFootnoteDefinitionIndent`&&i[2].sliceSerialize(i[1],!0).length===4?t(e):n(e)}}function jc(e){let t=(e||{}).singleTilde,n={name:`strikethrough`,tokenize:i,resolveAll:r};return t??=!0,{text:{126:n},insideSpan:{null:[n]},attentionMarkers:{null:[126]}};function r(e,t){let n=-1;for(;++n<e.length;)if(e[n][0]===`enter`&&e[n][1].type===`strikethroughSequenceTemporary`&&e[n][1]._close){let r=n;for(;r--;)if(e[r][0]===`exit`&&e[r][1].type===`strikethroughSequenceTemporary`&&e[r][1]._open&&e[n][1].end.offset-e[n][1].start.offset===e[r][1].end.offset-e[r][1].start.offset){e[n][1].type=`strikethroughSequence`,e[r][1].type=`strikethroughSequence`;let i={type:`strikethrough`,start:Object.assign({},e[r][1].start),end:Object.assign({},e[n][1].end)},a={type:`strikethroughText`,start:Object.assign({},e[r][1].end),end:Object.assign({},e[n][1].start)},o=[[`enter`,i,t],[`enter`,e[r][1],t],[`exit`,e[r][1],t],[`enter`,a,t]],s=t.parser.constructs.insideSpan.null;s&&L(o,o.length,0,It(s,e.slice(r+1,n),t)),L(o,o.length,0,[[`exit`,a,t],[`enter`,e[n][1],t],[`exit`,e[n][1],t],[`exit`,i,t]]),L(e,r-1,n-r+3,o),n=r+o.length-2;break}}for(n=-1;++n<e.length;)e[n][1].type===`strikethroughSequenceTemporary`&&(e[n][1].type=`data`);return e}function i(e,n,r){let i=this.previous,a=this.events,o=0;return s;function s(t){return i===126&&a[a.length-1][1].type!==`characterEscape`?r(t):(e.enter(`strikethroughSequenceTemporary`),c(t))}function c(a){let s=Ft(i);if(a===126)return o>1?r(a):(e.consume(a),o++,c);if(o<2&&!t)return r(a);let l=e.exit(`strikethroughSequenceTemporary`),u=Ft(a);return l._open=!u||u===2&&!!s,l._close=!s||s===2&&!!u,n(a)}}}var Mc=class{constructor(){this.map=[]}add(e,t,n){Nc(this,e,t,n)}consume(e){if(this.map.sort(function(e,t){return e[0]-t[0]}),this.map.length===0)return;let t=this.map.length,n=[];for(;t>0;)--t,n.push(e.slice(this.map[t][0]+this.map[t][1]),this.map[t][2]),e.length=this.map[t][0];n.push(e.slice()),e.length=0;let r=n.pop();for(;r;){for(let t of r)e.push(t);r=n.pop()}this.map.length=0}};function Nc(e,t,n,r){let i=0;if(!(n===0&&r.length===0)){for(;i<e.map.length;){if(e.map[i][0]===t){e.map[i][1]+=n,e.map[i][2].push(...r);return}i+=1}e.map.push([t,n,r])}}function Pc(e,t){let n=!1,r=[];for(;t<e.length;){let i=e[t];if(n){if(i[0]===`enter`)i[1].type===`tableContent`&&r.push(e[t+1][1].type===`tableDelimiterMarker`?`left`:`none`);else if(i[1].type===`tableContent`){if(e[t-1][1].type===`tableDelimiterMarker`){let e=r.length-1;r[e]=r[e]===`left`?`center`:`right`}}else if(i[1].type===`tableDelimiterRow`)break}else i[0]===`enter`&&i[1].type===`tableDelimiterRow`&&(n=!0);t+=1}return r}function Fc(){return{flow:{null:{name:`table`,tokenize:Ic,resolveAll:Lc}}}}function Ic(e,t,n){let r=this,i=0,a=0,o;return s;function s(e){let t=r.events.length-1;for(;t>-1;){let e=r.events[t][1].type;if(e===`lineEnding`||e===`linePrefix`)t--;else break}let i=t>-1?r.events[t][1].type:null,a=i===`tableHead`||i===`tableRow`?S:c;return a===S&&r.parser.lazy[r.now().line]?n(e):a(e)}function c(t){return e.enter(`tableHead`),e.enter(`tableRow`),l(t)}function l(e){return e===124?u(e):(o=!0,a+=1,u(e))}function u(t){return t===null?n(t):H(t)?a>1?(a=0,r.interrupt=!0,e.exit(`tableRow`),e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),p):n(t):W(t)?K(e,u,`whitespace`)(t):(a+=1,o&&(o=!1,i+=1),t===124?(e.enter(`tableCellDivider`),e.consume(t),e.exit(`tableCellDivider`),o=!0,u):(e.enter(`data`),d(t)))}function d(t){return t===null||t===124||U(t)?(e.exit(`data`),u(t)):(e.consume(t),t===92?f:d)}function f(t){return t===92||t===124?(e.consume(t),d):d(t)}function p(t){return r.interrupt=!1,r.parser.lazy[r.now().line]?n(t):(e.enter(`tableDelimiterRow`),o=!1,W(t)?K(e,m,`linePrefix`,r.parser.constructs.disable.null.includes(`codeIndented`)?void 0:4)(t):m(t))}function m(t){return t===45||t===58?g(t):t===124?(o=!0,e.enter(`tableCellDivider`),e.consume(t),e.exit(`tableCellDivider`),h):x(t)}function h(t){return W(t)?K(e,g,`whitespace`)(t):g(t)}function g(t){return t===58?(a+=1,o=!0,e.enter(`tableDelimiterMarker`),e.consume(t),e.exit(`tableDelimiterMarker`),_):t===45?(a+=1,_(t)):t===null||H(t)?b(t):x(t)}function _(t){return t===45?(e.enter(`tableDelimiterFiller`),v(t)):x(t)}function v(t){return t===45?(e.consume(t),v):t===58?(o=!0,e.exit(`tableDelimiterFiller`),e.enter(`tableDelimiterMarker`),e.consume(t),e.exit(`tableDelimiterMarker`),y):(e.exit(`tableDelimiterFiller`),y(t))}function y(t){return W(t)?K(e,b,`whitespace`)(t):b(t)}function b(n){return n===124?m(n):n===null||H(n)?!o||i!==a?x(n):(e.exit(`tableDelimiterRow`),e.exit(`tableHead`),t(n)):x(n)}function x(e){return n(e)}function S(t){return e.enter(`tableRow`),C(t)}function C(n){return n===124?(e.enter(`tableCellDivider`),e.consume(n),e.exit(`tableCellDivider`),C):n===null||H(n)?(e.exit(`tableRow`),t(n)):W(n)?K(e,C,`whitespace`)(n):(e.enter(`data`),w(n))}function w(t){return t===null||t===124||U(t)?(e.exit(`data`),C(t)):(e.consume(t),t===92?T:w)}function T(t){return t===92||t===124?(e.consume(t),w):w(t)}}function Lc(e,t){let n=-1,r=!0,i=0,a=[0,0,0,0],o=[0,0,0,0],s=!1,c=0,l,u,d,f=new Mc;for(;++n<e.length;){let p=e[n],m=p[1];p[0]===`enter`?m.type===`tableHead`?(s=!1,c!==0&&(zc(f,t,c,l,u),u=void 0,c=0),l={type:`table`,start:Object.assign({},m.start),end:Object.assign({},m.end)},f.add(n,0,[[`enter`,l,t]])):m.type===`tableRow`||m.type===`tableDelimiterRow`?(r=!0,d=void 0,a=[0,0,0,0],o=[0,n+1,0,0],s&&(s=!1,u={type:`tableBody`,start:Object.assign({},m.start),end:Object.assign({},m.end)},f.add(n,0,[[`enter`,u,t]])),i=m.type===`tableDelimiterRow`?2:u?3:1):i&&(m.type===`data`||m.type===`tableDelimiterMarker`||m.type===`tableDelimiterFiller`)?(r=!1,o[2]===0&&(a[1]!==0&&(o[0]=o[1],d=Rc(f,t,a,i,void 0,d),a=[0,0,0,0]),o[2]=n)):m.type===`tableCellDivider`&&(r?r=!1:(a[1]!==0&&(o[0]=o[1],d=Rc(f,t,a,i,void 0,d)),a=o,o=[a[1],n,0,0])):m.type===`tableHead`?(s=!0,c=n):m.type===`tableRow`||m.type===`tableDelimiterRow`?(c=n,a[1]===0?o[1]!==0&&(d=Rc(f,t,o,i,n,d)):(o[0]=o[1],d=Rc(f,t,a,i,n,d)),i=0):i&&(m.type===`data`||m.type===`tableDelimiterMarker`||m.type===`tableDelimiterFiller`)&&(o[3]=n)}for(c!==0&&zc(f,t,c,l,u),f.consume(t.events),n=-1;++n<t.events.length;){let e=t.events[n];e[0]===`enter`&&e[1].type===`table`&&(e[1]._align=Pc(t.events,n))}return e}function Rc(e,t,n,r,i,a){let o=r===1?`tableHeader`:r===2?`tableDelimiter`:`tableData`;n[0]!==0&&(a.end=Object.assign({},Bc(t.events,n[0])),e.add(n[0],0,[[`exit`,a,t]]));let s=Bc(t.events,n[1]);if(a={type:o,start:Object.assign({},s),end:Object.assign({},s)},e.add(n[1],0,[[`enter`,a,t]]),n[2]!==0){let i=Bc(t.events,n[2]),a=Bc(t.events,n[3]),o={type:`tableContent`,start:Object.assign({},i),end:Object.assign({},a)};if(e.add(n[2],0,[[`enter`,o,t]]),r!==2){let r=t.events[n[2]],i=t.events[n[3]];if(r[1].end=Object.assign({},i[1].end),r[1].type=`chunkText`,r[1].contentType=`text`,n[3]>n[2]+1){let t=n[2]+1,r=n[3]-n[2]-1;e.add(t,r,[])}}e.add(n[3]+1,0,[[`exit`,o,t]])}return i!==void 0&&(a.end=Object.assign({},Bc(t.events,i)),e.add(i,0,[[`exit`,a,t]]),a=void 0),a}function zc(e,t,n,r,i){let a=[],o=Bc(t.events,n);i&&(i.end=Object.assign({},o),a.push([`exit`,i,t])),r.end=Object.assign({},o),a.push([`exit`,r,t]),e.add(n+1,0,a)}function Bc(e,t){let n=e[t],r=n[0]===`enter`?`start`:`end`;return n[1][r]}var Vc={name:`tasklistCheck`,tokenize:Uc};function Hc(){return{text:{91:Vc}}}function Uc(e,t,n){let r=this;return i;function i(t){return r.previous!==null||!r._gfmTasklistFirstContentOfListItem?n(t):(e.enter(`taskListCheck`),e.enter(`taskListCheckMarker`),e.consume(t),e.exit(`taskListCheckMarker`),a)}function a(t){return U(t)?(e.enter(`taskListCheckValueUnchecked`),e.consume(t),e.exit(`taskListCheckValueUnchecked`),o):t===88||t===120?(e.enter(`taskListCheckValueChecked`),e.consume(t),e.exit(`taskListCheckValueChecked`),o):n(t)}function o(t){return t===93?(e.enter(`taskListCheckMarker`),e.consume(t),e.exit(`taskListCheckMarker`),e.exit(`taskListCheck`),s):n(t)}function s(r){return H(r)?t(r):W(r)?e.check({tokenize:Wc},t,n)(r):n(r)}}function Wc(e,t,n){return K(e,r,`whitespace`);function r(e){return e===null?n(e):t(e)}}function Gc(e){return _t([sc(),Cc(),jc(e),Fc(),Hc()])}var Kc={};function qc(e){let t=this,n=e||Kc,r=t.data(),i=r.micromarkExtensions||=[],a=r.fromMarkdownExtensions||=[],o=r.toMarkdownExtensions||=[];i.push(Gc(n)),a.push(Qs()),o.push($s(n))}var Jc=`https://github.com/santhosh-patel/substack-agent/edit/main/docs`,Yc=[{title:`Introduction`,items:[{title:`Overview`,path:``,file:`index.md`,modes:[],description:`Start here — choose a deployment mode and follow the right learning path.`}]},{title:`Getting Started`,items:[{title:`Install`,path:`getting-started/install`,file:`getting-started/install.md`,modes:[],description:"Clone, configure `.env`, and run the local server or MCP."},{title:`Session Cookie`,path:`getting-started/session-cookie`,file:`getting-started/session-cookie.md`,modes:[`Local Dashboard`,`MCP`],description:"How to extract and rotate your Substack `connect.sid` cookie safely."},{title:`Environment Variables`,path:`getting-started/environment-variables`,file:`getting-started/environment-variables.md`,modes:[],description:`Reference for all server env vars — required, optional, and production-only.`},{title:`First Publish`,path:`getting-started/first-publish`,file:`getting-started/first-publish.md`,modes:[`Local Dashboard`],description:`Step-by-step walkthrough: connect, generate, and save your first draft.`}]},{title:`Local Dashboard`,items:[{title:`Overview`,path:`dashboard/overview`,file:`dashboard/overview.md`,modes:[`Local Dashboard`],description:`Playground architecture, tabs, and when to use the dashboard vs the Tools API.`},{title:`Settings`,path:`dashboard/settings`,file:`dashboard/settings.md`,modes:[`Local Dashboard`],description:`Substack session, AI providers, system prompts, and connection testing.`},{title:`Newsletters`,path:`dashboard/newsletters`,file:`dashboard/newsletters.md`,modes:[`Local Dashboard`],description:`AI-assisted newsletter compose, preview, draft, and publish.`},{title:`Notes`,path:`dashboard/notes`,file:`dashboard/notes.md`,modes:[`Local Dashboard`],description:`Short Substack notes with optional link cards.`},{title:`Comments`,path:`dashboard/comments`,file:`dashboard/comments.md`,modes:[`Local Dashboard`],description:`Keyword-based comment automation on target accounts.`},{title:`Scheduler`,path:`dashboard/scheduler`,file:`dashboard/scheduler.md`,modes:[`Local Dashboard`],description:`Queue newsletters and notes for one-off or recurring publish times.`},{title:`History`,path:`dashboard/history`,file:`dashboard/history.md`,modes:[`Local Dashboard`],description:`Unified history of publishes, notes, comments, and Substack archive.`}]},{title:`MCP Server`,items:[{title:`Setup`,path:`mcp/setup`,file:`mcp/setup.md`,modes:[`MCP`],description:`Local stdio MCP for Claude Desktop and Cursor.`},{title:`Remote MCP (HTTP)`,path:`mcp/remote`,file:`mcp/remote.md`,modes:[`MCP`,`Tools API`],description:"Connect MCP clients to your deployed domain at `/api/mcp`."},{title:`Tools Reference`,path:`mcp/tools`,file:`mcp/tools.md`,modes:[`MCP`],description:`All 9 MCP tools with parameters and examples.`},{title:`Limitations`,path:`mcp/limitations`,file:`mcp/limitations.md`,modes:[`MCP`],description:`Session auth, scheduling, and platform constraints.`}]},{title:`Tools API`,items:[{title:`Overview`,path:`api/overview`,file:`api/overview.md`,modes:[`Tools API`],description:`REST endpoints for n8n, GPTs, and custom automations at your domain.`},{title:`Endpoints`,path:`api/endpoints`,file:`api/endpoints.md`,modes:[`Tools API`],description:`Complete route list with curl examples.`},{title:`OpenAPI`,path:`api/openapi`,file:`api/openapi.md`,modes:[`Tools API`],description:`Import the spec into GPT Actions, Postman, or n8n.`},{title:`Dashboard API`,path:`api/dashboard-api`,file:`api/dashboard-api.md`,modes:[`Local Dashboard`],description:"Unauthenticated `/api/*` routes used by the playground UI."}]},{title:`Deployment`,items:[{title:`Deployment Modes`,path:`deployment/modes`,file:`deployment/modes.md`,modes:[],description:`Compare local dashboard, Tools API, stdio MCP, and remote MCP.`},{title:`Deploy Tools API`,path:`deployment/deploy`,file:`deployment/deploy.md`,modes:[`Tools API`],description:`Deploy anywhere: Docker, Railway, Render, Fly, or any Node host.`},{title:`Vercel (optional)`,path:`deployment/vercel`,file:`deployment/vercel.md`,modes:[`Tools API`],description:`Serverless deploy notes and ephemeral storage limits.`},{title:`Scheduler & Cron`,path:`deployment/scheduler-cron`,file:`deployment/scheduler-cron.md`,modes:[`Local Dashboard`],description:`Local worker, manual triggers, and external cron setup.`}]},{title:`Integrations`,items:[{title:`Claude Desktop`,path:`integrations/claude-desktop`,file:`integrations/claude-desktop.md`,modes:[`MCP`],description:"Configure stdio MCP in `claude_desktop_config.json`."},{title:`Cursor`,path:`integrations/cursor`,file:`integrations/cursor.md`,modes:[`MCP`],description:`Local stdio or remote HTTP MCP in Cursor settings.`},{title:`n8n`,path:`integrations/n8n`,file:`integrations/n8n.md`,modes:[`Tools API`],description:"HTTP Request nodes against `/api/tools/*`."},{title:`Custom GPT`,path:`integrations/custom-gpt`,file:`integrations/custom-gpt.md`,modes:[`Tools API`],description:`OpenAPI Actions pointing at your deployment.`}]},{title:`Operations`,items:[{title:`Security`,path:`security`,file:`security.md`,modes:[],description:`Auth model, cookie handling, and production hardening.`},{title:`Troubleshooting`,path:`troubleshooting`,file:`troubleshooting.md`,modes:[],description:`Symptom → cause → fix for common failures.`},{title:`Changelog`,path:`changelog`,file:`changelog.md`,modes:[],description:`Release history for Substack Agent.`}]}],$=Yc.flatMap(e=>e.items.map(t=>({...t,section:e.title})));function Xc(e){let t=e.replace(/^\/docs\/?/,``).replace(/\/$/,``);return $.find(e=>e.path===t)??$[0]}function Zc(e){let t=e.replace(/^\/docs\/?/,``).replace(/\/$/,``),n=$.findIndex(e=>e.path===t);return n===-1?{prev:null,next:$[1]??null}:{prev:n>0?$[n-1]:null,next:n<$.length-1?$[n+1]:null}}function Qc(e){return e?`/docs/${e}`:`/docs`}var $c=Object.assign({"../../../docs/api/dashboard-api.md":`# Dashboard API Reference
 
 Routes under \`/api/*\` used by the playground UI.
 
@@ -90,16 +90,48 @@ Routes under \`/api/*\` used by the playground UI.
 Use [Tools API](/docs/api/overview) with Bearer auth for deployed integrations.
 `,"../../../docs/api/endpoints.md":`# Tools API Endpoints
 
-All routes under \`/api/tools/*\`. Method and path:
+All routes require \`Authorization: Bearer <API_SECRET>\` in production. Base path: \`/api/tools\`.
+
+## Health & status
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | \`/api/tools/health\` | Version, Substack connection status, publication hostname |
+
+\`\`\`bash
+curl -s "https://your-domain/api/tools/health" \\
+  -H "Authorization: Bearer $API_SECRET"
+\`\`\`
 
 ## Publishing
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | \`/api/tools/publish-newsletter\` | Draft or publish newsletter |
-| POST | \`/api/tools/publish-note\` | Publish a note |
-| POST | \`/api/tools/comment\` | Comment on a post |
-| POST | \`/api/tools/automate-comments\` | Keyword comment automation |
+| POST | \`/api/tools/publish-newsletter\` | Create draft or publish newsletter (Markdown body) |
+| POST | \`/api/tools/publish-note\` | Publish a short note |
+| POST | \`/api/tools/comment\` | Post a comment on a specific post |
+| POST | \`/api/tools/automate-comments\` | Scan target account + keyword; AI comments on matches |
+
+### Publish newsletter
+
+\`\`\`bash
+curl -X POST "https://your-domain/api/tools/publish-newsletter" \\
+  -H "Authorization: Bearer $API_SECRET" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "title": "Hello from API",
+    "subtitle": "Optional teaser",
+    "body": "## Markdown body\\n\\nParagraph text.",
+    "isDraft": true
+  }'
+\`\`\`
+
+| Field | Required | Notes |
+|-------|----------|-------|
+| \`title\` | Yes | Newsletter title |
+| \`body\` | Yes | Markdown content |
+| \`subtitle\` | No | Teaser line |
+| \`isDraft\` | No | \`true\` (default) = draft; \`false\` = publish + email |
 
 ## Query
 
@@ -107,47 +139,53 @@ All routes under \`/api/tools/*\`. Method and path:
 |--------|------|-------------|
 | GET | \`/api/tools/list-newsletters\` | Recent newsletter archive |
 | GET | \`/api/tools/list-notes\` | Recent notes |
-| GET | \`/api/tools/list-comments\` | Automation comment log |
+| GET | \`/api/tools/list-comments\` | Comments posted via automation (local log) |
 
 ## Scheduling
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | \`/api/tools/schedule-post\` | Queue scheduled post |
-| GET | \`/api/tools/list-schedules\` | List schedule queue |
+| POST | \`/api/tools/schedule-post\` | Queue a newsletter or note |
+| GET | \`/api/tools/list-schedules\` | List pending/completed queue |
 
-## Example: publish newsletter
+> **Note:** Schedule storage is durable on local \`npm run dev\`; on Vercel it is ephemeral — see [Scheduler & Cron](/docs/deployment/scheduler-cron).
+
+### Schedule post
 
 \`\`\`bash
-curl -X POST https://your-domain/api/tools/publish-newsletter \\
+curl -X POST "https://your-domain/api/tools/schedule-post" \\
   -H "Authorization: Bearer $API_SECRET" \\
   -H "Content-Type: application/json" \\
   -d '{
-    "title": "Hello from API",
-    "body": "## Markdown body",
+    "title": "Weekly digest",
+    "body": "Markdown or plain text",
+    "scheduledAt": "2026-08-01T12:00:00Z",
+    "postType": "newsletter",
+    "recurrence": "once",
     "isDraft": true
   }'
 \`\`\`
 
-## Example: schedule post
+## HTTP status codes
 
-\`\`\`bash
-curl -X POST https://your-domain/api/tools/schedule-post \\
-  -H "Authorization: Bearer $API_SECRET" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "title": "Weekly",
-    "body": "Content",
-    "scheduledAt": "2026-08-01T12:00:00Z",
-    "postType": "newsletter",
-    "recurrence": "once"
-  }'
-\`\`\`
+| Status | Typical cause |
+|--------|---------------|
+| 401 | Missing Bearer token or session expired (\`SESSION_EXPIRED\`) |
+| 403 | Invalid \`API_SECRET\` |
+| 400 | Missing required JSON fields |
+| 503 | \`API_SECRET\` not configured in production |
+| 500 | Substack API error — check cookie and publication URL |
 
-## Next steps
+## MCP parity
 
+Every Tools API action has an equivalent MCP tool — see [MCP tools reference](/docs/mcp/tools).
+
+## Related
+
+- [Tools API overview](/docs/api/overview)
 - [OpenAPI guide](/docs/api/openapi)
-- [MCP tools](/docs/mcp/tools)
+- [Deploy](/docs/deployment/deploy)
+- [Troubleshooting](/docs/troubleshooting)
 `,"../../../docs/api/openapi.md":`# OpenAPI
 
 Substack Agent exposes an OpenAPI 3.1 spec for AI agent discovery.
@@ -188,54 +226,112 @@ Also available at \`/.well-known/ai-plugin.json\` for ChatGPT plugin-style integ
 - [Endpoints](/docs/api/endpoints)
 `,"../../../docs/api/overview.md":`# Tools API Overview
 
-HTTP endpoints for external agents, n8n, Custom GPTs, and webhooks.
+The **Tools API** is a Bearer-protected REST surface at \`/api/tools/*\` for external agents — n8n, Custom GPT Actions, Zapier, cron jobs, and custom backends. Deploy it on **any Node host** and point clients at **your domain**.
+
+## When to use it
+
+| Use Tools API | Use Dashboard \`/api/*\` instead |
+|---------------|-------------------------------|
+| Production automations | Local playground UI only |
+| n8n / GPT / webhooks | Manual testing in browser |
+| Bearer auth required | Trusted localhost dev |
 
 ## Base URL
 
-| Environment | URL |
-|-------------|-----|
+| Environment | Base URL |
+|-------------|----------|
 | Local | \`http://localhost:3456\` |
-| Deployed | \`https://your-domain\` |
+| Production | \`https://your-domain\` |
+
+All routes are under \`/api/tools/\`.
 
 ## Authentication
 
-\`\`\`
+\`\`\`http
 Authorization: Bearer <API_SECRET>
 \`\`\`
 
-- **Production:** \`API_SECRET\` required
-- **Local dev:** auth skipped when \`API_SECRET\` is unset
+| Environment | Behavior |
+|-------------|----------|
+| **Production** (\`NODE_ENV=production\`) | \`API_SECRET\` **required** — missing/invalid token → 401/403 |
+| **Local dev** | If \`API_SECRET\` is unset, auth is skipped for easier testing |
 
-## Response format
+Set \`API_SECRET\` in production even on private networks.
+
+## Health check
+
+Verify deploy and Substack session **before** wiring automations:
+
+\`\`\`bash
+curl -s "https://your-domain/api/tools/health" \\
+  -H "Authorization: Bearer $API_SECRET"
+\`\`\`
 
 \`\`\`json
 {
   "success": true,
-  "data": { ... }
+  "data": {
+    "version": "2.0.0",
+    "connected": true,
+    "publication": "yourname.substack.com"
+  }
 }
 \`\`\`
 
-Error:
+| Field | Meaning |
+|-------|---------|
+| \`connected\` | Server can reach Substack with current \`SUBSTACK_SID\` |
+| \`publication\` | Resolved hostname when connected |
+
+If \`connected\` is \`false\`, refresh [session cookie](/docs/getting-started/session-cookie) in host env vars.
+
+## Response format
+
+**Success:**
+
+\`\`\`json
+{
+  "success": true,
+  "data": { }
+}
+\`\`\`
+
+**Error:**
 
 \`\`\`json
 {
   "success": false,
-  "error": "Human-readable message"
+  "error": "Human-readable message",
+  "code": "SESSION_EXPIRED"
 }
 \`\`\`
 
+| Code | Meaning | Action |
+|------|---------|--------|
+| \`SESSION_EXPIRED\` | Substack cookie invalid | Update \`SUBSTACK_SID\` |
+| \`NOT_CONNECTED\` | No session configured | Set env vars and redeploy |
+
 ## Auto-connect
 
-Tools API routes auto-connect using \`SUBSTACK_SID\` from server environment — no separate \`/connect\` step.
+Unlike the playground, Tools API routes **do not** require \`POST /api/connect\`. The server uses \`SUBSTACK_SID\` and \`SUBSTACK_PUB_URL\` from environment on each request.
+
+## Remote MCP (alternative)
+
+Need MCP tool-calling instead of REST? Use **\`/api/mcp\`** with the same Bearer token — see [Remote MCP](/docs/mcp/remote).
 
 ## OpenAPI
 
-Machine-readable spec: [/openapi.json](/openapi.json)
+Machine-readable spec (import into GPT Actions, Postman, n8n):
 
-## Next steps
+- Local: [http://localhost:3456/openapi.json](/openapi.json)
+- Deployed: \`https://your-domain/openapi.json\`
+
+## Related
 
 - [Endpoints reference](/docs/api/endpoints)
-- [Deploy the Tools API](/docs/deployment/deploy)
+- [Deploy guide](/docs/deployment/deploy)
+- [OpenAPI import](/docs/api/openapi)
+- [Security](/docs/security)
 `,"../../../docs/changelog.md":`# Changelog
 
 All notable changes to Substack Agent.
@@ -298,71 +394,93 @@ All notable changes to Substack Agent.
 - AI-powered newsletter and note generation
 `,"../../../docs/dashboard/comments.md":`# Comments Automation
 
-Automate contextual replies on a target Substack account's posts.
+Scan a **target Substack account's** recent posts and automatically post AI-generated comments when a **keyword** matches.
 
-## Setup
+## Before you start
 
-1. Connect to Substack in [Settings](/docs/dashboard/settings)
-2. Configure AI provider key
-3. Go to **Comments** tab
+- [Connect](/docs/dashboard/settings) to Substack
+- Configure an **AI provider key** in Settings
+- Understand Substack's community guidelines — use automation responsibly
 
 ## Parameters
 
-| Field | Description |
-|-------|-------------|
-| Target account | \`@username\`, publication URL, or post ID |
-| Keyword | Only comment on posts matching this keyword |
-| Instructions | Optional prompt for comment tone/style |
+| Field | Description | Example |
+|-------|-------------|---------|
+| **Target account** | \`@slug\`, profile URL, or numeric ID | \`@techwriter\` |
+| **Keyword** | Match phrase in post title/body | \`AI agents\` |
+| **Instructions** | Optional tone/style for generated comments | "Friendly, concise, add one insight" |
 
-## Run
+## Run automation
 
-Click **Run Automation**. The console shows live logs as posts are scanned and commented on.
+1. Open the **Comments** tab
+2. Fill target, keyword, and optional instructions
+3. Click **Run Automation**
+4. Watch the **console** for scan progress, matches, and errors
 
-## Stop button
+## Stop behavior
 
-**Stop** cancels the **browser request only**. The server may continue processing the current automation run until completion.
+**Stop** cancels the browser HTTP request. The server may finish processing the current batch — refresh logs if unsure.
 
-## API equivalent
+## Where comments are logged
 
-- Dashboard: \`POST /api/comments/automate\`
-- Tools API: \`POST /api/tools/automate-comments\`
-- MCP: \`automate_comments\`
+Successful automation comments append to \`src/data/comments_history.json\` and appear in the **History** tab.
 
-## Next steps
+## API equivalents
+
+| Surface | Route / tool |
+|---------|--------------|
+| Dashboard | \`POST /api/comments/automate\` |
+| Tools API | \`POST /api/tools/automate-comments\` |
+| MCP | \`automate_comments\` |
+
+## Tips
+
+- Start with a narrow keyword to avoid spammy matches
+- Test with a small target account before broad automation
+- Refresh \`connect.sid\` if comments fail with auth errors
+
+## Related
 
 - [Troubleshooting](/docs/troubleshooting)
+- [MCP tools — automate_comments](/docs/mcp/tools)
 `,"../../../docs/dashboard/history.md":`# History
 
-The **History** tab aggregates publication activity from multiple sources.
+The **History** tab is a unified view of what Substack Agent and Substack know about your recent activity.
 
-## Three data sources
+## Data sources
 
-| Source | Location | Description |
-|--------|----------|-------------|
-| **Browser drafts** | Newsletters tab bottom panel | \`localStorage\` publish history (last 15 items) |
-| **App history** | History tab after Fetch | Server-side publication log |
-| **Substack archive** | History tab after Fetch | Pulled from Substack API |
+| Source | Where it lives | What it shows |
+|--------|----------------|---------------|
+| **Browser drafts** | Newsletters tab panel | Last ~15 publishes stored in \`localStorage\` |
+| **App history** | Server after Fetch | Actions logged by Substack Agent |
+| **Substack archive** | Fetched from API | Your publication's recent posts |
 
-## Using History tab
+The Newsletters tab bottom panel is **client-only** for quick reference. History tab merges server + archive data.
 
-1. Connect to Substack
+## Using the History tab
+
+1. **Connect** to Substack in Settings
 2. Click **Fetch History**
-3. Filter by type (newsletter, note, comment)
-4. Search by title or content
-5. Sort by date
+3. **Filter** by type: newsletter, note, comment
+4. **Search** by title or body text
+5. **Sort** by date
+6. **Reuse** an item to pre-fill editors (where supported)
 
-## Why sources differ
+## API routes
 
-Newsletter tab history is client-only for quick reference. The History tab merges server records with fetched Substack archive data.
+| Route | Purpose |
+|-------|---------|
+| \`GET /api/publications/history\` | Server-side publication log |
+| \`GET /api/newsletters\` | Substack archive fetch |
 
-## API
+## Vercel note
 
-- \`GET /api/publications/history\` — server publication history
-- \`GET /api/newsletters\` — Substack archive fetch
+History persistence on serverless hosts may be limited — local \`npm run dev\` gives the most reliable History experience.
 
-## Next steps
+## Related
 
 - [Newsletters](/docs/dashboard/newsletters)
+- [Comments](/docs/dashboard/comments)
 `,"../../../docs/dashboard/newsletters.md":`# Newsletters
 
 Compose and publish newsletter posts from the **Newsletters** tab.
@@ -406,165 +524,250 @@ The bottom panel shows **browser drafts** stored in \`localStorage\` (separate f
 - [Scheduler](/docs/dashboard/scheduler)
 `,"../../../docs/dashboard/notes.md":`# Notes
 
-Publish short **Substack Notes** from the **Notes** tab.
+Publish short **Substack Notes** — the feed-style updates on Substack — from the **Notes** tab.
 
 ## Workflow
 
-1. Enter a topic → **Generate** (AI-assisted)
-2. Edit note body in the textarea
-3. Optionally add a **link URL** for link card preview
-4. **Publish Note**
+1. Enter a **topic** (optional) → **Generate** for AI draft
+2. Edit the note body (keep it concise — Notes are short-form)
+3. Optionally add a **link URL** for a link card in the preview
+4. Click **Publish Note**
 
 ## Requirements
 
-- Must be **connected** to Substack (connection gate enforced)
-- AI generation requires provider key
+| Requirement | Why |
+|-------------|-----|
+| Substack **connected** | Publish is blocked until session is valid |
+| AI key (for Generate) | Provider configured in [Settings](/docs/dashboard/settings) |
 
 ## Preview
 
-Live preview shows how the note will appear in the Substack feed.
+The right panel shows a **feed-style preview** that updates as you type the link URL and body.
 
-## Fetch notes
+## Fetch recent notes
 
-Click **Fetch Notes** to load recent notes from your publication.
+**Fetch Notes** loads your latest notes from Substack into the list below the editor — useful for checking what you have already posted.
 
-## API equivalent
+## API equivalents
 
-- Dashboard: \`POST /api/notes/generate\`, \`POST /api/notes/publish\`, \`GET /api/notes\`
-- Tools API: \`POST /api/tools/publish-note\`, \`GET /api/tools/list-notes\`
-- MCP: \`publish_note\`, \`list_notes\`
+| Surface | Route / tool |
+|---------|--------------|
+| Dashboard | \`POST /api/notes/generate\`, \`POST /api/notes/publish\`, \`GET /api/notes\` |
+| Tools API | \`POST /api/tools/publish-note\`, \`GET /api/tools/list-notes\` |
+| MCP | \`publish_note\`, \`list_notes\` |
 
-## Next steps
+## Tips
+
+- Notes work well for quick updates; use **Newsletters** for long-form Markdown
+- Link cards require a valid absolute URL (\`https://...\`)
+
+## Related
 
 - [Newsletters](/docs/dashboard/newsletters)
+- [First publish](/docs/getting-started/first-publish)
 `,"../../../docs/dashboard/overview.md":`# Dashboard Overview
 
-The playground at \`/playground\` is a full local web dashboard for Substack publishing with AI assistance.
+The **playground** at \`/playground\` is a full local web dashboard for AI-assisted Substack publishing. It is the recommended way to learn Substack Agent before automating via the Tools API or MCP.
 
 ## Architecture
 
 \`\`\`
-Browser (playground UI)
-    ↓ fetch /api/*
-Local Express server (port 3456)
-    ↓ session auth
-Substack (unofficial session API)
+┌──────────────┐     fetch /api/*      ┌─────────────────┐
+│   Browser    │ ────────────────────► │ Express :3456   │
+│  playground  │   (no Bearer auth)    │                 │
+└──────────────┘                       └────────┬────────┘
+                                                  │ connect.sid
+                                                  ▼
+                                         ┌─────────────────┐
+                                         │    Substack     │
+                                         └─────────────────┘
 \`\`\`
+
+The dashboard is **not** a production API surface. External systems should use [\`/api/tools/*\`](/docs/api/overview) or [\`/api/mcp\`](/docs/mcp/remote) with Bearer auth.
 
 ## Tabs
 
-| Tab | Purpose |
-|-----|---------|
-| Newsletters | AI compose, markdown preview, draft/publish |
-| Comments | Keyword-based comment automation |
-| Notes | Short posts with optional link cards |
-| Scheduler | Queue future/recurring publishes |
-| History | App history + Substack archive |
+| Tab | What it does | Deep dive |
+|-----|--------------|-----------|
+| **Newsletters** | AI topic → Markdown → draft/publish | [Newsletters](/docs/dashboard/newsletters) |
+| **Comments** | Keyword automation on target accounts | [Comments](/docs/dashboard/comments) |
+| **Notes** | Short posts + link cards | [Notes](/docs/dashboard/notes) |
+| **Scheduler** | Queue future / recurring publishes | [Scheduler](/docs/dashboard/scheduler) |
+| **History** | Archive + app activity | [History](/docs/dashboard/history) |
 
-## Authentication
-
-- Dashboard \`/api/*\` routes have **no Bearer auth**
-- Designed for **local development only**
-- Session established via \`POST /api/connect\`
+Settings live in the **collapsible sidebar** — [Settings guide](/docs/dashboard/settings).
 
 ## Getting started
 
-1. \`npm run dev\`
-2. Open \`/playground\`
-3. Complete the onboarding checklist
-4. See [Settings](/docs/dashboard/settings)
+1. Run \`npm run dev\`
+2. Open [http://localhost:3456/playground](http://localhost:3456/playground)
+3. Complete the **onboarding checklist** (top of page):
+   - Paste \`connect.sid\` → **Test** → **Connect**
+   - Add AI provider key → **Test API Key**
+4. Publish from **Newsletters** — [First publish walkthrough](/docs/getting-started/first-publish)
 
-## Next steps
+## Deployment banners
 
-- [Newsletters](/docs/dashboard/newsletters)
-- [Security](/docs/security)
+When the server detects Vercel or production config, banners explain:
+
+- **Dashboard vs Tools API** — playground uses unauthenticated routes; automations should use Bearer-protected endpoints
+- **Scheduler limits** — ephemeral storage on serverless hosts
+- **Server SID** — warn if env cookie is configured on a public deploy
+
+## Authentication model
+
+| Route | Auth | Purpose |
+|-------|------|---------|
+| \`/api/connect\`, \`/api/publish\`, … | None | Playground only |
+| \`/api/tools/*\` | Bearer | Production agents |
+| \`/api/mcp\` | Bearer | Remote MCP |
+
+See [Security](/docs/security) before exposing the playground publicly.
+
+## Storage
+
+| Data | Where |
+|------|-------|
+| Session cookie, AI keys | Browser \`localStorage\` (settings sidebar) |
+| Schedules (local dev) | \`src/data/schedules.json\` |
+| Comment automation log | \`src/data/comments_history.json\` |
+| Publish history panel | Browser \`localStorage\` |
+
+## Related
+
+- [Settings](/docs/dashboard/settings)
+- [Dashboard API routes](/docs/api/dashboard-api)
+- [Deployment modes](/docs/deployment/modes)
 `,"../../../docs/dashboard/scheduler.md":`# Scheduler
 
-Queue newsletters and notes for future publishing with optional recurrence.
+Queue **newsletters** and **notes** for future publishing with optional recurrence. Best experienced on **local \`npm run dev\`** where storage is persistent.
+
+## Overview
+
+\`\`\`
+Create schedule → JSON queue → worker/cron → publish at due time
+\`\`\`
+
+| Component | Local dev | Vercel |
+|-----------|-----------|--------|
+| Storage | \`src/data/schedules.json\` | Ephemeral \`/tmp\` |
+| Worker | 60s background poll | Manual / external cron |
+| Create UI | Enabled | Disabled (banner) |
 
 ## Post types
 
-- **Newsletter** — full post with title/subtitle
-- **Note** — short update
+| Type | Fields |
+|------|--------|
+| **Newsletter** | Title, subtitle, Markdown body |
+| **Note** | Body, optional link URL |
 
-## Recurrence options
+## Recurrence
 
-| Pattern | Description |
-|---------|-------------|
-| Once | One-off scheduled publish |
-| Daily | Every day |
-| Twice a day | Two times per day |
+| Pattern | Use case |
+|---------|----------|
+| Once | Single future publish |
+| Daily | Same time every day |
+| Twice daily | Two times per day |
 | Alternate days | Every other day |
-| Weekly | Once per week |
+| Weekly | Same weekday |
 
-## Presets
+Use the **date/time picker** or quick presets (30 min, 1 hour, tomorrow 9 AM).
 
-Choose content presets (Default, Brief, Builder, Reaction, Custom) with optional web research and per-job AI keys.
+## AI research mode
+
+Enable **web search** on a schedule to let AI research a topic at run time and generate content. Store an API key with the job or rely on server env vars.
+
+**Presets:** Brief, Builder, Default, Reaction — starting points for \`schedBody\` guidelines.
 
 ## Queue management
 
-- View pending, paused, and failed jobs
-- **Run now**, **Retry**, **Pause/Resume**
-- **Trigger Queue Check** for manual cron run
-- Inspector panel with logs
+| Action | Description |
+|--------|-------------|
+| **Trigger Queue Check** | Manually process due jobs now |
+| **Run now** | Publish a specific queued item immediately |
+| **Pause / Resume** | Temporarily skip a job |
+| **Retry** | Re-run a failed job |
+| **Inspector logs** | View worker output; copy for debugging |
 
-## Local vs Vercel
+Browser **polling** (every 60s on Scheduler tab) also calls \`/api/cron/process-schedules\`.
 
-| Environment | Behavior |
-|-------------|----------|
-| Local \`npm run dev\` | Full scheduler with persistent JSON storage |
-| Vercel | Ephemeral \`/tmp\`, warning banner, create disabled |
+## Cron endpoint
 
-See [Scheduler & Cron](/docs/deployment/scheduler-cron).
+\`\`\`http
+GET|POST /api/cron/process-schedules
+Authorization: Bearer $CRON_SECRET
+\`\`\`
 
-## API equivalent
+See [Scheduler & Cron](/docs/deployment/scheduler-cron) for external cron setup. This repo does **not** ship Vercel cron in \`vercel.json\`.
 
-- Dashboard: \`GET/POST /api/schedule\`, etc.
-- Tools API: \`POST /api/tools/schedule-post\`, \`GET /api/tools/list-schedules\`
-- MCP: \`schedule_post\`, \`list_schedules\`
+## API equivalents
 
-## Next steps
+| Surface | Route / tool |
+|---------|--------------|
+| Dashboard | \`/api/schedule/*\` |
+| Tools API | \`POST /api/tools/schedule-post\`, \`GET /api/tools/list-schedules\` |
+| MCP | \`schedule_post\`, \`list_schedules\` |
+
+## Related
 
 - [Deployment: Scheduler & Cron](/docs/deployment/scheduler-cron)
+- [Newsletters](/docs/dashboard/newsletters)
+- [Notes](/docs/dashboard/notes)
 `,"../../../docs/dashboard/settings.md":`# Settings
 
-The settings sidebar controls Substack connection and AI provider configuration.
+The settings sidebar controls Substack connection, AI providers, and writing prompts. Open it from the **gear icon** or it auto-expands on first visit when no session is configured.
 
-## Substack Account
+## Substack account
 
 | Field | Description |
 |-------|-------------|
-| Session cookie | Your \`connect.sid\` value |
-| Publication URL | e.g. \`yourname.substack.com\` |
+| **Session cookie** | Your \`connect.sid\` value — [extraction guide](/docs/getting-started/session-cookie) |
+| **Publication URL** | e.g. \`yourname.substack.com\` (with or without \`https://\`) |
 
-**Test** validates the cookie without persisting a session. **Connect** establishes the server session.
+### Connection buttons
 
-Cookie guide: [Session Cookie](/docs/getting-started/session-cookie)
+| Button | Behavior |
+|--------|----------|
+| **Test** | Validates cookie with Substack without changing UI state heavily |
+| **Connect** | Establishes server session (\`POST /api/connect\`); enables publish actions |
+| **Disconnect** | Clears server session and cookie field |
 
-## AI Provider
+If you see a **“refresh your connect.sid”** toast, extract a new cookie from DevTools — sessions expire after logout or time.
 
-Supported providers:
+## AI provider
 
-- Groq
-- Gemini
-- OpenAI
-- OpenRouter
+| Provider | Typical models |
+|----------|----------------|
+| Groq | Llama 3.x |
+| Gemini | Gemini 2.x |
+| OpenAI | GPT-4o mini, etc. |
+| OpenRouter | Multi-model gateway |
 
-Select provider → model → paste API key → **Test API Key** → **Save API Key**.
+**Workflow:** Select provider → choose model → paste API key → **Test API Key** → **Save API Key**.
 
-Keys are stored in browser \`localStorage\` per provider unless set in server \`.env\`.
+Keys are stored in browser **\`localStorage\`** per provider unless the server has keys in \`.env\` (then model select may work without saving locally).
 
-## System Prompt
+## System prompt
 
-Customize AI writing instructions for newsletters and notes. Reset to default anytime.
+Customize AI instructions for **Newsletters** and **Notes** tabs. Changes save automatically. **Reset** restores the server default from \`/api/config\`.
 
-## Security notice
+## Security
 
-Settings display a warning: cookies and keys are stored locally and sent to your server on connect. See [Security](/docs/security).
+- Cookies and keys in \`localStorage\` are visible to anyone with access to your browser profile
+- Connect sends the cookie to **your** Substack Agent server only
+- Do not use the dashboard on untrusted shared machines without clearing site data afterward
 
-## Next steps
+Full model: [Security](/docs/security).
+
+## Deployment-aware banners
+
+On Vercel or production hosts, banners at the top of the playground explain dashboard vs Tools API boundaries and scheduler limits.
+
+## Related
 
 - [First publish](/docs/getting-started/first-publish)
+- [Dashboard overview](/docs/dashboard/overview)
+- [Environment variables](/docs/getting-started/environment-variables)
 `,"../../../docs/deployment/deploy.md":`# Deploy the Tools API
 
 Host the **Tools API** on any Node platform — Vercel, Railway, a VPS, or your own server. Then use **your domain** with agents, automations, and MCP-style tool clients (n8n, custom GPTs, webhooks).
@@ -672,40 +875,109 @@ Vercel is one supported host. Scheduler and history are limited on serverless �
 - [Custom GPT](/docs/integrations/custom-gpt)
 `,"../../../docs/deployment/modes.md":`# Deployment Modes
 
-Substack Agent is three products in one. Pick the mode that matches your workflow.
+Substack Agent ships as **four complementary surfaces**. Most teams use one primary mode and optionally add others.
 
-| Mode | Command | Works on Vercel | Best for |
-|------|---------|-----------------|----------|
-| **Local Dashboard** | \`npm run dev\` | Partial | Full UI, scheduler, AI compose, history |
-| **Tools API** | any Node host + \`API_SECRET\` | Yes | n8n, GPTs, webhooks, stateless automation |
-| **MCP Server** | \`npm run mcp\` | No (stdio/local) | Claude Desktop, Cursor |
+## At a glance
+
+| Mode | Entry point | Auth | Works on Vercel | Best for |
+|------|-------------|------|-----------------|----------|
+| **Local Dashboard** | \`/playground\` | None (localhost) | Partial UI | AI compose, scheduler, history |
+| **Tools API** | \`/api/tools/*\` | Bearer \`API_SECRET\` | Yes | n8n, GPTs, webhooks |
+| **Local MCP** | \`npm run mcp\` | Env in client | No (stdio) | Claude Desktop, Cursor local |
+| **Remote MCP** | \`/api/mcp\` | Bearer \`API_SECRET\` | Yes* | Cursor remote, cloud MCP clients |
+
+\\* Stateless Streamable HTTP — suitable for serverless; session lives in server env vars.
+
+## Decision guide
+
+**Use the Local Dashboard when:**
+
+- You want a visual editor, live Markdown preview, and onboarding checklist
+- You need the **scheduler** with local JSON storage and background polling
+- You are developing or testing on \`localhost:3456\`
+
+**Use the Tools API when:**
+
+- An external system (n8n, Zapier, Custom GPT) calls HTTP endpoints
+- You need **Bearer auth** and a stable OpenAPI contract
+- You deploy to **any Node host** at your domain
+
+**Use Local MCP when:**
+
+- Claude Desktop or Cursor runs on your machine
+- You want native tool-calling in chat (stdio transport)
+- You prefer not to expose an HTTP MCP endpoint
+
+**Use Remote MCP when:**
+
+- Your Substack Agent instance is **already deployed**
+- Your MCP client supports HTTP (\`https://your-domain/api/mcp\`)
+- You want the same 9 tools without running stdio locally
 
 ## Local Dashboard
 
-- URL: \`http://localhost:3456/playground\`
-- All playground tabs work fully
-- Scheduler uses local JSON storage + 60s polling
-- Dashboard \`/api/*\` has **no auth** — intended for localhost only
+\`\`\`
+Browser → /api/* (no Bearer) → Express → Substack
+\`\`\`
+
+- Full playground: Newsletters, Notes, Comments, Scheduler, History
+- Scheduler uses \`src/data/schedules.json\` + 60s worker when running \`npm run dev\`
+- **Not for public production** — \`/api/*\` has no auth layer
+
+See [Dashboard overview](/docs/dashboard/overview) and [Security](/docs/security).
 
 ## Tools API
 
-- Routes: \`/api/tools/*\`
-- Auth: \`Authorization: Bearer <API_SECRET>\`
-- OpenAPI: [/openapi.json](/openapi.json)
-- Stateless tool calls — no playground UI required
-- Point HTTP clients at your deployment domain
+\`\`\`
+Agent → Authorization: Bearer → /api/tools/* → Substack
+\`\`\`
 
-## MCP Server
+- Auto-connects via server \`SUBSTACK_SID\` — no \`/connect\` step
+- Consistent JSON: \`{ success, data?, error?, code? }\`
+- Health: \`GET /api/tools/health\`
 
-- Stdio transport only — runs locally alongside Claude Desktop or Cursor
-- Configure in Claude Desktop or Cursor
-- 9 native tools — see [MCP Tools](/docs/mcp/tools)
+See [Tools API overview](/docs/api/overview) and [Deploy](/docs/deployment/deploy).
+
+## MCP (local stdio)
+
+\`\`\`
+Claude/Cursor → stdio → npm run mcp → Substack
+\`\`\`
+
+- 9 tools — [full reference](/docs/mcp/tools)
+- Configure in \`claude_desktop_config.json\` or Cursor MCP settings
+- Reads \`SUBSTACK_SID\` from the MCP env block
+
+See [MCP setup](/docs/mcp/setup).
+
+## Remote MCP (HTTP)
+
+\`\`\`
+MCP client → Bearer → /api/mcp → same tools as stdio
+\`\`\`
+
+- Same tool handlers as local MCP (\`src/mcp/tools.ts\`)
+- Requires \`API_SECRET\` + \`SUBSTACK_SID\` on the host
+
+See [Remote MCP](/docs/mcp/remote).
+
+## Vercel and serverless notes
+
+| Feature | Local \`npm run dev\` | Vercel / serverless |
+|---------|---------------------|---------------------|
+| Tools API | Yes | Yes |
+| Remote MCP | Yes | Yes |
+| Playground UI | Yes | Yes (with warnings) |
+| Scheduler storage | Persistent JSON | Ephemeral \`/tmp\` |
+| Background worker | 60s polling | Manual / external cron |
+
+Details: [Vercel (optional)](/docs/deployment/vercel), [Scheduler & Cron](/docs/deployment/scheduler-cron).
 
 ## Next steps
 
 - [Deploy the Tools API](/docs/deployment/deploy)
-- [Deploy to Vercel](/docs/deployment/vercel) (optional)
-- [Scheduler & Cron](/docs/deployment/scheduler-cron)
+- [Install locally](/docs/getting-started/install)
+- [MCP setup](/docs/mcp/setup)
 `,"../../../docs/deployment/scheduler-cron.md":`# Scheduler and Cron
 
 The scheduler queues newsletters and notes for future publishing with optional recurrence.
@@ -808,86 +1080,91 @@ If \`SUBSTACK_SID\` is in Vercel env and your deployment is public, unauthentica
 - [Deploy the Tools API](/docs/deployment/deploy)
 - [Tools API overview](/docs/api/overview)
 - [Scheduler & Cron](/docs/deployment/scheduler-cron)
-`,"../../../docs/getting-started/environment-variables.md":`# Environment Variables
+`,"../../../docs/getting-started/environment-variables.md":"# Environment Variables\n\nReference for server configuration. Copy `.env.example` to `.env` for local development.\n\n## Required (all modes)\n\n| Variable | Description | Example |\n|----------|-------------|---------|\n| `SUBSTACK_SID` | `connect.sid` cookie value | See [Session cookie](/docs/getting-started/session-cookie) |\n| `SUBSTACK_PUB_URL` | Publication hostname | `yourname.substack.com` |\n\nAlso accepted: `PUBLICATION_URL` (alias for pub URL).\n\n## Production (Tools API & Remote MCP)\n\n| Variable | Description |\n|----------|-------------|\n| `API_SECRET` | Bearer token for `/api/tools/*` and `/api/mcp` — **required when `NODE_ENV=production`** |\n| `NODE_ENV` | Set to `production` on hosted deploys |\n\nWithout `API_SECRET` in production, tool routes return **503**.\n\n## AI providers (optional)\n\nUsed when playground or automation does not receive a key in the request body.\n\n| Variable | Provider |\n|----------|----------|\n| `GROQ_API_KEY` | Groq |\n| `GEMINI_API_KEY` | Google Gemini |\n| `OPENAI_API_KEY` | OpenAI |\n| `OPENROUTER_API_KEY` | OpenRouter |\n\nPlayground keys can also live in browser `localStorage` via Settings.\n\n## Scheduler & cron\n\n| Variable | Description |\n|----------|-------------|\n| `CRON_SECRET` | Auth for `GET/POST /api/cron/process-schedules` (falls back to `API_SECRET`) |\n\nUsed by playground polling, manual queue check, and external cron jobs — [Scheduler & Cron](/docs/deployment/scheduler-cron).\n\n## Platform-specific\n\n| Variable | Description |\n|----------|-------------|\n| `VERCEL` | Set automatically on Vercel — enables deployment mode banners |\n| `VERCEL_URL` | Used for default tools API URL hint in playground config |\n| `TOOLS_API_BASE_URL` | Optional override shown in deploy banners |\n\n## What `/api/config` exposes\n\nThe playground fetches `/api/config` for **non-secret flags only**:\n\n- `hasSubstackSid`, `hasGroqApiKey`, etc. (booleans)\n- `deploymentMode`, `publicationUrl`, default prompts\n\nNever exposes raw cookies or API keys to the browser.\n\n## Local vs deployed checklist\n\n| Variable | Local dev | Production deploy |\n|----------|-----------|-------------------|\n| `SUBSTACK_SID` | `.env` | Host env |\n| `SUBSTACK_PUB_URL` | `.env` | Host env |\n| `API_SECRET` | Optional | **Required** |\n| `NODE_ENV` | unset | `production` |\n\n## Related\n\n- [Security](/docs/security)\n- [Deploy the Tools API](/docs/deployment/deploy)\n- [Deployment modes](/docs/deployment/modes)\n","../../../docs/getting-started/first-publish.md":`# First Publish
 
-All variables from \`.env.example\`:
+Publish your first newsletter **draft** from the playground in about five minutes.
 
-## Required
+## Prerequisites
 
-| Variable | Description |
-|----------|-------------|
-| \`SUBSTACK_SID\` | \`connect.sid\` cookie value |
-| \`SUBSTACK_PUB_URL\` | Publication hostname, e.g. \`yourname.substack.com\` |
+- [Installed](/docs/getting-started/install) and \`npm run dev\` running
+- [Session cookie](/docs/getting-started/session-cookie) extracted from DevTools
+- (Optional) AI provider key for **Generate**
 
-## Production (Tools API)
+## Step-by-step
 
-| Variable | Description |
-|----------|-------------|
-| \`API_SECRET\` | Bearer token for \`/api/tools/*\` — **required in production** |
+### 1. Open the playground
 
-## AI providers (optional)
+[http://localhost:3456/playground](http://localhost:3456/playground)
 
-| Variable | Used for |
-|----------|----------|
-| \`GROQ_API_KEY\` | Groq models in playground / automation |
-| \`GEMINI_API_KEY\` | Google Gemini models |
-| \`OPENAI_API_KEY\` | OpenAI models + DALL-E sketch illustrations |
-| \`OPENROUTER_API_KEY\` | OpenRouter models in playground |
+### 2. Complete onboarding
 
-You can also paste AI keys in playground settings (stored in browser \`localStorage\`).
+The checklist at the top tracks progress:
 
-## Scheduler cron
+1. Paste **\`connect.sid\`** in Settings sidebar → **Test** → **Connect**
+2. Select AI provider → paste key → **Test API Key**
+3. Publish your first draft (this guide)
 
-| Variable | Description |
-|----------|-------------|
-| \`CRON_SECRET\` | Auth for \`/api/cron/process-schedules\` (falls back to \`API_SECRET\`) |
+### 3. Generate or write content
 
-## Vercel notes
+**Option A — AI generate:**
 
-- Scheduler and history data use ephemeral \`/tmp\` on Vercel unless durable storage is configured
-- See [Scheduler & Cron](/docs/deployment/scheduler-cron)
+1. Go to **Newsletters**
+2. Enter a topic (e.g. "Weekly update on AI tooling")
+3. Optionally enable **web search**
+4. Click **Generate**
 
-## Next steps
+**Option B — manual:**
 
-- [Deployment modes](/docs/deployment/modes)
-- [Security](/docs/security)
-`,"../../../docs/getting-started/first-publish.md":`# First Publish
+Type title, subtitle, and Markdown body directly in the editor.
 
-Walk through your first newsletter draft using the local playground.
+### 4. Review preview
 
-## Steps
+The right panel shows a **Substack-style preview**. Edit the Markdown on the left — preview updates live.
 
-1. **Start the server:** \`npm run dev\`
-2. **Open playground:** [http://localhost:3456/playground](http://localhost:3456/playground)
-3. **Complete onboarding checklist** (top banner):
-   - Paste \`connect.sid\` → **Test** → **Connect**
-   - Add an AI provider key → **Test API Key**
-4. Go to **Newsletters** tab
-5. Enter a topic → **Generate** (optional web search toggle)
-6. Review title, subtitle, and markdown preview
-7. Enable **Save as draft** → **Publish**
+### 5. Publish as draft
+
+1. Enable **Save as draft** (recommended for first run)
+2. Click **Publish**
+3. Confirm success toast — draft appears on Substack
 
 ## Draft vs live
 
-| Mode | Behavior |
-|------|----------|
-| Draft | Saved to Substack; not emailed to subscribers |
-| Live | Published and emailed to subscribers |
+| Mode | Checkbox | Result |
+|------|----------|--------|
+| **Draft** | Save as draft **on** | Saved to Substack; not emailed |
+| **Live** | Save as draft **off** | Published and emailed to subscribers |
 
-## Limitations
+Start with drafts until you trust the workflow.
 
-- Requires local \`npm run dev\` for full dashboard features
-- AI generation needs a configured provider key (browser or \`.env\`)
+## After your first publish
 
-## Next steps
+- Check Substack's editor for the draft URL
+- Explore [Scheduler](/docs/dashboard/scheduler) for timed publishes
+- Try [MCP setup](/docs/mcp/setup) for Claude/Cursor
+
+## Troubleshooting
+
+| Issue | Fix |
+|-------|-----|
+| Publish disabled | Connect Substack first |
+| Generate fails | Add/test AI key in Settings |
+| 401 / session error | Refresh \`connect.sid\` — [Troubleshooting](/docs/troubleshooting) |
+
+## Related
 
 - [Newsletters guide](/docs/dashboard/newsletters)
-- [MCP setup](/docs/mcp/setup) for Claude/Cursor
+- [Settings](/docs/dashboard/settings)
 `,"../../../docs/getting-started/install.md":`# Install
 
-**Prerequisites:** Node.js 18+, npm, a Substack account.
+Get Substack Agent running locally in a few minutes.
 
-## Clone and install
+## Prerequisites
+
+- **Node.js 18+** and npm
+- A **Substack account** you can log into in a browser
+- (Optional) AI provider API key for generation features
+
+## 1. Clone and install
 
 \`\`\`bash
 git clone https://github.com/santhosh-patel/substack-agent.git
@@ -896,42 +1173,75 @@ npm install
 cp .env.example .env
 \`\`\`
 
-## Configure environment
+## 2. Configure environment
 
-Edit \`.env\` with at minimum:
+Edit \`.env\` — minimum required:
 
 \`\`\`env
-SUBSTACK_SID=
+SUBSTACK_SID=your-connect-sid-cookie
 SUBSTACK_PUB_URL=yourname.substack.com
 \`\`\`
 
-See [Environment Variables](/docs/getting-started/environment-variables) for all options.
+How to get \`SUBSTACK_SID\`: [Session cookie guide](/docs/getting-started/session-cookie).
 
-## Start the local server
+Full reference: [Environment variables](/docs/getting-started/environment-variables).
+
+## 3. Start the server
+
+**Development (hot reload):**
 
 \`\`\`bash
 npm run dev
 \`\`\`
 
-Open:
+**Production-style local run:**
 
-- **Playground:** [http://localhost:3456/playground](http://localhost:3456/playground)
-- **Landing page:** [http://localhost:3456/](http://localhost:3456/)
+\`\`\`bash
+npm run build
+API_SECRET=your-secret NODE_ENV=production npm start
+\`\`\`
 
-> The landing page is built separately via \`npm run build:landing\`. During dev, Vite serves the marketing site on its own port if you run \`cd landing-page && npm run dev\`.
+## 4. Open the app
 
-## Other commands
+| URL | Purpose |
+|-----|---------|
+| [http://localhost:3456/playground](http://localhost:3456/playground) | Web dashboard |
+| [http://localhost:3456/](http://localhost:3456/) | Landing page |
+| [http://localhost:3456/docs](http://localhost:3456/docs) | Documentation |
+| [http://localhost:3456/openapi.json](http://localhost:3456/openapi.json) | OpenAPI spec |
+
+> Landing page assets come from \`npm run build:landing\`. After doc or marketing changes, run that command to refresh \`public/\`.
+
+## Commands reference
 
 | Command | Purpose |
 |---------|---------|
-| \`npm run mcp\` | Start MCP stdio server for Claude/Cursor |
-| \`npm run build:landing\` | Build marketing site into \`public/\` |
-| \`npm run test:api\` | Smoke-test local dashboard API |
+| \`npm run dev\` | Local server with scheduler worker (port 3456) |
+| \`npm start\` | Production server (\`tsx src/server.ts\`) |
+| \`npm run mcp\` | MCP stdio server for Claude / Cursor |
+| \`npm run build\` | Build landing + docs bundle into \`public/\` |
+| \`npm run test:api\` | Smoke-test dashboard API (server must be running) |
+| \`npm run test:auth\` | Test Bearer auth on tools routes |
+
+## Docker (optional)
+
+\`\`\`bash
+docker build -t substack-agent .
+docker run -p 3456:3456 \\
+  -e NODE_ENV=production \\
+  -e SUBSTACK_SID=... \\
+  -e SUBSTACK_PUB_URL=yourname.substack.com \\
+  -e API_SECRET=... \\
+  substack-agent
+\`\`\`
+
+See [Deploy the Tools API](/docs/deployment/deploy) for hosted deployment.
 
 ## Next steps
 
-- [Session cookie](/docs/getting-started/session-cookie)
-- [First publish](/docs/getting-started/first-publish)
+1. [Session cookie](/docs/getting-started/session-cookie)
+2. [First publish](/docs/getting-started/first-publish)
+3. [Deployment modes](/docs/deployment/modes) — if you plan to host the Tools API
 `,"../../../docs/getting-started/session-cookie.md":`# Session Cookie
 
 Substack Agent authenticates using your browser **\`connect.sid\`** session cookie. Treat it like a password — it grants full access to your Substack account.
@@ -974,38 +1284,93 @@ When you click **Connect** in the playground, the cookie is sent to **your Subst
 - [First publish](/docs/getting-started/first-publish)
 `,"../../../docs/index.md":`# Substack Agent Documentation
 
-Substack Agent connects your publication to AI assistants and automation tools. There is **no official Substack publishing API** — this project uses session-based authentication to bridge that gap.
+Substack has **no official publishing API**. Substack Agent bridges that gap using your browser session cookie and exposes your publication to AI assistants, automations, and a local web dashboard.
+
+> **New here?** Pick a path below, then follow the linked guide — most users are running in under 10 minutes.
 
 ## Choose your path
 
-| Mode | Best for | Command |
-|------|----------|---------|
-| **Local Dashboard** | Hands-on publishing, AI compose, scheduler | \`npm run dev\` → \`/playground\` |
-| **Tools API** | n8n, Custom GPTs, webhooks | Any Node host + \`API_SECRET\` |
-| **MCP Server** | Claude Desktop, Cursor chat workflows | \`npm run mcp\` |
+| I want to… | Start here | Command / URL |
+|------------|------------|---------------|
+| **Use the web UI** — compose with AI, schedule posts, view history | [Install](/docs/getting-started/install) → [First publish](/docs/getting-started/first-publish) | \`npm run dev\` → \`/playground\` |
+| **Automate via HTTP** — n8n, Custom GPTs, webhooks | [Tools API overview](/docs/api/overview) → [Deploy](/docs/deployment/deploy) | \`https://your-domain/api/tools/*\` |
+| **Use Claude / Cursor locally** — chat-native tools | [MCP setup](/docs/mcp/setup) | \`npm run mcp\` (stdio) |
+| **Use MCP on your domain** — remote agents | [Remote MCP](/docs/mcp/remote) | \`https://your-domain/api/mcp\` |
 
-## Quick links
+## How the pieces fit together
 
-- [Install & setup](/docs/getting-started/install)
-- [Session cookie guide](/docs/getting-started/session-cookie)
-- [Open Playground](/playground)
-- [OpenAPI spec](/openapi.json)
-- [Security](/docs/security)
-- [GitHub repository](https://github.com/santhosh-patel/substack-agent)
+\`\`\`
+┌─────────────────────────────────────────────────────────────┐
+│  Clients                                                    │
+│  • Playground UI    • n8n / GPTs    • Claude / Cursor       │
+└────────────┬────────────────┬─────────────────┬─────────────┘
+             │                │                 │
+             ▼                ▼                 ▼
+     /api/* (no auth)  /api/tools/*      /api/mcp
+                        Bearer auth       Bearer auth
+             │                │                 │
+             └────────────────┴─────────────────┘
+                              │
+                    Substack Agent server
+                              │
+                              ▼
+                    Substack (session API)
+\`\`\`
 
-## What you can do
+| Surface | Auth | Best for |
+|---------|------|----------|
+| **Playground** \`/playground\` | None (local trust) | Hands-on publishing, scheduler, AI compose |
+| **Tools API** \`/api/tools/*\` | \`Bearer API_SECRET\` | Production automations at your domain |
+| **Remote MCP** \`/api/mcp\` | \`Bearer API_SECRET\` | MCP clients against a deployed host |
+| **Local MCP** stdio | Env vars in client config | Claude Desktop, Cursor on your machine |
 
-- Publish newsletters (draft or live)
-- Post Substack Notes with optional link cards
-- Automate comments on target accounts by keyword
-- Schedule recurring posts (local server recommended)
-- Expose 9 MCP tools or REST endpoints to external agents
+## Learning paths
 
-## Next steps
+### Path A — Local publisher (recommended first)
 
-1. [Install](/docs/getting-started/install) the project locally
-2. [Extract your session cookie](/docs/getting-started/session-cookie)
-3. [Publish your first draft](/docs/getting-started/first-publish)
+1. [Install](/docs/getting-started/install)
+2. [Session cookie](/docs/getting-started/session-cookie)
+3. [First publish](/docs/getting-started/first-publish)
+4. Explore [Newsletters](/docs/dashboard/newsletters), [Scheduler](/docs/dashboard/scheduler), [History](/docs/dashboard/history)
+
+### Path B — Production automation
+
+1. [Deployment modes](/docs/deployment/modes) — confirm Tools API fits your use case
+2. [Environment variables](/docs/getting-started/environment-variables) — set \`API_SECRET\`, \`SUBSTACK_SID\`
+3. [Deploy the Tools API](/docs/deployment/deploy) — verify with \`/api/tools/health\`
+4. [Endpoints](/docs/api/endpoints) or [OpenAPI](/docs/api/openapi) — wire n8n or Custom GPT
+
+### Path C — AI assistant (MCP)
+
+1. [MCP setup](/docs/mcp/setup) for local stdio, **or** [Remote MCP](/docs/mcp/remote) for deployed
+2. [Tools reference](/docs/mcp/tools) — all 9 tools
+3. [Claude Desktop](/docs/integrations/claude-desktop) or [Cursor](/docs/integrations/cursor)
+
+## What you can automate
+
+- **Newsletters** — draft or publish with Markdown body
+- **Notes** — short posts with optional link cards
+- **Comments** — post on a thread or automate by keyword on a target account
+- **Scheduling** — one-off or recurring queue (local server recommended)
+- **Read** — list newsletters, notes, and automation comment history
+
+## Quick reference
+
+| Resource | Link |
+|----------|------|
+| Open playground | [/playground](/playground) |
+| OpenAPI spec | [/openapi.json](/openapi.json) |
+| Health check | \`GET /api/tools/health\` (Bearer auth) |
+| Security model | [Security](/docs/security) |
+| Something broken? | [Troubleshooting](/docs/troubleshooting) |
+| GitHub | [santhosh-patel/substack-agent](https://github.com/santhosh-patel/substack-agent) |
+
+## Prerequisites
+
+- **Node.js 18+** and npm
+- A **Substack account** you control
+- A fresh **\`connect.sid\`** cookie ([guide](/docs/getting-started/session-cookie))
+- For AI features: an API key from Groq, Gemini, OpenAI, or OpenRouter
 `,"../../../docs/integrations/claude-desktop.md":`# Claude Desktop Integration
 
 Connect Substack Agent to Claude Desktop via MCP.
@@ -1053,12 +1418,12 @@ Ask Claude: "What Substack tools do you have?" — you should see 9 tools.
 - [Session cookie](/docs/getting-started/session-cookie)
 `,"../../../docs/integrations/cursor.md":`# Cursor Integration
 
-Add Substack Agent as an MCP server in Cursor.
+Use Substack Agent tools inside Cursor via **local stdio MCP** or **remote HTTP MCP** on your deployed domain.
 
-## Setup
+## Option A — Local stdio (recommended for development)
 
-1. Open **Cursor Settings** → **MCP** (or edit MCP config file)
-2. Add server entry:
+1. Open **Cursor Settings** → **MCP**
+2. Add a server entry:
 
 \`\`\`json
 {
@@ -1077,17 +1442,48 @@ Add Substack Agent as an MCP server in Cursor.
 
 3. Restart Cursor or reload MCP servers
 
-## Usage
+Use an **absolute path** to \`src/mcp-server.ts\` on your machine.
 
-In Agent or Chat mode, ask Cursor to use Substack tools:
+## Option B — Remote MCP (deployed instance)
 
-- "Use publish_newsletter to draft a post about..."
-- "List my scheduled posts"
+If Substack Agent runs at your domain with \`API_SECRET\` and \`SUBSTACK_SID\`:
 
-## Next steps
+\`\`\`json
+{
+  "mcpServers": {
+    "substack-remote": {
+      "url": "https://your-domain/api/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_API_SECRET"
+      }
+    }
+  }
+}
+\`\`\`
+
+Full guide: [Remote MCP](/docs/mcp/remote).
+
+## Usage in chat
+
+Ask Cursor Agent to call tools explicitly:
+
+- "Use \`publish_newsletter\` to draft a post about…"
+- "Call \`list_schedules\` to show my queue"
+- "Post a note with \`publish_note\`"
+
+## Troubleshooting
+
+| Issue | Fix |
+|-------|-----|
+| Tools not listed | Restart Cursor; verify absolute path (stdio) or URL + Bearer (remote) |
+| Auth errors | Refresh \`SUBSTACK_SID\` — [Session cookie](/docs/getting-started/session-cookie) |
+| Stdio crash | Run \`npm run mcp\` in terminal to read stderr |
+
+## Related
 
 - [MCP setup](/docs/mcp/setup)
 - [Tools reference](/docs/mcp/tools)
+- [Troubleshooting](/docs/troubleshooting)
 `,"../../../docs/integrations/custom-gpt.md":`# Custom GPT Integration
 
 Use Substack Agent as a Custom GPT Action via OpenAPI.
@@ -1159,33 +1555,57 @@ See [Tools API Endpoints](/docs/api/endpoints) for publish-note, automate-commen
 - [OpenAPI](/docs/api/openapi)
 `,"../../../docs/mcp/limitations.md":`# MCP Limitations
 
-## Transport
+Understand what MCP can and cannot do before building on it.
 
-- **Stdio only** — MCP server communicates over stdin/stdout
-- Cannot be hosted on Vercel as a remote MCP endpoint in this repo
+## Transport options
 
-## Local execution
+| Transport | Where | Notes |
+|-----------|-------|-------|
+| **Stdio** | Local machine | Claude Desktop, Cursor — \`npm run mcp\` |
+| **HTTP** | Deployed domain | \`/api/mcp\` — [Remote MCP](/docs/mcp/remote) |
 
-- Must run on a machine with Node.js 18+
-- Requires valid \`SUBSTACK_SID\` in env or MCP config
+Stdio and HTTP expose the **same 9 tools** from \`src/mcp/tools.ts\`.
+
+## Session & auth
+
+- All tools require a valid **\`SUBSTACK_SID\`** on the server (stdio env block or host env for HTTP)
+- Remote MCP also requires **\`API_SECRET\`** (Bearer header)
+- Cookies expire — refresh periodically; Tools API returns \`SESSION_EXPIRED\` when stale
 
 ## Scheduling
 
-- \`schedule_post\` writes to the same storage layer as the dashboard scheduler
-- On Vercel deployments, schedule data is ephemeral — use local \`npm run dev\` for reliable scheduling
+- \`schedule_post\` uses the same queue as the dashboard scheduler
+- **Local dev:** persistent \`src/data/schedules.json\` + background worker
+- **Vercel / serverless:** ephemeral storage — schedules may disappear on cold start
+- Prefer local \`npm run dev\` or external cron for reliable scheduling
 
-## list_comments scope
+## \`list_comments\` scope
 
-Returns the **automation log** (\`comments_history.json\`), not all comments on your Substack account.
+Returns the **automation log** (\`comments_history.json\`) — comments posted through Substack Agent — not every comment on your Substack account.
 
-## AI in automate_comments
+## \`automate_comments\` and AI keys
 
-Requires AI provider keys in environment (\`GROQ_API_KEY\`, etc.) when calling from MCP without inline keys.
+When calling from MCP, provide \`provider\`, \`model\`, and \`apiKey\` in tool arguments, **or** set provider keys in server environment (\`GROQ_API_KEY\`, etc.).
 
-## Next steps
+## Remote MCP on serverless
 
-- [Tools API](/docs/api/overview) for hosted integrations
+- Uses **stateless** Streamable HTTP (new connection per request batch)
+- Suitable for Vercel; no long-lived stdio process
+- Long-running automations may hit platform timeouts — prefer Tools API or local MCP for heavy workloads
+
+## When to use Tools API instead
+
+| Prefer Tools API | Prefer MCP |
+|------------------|------------|
+| n8n, Custom GPT, simple webhooks | Native chat tool-calling |
+| OpenAPI import | Claude Desktop / Cursor UX |
+| Stateless HTTP only | Already using MCP clients |
+
+## Related
+
+- [Tools API overview](/docs/api/overview)
 - [Deployment modes](/docs/deployment/modes)
+- [Troubleshooting](/docs/troubleshooting)
 `,"../../../docs/mcp/remote.md":`# Remote MCP over HTTP
 
 Connect MCP clients to your deployed Substack Agent instance at **\`https://your-domain/api/mcp\`** using Bearer authentication (same \`API_SECRET\` as the Tools API).
@@ -2009,56 +2429,90 @@ Add one **Changed** line for deploy-anywhere messaging (landing + README).
 - Factual Vercel scheduler/ephemeral-storage warnings remain where they already exist.
 `,"../../../docs/troubleshooting.md":`# Troubleshooting
 
-Common issues and fixes.
+Symptom → cause → fix. If you are stuck after these steps, [open a GitHub issue](https://github.com/santhosh-patel/substack-agent/issues) (no secrets in the report).
 
-## Connection / 401 errors
+## Connection & session
 
-| Symptom | Cause | Fix |
-|---------|-------|-----|
-| "Not connected" | No valid session | Paste fresh \`connect.sid\`, click Connect |
-| 401 on connect | Expired cookie | Re-extract cookie from browser DevTools |
-| Auto-reconnect warning | Saved cookie invalid | Update cookie in settings |
+| Symptom | Likely cause | Fix |
+|---------|--------------|-----|
+| "Not connected" in playground | No valid session | Paste fresh \`connect.sid\` → **Test** → **Connect** |
+| 401 on **Connect** | Expired cookie | Re-extract from DevTools — [Session cookie](/docs/getting-started/session-cookie) |
+| Auto-reconnect warning on load | Saved cookie invalid | Update cookie in settings; dismiss checklist when done |
+| Toast: "refresh your connect.sid" | Substack session expired | Same as above — cookies expire after logout or time |
+| Tools API \`SESSION_EXPIRED\` | Host env cookie stale | Update \`SUBSTACK_SID\` on server; redeploy |
+| Health \`connected: false\` | SID or pub URL wrong | Verify \`SUBSTACK_SID\` + \`SUBSTACK_PUB_URL\` in host env |
 
-## AI generation fails
-
-| Symptom | Fix |
-|---------|-----|
-| "Please enter API key" | Add key in Settings or \`.env\` |
-| Provider error | Click **Test API Key**; verify model name |
-| Web search fails | Disable web search toggle or check provider support |
-
-## Publish fails
+## AI generation
 
 | Symptom | Fix |
 |---------|-----|
-| Note publish without connect | Connect first (gate enforced) |
-| Newsletter empty body | Add markdown content before publish |
-| Substack API error | Check cookie; verify publication URL |
+| "Please enter API key" | Add key in [Settings](/docs/dashboard/settings) or \`.env\` |
+| Provider / model error | Click **Test API Key**; confirm model name for provider |
+| Web search fails | Disable web search toggle or switch provider |
+| Scheduled research post fails | Ensure API key saved with schedule or in \`.env\` |
+
+## Publish
+
+| Symptom | Fix |
+|---------|-----|
+| Publish button disabled | Connect Substack first |
+| Note publish blocked | Connection required (by design) |
+| Empty newsletter body | Add Markdown before publish |
+| Substack API error | Refresh cookie; check publication URL matches your account |
 
 ## Scheduler
 
 | Symptom | Fix |
 |---------|-----|
-| Jobs stuck pending (Vercel) | Use local \`npm run dev\` or configure Cron + durable storage |
-| Queue lost after deploy | Expected on Vercel \`/tmp\` — run locally |
-| Create disabled on Vercel | By design — see deployment banner |
+| Jobs stuck pending (Vercel) | Use local \`npm run dev\` or external cron — [Scheduler & Cron](/docs/deployment/scheduler-cron) |
+| Queue lost after deploy | Expected on Vercel \`/tmp\` — run locally for durable queue |
+| Create disabled on Vercel | By design — see playground banner |
+| Manual queue check does nothing | No due posts yet; check scheduled time timezone |
 
-## Tools API
+## Tools API & deploy
 
 | Symptom | Fix |
 |---------|-----|
-| 401 Unauthorized | Set \`Authorization: Bearer API_SECRET\` |
-| 500 on Vercel | Check env vars; view Vercel function logs |
+| 401 Unauthorized | Add \`Authorization: Bearer $API_SECRET\` |
+| 403 Forbidden | Wrong token — match host \`API_SECRET\` |
+| 503 on tools routes | Set \`API_SECRET\` when \`NODE_ENV=production\` |
+| 500 on Vercel | Check function logs; verify env vars |
+| Health returns 200 without auth locally | Dev mode — set \`API_SECRET\` + \`NODE_ENV=production\` to test auth |
 
 ## MCP
 
 | Symptom | Fix |
 |---------|-----|
-| Tools not appearing | Restart client; verify absolute path in config |
-| Stdio errors | Run \`npm run mcp\` manually to see stderr |
+| Tools not in Claude/Cursor | Restart client; use **absolute path** in config — [MCP setup](/docs/mcp/setup) |
+| Stdio errors | Run \`npm run mcp\` manually; read stderr |
+| Remote MCP 401 | Bearer header must match \`API_SECRET\` — [Remote MCP](/docs/mcp/remote) |
+| Remote MCP connection drops | Verify health endpoint; refresh \`SUBSTACK_SID\` on host |
 
-## Still stuck?
+## Vercel deploy
 
-- [GitHub Issues](https://github.com/santhosh-patel/substack-agent/issues)
+| Symptom | Fix |
+|---------|-----|
+| Deploy fails on cron config | Repo no longer ships \`crons\` in \`vercel.json\` — add cron in dashboard if your plan supports it |
+| Playground works but scheduler empty | Ephemeral storage — expected |
+
+## Diagnostic commands
+
+\`\`\`bash
+# Local server responding
+curl -s http://localhost:3456/api/config | head
+
+# Auth + session (production)
+curl -s http://localhost:3456/api/tools/health \\
+  -H "Authorization: Bearer $API_SECRET"
+
+# Auth tests
+API_SECRET=your-secret NODE_ENV=production npm start
+npm run test:auth
+\`\`\`
+
+## Related
+
 - [Security](/docs/security)
-`});function el(e){let t=e.match(/docs\/(.+\.md)$/);return t?t[1]:null}var tl=Object.fromEntries(Object.entries($c).map(([e,t])=>[el(e),t]).filter(([e])=>e));function nl(e){return tl[e]??null}function rl(){return Object.entries(tl).map(([e,t])=>({file:e,body:typeof t==`string`?t:``}))}function il(){let e=s(),[t,n]=(0,za.useState)(!1),[i,a]=(0,za.useState)(``),[o,d]=(0,za.useState)([]);(0,za.useEffect)(()=>{Promise.all([l(()=>import(`./rehype-highlight-CsfONlRn.js`),__vite__mapDeps([0,1,2])),l(()=>Promise.resolve({}),__vite__mapDeps([3]))]).then(([e])=>{d([e.default])})},[]);let f=(0,za.useMemo)(()=>{let e=Object.fromEntries(rl().map(e=>[e.file,e.body]));return $.map(t=>({...t,body:e[t.file]||``}))},[]),p=Xc(e.pathname),{prev:m,next:h}=Zc(e.pathname),g=(0,za.useMemo)(()=>{let e=i.trim().toLowerCase();if(!e)return Yc;let t=new Set(f.filter(t=>t.title.toLowerCase().includes(e)||t.section.toLowerCase().includes(e)||t.body.toLowerCase().includes(e)).map(e=>e.file));return Yc.map(n=>({...n,items:n.items.filter(r=>r.title.toLowerCase().includes(e)||n.title.toLowerCase().includes(e)||t.has(r.file))})).filter(e=>e.items.length>0)},[i,f]);return(0,X.jsxs)(X.Fragment,{children:[(0,X.jsx)(`a`,{href:`#docs-content`,className:`skip-link`,children:`Skip to content`}),(0,X.jsx)(c,{}),(0,X.jsxs)(`div`,{className:`docs-shell`,children:[(0,X.jsx)(`button`,{type:`button`,className:`docs-sidebar-toggle`,onClick:()=>n(!t),"aria-expanded":t,children:t?`Close menu`:`Docs menu`}),t&&(0,X.jsx)(`div`,{className:`docs-sidebar-backdrop`,onClick:()=>n(!1)}),(0,X.jsxs)(`aside`,{className:`docs-sidebar ${t?`is-open`:``}`,children:[(0,X.jsxs)(`div`,{className:`docs-sidebar-header`,children:[(0,X.jsx)(r,{to:`/docs`,className:`docs-home-link`,onClick:()=>n(!1),children:`Documentation`}),(0,X.jsx)(`input`,{type:`search`,className:`docs-search`,placeholder:`Search docs…`,value:i,onChange:e=>a(e.target.value),"aria-label":`Search documentation`})]}),(0,X.jsx)(`nav`,{className:`docs-nav`,"aria-label":`Documentation`,children:g.map(e=>(0,X.jsxs)(`div`,{className:`docs-nav-section`,children:[(0,X.jsx)(`div`,{className:`docs-nav-section-title`,children:e.title}),(0,X.jsx)(`ul`,{children:e.items.map(e=>(0,X.jsx)(`li`,{children:(0,X.jsx)(r,{to:Qc(e.path),className:p.path===e.path?`is-active`:``,onClick:()=>n(!1),children:e.title})},e.path))})]},e.title))})]}),(0,X.jsxs)(`main`,{className:`docs-main`,id:`docs-content`,children:[(0,X.jsx)(al,{page:p}),(0,X.jsxs)(`div`,{className:`docs-pager`,children:[m?(0,X.jsxs)(r,{to:Qc(m.path),className:`docs-pager-link docs-pager-prev`,children:[(0,X.jsx)(`span`,{className:`docs-pager-label`,children:`Previous`}),(0,X.jsx)(`span`,{className:`docs-pager-title`,children:m.title})]}):(0,X.jsx)(`span`,{}),h?(0,X.jsxs)(r,{to:Qc(h.path),className:`docs-pager-link docs-pager-next`,children:[(0,X.jsx)(`span`,{className:`docs-pager-label`,children:`Next`}),(0,X.jsx)(`span`,{className:`docs-pager-title`,children:h.title})]}):(0,X.jsx)(`span`,{})]})]})]}),(0,X.jsx)(u,{})]})}function al({page:e}){let t=nl(e.file),n=`${Jc}/${e.file}`;return t?(0,X.jsxs)(`article`,{className:`docs-article`,children:[(0,X.jsxs)(`div`,{className:`docs-meta`,children:[(0,X.jsxs)(`nav`,{className:`docs-breadcrumb`,"aria-label":`Breadcrumb`,children:[(0,X.jsx)(r,{to:`/docs`,children:`Docs`}),e.section&&e.section!==`Introduction`&&(0,X.jsxs)(X.Fragment,{children:[(0,X.jsx)(`span`,{"aria-hidden":`true`,children:` / `}),(0,X.jsx)(`span`,{children:e.section})]}),(0,X.jsx)(`span`,{"aria-hidden":`true`,children:` / `}),(0,X.jsx)(`span`,{children:e.title})]}),e.modes?.length>0&&(0,X.jsx)(`div`,{className:`docs-mode-badges`,children:e.modes.map(e=>(0,X.jsx)(`span`,{className:`docs-mode-badge`,children:e},e))}),(0,X.jsx)(`a`,{href:n,className:`docs-edit-link`,target:`_blank`,rel:`noopener noreferrer`,children:`Edit on GitHub`})]}),(0,X.jsx)(`div`,{className:`docs-markdown`,children:(0,X.jsx)(Wa,{remarkPlugins:[qc],rehypePlugins,components:{pre({children:e,...t}){return(0,X.jsx)(o,{className:`mac-window-docs`,children:(0,X.jsx)(`pre`,{...t,children:e})})}},children:t})})]}):(0,X.jsxs)(`div`,{className:`docs-article`,children:[(0,X.jsx)(`h1`,{children:`Page not found`}),(0,X.jsxs)(`p`,{children:[`The documentation file `,(0,X.jsx)(`code`,{children:e.file}),` could not be loaded.`]}),(0,X.jsx)(r,{to:`/docs`,children:`Back to docs home`})]})}export{il as default};
+- [Environment variables](/docs/getting-started/environment-variables)
+- [Deployment modes](/docs/deployment/modes)
+`});function el(e){let t=e.match(/docs\/(.+\.md)$/);return t?t[1]:null}var tl=Object.fromEntries(Object.entries($c).map(([e,t])=>[el(e),t]).filter(([e])=>e));function nl(e){return tl[e]??null}function rl(){return Object.entries(tl).map(([e,t])=>({file:e,body:typeof t==`string`?t:``}))}function il(){let e=s(),[t,n]=(0,za.useState)(!1),[i,a]=(0,za.useState)(``),o=(0,za.useMemo)(()=>{let e=Object.fromEntries(rl().map(e=>[e.file,e.body]));return $.map(t=>({...t,body:e[t.file]||``}))},[]),l=Xc(e.pathname),{prev:d,next:f}=Zc(e.pathname),p=(0,za.useMemo)(()=>{let e=i.trim().toLowerCase();if(!e)return Yc;let t=new Set(o.filter(t=>t.title.toLowerCase().includes(e)||t.section.toLowerCase().includes(e)||t.body.toLowerCase().includes(e)).map(e=>e.file));return Yc.map(n=>({...n,items:n.items.filter(r=>r.title.toLowerCase().includes(e)||n.title.toLowerCase().includes(e)||t.has(r.file))})).filter(e=>e.items.length>0)},[i,o]);return(0,X.jsxs)(X.Fragment,{children:[(0,X.jsx)(`a`,{href:`#docs-content`,className:`skip-link`,children:`Skip to content`}),(0,X.jsx)(c,{}),(0,X.jsxs)(`div`,{className:`docs-shell`,children:[(0,X.jsx)(`button`,{type:`button`,className:`docs-sidebar-toggle`,onClick:()=>n(!t),"aria-expanded":t,children:t?`Close menu`:`Docs menu`}),t&&(0,X.jsx)(`div`,{className:`docs-sidebar-backdrop`,onClick:()=>n(!1)}),(0,X.jsxs)(`aside`,{className:`docs-sidebar ${t?`is-open`:``}`,children:[(0,X.jsxs)(`div`,{className:`docs-sidebar-header`,children:[(0,X.jsx)(r,{to:`/docs`,className:`docs-home-link`,onClick:()=>n(!1),children:`Documentation`}),(0,X.jsx)(`input`,{type:`search`,className:`docs-search`,placeholder:`Search docs…`,value:i,onChange:e=>a(e.target.value),"aria-label":`Search documentation`})]}),(0,X.jsx)(`nav`,{className:`docs-nav`,"aria-label":`Documentation`,children:p.map(e=>(0,X.jsxs)(`div`,{className:`docs-nav-section`,children:[(0,X.jsx)(`div`,{className:`docs-nav-section-title`,children:e.title}),(0,X.jsx)(`ul`,{children:e.items.map(e=>(0,X.jsx)(`li`,{children:(0,X.jsx)(r,{to:Qc(e.path),className:l.path===e.path?`is-active`:``,onClick:()=>n(!1),children:e.title})},e.path))})]},e.title))})]}),(0,X.jsxs)(`main`,{className:`docs-main`,id:`docs-content`,children:[(0,X.jsx)(sl,{page:l}),(0,X.jsxs)(`div`,{className:`docs-pager`,children:[d?(0,X.jsxs)(r,{to:Qc(d.path),className:`docs-pager-link docs-pager-prev`,children:[(0,X.jsx)(`span`,{className:`docs-pager-label`,children:`Previous`}),(0,X.jsx)(`span`,{className:`docs-pager-title`,children:d.title})]}):(0,X.jsx)(`span`,{}),f?(0,X.jsxs)(r,{to:Qc(f.path),className:`docs-pager-link docs-pager-next`,children:[(0,X.jsx)(`span`,{className:`docs-pager-label`,children:`Next`}),(0,X.jsx)(`span`,{className:`docs-pager-title`,children:f.title})]}):(0,X.jsx)(`span`,{})]})]})]}),(0,X.jsx)(u,{})]})}function al(e){return(typeof e==`string`?e:Array.isArray(e)?e.map(e=>typeof e==`string`?e:``).join(``):String(e??``)).toLowerCase().replace(/[^\w\s-]/g,``).replace(/\s+/g,`-`).replace(/-+/g,`-`).trim()}function ol(e){return e?[...e.matchAll(/^## (.+)$/gm)].map(e=>({id:al(e[1]),text:e[1]})):[]}function sl({page:e}){let[t,n]=(0,za.useState)([]),i=nl(e.file),a=`${Jc}/${e.file}`,s=(0,za.useMemo)(()=>ol(i),[i]);return(0,za.useEffect)(()=>{let e=!1;return Promise.all([l(()=>import(`./rehype-highlight-CsfONlRn.js`),__vite__mapDeps([0,1,2])),l(()=>Promise.resolve({}),__vite__mapDeps([3]))]).then(([t])=>{e||n([t.default])}).catch(()=>{}),()=>{e=!0}},[]),i?(0,X.jsxs)(`article`,{className:`docs-article`,children:[(0,X.jsxs)(`div`,{className:`docs-meta`,children:[(0,X.jsxs)(`nav`,{className:`docs-breadcrumb`,"aria-label":`Breadcrumb`,children:[(0,X.jsx)(r,{to:`/docs`,children:`Docs`}),e.section&&e.section!==`Introduction`&&(0,X.jsxs)(X.Fragment,{children:[(0,X.jsx)(`span`,{"aria-hidden":`true`,children:` / `}),(0,X.jsx)(`span`,{children:e.section})]}),(0,X.jsx)(`span`,{"aria-hidden":`true`,children:` / `}),(0,X.jsx)(`span`,{children:e.title})]}),e.modes?.length>0&&(0,X.jsx)(`div`,{className:`docs-mode-badges`,children:e.modes.map(e=>(0,X.jsx)(`span`,{className:`docs-mode-badge`,children:e},e))}),(0,X.jsx)(`a`,{href:a,className:`docs-edit-link`,target:`_blank`,rel:`noopener noreferrer`,children:`Edit on GitHub`})]}),e.description&&(0,X.jsx)(`p`,{className:`docs-lead`,children:e.description}),(0,X.jsxs)(`div`,{className:`docs-article-layout${s.length>=3?` has-toc`:``}`,children:[(0,X.jsx)(`div`,{className:`docs-markdown`,children:(0,X.jsx)(Wa,{remarkPlugins:[qc],rehypePlugins:t,components:{h2({children:e,...t}){return(0,X.jsx)(`h2`,{id:al(e),...t,children:e})},h3({children:e,...t}){return(0,X.jsx)(`h3`,{id:al(e),...t,children:e})},pre({children:e,...t}){return(0,X.jsx)(o,{className:`mac-window-docs`,children:(0,X.jsx)(`pre`,{...t,children:e})})}},children:i})}),s.length>=3&&(0,X.jsxs)(`nav`,{className:`docs-toc`,"aria-label":`On this page`,children:[(0,X.jsx)(`div`,{className:`docs-toc-title`,children:`On this page`}),(0,X.jsx)(`ul`,{children:s.map(e=>(0,X.jsx)(`li`,{children:(0,X.jsx)(`a`,{href:`#${e.id}`,children:e.text})},e.id))})]})]})]}):(0,X.jsxs)(`div`,{className:`docs-article`,children:[(0,X.jsx)(`h1`,{children:`Page not found`}),(0,X.jsxs)(`p`,{children:[`The documentation file `,(0,X.jsx)(`code`,{children:e.file}),` could not be loaded.`]}),(0,X.jsx)(r,{to:`/docs`,children:`Back to docs home`})]})}export{il as default};
