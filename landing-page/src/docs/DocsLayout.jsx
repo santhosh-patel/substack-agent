@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
@@ -162,8 +162,4 @@ function DocsPageContent({ page }) {
       </div>
     </article>
   );
-}
-
-export function DocsCatchAll() {
-  return null;
 }

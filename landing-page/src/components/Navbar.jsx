@@ -45,6 +45,7 @@ export default function Navbar() {
           <a href="#how-it-works" onClick={() => setMobileOpen(false)}>How It Works</a>
           <a href="#tools" onClick={() => setMobileOpen(false)}>Tools</a>
           <a href="#faq" onClick={() => setMobileOpen(false)}>FAQ</a>
+          <a href="/docs" onClick={() => setMobileOpen(false)}>Docs</a>
           <a href="/playground" className="btn btn-primary nav-mobile-cta" onClick={() => setMobileOpen(false)}>
             Try in Playground
           </a>
