@@ -80,11 +80,13 @@
   border-radius: var(--radius-sm);
 }
 
-/* Mobile-only panel pieces — hidden on desktop */
+/* Mobile-only panel — rendered outside header for true full-width fixed positioning */
+.nav-mobile-panel,
 .nav-mobile-label,
 .nav-mobile-scroll,
 .nav-mobile-footer,
-.nav-mobile-cta {
+.nav-mobile-cta,
+.nav-mobile-link {
   display: none;
 }
 
@@ -143,7 +145,7 @@
   }
 
   /* Hide desktop nav links & desktop CTA */
-  .nav-menu {
+  .nav-menu--desktop {
     display: none;
   }
 
@@ -192,10 +194,8 @@
   .nav-backdrop {
     display: block;
     position: fixed;
-    top: 72px;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 72px 0 0 0;
+    width: 100%;
     background: rgba(17, 17, 17, 0.45);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
@@ -203,14 +203,13 @@
     animation: fadeIn 0.25s ease;
   }
 
-  .nav-menu.is-open {
+  .nav-mobile-panel.is-open {
     display: flex;
     flex-direction: column;
     position: fixed;
-    top: 72px;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 72px 0 0 0;
+    width: 100%;
+    max-width: 100vw;
     background: var(--bg-page);
     padding: 0;
     gap: 0;
@@ -225,46 +224,50 @@
     display: flex;
     flex-direction: column;
     flex: 1;
+    width: 100%;
     overflow-y: auto;
     overscroll-behavior: contain;
-    padding: 8px var(--container-pad) 16px;
+    padding: 0;
     -webkit-overflow-scrolling: touch;
   }
 
   .nav-mobile-label {
     display: block;
-    margin: 20px 0 8px;
-    padding: 0 4px;
+    margin: 0;
+    padding: 20px 20px 10px;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-muted);
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border-subtle);
   }
 
   .nav-mobile-label:first-child {
-    margin-top: 12px;
+    padding-top: 16px;
   }
 
-  .nav-menu.is-open .nav-mobile-link {
+  .nav-mobile-link {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
     min-height: 56px;
-    padding: 16px 18px;
+    padding: 16px 20px;
     font-size: 18px;
     font-weight: 600;
     line-height: 1.25;
     color: var(--text-primary);
-    background: var(--bg-subtle);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    margin-bottom: 10px;
-    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+    background: var(--bg-page);
+    border: none;
+    border-bottom: 1px solid var(--border-subtle);
+    border-radius: 0;
+    margin: 0;
+    transition: background 0.15s ease;
   }
 
-  .nav-menu.is-open .nav-mobile-link::after {
+  .nav-mobile-link::after {
     content: '→';
     font-size: 18px;
     font-weight: 500;
@@ -272,13 +275,11 @@
     transition: transform 0.15s ease, color 0.15s ease;
   }
 
-  .nav-menu.is-open .nav-mobile-link:active {
+  .nav-mobile-link:active {
     background: var(--primary-light);
-    border-color: rgba(255, 103, 25, 0.2);
-    transform: scale(0.99);
   }
 
-  .nav-menu.is-open .nav-mobile-link:active::after {
+  .nav-mobile-link:active::after {
     color: var(--primary);
     transform: translateX(3px);
   }
@@ -286,11 +287,10 @@
   .nav-mobile-footer {
     display: block;
     flex-shrink: 0;
-    padding: 16px var(--container-pad) calc(20px + env(safe-area-inset-bottom, 0px));
+    width: 100%;
+    padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px));
     border-top: 1px solid var(--border);
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: var(--bg-page);
   }
 
   .nav-mobile-cta {
@@ -303,7 +303,13 @@
     font-size: 17px;
     font-weight: 600;
     border-radius: var(--radius-md);
-    box-shadow: 0 8px 24px rgba(255, 103, 25, 0.28);
+    background: var(--primary) !important;
+    color: var(--text-inverse) !important;
+    box-shadow: 0 8px 24px rgba(255, 103, 25, 0.35);
+  }
+
+  .nav-mobile-cta:active {
+    background: var(--primary-hover) !important;
   }
 }
 
@@ -313,11 +319,11 @@
   }
 
   .nav-backdrop,
-  .nav-menu.is-open {
-    top: 72px;
+  .nav-mobile-panel.is-open {
+    inset: 72px 0 0 0;
   }
 
-  .nav-menu.is-open .nav-mobile-link {
+  .nav-mobile-link {
     font-size: 17px;
     min-height: 54px;
     padding: 15px 16px;
