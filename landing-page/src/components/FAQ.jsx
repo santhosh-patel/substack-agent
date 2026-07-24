@@ -93,15 +93,9 @@ export default function FAQ() {
           Still stuck?{' '}
           <a href="https://github.com/santhosh-patel/substack-agent/issues" target="_blank" rel="noopener noreferrer">
             Open a GitHub issue
-          </a>{' '}
-          or read the{' '}
-          <a href="/docs/getting-started/session-cookie">
-            setup guide
-          </a>{' '}
-          or read the full{' '}
-          <a href="/docs">
-            documentation
-          </a>.
+          </a>, read the{' '}
+          <a href="/docs/getting-started/session-cookie">setup guide</a>, or browse the{' '}
+          <a href="/docs">full documentation</a>.
         </p>
       </div>
     </section>
