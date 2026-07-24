@@ -59,7 +59,7 @@ export default function Navbar({ onOpenPlayground }) {
         </div>
 
         <div className="nav-actions">
-          <button onClick={handlePlaygroundClick} className="btn btn-primary nav-cta">
+          <button onClick={handlePlaygroundClick} className="btn btn-primary nav-cta nav-cta-desktop">
             Try in Playground
           </button>
 
