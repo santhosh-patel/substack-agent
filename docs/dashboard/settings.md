@@ -1,39 +1,55 @@
 # Settings
 
-The settings sidebar controls Substack connection and AI provider configuration.
+The settings sidebar controls Substack connection, AI providers, and writing prompts. Open it from the **gear icon** or it auto-expands on first visit when no session is configured.
 
-## Substack Account
+## Substack account
 
 | Field | Description |
 |-------|-------------|
-| Session cookie | Your `connect.sid` value |
-| Publication URL | e.g. `yourname.substack.com` |
+| **Session cookie** | Your `connect.sid` value — [extraction guide](/docs/getting-started/session-cookie) |
+| **Publication URL** | e.g. `yourname.substack.com` (with or without `https://`) |
 
-**Test** validates the cookie without persisting a session. **Connect** establishes the server session.
+### Connection buttons
 
-Cookie guide: [Session Cookie](/docs/getting-started/session-cookie)
+| Button | Behavior |
+|--------|----------|
+| **Test** | Validates cookie with Substack without changing UI state heavily |
+| **Connect** | Establishes server session (`POST /api/connect`); enables publish actions |
+| **Disconnect** | Clears server session and cookie field |
 
-## AI Provider
+If you see a **“refresh your connect.sid”** toast, extract a new cookie from DevTools — sessions expire after logout or time.
 
-Supported providers:
+## AI provider
 
-- Groq
-- Gemini
-- OpenAI
-- OpenRouter
+| Provider | Typical models |
+|----------|----------------|
+| Groq | Llama 3.x |
+| Gemini | Gemini 2.x |
+| OpenAI | GPT-4o mini, etc. |
+| OpenRouter | Multi-model gateway |
 
-Select provider → model → paste API key → **Test API Key** → **Save API Key**.
+**Workflow:** Select provider → choose model → paste API key → **Test API Key** → **Save API Key**.
 
-Keys are stored in browser `localStorage` per provider unless set in server `.env`.
+Keys are stored in browser **`localStorage`** per provider unless the server has keys in `.env` (then model select may work without saving locally).
 
-## System Prompt
+## System prompt
 
-Customize AI writing instructions for newsletters and notes. Reset to default anytime.
+Customize AI instructions for **Newsletters** and **Notes** tabs. Changes save automatically. **Reset** restores the server default from `/api/config`.
 
-## Security notice
+## Security
 
-Settings display a warning: cookies and keys are stored locally and sent to your server on connect. See [Security](/docs/security).
+- Cookies and keys in `localStorage` are visible to anyone with access to your browser profile
+- Connect sends the cookie to **your** Substack Agent server only
+- Do not use the dashboard on untrusted shared machines without clearing site data afterward
 
-## Next steps
+Full model: [Security](/docs/security).
+
+## Deployment-aware banners
+
+On Vercel or production hosts, banners at the top of the playground explain dashboard vs Tools API boundaries and scheduler limits.
+
+## Related
 
 - [First publish](/docs/getting-started/first-publish)
+- [Dashboard overview](/docs/dashboard/overview)
+- [Environment variables](/docs/getting-started/environment-variables)

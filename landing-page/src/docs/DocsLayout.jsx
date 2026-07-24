@@ -145,9 +145,27 @@ export default function DocsLayout() {
   );
 }
 
+function slugifyHeading(text) {
+  return String(text)
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim();
+}
+
+function extractHeadings(markdown) {
+  if (!markdown) return [];
+  return [...markdown.matchAll(/^## (.+)$/gm)].map((match) => ({
+    id: slugifyHeading(match[1]),
+    text: match[1],
+  }));
+}
+
 function DocsPageContent({ page }) {
   const content = getDocContent(page.file);
   const editUrl = `${GITHUB_EDIT_BASE}/${page.file}`;
+  const headings = useMemo(() => extractHeadings(content), [content]);
 
   if (!content) {
     return (
@@ -185,22 +203,57 @@ function DocsPageContent({ page }) {
         </a>
       </div>
 
-      <div className="docs-markdown">
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          rehypePlugins={rehypePlugins}
-          components={{
-            pre({ children, ...props }) {
-              return (
-                <MacWindow className="mac-window-docs">
-                  <pre {...props}>{children}</pre>
-                </MacWindow>
-              );
-            },
-          }}
-        >
-          {content}
-        </ReactMarkdown>
+      {page.description && (
+        <p className="docs-lead">{page.description}</p>
+      )}
+
+      <div className={`docs-article-layout${headings.length >= 3 ? ' has-toc' : ''}`}>
+        <div className="docs-markdown">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={rehypePlugins}
+            components={{
+              h2({ children, ...props }) {
+                const id = slugifyHeading(children);
+                return (
+                  <h2 id={id} {...props}>
+                    {children}
+                  </h2>
+                );
+              },
+              h3({ children, ...props }) {
+                const id = slugifyHeading(children);
+                return (
+                  <h3 id={id} {...props}>
+                    {children}
+                  </h3>
+                );
+              },
+              pre({ children, ...props }) {
+                return (
+                  <MacWindow className="mac-window-docs">
+                    <pre {...props}>{children}</pre>
+                  </MacWindow>
+                );
+              },
+            }}
+          >
+            {content}
+          </ReactMarkdown>
+        </div>
+
+        {headings.length >= 3 && (
+          <nav className="docs-toc" aria-label="On this page">
+            <div className="docs-toc-title">On this page</div>
+            <ul>
+              {headings.map((h) => (
+                <li key={h.id}>
+                  <a href={`#${h.id}`}>{h.text}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
       </div>
     </article>
   );

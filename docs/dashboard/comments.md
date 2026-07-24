@@ -1,35 +1,51 @@
 # Comments Automation
 
-Automate contextual replies on a target Substack account's posts.
+Scan a **target Substack account's** recent posts and automatically post AI-generated comments when a **keyword** matches.
 
-## Setup
+## Before you start
 
-1. Connect to Substack in [Settings](/docs/dashboard/settings)
-2. Configure AI provider key
-3. Go to **Comments** tab
+- [Connect](/docs/dashboard/settings) to Substack
+- Configure an **AI provider key** in Settings
+- Understand Substack's community guidelines — use automation responsibly
 
 ## Parameters
 
-| Field | Description |
-|-------|-------------|
-| Target account | `@username`, publication URL, or post ID |
-| Keyword | Only comment on posts matching this keyword |
-| Instructions | Optional prompt for comment tone/style |
+| Field | Description | Example |
+|-------|-------------|---------|
+| **Target account** | `@slug`, profile URL, or numeric ID | `@techwriter` |
+| **Keyword** | Match phrase in post title/body | `AI agents` |
+| **Instructions** | Optional tone/style for generated comments | "Friendly, concise, add one insight" |
 
-## Run
+## Run automation
 
-Click **Run Automation**. The console shows live logs as posts are scanned and commented on.
+1. Open the **Comments** tab
+2. Fill target, keyword, and optional instructions
+3. Click **Run Automation**
+4. Watch the **console** for scan progress, matches, and errors
 
-## Stop button
+## Stop behavior
 
-**Stop** cancels the **browser request only**. The server may continue processing the current automation run until completion.
+**Stop** cancels the browser HTTP request. The server may finish processing the current batch — refresh logs if unsure.
 
-## API equivalent
+## Where comments are logged
 
-- Dashboard: `POST /api/comments/automate`
-- Tools API: `POST /api/tools/automate-comments`
-- MCP: `automate_comments`
+Successful automation comments append to `src/data/comments_history.json` and appear in the **History** tab.
 
-## Next steps
+## API equivalents
+
+| Surface | Route / tool |
+|---------|--------------|
+| Dashboard | `POST /api/comments/automate` |
+| Tools API | `POST /api/tools/automate-comments` |
+| MCP | `automate_comments` |
+
+## Tips
+
+- Start with a narrow keyword to avoid spammy matches
+- Test with a small target account before broad automation
+- Refresh `connect.sid` if comments fail with auth errors
+
+## Related
 
 - [Troubleshooting](/docs/troubleshooting)
+- [MCP tools — automate_comments](/docs/mcp/tools)

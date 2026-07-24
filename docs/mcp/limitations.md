@@ -1,29 +1,53 @@
 # MCP Limitations
 
-## Transport
+Understand what MCP can and cannot do before building on it.
 
-- **Stdio only** — MCP server communicates over stdin/stdout
-- Cannot be hosted on Vercel as a remote MCP endpoint in this repo
+## Transport options
 
-## Local execution
+| Transport | Where | Notes |
+|-----------|-------|-------|
+| **Stdio** | Local machine | Claude Desktop, Cursor — `npm run mcp` |
+| **HTTP** | Deployed domain | `/api/mcp` — [Remote MCP](/docs/mcp/remote) |
 
-- Must run on a machine with Node.js 18+
-- Requires valid `SUBSTACK_SID` in env or MCP config
+Stdio and HTTP expose the **same 9 tools** from `src/mcp/tools.ts`.
+
+## Session & auth
+
+- All tools require a valid **`SUBSTACK_SID`** on the server (stdio env block or host env for HTTP)
+- Remote MCP also requires **`API_SECRET`** (Bearer header)
+- Cookies expire — refresh periodically; Tools API returns `SESSION_EXPIRED` when stale
 
 ## Scheduling
 
-- `schedule_post` writes to the same storage layer as the dashboard scheduler
-- On Vercel deployments, schedule data is ephemeral — use local `npm run dev` for reliable scheduling
+- `schedule_post` uses the same queue as the dashboard scheduler
+- **Local dev:** persistent `src/data/schedules.json` + background worker
+- **Vercel / serverless:** ephemeral storage — schedules may disappear on cold start
+- Prefer local `npm run dev` or external cron for reliable scheduling
 
-## list_comments scope
+## `list_comments` scope
 
-Returns the **automation log** (`comments_history.json`), not all comments on your Substack account.
+Returns the **automation log** (`comments_history.json`) — comments posted through Substack Agent — not every comment on your Substack account.
 
-## AI in automate_comments
+## `automate_comments` and AI keys
 
-Requires AI provider keys in environment (`GROQ_API_KEY`, etc.) when calling from MCP without inline keys.
+When calling from MCP, provide `provider`, `model`, and `apiKey` in tool arguments, **or** set provider keys in server environment (`GROQ_API_KEY`, etc.).
 
-## Next steps
+## Remote MCP on serverless
 
-- [Tools API](/docs/api/overview) for hosted integrations
+- Uses **stateless** Streamable HTTP (new connection per request batch)
+- Suitable for Vercel; no long-lived stdio process
+- Long-running automations may hit platform timeouts — prefer Tools API or local MCP for heavy workloads
+
+## When to use Tools API instead
+
+| Prefer Tools API | Prefer MCP |
+|------------------|------------|
+| n8n, Custom GPT, simple webhooks | Native chat tool-calling |
+| OpenAPI import | Claude Desktop / Cursor UX |
+| Stateless HTTP only | Already using MCP clients |
+
+## Related
+
+- [Tools API overview](/docs/api/overview)
 - [Deployment modes](/docs/deployment/modes)
+- [Troubleshooting](/docs/troubleshooting)
