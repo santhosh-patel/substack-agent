@@ -254,8 +254,6 @@ export const MCP_TOOLS = [
           properties: {},
         },
       },
-    },
-  },
 ];
 
 // ─── Call Tool ───

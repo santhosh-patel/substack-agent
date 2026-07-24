@@ -11,6 +11,7 @@ import path from 'path';
 import fs from 'fs';
 import apiRoutes from '../src/routes/api.js';
 import toolRoutes from '../src/routes/tools.js';
+import mcpHttpRoutes from '../src/routes/mcp-http.js';
 import { authMiddleware } from '../src/middleware/auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -71,5 +72,8 @@ app.use('/api', apiRoutes);
 
 // ─── Tool routes (AI agent routes — with auth) ───
 app.use('/api/tools', authMiddleware, toolRoutes);
+
+// ─── Remote MCP over HTTP ───
+app.use('/api/mcp', authMiddleware, mcpHttpRoutes);
 
 export default app;

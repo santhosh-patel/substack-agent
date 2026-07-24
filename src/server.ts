@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import apiRoutes, { runScheduleProcessing } from './routes/api.js';
 import toolRoutes from './routes/tools.js';
+import mcpHttpRoutes from './routes/mcp-http.js';
 import { authMiddleware } from './middleware/auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -68,6 +69,9 @@ app.use('/api', apiRoutes);
 
 // ─── Tool routes (AI agent routes — with bearer auth) ───
 app.use('/api/tools', authMiddleware, toolRoutes);
+
+// ─── Remote MCP over HTTP (Bearer auth) ───
+app.use('/api/mcp', authMiddleware, mcpHttpRoutes);
 
 // ─── Main Substack Automation App (Playground Dashboard) ───
 app.get(['/playground', '/newsletter', '/comments', '/notes', '/scheduler', '/history'], (_req, res) => {
