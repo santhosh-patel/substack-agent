@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import TrustBar from './components/TrustBar';
@@ -9,11 +9,8 @@ import ToolsGrid from './components/ToolsGrid';
 import CTA from './components/CTA';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
-import PlaygroundModal from './components/PlaygroundModal';
 
 export default function App() {
-  const [isPlaygroundOpen, setIsPlaygroundOpen] = useState(false);
-
   useEffect(() => {
     const elements = document.querySelectorAll('.animate-in');
     if (!elements.length) return;
@@ -36,20 +33,16 @@ export default function App() {
 
   return (
     <>
-      <Navbar onOpenPlayground={() => setIsPlaygroundOpen(true)} />
-      <Hero onOpenPlayground={() => setIsPlaygroundOpen(true)} />
+      <Navbar />
+      <Hero />
       <TrustBar />
       <Features />
       <Integrations />
       <HowItWorks />
       <ToolsGrid />
-      <CTA onOpenPlayground={() => setIsPlaygroundOpen(true)} />
+      <CTA />
       <FAQ />
       <Footer />
-      <PlaygroundModal 
-        isOpen={isPlaygroundOpen} 
-        onClose={() => setIsPlaygroundOpen(false)} 
-      />
     </>
   );
 }

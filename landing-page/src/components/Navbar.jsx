@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import './Navbar.css';
 
-export default function Navbar({ onOpenPlayground }) {
+export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -21,14 +21,6 @@ export default function Navbar({ onOpenPlayground }) {
       document.body.style.overflow = '';
     };
   }, [mobileOpen]);
-
-  const handlePlaygroundClick = (e) => {
-    if (onOpenPlayground) {
-      e.preventDefault();
-      setMobileOpen(false);
-      onOpenPlayground();
-    }
-  };
 
   return (
     <header className={`navbar-wrapper ${scrolled ? 'is-scrolled' : ''}`}>
@@ -53,15 +45,15 @@ export default function Navbar({ onOpenPlayground }) {
           <a href="#how-it-works" onClick={() => setMobileOpen(false)}>How It Works</a>
           <a href="#tools" onClick={() => setMobileOpen(false)}>Tools</a>
           <a href="#faq" onClick={() => setMobileOpen(false)}>FAQ</a>
-          <button onClick={handlePlaygroundClick} className="btn btn-primary nav-mobile-cta">
+          <a href="/playground" className="btn btn-primary nav-mobile-cta" onClick={() => setMobileOpen(false)}>
             Try in Playground
-          </button>
+          </a>
         </div>
 
         <div className="nav-actions">
-          <button onClick={handlePlaygroundClick} className="btn btn-primary nav-cta nav-cta-desktop">
+          <a href="/playground" className="btn btn-primary nav-cta nav-cta-desktop">
             Try in Playground
-          </button>
+          </a>
 
           <button 
             className={`mobile-toggle ${mobileOpen ? 'is-active' : ''}`} 
@@ -76,4 +68,3 @@ export default function Navbar({ onOpenPlayground }) {
     </header>
   );
 }
-
