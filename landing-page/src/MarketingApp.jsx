@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import TrustBar from './components/TrustBar';
 import DeploymentModes from './components/DeploymentModes';
+import ConnectionModes from './components/ConnectionModes';
 import Features from './components/Features';
 import Integrations from './components/Integrations';
 import HowItWorks from './components/HowItWorks';
@@ -43,6 +44,7 @@ export default function MarketingApp() {
         <Hero />
         <TrustBar />
         <DeploymentModes />
+        <ConnectionModes />
         <Features />
         <Integrations />
         <HowItWorks />

@@ -14,7 +14,7 @@ const modes = [
   {
     title: 'Remote MCP (HTTP)',
     command: 'https://your-domain/api/mcp',
-    desc: 'Hosted MCP at your domain for remote agent clients (coming in v2.1).',
+    desc: 'Hosted MCP at your domain for remote agent clients.',
   },
 ];
 

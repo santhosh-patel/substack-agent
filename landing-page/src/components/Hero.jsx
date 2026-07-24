@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import MacWindow from './MacWindow';
 import './Hero.css';
 
 export default function Hero() {
@@ -77,7 +78,7 @@ export default function Hero() {
               <span className="mac-dot mac-dot-minimize" />
               <span className="mac-dot mac-dot-maximize" />
             </div>
-              <div className="showcase-tabs" role="tablist" aria-label="Integration examples">
+            <div className="showcase-tabs" role="tablist" aria-label="Integration examples">
               <button 
                 role="tab"
                 aria-selected={activeTab === 'mcp'}
@@ -112,8 +113,7 @@ export default function Hero() {
           <div className="showcase-body">
             {activeTab === 'mcp' && (
               <div className="showcase-view">
-                <div className="code-pane">
-                  <div className="code-label">claude_desktop_config.json</div>
+                <MacWindow compact title="claude_desktop_config.json">
                   <pre><code>{`{
   "mcpServers": {
     "substack": {
@@ -126,9 +126,8 @@ export default function Hero() {
     }
   }
 }`}</code></pre>
-                </div>
-                <div className="output-pane">
-                  <div className="pane-header">Available Agent Tools</div>
+                </MacWindow>
+                <MacWindow compact title="Available Agent Tools">
                   <div className="tools-mini-list">
                     <div className="mini-tool-item">
                       <span className="tool-tag">tool</span>
@@ -146,14 +145,13 @@ export default function Hero() {
                       <span className="tool-desc">AI scans posts & replies with context</span>
                     </div>
                   </div>
-                </div>
+                </MacWindow>
               </div>
             )}
 
             {activeTab === 'api' && (
               <div className="showcase-view">
-                <div className="code-pane">
-                  <div className="code-label">POST /api/tools/publish-newsletter</div>
+                <MacWindow compact title="POST /api/tools/publish-newsletter">
                   <pre><code>{`curl -X POST https://your-domain/api/tools/publish-newsletter \\
   -H "Authorization: Bearer $API_SECRET" \\
   -H "Content-Type: application/json" \\
@@ -162,9 +160,8 @@ export default function Hero() {
     "body": "## Built with Substack Agent\\nProgrammatic publishing works cleanly.",
     "isDraft": false
   }'`}</code></pre>
-                </div>
-                <div className="output-pane">
-                  <div className="pane-header">API Response (200 OK)</div>
+                </MacWindow>
+                <MacWindow compact title="API Response (200 OK)">
                   <pre className="json-response"><code>{`{
   "success": true,
   "data": {
@@ -174,23 +171,21 @@ export default function Hero() {
     "url": "https://yourpub.substack.com/p/ai-agent-dispatch-4"
   }
 }`}</code></pre>
-                </div>
+                </MacWindow>
               </div>
             )}
 
             {activeTab === 'cli' && (
               <div className="showcase-view">
-                <div className="code-pane">
-                  <div className="code-label">Quick Start Command</div>
+                <MacWindow compact title="Quick Start Command">
                   <pre><code>{`$ git clone https://github.com/santhosh-patel/substack-agent.git
 $ cd substack-agent && npm install
 $ cp .env.example .env
 $ npm run dev
 
 > Server running on http://localhost:3456`}</code></pre>
-                </div>
-                <div className="output-pane">
-                  <div className="pane-header">System Metrics</div>
+                </MacWindow>
+                <MacWindow compact title="System Metrics">
                   <div className="metrics-grid">
                     <div className="metric-box">
                       <span className="metric-val">9</span>
@@ -205,7 +200,7 @@ $ npm run dev
                       <span className="metric-lbl">Open Source</span>
                     </div>
                   </div>
-                </div>
+                </MacWindow>
               </div>
             )}
           </div>

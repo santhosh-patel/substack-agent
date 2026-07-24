@@ -1,6 +1,7 @@
 /* ─── Substack Automation — Minimalist & Elegant Theme ─── */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=SF+Mono:wght@400;500&display=swap');
+@import url('../shared/mac-window.css');
 
 /* ─── CSS Variables (Matches Landing Page Design System) ─── */
 :root {
@@ -948,50 +949,11 @@ input::placeholder, textarea::placeholder {
 }
 .substack-note-action i { width: 14px; height: 14px; }
 
-/* ─── Console / Logs Box (macOS window) ─── */
-.mac-console {
-  border: 1px solid var(--mac-border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  background: var(--mac-body);
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
-  cursor: default;
-}
-
-.mac-console.is-active {
-  border-color: var(--mac-highlight-border);
-  box-shadow: 0 0 0 3px var(--mac-highlight-ring), var(--shadow-md);
-}
-
-.console-header {
-  display: flex;
-  align-items: center;
+/* ─── Console / Logs Box (playground overrides) ─── */
+.mac-console .console-header {
   justify-content: space-between;
-  gap: 12px;
   padding: 10px 16px;
-  background: var(--mac-chrome);
-  border-bottom: 1px solid var(--mac-chrome-border);
 }
-
-.console-traffic {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  flex-shrink: 0;
-  pointer-events: none;
-}
-
-.mac-dot {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  border: 0.5px solid rgba(0, 0, 0, 0.12);
-}
-
-.mac-dot-close { background: var(--mac-dot-close); }
-.mac-dot-minimize { background: var(--mac-dot-minimize); }
-.mac-dot-maximize { background: var(--mac-dot-maximize); }
 
 .console-title-text {
   font-size: 12px;
@@ -1003,11 +965,7 @@ input::placeholder, textarea::placeholder {
   min-width: 0;
 }
 
-.console-box {
-  background: var(--mac-body);
-  border: none;
-  border-radius: 0;
-  padding: 16px;
+.mac-console .console-box {
   font-family: 'SF Mono', monospace;
   font-size: 12px;
   line-height: 1.6;

@@ -1,8 +1,24 @@
+import { useState } from 'react';
 import './DeployCTA.css';
 
 const envVars = ['SUBSTACK_SID', 'SUBSTACK_PUB_URL', 'API_SECRET'];
 
+const CURL_EXAMPLE = `curl -s "https://your-domain/api/tools/health" \\
+  -H "Authorization: Bearer $API_SECRET"`;
+
 export default function DeployCTA() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(CURL_EXAMPLE);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
+
   return (
     <section className="deploy-cta" id="deploy">
       <div className="container">
@@ -29,6 +45,9 @@ export default function DeployCTA() {
             >
               Deployment docs
             </a>
+            <button type="button" className="btn btn-outline btn-lg" onClick={handleCopy}>
+              {copied ? 'Copied!' : 'Copy health check curl'}
+            </button>
             <a
               href="https://github.com/santhosh-patel/substack-agent"
               target="_blank"
