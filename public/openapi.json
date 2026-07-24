@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Substack Automation Tools API",
-    "description": "AI-callable tool endpoints for automating Substack operations — publish newsletters, post notes, comment on posts, and list content. Designed for Claude MCP, N8N, ChatGPT GPTs, and any OpenAPI-aware AI agent.",
-    "version": "2.0.0",
+    "description": "AI-callable tool endpoints for automating Substack operations \u2014 publish newsletters, post notes, comment on posts, and list content. Designed for Claude MCP, N8N, ChatGPT GPTs, and any OpenAPI-aware AI agent.",
+    "version": "1.0.1",
     "contact": {
       "name": "Substack Automation"
     }
@@ -29,10 +29,14 @@
       "get": {
         "operationId": "mcpStreamableHttp",
         "summary": "Remote MCP (Streamable HTTP)",
-        "description": "MCP Streamable HTTP transport for Claude/Cursor remote clients. Uses JSON-RPC over HTTP — not a REST CRUD endpoint. Requires Bearer auth. See /docs/mcp/remote.",
+        "description": "MCP Streamable HTTP transport for Claude/Cursor remote clients. Uses JSON-RPC over HTTP \u2014 not a REST CRUD endpoint. Requires Bearer auth. See /docs/mcp/remote.",
         "responses": {
-          "401": { "description": "Missing or invalid Bearer token" },
-          "200": { "description": "MCP stream response" }
+          "401": {
+            "description": "Missing or invalid Bearer token"
+          },
+          "200": {
+            "description": "MCP stream response"
+          }
         }
       },
       "post": {
@@ -40,8 +44,12 @@
         "summary": "Remote MCP messages (POST)",
         "description": "Send MCP JSON-RPC messages. Requires Bearer auth.",
         "responses": {
-          "401": { "description": "Missing or invalid Bearer token" },
-          "200": { "description": "MCP response" }
+          "401": {
+            "description": "Missing or invalid Bearer token"
+          },
+          "200": {
+            "description": "MCP response"
+          }
         }
       }
     },
@@ -58,13 +66,22 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": { "type": "boolean" },
+                    "success": {
+                      "type": "boolean"
+                    },
                     "data": {
                       "type": "object",
                       "properties": {
-                        "version": { "type": "string" },
-                        "connected": { "type": "boolean" },
-                        "publication": { "type": "string", "nullable": true }
+                        "version": {
+                          "type": "string"
+                        },
+                        "connected": {
+                          "type": "boolean"
+                        },
+                        "publication": {
+                          "type": "string",
+                          "nullable": true
+                        }
                       }
                     }
                   }
@@ -86,7 +103,10 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["title", "body"],
+                "required": [
+                  "title",
+                  "body"
+                ],
                 "properties": {
                   "title": {
                     "type": "string",
@@ -124,14 +144,27 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": { "type": "boolean" },
+                    "success": {
+                      "type": "boolean"
+                    },
                     "data": {
                       "type": "object",
                       "properties": {
-                        "id": { "type": "integer", "description": "The Substack post ID" },
-                        "title": { "type": "string" },
-                        "isDraft": { "type": "boolean" },
-                        "url": { "type": "string", "format": "uri", "description": "URL to the published post or draft editor" }
+                        "id": {
+                          "type": "integer",
+                          "description": "The Substack post ID"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "isDraft": {
+                          "type": "boolean"
+                        },
+                        "url": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL to the published post or draft editor"
+                        }
                       }
                     }
                   }
@@ -139,9 +172,15 @@
               }
             }
           },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "500": { "$ref": "#/components/responses/ServerError" }
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
         }
       }
     },
@@ -156,7 +195,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["body"],
+                "required": [
+                  "body"
+                ],
                 "properties": {
                   "body": {
                     "type": "string",
@@ -184,13 +225,23 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": { "type": "boolean" },
+                    "success": {
+                      "type": "boolean"
+                    },
                     "data": {
                       "type": "object",
                       "properties": {
-                        "id": { "type": "integer", "description": "The note ID" },
-                        "body": { "type": "string" },
-                        "url": { "type": "string", "format": "uri" }
+                        "id": {
+                          "type": "integer",
+                          "description": "The note ID"
+                        },
+                        "body": {
+                          "type": "string"
+                        },
+                        "url": {
+                          "type": "string",
+                          "format": "uri"
+                        }
                       }
                     }
                   }
@@ -198,9 +249,15 @@
               }
             }
           },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "500": { "$ref": "#/components/responses/ServerError" }
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
         }
       }
     },
@@ -215,7 +272,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["comment"],
+                "required": [
+                  "comment"
+                ],
                 "properties": {
                   "postUrl": {
                     "type": "string",
@@ -234,7 +293,7 @@
               },
               "example": {
                 "postUrl": "https://example.substack.com/p/my-latest-post",
-                "comment": "This is a fascinating perspective. I especially liked the point about agent-to-agent communication — that's going to be huge in enterprise workflows."
+                "comment": "This is a fascinating perspective. I especially liked the point about agent-to-agent communication \u2014 that's going to be huge in enterprise workflows."
               }
             }
           }
@@ -247,13 +306,24 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": { "type": "boolean" },
+                    "success": {
+                      "type": "boolean"
+                    },
                     "data": {
                       "type": "object",
                       "properties": {
-                        "postId": { "type": "integer" },
-                        "comment": { "type": "string" },
-                        "status": { "type": "string", "enum": ["posted"] }
+                        "postId": {
+                          "type": "integer"
+                        },
+                        "comment": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "posted"
+                          ]
+                        }
                       }
                     }
                   }
@@ -261,9 +331,15 @@
               }
             }
           },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "500": { "$ref": "#/components/responses/ServerError" }
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
         }
       }
     },
@@ -278,7 +354,13 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["targetAccount", "keyword", "provider", "model", "apiKey"],
+                "required": [
+                  "targetAccount",
+                  "keyword",
+                  "provider",
+                  "model",
+                  "apiKey"
+                ],
                 "properties": {
                   "targetAccount": {
                     "type": "string",
@@ -294,7 +376,11 @@
                   },
                   "provider": {
                     "type": "string",
-                    "enum": ["groq", "gemini", "openai"],
+                    "enum": [
+                      "groq",
+                      "gemini",
+                      "openai"
+                    ],
                     "description": "The AI provider to use for analyzing posts and generating comments"
                   },
                   "model": {
@@ -326,13 +412,17 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": { "type": "boolean" },
+                    "success": {
+                      "type": "boolean"
+                    },
                     "data": {
                       "type": "object",
                       "properties": {
                         "logs": {
                           "type": "array",
-                          "items": { "type": "string" },
+                          "items": {
+                            "type": "string"
+                          },
                           "description": "Timestamped execution logs"
                         },
                         "results": {
@@ -340,11 +430,21 @@
                           "items": {
                             "type": "object",
                             "properties": {
-                              "postTitle": { "type": "string" },
-                              "url": { "type": "string" },
-                              "matched": { "type": "boolean" },
-                              "comment": { "type": "string" },
-                              "status": { "type": "string" }
+                              "postTitle": {
+                                "type": "string"
+                              },
+                              "url": {
+                                "type": "string"
+                              },
+                              "matched": {
+                                "type": "boolean"
+                              },
+                              "comment": {
+                                "type": "string"
+                              },
+                              "status": {
+                                "type": "string"
+                              }
                             }
                           }
                         }
@@ -355,9 +455,15 @@
               }
             }
           },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "500": { "$ref": "#/components/responses/ServerError" }
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
         }
       }
     },
@@ -374,7 +480,9 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": { "type": "boolean" },
+                    "success": {
+                      "type": "boolean"
+                    },
                     "data": {
                       "type": "object",
                       "properties": {
@@ -383,12 +491,26 @@
                           "items": {
                             "type": "object",
                             "properties": {
-                              "id": { "type": "integer" },
-                              "title": { "type": "string" },
-                              "subtitle": { "type": "string" },
-                              "publishedAt": { "type": "string", "format": "date-time" },
-                              "truncatedBody": { "type": "string" },
-                              "url": { "type": "string", "format": "uri" }
+                              "id": {
+                                "type": "integer"
+                              },
+                              "title": {
+                                "type": "string"
+                              },
+                              "subtitle": {
+                                "type": "string"
+                              },
+                              "publishedAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "truncatedBody": {
+                                "type": "string"
+                              },
+                              "url": {
+                                "type": "string",
+                                "format": "uri"
+                              }
                             }
                           }
                         }
@@ -399,8 +521,12 @@
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "500": { "$ref": "#/components/responses/ServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
         }
       }
     },
@@ -417,7 +543,9 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": { "type": "boolean" },
+                    "success": {
+                      "type": "boolean"
+                    },
                     "data": {
                       "type": "object",
                       "properties": {
@@ -426,12 +554,26 @@
                           "items": {
                             "type": "object",
                             "properties": {
-                              "id": { "type": "integer" },
-                              "body": { "type": "string" },
-                              "likesCount": { "type": "integer" },
-                              "publishedAt": { "type": "string", "format": "date-time" },
-                              "author": { "type": "object" },
-                              "url": { "type": "string", "format": "uri" }
+                              "id": {
+                                "type": "integer"
+                              },
+                              "body": {
+                                "type": "string"
+                              },
+                              "likesCount": {
+                                "type": "integer"
+                              },
+                              "publishedAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "author": {
+                                "type": "object"
+                              },
+                              "url": {
+                                "type": "string",
+                                "format": "uri"
+                              }
                             }
                           }
                         }
@@ -442,8 +584,12 @@
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "500": { "$ref": "#/components/responses/ServerError" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
         }
       }
     },
@@ -460,7 +606,9 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": { "type": "boolean" },
+                    "success": {
+                      "type": "boolean"
+                    },
                     "data": {
                       "type": "object",
                       "properties": {
@@ -469,10 +617,20 @@
                           "items": {
                             "type": "object",
                             "properties": {
-                              "postTitle": { "type": "string" },
-                              "postUrl": { "type": "string", "format": "uri" },
-                              "body": { "type": "string" },
-                              "publishedAt": { "type": "string", "format": "date-time" }
+                              "postTitle": {
+                                "type": "string"
+                              },
+                              "postUrl": {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              "body": {
+                                "type": "string"
+                              },
+                              "publishedAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
                             }
                           }
                         }
@@ -483,7 +641,9 @@
               }
             }
           },
-          "500": { "$ref": "#/components/responses/ServerError" }
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
         }
       }
     },
@@ -498,25 +658,65 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["body", "scheduledAt", "postType"],
+                "required": [
+                  "body",
+                  "scheduledAt",
+                  "postType"
+                ],
                 "properties": {
-                  "title": { "type": "string" },
-                  "subtitle": { "type": "string" },
-                  "body": { "type": "string" },
-                  "isDraft": { "type": "boolean", "default": true },
-                  "scheduledAt": { "type": "string", "format": "date-time" },
-                  "recurrence": { "type": "string", "enum": ["once", "daily", "twice_daily", "alternate_days", "weekly"], "default": "once" },
-                  "postType": { "type": "string", "enum": ["newsletter", "note"] },
-                  "noteLink": { "type": "string" }
+                  "title": {
+                    "type": "string"
+                  },
+                  "subtitle": {
+                    "type": "string"
+                  },
+                  "body": {
+                    "type": "string"
+                  },
+                  "isDraft": {
+                    "type": "boolean",
+                    "default": true
+                  },
+                  "scheduledAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "recurrence": {
+                    "type": "string",
+                    "enum": [
+                      "once",
+                      "daily",
+                      "twice_daily",
+                      "alternate_days",
+                      "weekly"
+                    ],
+                    "default": "once"
+                  },
+                  "postType": {
+                    "type": "string",
+                    "enum": [
+                      "newsletter",
+                      "note"
+                    ]
+                  },
+                  "noteLink": {
+                    "type": "string"
+                  }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": { "description": "Post scheduled successfully" },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "500": { "$ref": "#/components/responses/ServerError" }
+          "200": {
+            "description": "Post scheduled successfully"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
         }
       }
     },
@@ -526,8 +726,12 @@
         "summary": "List scheduled publishing queue",
         "description": "Returns all posts in the scheduling queue with status and recurrence metadata.",
         "responses": {
-          "200": { "description": "Schedules retrieved" },
-          "500": { "$ref": "#/components/responses/ServerError" }
+          "200": {
+            "description": "Schedules retrieved"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
         }
       }
     }
@@ -548,22 +752,36 @@
             "schema": {
               "type": "object",
               "properties": {
-                "success": { "type": "boolean", "enum": [false] },
-                "error": { "type": "string" }
+                "success": {
+                  "type": "boolean",
+                  "enum": [
+                    false
+                  ]
+                },
+                "error": {
+                  "type": "string"
+                }
               }
             }
           }
         }
       },
       "Unauthorized": {
-        "description": "Not authenticated — missing/invalid Bearer token or Substack session",
+        "description": "Not authenticated \u2014 missing/invalid Bearer token or Substack session",
         "content": {
           "application/json": {
             "schema": {
               "type": "object",
               "properties": {
-                "success": { "type": "boolean", "enum": [false] },
-                "error": { "type": "string" }
+                "success": {
+                  "type": "boolean",
+                  "enum": [
+                    false
+                  ]
+                },
+                "error": {
+                  "type": "string"
+                }
               }
             }
           }
@@ -576,8 +794,15 @@
             "schema": {
               "type": "object",
               "properties": {
-                "success": { "type": "boolean", "enum": [false] },
-                "error": { "type": "string" }
+                "success": {
+                  "type": "boolean",
+                  "enum": [
+                    false
+                  ]
+                },
+                "error": {
+                  "type": "string"
+                }
               }
             }
           }

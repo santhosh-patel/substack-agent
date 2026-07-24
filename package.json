@@ -1,6 +1,6 @@
 {
   "name": "substack-agent",
-  "version": "2.0.0",
+  "version": "1.0.1",
   "description": "Automate Substack posts with AI-powered content generation — MCP server and tool-calling API for AI agents",
   "license": "MIT",
   "repository": {

@@ -2,6 +2,37 @@
 
 All notable changes to Substack Agent are documented here.
 
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.0.1] — 2026-07-24
+
+### Added
+- Docs link in the landing navbar (desktop); absolute `/#section` links so Features/Integrations work from `/docs`
+- Route error boundary for `/docs` so render failures show a recoverable UI
+- Hash scroll on the marketing page for `/#features`-style deep links
+- CI pipeline: `lint-build` (Node 20.19 / 22) and `api-smoke` (Node 22)
+- Static CI checks (`npm run ci:static`): docs nav ↔ markdown, OpenAPI ↔ tool routes, public assets, `.env.example`, changelog parity
+- Credential-free HTTP smoke suite (`npm run test:smoke`)
+- Dependabot for root npm, landing-page npm, and GitHub Actions
+- `scripts/sync-landing-dist.mjs` to copy Vite output into `public/` reliably in CI
+
+### Changed
+- Node engine requirement: `^20.19.0 || >=22.12.0` (Vite 8)
+- Landing build script uses `npm run build --prefix landing-page` + sync script (no fragile shell globs)
+- CI job/step names clarified (`lint-build`, `api-smoke`, typed step titles)
+- `.env` load no longer overwrites variables already set in the environment
+- Server `PORT` is configurable via `process.env.PORT` (default `3456`)
+- API smoke tests skip credential-gated cases instead of failing when secrets are missing
+- Hero showcase uses inner panes instead of nested Mac window chrome
+- Playground app header: removed logo image; responsive icon tabs and wrapping layout
+
+### Fixed
+- Docs page crash: `rehypePlugins is not defined` in `DocsPageContent`
+- Favicon `404` — build now copies `favicon.svg` / `icons.svg` into `public/`
+- Stale hashed landing chunks left in `public/assets` after rebuilds
+- GitHub Actions build failures on unsupported Node 18 / pre-20.19 runtimes
+
 ## [2.2.0] — 2026
 
 ### Added

@@ -4,7 +4,7 @@ import { MCP_TOOLS, executeMcpTool } from './tools.js';
 
 export function createMcpServer() {
   const server = new Server(
-    { name: 'substack-automation', version: '2.0.0' },
+    { name: 'substack-automation', version: '1.0.1' },
     { capabilities: { tools: {} } },
   );
 

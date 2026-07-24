@@ -45,7 +45,7 @@ curl -s "https://your-domain/api/tools/health" \
 {
   "success": true,
   "data": {
-    "version": "2.0.0",
+    "version": "1.0.1",
     "connected": true,
     "publication": "yourname.substack.com"
   }
