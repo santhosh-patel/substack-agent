@@ -16,7 +16,7 @@ const formatMinutesLabel = (...args) => PG.formatMinutesLabel(...args);
 const formatRecurrenceTimesLabel = (...args) => PG.formatRecurrenceTimesLabel(...args);
 const formatScheduleDueLabel = (...args) => PG.formatScheduleDueLabel(...args);
 const dtBuildSelectedDate = (...args) => PG.dtBuildSelectedDate(...args);
-const MODELS = (...args) => PG.MODELS(...args);
+const MODELS = PG.MODELS;
 
 function toggleSchedulerFields() {
   const postType = document.getElementById('schedPostType').value;

@@ -7,7 +7,7 @@ const getStoredSid = (...args) => PG.getStoredSid(...args);
 const getStoredApiKey = (...args) => PG.getStoredApiKey(...args);
 const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
 const getStoredSettings = (...args) => PG.getStoredSettings(...args);
-const MODELS = (...args) => PG.MODELS(...args);
+const MODELS = PG.MODELS;
 
 import PG from './pg.js';
 import './state.js';
