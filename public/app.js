@@ -29,8 +29,23 @@ const MODELS = {
 let isConnected = false;
 let allHistoryItems = [];
 
+function initMacConsoleHighlight() {
+  document.querySelectorAll('.mac-console').forEach((el) => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.querySelectorAll('.mac-console.is-active').forEach((node) => node.classList.remove('is-active'));
+      el.classList.add('is-active');
+    });
+  });
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.mac-console.is-active').forEach((node) => node.classList.remove('is-active'));
+  });
+}
+
 // ─── Initialization ───
 document.addEventListener('DOMContentLoaded', async () => {
+  initMacConsoleHighlight();
   loadSavedSettings();
 
   // Initialize App Theme
