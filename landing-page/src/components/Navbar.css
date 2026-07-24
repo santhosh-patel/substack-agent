@@ -70,6 +70,12 @@
   border-radius: var(--radius-sm);
 }
 
+.nav-playground-btn {
+  padding: 8px 14px;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+}
+
 .mobile-toggle {
   display: none;
   flex-direction: column;

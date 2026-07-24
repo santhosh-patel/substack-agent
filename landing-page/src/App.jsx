@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import TrustBar from './components/TrustBar';
@@ -9,9 +9,11 @@ import ToolsGrid from './components/ToolsGrid';
 import CTA from './components/CTA';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
+import PlaygroundModal from './components/PlaygroundModal';
 
 export default function App() {
-  // Scroll reveal observer for .animate-in elements
+  const [isPlaygroundOpen, setIsPlaygroundOpen] = useState(false);
+
   useEffect(() => {
     const elements = document.querySelectorAll('.animate-in');
     if (!elements.length) return;
@@ -34,16 +36,20 @@ export default function App() {
 
   return (
     <>
-      <Navbar />
-      <Hero />
+      <Navbar onOpenPlayground={() => setIsPlaygroundOpen(true)} />
+      <Hero onOpenPlayground={() => setIsPlaygroundOpen(true)} />
       <TrustBar />
       <Features />
       <Integrations />
       <HowItWorks />
       <ToolsGrid />
-      <CTA />
+      <CTA onOpenPlayground={() => setIsPlaygroundOpen(true)} />
       <FAQ />
       <Footer />
+      <PlaygroundModal 
+        isOpen={isPlaygroundOpen} 
+        onClose={() => setIsPlaygroundOpen(false)} 
+      />
     </>
   );
 }
