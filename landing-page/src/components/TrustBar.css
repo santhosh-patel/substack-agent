@@ -1,19 +1,22 @@
+/* ─── Trust Bar ─── */
+
 .trust-bar {
-  padding: 36px 0;
+  padding: clamp(24px, 4vw, 36px) 0;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   background: var(--bg-subtle);
   width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .trust-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: clamp(12px, 3vw, 24px);
   width: 100%;
   min-width: 0;
+  flex-wrap: wrap;
 }
 
 .trust-title {
@@ -21,17 +24,17 @@
   font-weight: 600;
   color: var(--text-muted);
   letter-spacing: 0.08em;
-  white-space: nowrap;
   flex-shrink: 0;
 }
 
 .trust-pills {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: clamp(8px, 1.5vw, 12px);
   flex-wrap: wrap;
-  max-width: 100%;
   min-width: 0;
+  flex: 1;
+  justify-content: flex-end;
 }
 
 .trust-pill {
@@ -42,7 +45,7 @@
   background: var(--bg-page);
   border: 1px solid var(--border);
   border-radius: var(--radius-full);
-  font-size: 13px;
+  font-size: clamp(12px, 1.8vw, 13px);
   font-weight: 500;
   color: var(--text-secondary);
 }
@@ -55,29 +58,14 @@
   flex-shrink: 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .trust-container {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 14px;
-  }
-}
-
-@media (max-width: 640px) {
-  .trust-bar {
-    padding: 24px 0;
-  }
-  .trust-container {
     align-items: center;
     text-align: center;
-    gap: 12px;
   }
+
   .trust-pills {
     justify-content: center;
-    gap: 8px;
-  }
-  .trust-pill {
-    padding: 5px 12px;
-    font-size: 12px;
   }
 }
