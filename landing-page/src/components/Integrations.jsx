@@ -78,10 +78,12 @@ export default function Integrations() {
         </div>
 
         <div className="integration-wrapper">
-          <div className="integration-nav">
+          <div className="integration-nav" role="tablist" aria-label="Integration methods">
             {methods.map((m) => (
               <button
                 key={m.id}
+                role="tab"
+                aria-selected={activeMethod === m.id}
                 className={`nav-item ${activeMethod === m.id ? 'active' : ''}`}
                 onClick={() => setActiveMethod(m.id)}
               >
@@ -91,7 +93,7 @@ export default function Integrations() {
             ))}
           </div>
 
-          <div className="integration-card">
+          <div className="integration-card" role="tabpanel">
             <div className="card-header">
               <div>
                 <span className="card-step">{current.step}</span>

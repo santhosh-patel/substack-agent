@@ -61,20 +61,26 @@ export default function Hero() {
               <span className="dot" />
               <span className="dot" />
             </div>
-            <div className="showcase-tabs">
+              <div className="showcase-tabs" role="tablist" aria-label="Integration examples">
               <button 
+                role="tab"
+                aria-selected={activeTab === 'mcp'}
                 className={`tab-btn ${activeTab === 'mcp' ? 'active' : ''}`}
                 onClick={() => setActiveTab('mcp')}
               >
                 Claude MCP Server
               </button>
               <button 
+                role="tab"
+                aria-selected={activeTab === 'api'}
                 className={`tab-btn ${activeTab === 'api' ? 'active' : ''}`}
                 onClick={() => setActiveTab('api')}
               >
                 REST API Tool
               </button>
               <button 
+                role="tab"
+                aria-selected={activeTab === 'cli'}
                 className={`tab-btn ${activeTab === 'cli' ? 'active' : ''}`}
                 onClick={() => setActiveTab('cli')}
               >
