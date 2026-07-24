@@ -70,8 +70,19 @@
     display: none;
   }
   .tool-row-item {
-    grid-template-columns: 1fr;
-    gap: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
     align-items: flex-start;
+    padding: 14px 16px;
+  }
+  .col-name code {
+    font-size: 13px;
+    word-break: break-word;
+  }
+  .col-desc {
+    font-size: 13px;
+    line-height: 1.5;
   }
 }
+
