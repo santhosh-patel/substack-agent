@@ -10,19 +10,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  static:
-    name: Static checks
+  lint-build:
+    name: lint-build (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        # Vite 8 requires ^20.19.0 || >=22.12.0 (Node 18 is unsupported)
+        # Vite 8 requires ^20.19.0 || >=22.12.0
         node-version: ['20.19', '22']
 
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout
+        uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v5
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
@@ -30,38 +32,40 @@ jobs:
             package-lock.json
             landing-page/package-lock.json
 
-      - name: Install root dependencies
+      - name: Install dependencies (root)
         run: npm ci
 
-      - name: Install landing-page dependencies
+      - name: Install dependencies (landing-page)
         run: npm ci
         working-directory: landing-page
 
-      - name: Typecheck
+      - name: TypeScript typecheck (tsc --noEmit)
         run: npm run typecheck
 
-      - name: Lint landing page
+      - name: ESLint/oxlint (landing-page)
         run: npm run lint --prefix landing-page
 
-      - name: Build landing and docs bundle
+      - name: Vite production build → public/
         run: npm run build
 
-      - name: Static project checks
+      - name: Validate OpenAPI, docs nav, and public assets
         run: npm run ci:static
 
-  smoke:
-    name: HTTP smoke
+  api-smoke:
+    name: api-smoke (Node 22)
     runs-on: ubuntu-latest
-    needs: static
+    needs: lint-build
     env:
       API_SECRET: ci-test-secret
       NODE_ENV: production
       PORT: 3456
 
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout
+        uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v5
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
           cache: npm
@@ -69,17 +73,17 @@ jobs:
             package-lock.json
             landing-page/package-lock.json
 
-      - name: Install root dependencies
+      - name: Install dependencies (root)
         run: npm ci
 
-      - name: Install landing-page dependencies
+      - name: Install dependencies (landing-page)
         run: npm ci
         working-directory: landing-page
 
-      - name: Build landing and docs bundle
+      - name: Vite production build → public/
         run: npm run build
 
-      - name: Start server
+      - name: Start Express server
         run: |
           npm start &
           echo $! > /tmp/substack-agent.pid
@@ -93,16 +97,16 @@ jobs:
           echo "Server failed to become ready"
           exit 1
 
-      - name: Auth tests
+      - name: Test Bearer auth (/api/tools, /api/mcp)
         run: npm run test:auth
 
-      - name: Smoke tests
+      - name: Test HTTP smoke (routes, OpenAPI, secret leakage)
         run: npm run test:smoke
 
-      - name: API smoke (skips credential-gated cases)
+      - name: Test Tools API smoke (credential-gated cases skipped)
         run: npm run test:api
 
-      - name: Stop server
+      - name: Stop Express server
         if: always()
         run: |
           if [ -f /tmp/substack-agent.pid ]; then

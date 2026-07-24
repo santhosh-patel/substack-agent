@@ -21,7 +21,7 @@ Thanks for your interest in contributing! This guide covers how to get started, 
    - `npm run build && npm run ci:static`
    - With the server running (`npm run dev`): `npm run test:auth` and `npm run test:smoke`
    - Optional live Substack checks: `npm run test:api` (skips cases that need missing credentials)
-4. Open a pull request against `main` and fill out the PR template. GitHub Actions runs static checks on Node 18/20/22 plus HTTP smoke tests.
+4. Open a pull request against `main` and fill out the PR template. GitHub Actions runs `lint-build` on Node 20.19/22 and `api-smoke` on Node 22.
 
 ## Changelog discipline
 
