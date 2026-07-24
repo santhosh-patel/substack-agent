@@ -4,7 +4,7 @@ Get Substack Agent running locally in a few minutes.
 
 ## Prerequisites
 
-- **Node.js 18+** and npm
+- **Node.js 20.19+** or **22.12+** and npm (required by Vite 8)
 - A **Substack account** you can log into in a browser
 - (Optional) AI provider API key for generation features
 

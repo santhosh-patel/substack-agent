@@ -83,7 +83,7 @@ Substack has **no official publishing API**. Substack Agent bridges that gap usi
 
 ## Prerequisites
 
-- **Node.js 18+** and npm
+- **Node.js 20.19+** or **22.12+** and npm
 - A **Substack account** you control
 - A fresh **`connect.sid`** cookie ([guide](/docs/getting-started/session-cookie))
 - For AI features: an API key from Groq, Gemini, OpenAI, or OpenRouter
