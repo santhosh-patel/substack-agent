@@ -34,8 +34,8 @@ async function run() {
         const res = await fetch(`${BASE_URL}/api/tools/health`, {
           headers: { Authorization: 'Bearer invalid-token' },
         });
-        if (res.status !== 401) {
-          throw new Error(`Expected 401, got ${res.status}`);
+        if (res.status !== 403) {
+          throw new Error(`Expected 403, got ${res.status}`);
         }
       },
     },
