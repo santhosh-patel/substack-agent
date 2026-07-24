@@ -1,6 +1,15 @@
 import { useState, useEffect } from 'react';
 import './Navbar.css';
 
+const DESKTOP_LINKS = [
+  { label: 'Features', href: '#features' },
+  { label: 'Integrations', href: '#integrations' },
+  { label: 'How It Works', href: '#how-it-works' },
+  { label: 'Tools', href: '#tools' },
+  { label: 'Docs', href: '/docs' },
+  { label: 'FAQ', href: '#faq' },
+];
+
 const MOBILE_LINKS = [
   { label: 'Features', href: '#features' },
   { label: 'Integrations', href: '#integrations' },
@@ -52,7 +61,7 @@ export default function Navbar() {
           </a>
 
           <div className="nav-menu nav-menu--desktop">
-            {MOBILE_LINKS.map(({ label, href }) => (
+            {DESKTOP_LINKS.map(({ label, href }) => (
               <a key={href} href={href}>{label}</a>
             ))}
           </div>

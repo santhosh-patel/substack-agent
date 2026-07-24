@@ -119,7 +119,7 @@ export default function DocsLayout() {
         </aside>
 
         <main className="docs-main" id="docs-content">
-          <DocsPageContent page={currentPage} />
+          <DocsPageContent page={currentPage} rehypePlugins={rehypePlugins} />
           <div className="docs-pager">
             {prev ? (
               <Link to={docsHref(prev.path)} className="docs-pager-link docs-pager-prev">
@@ -167,7 +167,7 @@ function extractHeadings(markdown) {
   }));
 }
 
-function DocsPageContent({ page }) {
+function DocsPageContent({ page, rehypePlugins }) {
   const content = getDocContent(page.file);
   const editUrl = `${GITHUB_EDIT_BASE}/${page.file}`;
   const headings = useMemo(() => extractHeadings(content), [content]);
