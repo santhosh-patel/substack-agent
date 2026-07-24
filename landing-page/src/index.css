@@ -61,6 +61,20 @@
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --duration: 0.3s;
 
+  /* macOS-style code windows */
+  --mac-chrome: #E8E4DC;
+  --mac-chrome-border: #C8C4BC;
+  --mac-chrome-text: #6B6560;
+  --mac-body: #3A3834;
+  --mac-body-alt: #45423D;
+  --mac-border: rgba(0, 0, 0, 0.14);
+  --mac-code-text: #E8E4DC;
+  --mac-highlight-ring: rgba(255, 103, 25, 0.22);
+  --mac-highlight-border: rgba(255, 103, 25, 0.45);
+  --mac-dot-close: #FF5F57;
+  --mac-dot-minimize: #FEBC2E;
+  --mac-dot-maximize: #28C840;
+
   /* Typography */
   --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;

@@ -7,7 +7,8 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { docsNav, docsHref, findPageByPath, getAdjacentPages, GITHUB_EDIT_BASE } from './nav';
 import { getDocContent } from './content';
-import 'highlight.js/styles/github.css';
+import MacWindow from '../components/MacWindow';
+import 'highlight.js/styles/atom-one-dark.css';
 import './DocsLayout.css';
 
 export default function DocsLayout() {
@@ -156,7 +157,19 @@ function DocsPageContent({ page }) {
       </div>
 
       <div className="docs-markdown">
-        <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeHighlight]}
+          components={{
+            pre({ children, ...props }) {
+              return (
+                <MacWindow className="mac-window-docs">
+                  <pre {...props}>{children}</pre>
+                </MacWindow>
+              );
+            },
+          }}
+        >
           {content}
         </ReactMarkdown>
       </div>

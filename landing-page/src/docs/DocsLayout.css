@@ -214,11 +214,15 @@
 }
 
 .docs-markdown pre {
-  background: var(--bg-dark);
-  border: 1px solid var(--border-dark);
-  border-radius: var(--radius-md);
-  padding: 16px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
   overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+.docs-markdown .mac-window {
   margin-bottom: 20px;
 }
 
@@ -226,7 +230,7 @@
   background: none;
   border: none;
   padding: 0;
-  color: #e2e8f0;
+  color: var(--mac-code-text);
   font-size: 13px;
 }
 
