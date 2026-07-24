@@ -342,6 +342,7 @@
           <div class="card" style="margin-top: 32px;">
             <div class="card-header">
               <h2><i data-lucide="history" class="header-icon"></i> Publish History</h2>
+              <span class="history-source-label">Browser drafts (localStorage)</span>
             </div>
             <div class="card-body">
               <div class="history-list" id="newsletterHistoryList">
@@ -776,6 +777,7 @@
             <div class="card-header" style="display: flex; flex-direction: column; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
               <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                 <h2 style="margin: 0; display: flex; align-items: center; gap: 8px;"><i data-lucide="history" class="header-icon"></i> History</h2>
+                <span class="history-source-label">App history + Substack archive</span>
                 <button class="btn btn-secondary btn-sm" id="loadHistoryBtn" onclick="loadHistory()" style="padding: 6px 14px;">
                   <i data-lucide="rotate-ccw"></i> Fetch History
                 </button>

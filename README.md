@@ -138,6 +138,26 @@ The playground UI stores your session cookie and AI keys in browser `localStorag
 
 ---
 
+## Deployment modes
+
+| Mode | Command | Works on Vercel | Notes |
+|------|---------|-----------------|-------|
+| **Local dashboard** | `npm run dev` | Partial | Full scheduler, history, AI compose at `http://localhost:3456/playground` |
+| **Tools API** | `vercel` + `API_SECRET` | Yes | Stateless `/api/tools/*` for n8n, GPTs, webhooks |
+| **MCP server** | `npm run mcp` | No (local stdio) | Claude Desktop / Cursor integration |
+
+### Scheduler on Vercel
+
+Scheduling requires a background worker. Locally, `npm run dev` polls every 60 seconds. On Vercel:
+
+- Queue data is stored in ephemeral `/tmp` (lost on cold starts) unless you configure durable storage
+- Set `CRON_SECRET` and configure Vercel Cron to hit `/api/cron/process-schedules`
+- For reliable scheduling, run locally or use an external cron + persistent storage
+
+Open the playground at `/playground` after starting the dev server.
+
+---
+
 ## Contributing
 
 Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.
