@@ -2,6 +2,34 @@
 
 All notable changes to Substack Agent are documented here.
 
+## [2.2.0] — 2026
+
+### Added
+- GitHub Actions CI: build, auth tests, API smoke tests
+- Full-text docs search, lazy-loaded `/docs` route, code-split syntax highlighting
+- Integrations copy-toast feedback on landing
+- Session error payloads on Tools API (`SESSION_EXPIRED`, clear cookie refresh message)
+- Playground connection test with cookie-expiry toasts
+
+### Changed
+- CONTRIBUTING documents changelog sync process for releases
+
+## [2.1.0] — 2026
+
+### Added
+- Remote MCP over HTTP at `/api/mcp` (Streamable HTTP, Bearer auth)
+- Shared MCP tool handlers in `src/mcp/tools.ts` (stdio + HTTP)
+- Playground split into ES modules under `public/js/`
+- `GET /api/tools/health` for deploy smoke tests
+- Docker deploy, `npm start`, Railway/Render/Fly docs
+- Connection modes diagram on landing; remote MCP docs
+
+### Changed
+- Deploy-anywhere messaging across landing and docs
+- macOS-style code windows unified via `shared/mac-window.css`
+- Playground deployment banners (dashboard vs Tools API vs scheduler limits)
+- Removed Vercel `crons` from `vercel.json` (optional external cron documented)
+
 ## [2.0.0] — 2026
 
 ### Added

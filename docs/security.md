@@ -19,11 +19,10 @@ Anyone with access to your browser profile can read these values.
 | Route prefix | Auth | Purpose |
 |--------------|------|---------|
 | `/api/tools/*` | Bearer `API_SECRET` (required in production) | External agents, n8n, GPTs |
+| `/api/mcp` | Bearer `API_SECRET` (required in production) | Remote MCP over HTTP |
 | `/api/*` (dashboard) | **None** | Local playground only |
 
-**Warning:** If you deploy the playground publicly with `SUBSTACK_SID` in server environment variables, anyone who can reach your deployment can control your Substack account via unauthenticated dashboard routes.
-
-Use the **Tools API** with Bearer auth for production integrations.
+The playground is a **local dashboard** — it calls unauthenticated `/api/*` routes for connect, publish, and scheduler UI. When you deploy publicly, treat the dashboard as trusted-local-only; point production automations at **`/api/tools/*`** or **`/api/mcp`** with Bearer auth instead.
 
 ## Reporting vulnerabilities
 
