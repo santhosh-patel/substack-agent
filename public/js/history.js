@@ -9,6 +9,17 @@ const switchTab = (...args) => PG.switchTab(...args);
 const handleGenerate = (...args) => PG.handleGenerate(...args);
 const handleGenerateNote = (...args) => PG.handleGenerateNote(...args);
 
+import PG from './pg.js';
+import './state.js';
+const showToast = (...args) => PG.showToast(...args);
+const setButtonLoading = (...args) => PG.setButtonLoading(...args);
+const escapeHtml = (...args) => PG.escapeHtml(...args);
+const getStoredSid = (...args) => PG.getStoredSid(...args);
+const PG.isConnected = PG.PG.isConnected;
+const switchTab = (...args) => PG.switchTab(...args);
+const handleGenerate = (...args) => PG.handleGenerate(...args);
+const handleGenerateNote = (...args) => PG.handleGenerateNote(...args);
+
 async function loadHistory() {
   const btn = document.getElementById('loadHistoryBtn');
   const listEl = document.getElementById('historyList');
@@ -22,7 +33,7 @@ async function loadHistory() {
   let publications = [];
   let errors = [];
 
-  if (!PG.isConnected) {
+  if (!PG.PG.isConnected) {
     try {
       const res = await fetch('/api/publications/history');
       if (res.ok) {
@@ -42,7 +53,7 @@ async function loadHistory() {
       errors.push('Publications');
     }
 
-    PG.allHistoryItems = dedupeHistoryItems(publications);
+    PG.PG.allHistoryItems = dedupeHistoryItems(publications);
     filterAndRenderHistory();
     setButtonLoading(btn, false, '<i data-lucide="rotate-ccw"></i> Fetch History');
 
@@ -139,7 +150,7 @@ async function loadHistory() {
   }
 
   // Merge all items, dedupe by URL, prefer scheduled/local entries
-  PG.allHistoryItems = dedupeHistoryItems([...publications, ...newsletters, ...notes, ...comments]);
+  PG.PG.allHistoryItems = dedupeHistoryItems([...publications, ...newsletters, ...notes, ...comments]);
 
   if (errors.length > 0) {
     showToast(`Failed to load: ${errors.join(', ')}`, 'warning');
@@ -174,7 +185,7 @@ function filterAndRenderHistory() {
   if (!listEl) return;
 
   // 1. Edgecase: Disconnect state display
-  if (!PG.isConnected && PG.allHistoryItems.length === 0) {
+  if (!PG.PG.isConnected && PG.PG.allHistoryItems.length === 0) {
     listEl.innerHTML = `
       <div class="history-empty" style="padding: 40px 20px; display: flex; flex-direction: column; align-items: center; gap: 16px;">
         <i data-lucide="shield-alert" style="width: 44px; height: 44px; color: var(--text-muted);"></i>
@@ -192,7 +203,7 @@ function filterAndRenderHistory() {
   }
 
   // 2. Filter list of items
-  let items = PG.allHistoryItems;
+  let items = PG.PG.allHistoryItems;
   if (typeFilter === 'scheduled') {
     items = items.filter(item => item.source === 'scheduled');
   } else if (typeFilter !== 'all') {
@@ -356,7 +367,7 @@ function toggleBodyText(id) {
 }
 
 function reuseHistoryItem(id) {
-  const item = PG.allHistoryItems.find(i => i.id === id);
+  const item = PG.PG.allHistoryItems.find(i => i.id === id);
   if (!item) {
     showToast('Template item not found', 'error');
     return;
@@ -387,6 +398,14 @@ function reuseHistoryItem(id) {
   }
 }
 
+
+PG.loadHistory = loadHistory;
+PG.dedupeHistoryItems = dedupeHistoryItems;
+PG.filterAndRenderHistory = filterAndRenderHistory;
+PG.copyHistoryLink = copyHistoryLink;
+PG.toggleBodyText = toggleBodyText;
+PG.reuseHistoryItem = reuseHistoryItem;
+{};
 
 PG.loadHistory = loadHistory;
 PG.dedupeHistoryItems = dedupeHistoryItems;

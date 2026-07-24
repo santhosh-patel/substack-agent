@@ -7,6 +7,15 @@ const getStoredApiKey = (...args) => PG.getStoredApiKey(...args);
 const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
 const isConnected = PG.isConnected;
 
+import PG from './pg.js';
+import './state.js';
+const showToast = (...args) => PG.showToast(...args);
+const setButtonLoading = (...args) => PG.setButtonLoading(...args);
+const escapeHtml = (...args) => PG.escapeHtml(...args);
+const getStoredApiKey = (...args) => PG.getStoredApiKey(...args);
+const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
+const PG.isConnected = PG.PG.isConnected;
+
 // ─── Comment Automation ───
 
 function appendCommentLog(message, type = 'info') {
@@ -49,7 +58,7 @@ async function runCommentAutomation() {
   const stopBtn = document.getElementById('stopCommentAutoBtn');
   const logsEl = document.getElementById('commentLogs');
 
-  if (!PG.isConnected) {
+  if (!PG.PG.isConnected) {
     showToast('Please connect your Substack account first', 'error');
     return;
   }
@@ -81,7 +90,7 @@ async function runCommentAutomation() {
   setButtonLoading(runBtn, true, 'Running…');
   stopBtn.disabled = false;
 
-  PG.commentAutomationAbortController = new AbortController();
+  PG.PG.commentAutomationAbortController = new AbortController();
 
   try {
     appendCommentLog(`[Client] Sending automation request to backend...`, 'info');
@@ -97,7 +106,7 @@ async function runCommentAutomation() {
         model,
         apiKey
       }),
-      signal: PG.commentAutomationAbortController.signal
+      signal: PG.PG.commentAutomationAbortController.signal
     });
 
     const data = await res.json();
@@ -145,7 +154,7 @@ async function runCommentAutomation() {
   } finally {
     setButtonLoading(runBtn, false, '<i data-lucide="play"></i> Run Automation');
     stopBtn.disabled = true;
-    PG.commentAutomationAbortController = null;
+    PG.PG.commentAutomationAbortController = null;
     if (consoleTitleState) {
       consoleTitleState.className = 'console-title-text console-idle';
     }
@@ -153,12 +162,17 @@ async function runCommentAutomation() {
 }
 
 function stopCommentAutomation() {
-  if (PG.commentAutomationAbortController) {
-    PG.commentAutomationAbortController.abort();
+  if (PG.PG.commentAutomationAbortController) {
+    PG.PG.commentAutomationAbortController.abort();
   }
 }
 
 // ─── Newsletters Listing ───
+
+PG.appendCommentLog = appendCommentLog;
+PG.runCommentAutomation = runCommentAutomation;
+PG.stopCommentAutomation = stopCommentAutomation;
+{};
 
 PG.appendCommentLog = appendCommentLog;
 PG.runCommentAutomation = runCommentAutomation;

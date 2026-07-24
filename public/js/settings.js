@@ -7,6 +7,17 @@ const getStoredSid = (...args) => PG.getStoredSid(...args);
 const getStoredApiKey = (...args) => PG.getStoredApiKey(...args);
 const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
 const getStoredSettings = (...args) => PG.getStoredSettings(...args);
+const MODELS = (...args) => PG.MODELS(...args);
+
+import PG from './pg.js';
+import './state.js';
+const showToast = (...args) => PG.showToast(...args);
+const setButtonLoading = (...args) => PG.setButtonLoading(...args);
+const escapeHtml = (...args) => PG.escapeHtml(...args);
+const getStoredSid = (...args) => PG.getStoredSid(...args);
+const getStoredApiKey = (...args) => PG.getStoredApiKey(...args);
+const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
+const getStoredSettings = (...args) => PG.getStoredSettings(...args);
 const MODELS = PG.MODELS;
 
 async function loadConfigFromBackend() {
@@ -119,11 +130,11 @@ function updateOnboardingChecklist() {
   );
   const hasPublished = (JSON.parse(localStorage.getItem('substack_publish_history') || '[]')).length > 0;
 
-  step1?.classList.toggle('is-done', PG.isConnected || hasSid);
+  step1?.classList.toggle('is-done', PG.PG.isConnected || hasSid);
   step2?.classList.toggle('is-done', hasAiKey);
   step3?.classList.toggle('is-done', hasPublished);
 
-  if (PG.isConnected && hasAiKey && hasPublished) {
+  if (PG.PG.isConnected && hasAiKey && hasPublished) {
     localStorage.setItem(ONBOARDING_KEY, 'done');
     const panel = document.getElementById('onboardingChecklist');
     if (panel) panel.hidden = true;
@@ -183,8 +194,8 @@ function saveSettings() {
 
 
 function scheduleApiKeySave() {
-  clearTimeout(PG.apiKeySaveTimer);
-  PG.apiKeySaveTimer = setTimeout(() => {
+  clearTimeout(PG.PG.apiKeySaveTimer);
+  PG.PG.apiKeySaveTimer = setTimeout(() => {
     const keyVal = document.getElementById('aiKey')?.value.trim();
     if (keyVal) saveApiKey({ silent: true });
   }, 600);
@@ -300,7 +311,7 @@ async function handleConnect(options = {}) {
       throw new Error(data.error || 'Connection failed');
     }
 
-    PG.isConnected = true;
+    PG.PG.isConnected = true;
     updateConnectionBadge(data.profile);
     document.getElementById('publishBtn').disabled = false;
     saveSettings();
@@ -309,7 +320,7 @@ async function handleConnect(options = {}) {
     }
     updateOnboardingChecklist();
   } catch (err) {
-    PG.isConnected = false;
+    PG.PG.isConnected = false;
     updateConnectionBadge(null);
     document.getElementById('publishBtn').disabled = true;
     if (!auto) {
@@ -331,7 +342,7 @@ function updateConnectionBadge(profile) {
   const subLink = document.getElementById('profileSubLink');
   const discBtn = document.getElementById('disconnectBtn');
 
-  PG.currentProfile = profile;
+  PG.PG.currentProfile = profile;
 
   if (profile) {
     badge.className = 'profile-card connected';
@@ -439,7 +450,7 @@ async function handleDisconnect() {
     const res = await fetch('/api/disconnect', { method: 'POST' });
     if (!res.ok) throw new Error('Failed to disconnect from server');
 
-    PG.isConnected = false;
+    PG.PG.isConnected = false;
     updateConnectionBadge(null);
     document.getElementById('publishBtn').disabled = true;
 
@@ -630,14 +641,14 @@ async function testSubstackSession() {
     }
 
     saveSettings();
-    PG.isConnected = true;
+    PG.PG.isConnected = true;
     updateConnectionBadge(data.profile);
     const publishBtn = document.getElementById('publishBtn');
     if (publishBtn) publishBtn.disabled = false;
 
     showToast(`Session OK — connected as ${data.profile.name} (@${data.profile.slug})`, 'success');
   } catch (err) {
-    PG.isConnected = false;
+    PG.PG.isConnected = false;
     updateConnectionBadge(null);
     showToast(err.message, 'error');
   } finally {
@@ -733,5 +744,37 @@ PG.updatePublishButtonLabel = updatePublishButtonLabel;
 PG.testSubstackSession = testSubstackSession;
 PG.testAiKey = testAiKey;
 PG.testSchedAiKey = testSchedAiKey;
+PG.ONBOARDING_KEY = ONBOARDING_KEY;
+{};
+
+PG.loadConfigFromBackend = loadConfigFromBackend;
+PG.applyDeploymentMode = applyDeploymentMode;
+PG.initOnboardingChecklist = initOnboardingChecklist;
+PG.updateOnboardingChecklist = updateOnboardingChecklist;
+PG.restorePersistedSession = restorePersistedSession;
+PG.loadSavedSettings = loadSavedSettings;
+PG.saveSettings = saveSettings;
+PG.scheduleApiKeySave = scheduleApiKeySave;
+PG.loadApiKeyForProvider = loadApiKeyForProvider;
+PG.saveApiKey = saveApiKey;
+PG.updateModelOptions = updateModelOptions;
+PG.handleConnect = handleConnect;
+PG.updateConnectionBadge = updateConnectionBadge;
+PG.updateSimulatedPreviewHeader = updateSimulatedPreviewHeader;
+PG.handleDisconnect = handleDisconnect;
+PG.loadSystemPromptForTab = loadSystemPromptForTab;
+PG.saveSystemPrompt = saveSystemPrompt;
+PG.resetSystemPrompt = resetSystemPrompt;
+PG.toggleSidebar = toggleSidebar;
+PG.openSidebarAndFocusSid = openSidebarAndFocusSid;
+PG.toggleTheme = toggleTheme;
+PG.updateThemeToggleIcon = updateThemeToggleIcon;
+PG.loadPublishHistory = loadPublishHistory;
+PG.addPostToHistory = addPostToHistory;
+PG.updatePublishButtonLabel = updatePublishButtonLabel;
+PG.testSubstackSession = testSubstackSession;
+PG.testAiKey = testAiKey;
+PG.testSchedAiKey = testSchedAiKey;
+PG.MODELS = MODELS;
 PG.ONBOARDING_KEY = ONBOARDING_KEY;
 export {};

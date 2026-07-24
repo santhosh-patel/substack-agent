@@ -2,6 +2,10 @@ import PG from './pg.js';
 import './state.js';
 const escapeHtml = (...args) => PG.escapeHtml(...args);
 
+import PG from './pg.js';
+import './state.js';
+const escapeHtml = (...args) => PG.escapeHtml(...args);
+
 const SETTINGS_STORAGE_KEY = 'substack_settings';
 
 function getStoredSettings() {
@@ -67,6 +71,16 @@ function loadAllInputHistories() {
 }
 
 // ─── Scheduler tab logic ───
+
+PG.getStoredSettings = getStoredSettings;
+PG.getStoredSid = getStoredSid;
+PG.getStoredApiKey = getStoredApiKey;
+PG.hasBackendApiKey = hasBackendApiKey;
+PG.addToInputHistory = addToInputHistory;
+PG.updateDatalist = updateDatalist;
+PG.loadAllInputHistories = loadAllInputHistories;
+PG.SETTINGS_STORAGE_KEY = SETTINGS_STORAGE_KEY;
+{};
 
 PG.getStoredSettings = getStoredSettings;
 PG.getStoredSid = getStoredSid;

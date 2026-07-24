@@ -1,6 +1,9 @@
 import PG from './pg.js';
 import './state.js';
 
+import PG from './pg.js';
+import './state.js';
+
 const MODELS = {
   groq: [
     { value: 'llama-3.1-8b-instant', label: 'Llama 3.1 8B' },
@@ -24,6 +27,9 @@ const MODELS = {
     { value: 'deepseek/deepseek-chat', label: 'DeepSeek Chat (via OpenRouter)' },
   ],
 };
+
+PG.MODELS = MODELS;
+{};
 
 PG.MODELS = MODELS;
 export {};

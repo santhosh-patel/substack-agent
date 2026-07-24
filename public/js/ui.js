@@ -1,6 +1,9 @@
 import PG from './pg.js';
 import './state.js';
 
+import PG from './pg.js';
+import './state.js';
+
 function initMacConsoleHighlight() {
   document.querySelectorAll('.mac-console').forEach((el) => {
     el.addEventListener('click', (e) => {
@@ -238,6 +241,21 @@ function togglePasswordVisibility(inputId, btnEl) {
     window.lucide.createIcons();
   }
 }
+
+PG.initMacConsoleHighlight = initMacConsoleHighlight;
+PG.setButtonLoading = setButtonLoading;
+PG.showToast = showToast;
+PG.escapeHtml = escapeHtml;
+PG.showAppConfirm = showAppConfirm;
+PG.loadSystemPromptForTab = loadSystemPromptForTab;
+PG.saveSystemPrompt = saveSystemPrompt;
+PG.resetSystemPrompt = resetSystemPrompt;
+PG.toggleSidebar = toggleSidebar;
+PG.openSidebarAndFocusSid = openSidebarAndFocusSid;
+PG.toggleTheme = toggleTheme;
+PG.updateThemeToggleIcon = updateThemeToggleIcon;
+PG.togglePasswordVisibility = togglePasswordVisibility;
+{};
 
 PG.initMacConsoleHighlight = initMacConsoleHighlight;
 PG.setButtonLoading = setButtonLoading;

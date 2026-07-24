@@ -7,6 +7,109 @@ const loadSchedules = (...args) => PG.loadSchedules(...args);
 const loadHistory = (...args) => PG.loadHistory(...args);
 const classifySchedulerLogType = (...args) => PG.classifySchedulerLogType(...args);
 
+async function runManualCron() {
+  appendSchedulerLog('Manual queue check triggered…', 'highlight');
+  try {
+    const res = await fetch('/api/cron/process-schedules');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to trigger queue check');
+
+    renderSchedulerApiLogs(data.logs);
+
+    const count = data.processedCount || 0;
+    const pendingCount = data.pendingCount || 0;
+    const dueCount = data.dueCount || 0;
+
+    if (count > 0) {
+      showToast(`Queue check complete: processed ${count} post(s)!`, 'success');
+      appendSchedulerLog(`Queue check finished — processed ${count} post(s).`, 'success');
+    } else if (pendingCount > 0 && data.nextDueAt) {
+      const nextDue = new Date(data.nextDueAt).toLocaleString();
+      showToast(`No posts due yet. ${pendingCount} pending — next at ${nextDue}`, 'info');
+      appendSchedulerLog(`Queue check finished — ${pendingCount} pending, 0 due. Next: ${nextDue}`, 'info');
+    } else {
+      showToast('Queue check complete: no due posts found.', 'info');
+      appendSchedulerLog('Queue check finished — no due posts found.', 'info');
+    }
+    await loadSchedules();
+    if (count > 0 && document.getElementById('view-history')?.style.display !== 'none') {
+      loadHistory();
+    }
+  } catch (err) {
+    appendSchedulerLog(`Queue check failed: ${err.message}`, 'error');
+    showToast(err.message, 'error');
+  }
+}
+
+function updateSchedulerStats(schedules) {
+  const pendingEl = document.getElementById('schedStatPending');
+  const pausedEl = document.getElementById('schedStatPaused');
+  const failedEl = document.getElementById('schedStatFailed');
+  const nextDueEl = document.getElementById('schedStatNextDue');
+  if (!pendingEl || !pausedEl || !nextDueEl) return;
+
+  const pending = schedules.filter(s => s.status === 'pending').length;
+  const paused = schedules.filter(s => s.status === 'paused').length;
+  const failed = schedules.filter(s => s.status === 'failed').length;
+  pendingEl.textContent = String(pending);
+  pausedEl.textContent = String(paused);
+  if (failedEl) failedEl.textContent = String(failed);
+
+  const now = Date.now();
+  const upcoming = schedules
+    .filter(s => s.status === 'pending')
+    .map(s => new Date(s.scheduledAt))
+    .filter(d => !isNaN(d.getTime()) && d.getTime() >= now)
+    .sort((a, b) => a - b);
+
+  nextDueEl.textContent = upcoming.length > 0
+    ? upcoming[0].toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
+    : '—';
+}
+
+const SCHEDULER_LOG_PLACEHOLDER = 'Waiting for scheduler activity. Trigger a queue check or wait for automatic polling…';
+
+function classifySchedulerLogType(message) {
+  const msg = message.toLowerCase();
+  if (msg.includes('error') || msg.includes('failed') || msg.includes('fatal')) return 'error';
+  if (msg.includes('success') || msg.includes('finished processing') || msg.includes('processed')) return 'success';
+  if (msg.includes('will retry') || msg.includes('skipping') || msg.includes('no due')) return 'warning';
+  if (msg.includes('triggered') || msg.includes('running schedules')) return 'highlight';
+  return 'info';
+}
+
+function appendSchedulerLog(message, type = 'info') {
+  const logsEl = document.getElementById('schedulerLogs');
+  const stateEl = document.getElementById('schedulerConsoleState');
+  if (!logsEl) return;
+
+  const cleanMsg = escapeHtml(message);
+  let formattedMsg = cleanMsg;
+
+  if (type === 'highlight') {
+    formattedMsg = `<span class="log-highlight">${cleanMsg}</span>`;
+  } else if (type === 'success') {
+    formattedMsg = `<span class="log-success">${cleanMsg}</span>`;
+  } else if (type === 'error') {
+    formattedMsg = `<span class="log-error">${cleanMsg}</span>`;
+  } else if (type === 'warning') {
+    formattedMsg = `<span class="log-warning">${cleanMsg}</span>`;
+  } else if (type === 'info') {
+    formattedMsg = `<span class="log-info">${cleanMsg}</span>`;
+  }
+
+  if (logsEl.textContent.trim() === SCHEDULER_LOG_PLACEHOLDER) {
+    logsEl.innerHTML = '';
+  }
+
+  logsEl.innerHTML += formattedMsg + '\n';
+  logsEl.scrollTop = logsEl.scrollHeight;
+
+  if (stateEl) {
+    stateEl.className = 'console-title-text';
+    const dot = stateEl.querySelector('span');
+    if (dot) {
+      dot.style.background = type === 'error' ? 'var(--error)' : 'var(--success)';
       dot.style.boxShadow = type === 'error' ? '0 0 6px var(--error)' : '0 0 6px var(--success)';
     }
   }
@@ -244,6 +347,10 @@ window.stopSchedulerPolling = stopSchedulerPolling;
 window.toggleSchedSearchFields = toggleSchedSearchFields;
 window.updateSchedModelOptions = updateSchedModelOptions;
 
+PG.runManualCron = runManualCron;
+PG.updateSchedulerStats = updateSchedulerStats;
+PG.classifySchedulerLogType = classifySchedulerLogType;
+PG.appendSchedulerLog = appendSchedulerLog;
 PG.renderSchedulerApiLogs = renderSchedulerApiLogs;
 PG.clearSchedulerLogs = clearSchedulerLogs;
 PG.copySchedulerLogs = copySchedulerLogs;
@@ -254,4 +361,5 @@ PG.stopSchedulerPolling = stopSchedulerPolling;
 PG.toggleSchedSearchFields = toggleSchedSearchFields;
 PG.syncSchedApiKeyFromStorage = syncSchedApiKeyFromStorage;
 PG.updateSchedModelOptions = updateSchedModelOptions;
+PG.SCHEDULER_LOG_PLACEHOLDER = SCHEDULER_LOG_PLACEHOLDER;
 export {};
