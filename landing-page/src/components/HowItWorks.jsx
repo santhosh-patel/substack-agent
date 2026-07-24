@@ -2,29 +2,22 @@ import './HowItWorks.css';
 
 const steps = [
   {
-    num: 1,
-    title: 'Clone & Install',
-    desc: "Clone the repo and install dependencies. That's literally it for setup.",
-    code: 'git clone https://github.com/santhosh-patel/substack-agent.git && cd substack-agent && npm install',
+    step: '01',
+    title: 'Repository Setup',
+    desc: 'Clone the open-source repository and install the Node.js dependencies.',
+    code: 'git clone https://github.com/santhosh-patel/substack-agent.git\ncd substack-agent && npm install',
   },
   {
-    num: 2,
-    title: 'Add Your Session Cookie',
-    desc: (
-      <>
-        Log into Substack, grab your <code>connect.sid</code> from browser DevTools, and paste it in <code>.env</code>.
-      </>
-    ),
+    step: '02',
+    title: 'Configure Environment',
+    desc: 'Extract your Substack connect.sid session cookie and save it to .env.',
+    code: 'SUBSTACK_SID=your-connect-sid-cookie\nSUBSTACK_PUB_URL=yourpub.substack.com',
   },
   {
-    num: 3,
-    title: 'Pick Your Integration',
-    desc: 'Run the MCP server for Claude/Cursor, deploy the API to Vercel, or launch the web dashboard.',
-  },
-  {
-    num: 4,
-    title: 'Automate Everything',
-    desc: 'Your AI tools can now publish newsletters, post notes, schedule content, and engage with readers — automatically.',
+    step: '03',
+    title: 'Launch & Connect',
+    desc: 'Start the MCP server or deploy to Vercel for HTTP API tool access.',
+    code: 'npm run mcp        # For Claude / Cursor\nnpm run dev        # For Dashboard',
   },
 ];
 
@@ -33,28 +26,24 @@ export default function HowItWorks() {
     <section className="how-it-works" id="how-it-works">
       <div className="container">
         <div className="section-header">
-          <span className="section-badge">How It Works</span>
+          <span className="section-badge">Setup Guide</span>
           <h2 className="section-title">
-            Up and running<br /><span className="gradient-text">in under 5 minutes</span>
+            Getting started in <span className="brand-gradient">three simple steps</span>
           </h2>
+          <p className="section-subtitle">
+            Zero complicated configuration. Works right out of the box.
+          </p>
         </div>
 
-        <div className="steps">
-          {steps.map((step, i) => (
-            <div key={step.num}>
-              <div className="step animate-in" id={`step-${step.num}`} style={{ transitionDelay: `${i * 100}ms` }}>
-                <div className="step-number">{step.num}</div>
-                <div className="step-content">
-                  <h3>{step.title}</h3>
-                  <p>{step.desc}</p>
-                  {step.code && (
-                    <div className="step-code">
-                      <code>{step.code}</code>
-                    </div>
-                  )}
-                </div>
+        <div className="steps-grid">
+          {steps.map((item, i) => (
+            <div className="step-card animate-in" key={item.step} style={{ transitionDelay: `${i * 80}ms` }}>
+              <div className="step-badge">{item.step}</div>
+              <h3 className="step-heading">{item.title}</h3>
+              <p className="step-desc">{item.desc}</p>
+              <div className="step-code-box">
+                <pre><code>{item.code}</code></pre>
               </div>
-              {i < steps.length - 1 && <div className="step-connector" />}
             </div>
           ))}
         </div>
