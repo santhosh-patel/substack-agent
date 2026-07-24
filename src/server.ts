@@ -30,7 +30,9 @@ const loadEnv = () => {
             if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
               val = val.slice(1, -1);
             }
-            process.env[key] = val;
+            if (process.env[key] === undefined) {
+              process.env[key] = val;
+            }
           }
         });
         break;
@@ -43,7 +45,7 @@ const loadEnv = () => {
 loadEnv();
 
 const app = express();
-const PORT = 3456;
+const PORT = Number(process.env.PORT) || 3456;
 
 // ─── Middleware ───
 app.use(express.json({ limit: '5mb' }));
