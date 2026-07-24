@@ -1,3 +1,4 @@
+import MacWindow from './MacWindow';
 import './Features.css';
 
 const features = [
@@ -89,9 +90,9 @@ export default function Features() {
               </div>
               <h3 className="card-title">{feature.title}</h3>
               <p className="card-desc">{feature.desc}</p>
-              <div className="card-code">
+              <MacWindow compact>
                 <pre><code>{feature.codeSnippet}</code></pre>
-              </div>
+              </MacWindow>
             </div>
           ))}
         </div>

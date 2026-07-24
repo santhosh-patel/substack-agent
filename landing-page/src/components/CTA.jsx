@@ -1,3 +1,4 @@
+import MacWindow from './MacWindow';
 import './CTA.css';
 
 export default function CTA() {
@@ -32,18 +33,12 @@ export default function CTA() {
             </a>
           </div>
 
-          <div className="cta-terminal">
-            <div className="terminal-top">
-              <span className="dot" />
-              <span className="dot" />
-              <span className="dot" />
-              <span className="terminal-title">Quick Installation</span>
-            </div>
+          <MacWindow title="Quick Installation">
             <pre><code>{`$ git clone https://github.com/santhosh-patel/substack-agent.git
 $ cd substack-agent && npm install
 $ cp .env.example .env
 $ npm run dev`}</code></pre>
-          </div>
+          </MacWindow>
         </div>
       </div>
     </section>

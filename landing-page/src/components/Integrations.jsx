@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import MacWindow from './MacWindow';
 import './Integrations.css';
 
 const methods = [
@@ -107,9 +108,9 @@ export default function Integrations() {
 
             <p className="card-description">{current.desc}</p>
 
-            <div className="code-display">
+            <MacWindow>
               <pre><code>{current.code}</code></pre>
-            </div>
+            </MacWindow>
 
             <div className="tags-row">
               {current.highlights.map((h) => (

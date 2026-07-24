@@ -1,3 +1,4 @@
+import MacWindow from './MacWindow';
 import './HowItWorks.css';
 
 const steps = [
@@ -41,9 +42,9 @@ export default function HowItWorks() {
               <div className="step-badge">{item.step}</div>
               <h3 className="step-heading">{item.title}</h3>
               <p className="step-desc">{item.desc}</p>
-              <div className="step-code-box">
+              <MacWindow compact>
                 <pre><code>{item.code}</code></pre>
-              </div>
+              </MacWindow>
             </div>
           ))}
         </div>

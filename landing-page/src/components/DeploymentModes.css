@@ -30,14 +30,13 @@
   color: var(--text-primary);
 }
 
-.mode-command {
-  display: block;
+.mode-command-window {
+  margin-bottom: 2px;
+}
+
+.mode-command-window code {
   font-size: 12px;
-  background: var(--bg-dark);
-  color: #E2E8F0;
-  padding: 8px 10px;
-  border-radius: var(--radius-sm);
-  word-break: break-word;
+  font-family: var(--font-mono);
 }
 
 .mode-best,

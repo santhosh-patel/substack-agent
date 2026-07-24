@@ -1,3 +1,4 @@
+import MacWindow from './MacWindow';
 import './DeploymentModes.css';
 
 const modes = [
@@ -45,7 +46,9 @@ export default function DeploymentModes() {
           {modes.map((mode, i) => (
             <div className="mode-card animate-in" key={mode.id} style={{ transitionDelay: `${i * 60}ms` }}>
               <h3 className="mode-title">{mode.title}</h3>
-              <code className="mode-command">{mode.command}</code>
+              <MacWindow compact className="mode-command-window">
+                <code>{mode.command}</code>
+              </MacWindow>
               <p className="mode-best"><strong>Best for:</strong> {mode.bestFor}</p>
               <p className="mode-limits"><strong>Limits:</strong> {mode.limits}</p>
               <a
