@@ -3,13 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Substack Automation — AI-Powered Newsletter Publisher</title>
+  <title>Substack Automation — Playground & Dashboard</title>
   <meta name="description" content="Generate and publish Substack newsletters with AI. Supports Groq, Gemini, and OpenAI." />
   <link rel="stylesheet" href="/styles.css" />
-  <link rel="icon" type="image/png" href="/assets/logo.png" />
-  <link rel="apple-touch-icon" href="/assets/logo.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 </head>
 <body>
+
+  <!-- ─── Top Main Navigation Bar (Links to Landing Page) ─── -->
+  <header className="playground-top-navbar" class="playground-top-navbar">
+    <div class="playground-top-nav-container">
+      <a href="/" class="playground-nav-brand">
+        <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="6" fill="#FF6719" />
+          <path d="M7 7h14v3H7V7zm0 5h14v9L14 17.5 7 21V12z" fill="white" />
+        </svg>
+        <span>Substack Agent</span>
+      </a>
+
+      <nav class="playground-nav-links">
+        <a href="/">Overview</a>
+        <a href="/#features">Features</a>
+        <a href="/#integrations">Integrations</a>
+        <a href="/#how-it-works">How It Works</a>
+        <a href="/#tools">Tools</a>
+        <a href="/#faq">FAQ</a>
+      </nav>
+
+      <div class="playground-nav-actions">
+        <a href="/" class="btn btn-secondary btn-sm" style="display: flex; align-items: center; gap: 6px;">
+          <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i> Back to Landing Page
+        </a>
+        <a href="https://github.com/santhosh-patel/substack-agent" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+          GitHub
+        </a>
+      </div>
+    </div>
+  </header>
 
   <div class="toast-container" id="toastContainer"></div>
 
@@ -29,13 +59,13 @@
 
   <div class="app-container fade-in">
 
-    <!-- ─── Header ─── -->
+    <!-- ─── Substack App Bar ─── -->
     <header class="app-header">
       <div class="app-logo">
         <button class="btn-sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Toggle Settings">
           <i data-lucide="sidebar"></i>
         </button>
-        <img src="/assets/logo.png" alt="Substack Auto" class="app-logo-image" width="44" height="44" />
+        <img src="/assets/logo.png" alt="Substack Auto" class="app-logo-image" width="36" height="36" />
       </div>
 
       <!-- Navigation Tabs -->
@@ -438,8 +468,6 @@
                 Schedule a Substack newsletter or note to be published at a future time. Support for one-off and recurring intervals.
               </p>
 
-
-
               <!-- Form: Type + Timing -->
               <div class="scheduler-meta-grid scheduler-meta-grid--top">
                 <div class="form-group">
@@ -769,8 +797,12 @@
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Marked.js from CDN for markdown rendering -->
-  <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="/app.js"></script>
+  <script>
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  </script>
 </body>
 </html>

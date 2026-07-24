@@ -85,6 +85,68 @@ body::before {
   padding: 12px 20px 40px;
 }
 
+/* ─── Top Playground Navbar (Landing Page Links) ─── */
+.playground-top-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.playground-top-nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 56px;
+}
+
+.playground-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.playground-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.playground-nav-links a {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.playground-nav-links a:hover {
+  color: var(--text-primary);
+}
+
+.playground-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .playground-nav-links {
+    display: none;
+  }
+}
+
 /* ─── Header ─── */
 .app-header {
   display: flex;
