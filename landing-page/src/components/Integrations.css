@@ -142,32 +142,8 @@
   word-break: break-word;
 }
 
-.code-display {
-  background: var(--bg-dark);
-  border: 1px solid var(--border-dark);
-  border-radius: var(--radius-md);
-  padding: clamp(14px, 2.5vw, 20px);
+.integration-card .mac-window {
   margin-bottom: clamp(16px, 3vw, 24px);
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.code-display pre {
-  margin: 0;
-  width: 100%;
-  min-width: 0;
-  overflow-x: auto;
-}
-
-.code-display code {
-  font-size: clamp(11.5px, 1.8vw, 13px);
-  line-height: 1.6;
-  color: #E2E8F0;
-  white-space: pre-wrap;
-  word-break: break-word;
 }
 
 .tags-row {
