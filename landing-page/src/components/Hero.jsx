@@ -35,7 +35,7 @@ export default function Hero({ onOpenPlayground }) {
           </a>
 
           <button onClick={onOpenPlayground} className="btn btn-outline btn-lg" id="cta-hero-demo">
-            Quick Interactive Demo
+            Quick Modal Preview
           </button>
 
           <a 

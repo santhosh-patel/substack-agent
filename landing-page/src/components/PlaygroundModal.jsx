@@ -35,7 +35,6 @@ export default function PlaygroundModal({ isOpen, onClose }) {
           <div className="modal-title-group">
             <div className="modal-status-dot" />
             <h3>Substack Automation Playground</h3>
-            <span className="modal-badge">Interactive Demo</span>
           </div>
           <div className="modal-header-actions">
             <a 
@@ -59,19 +58,19 @@ export default function PlaygroundModal({ isOpen, onClose }) {
               className={`sidebar-item ${activeTab === 'draft' ? 'active' : ''}`}
               onClick={() => setActiveTab('draft')}
             >
-              ✍️ Newsletter Publisher
+              Newsletter Publisher
             </button>
             <button 
               className={`sidebar-item ${activeTab === 'notes' ? 'active' : ''}`}
               onClick={() => setActiveTab('notes')}
             >
-              💬 Post Substack Note
+              Post Substack Note
             </button>
             <button 
               className={`sidebar-item ${activeTab === 'comment' ? 'active' : ''}`}
               onClick={() => setActiveTab('comment')}
             >
-              🤖 AI Comment Automator
+              AI Comment Automator
             </button>
           </div>
 
@@ -107,12 +106,10 @@ export default function PlaygroundModal({ isOpen, onClose }) {
                     {isSimulating ? 'Publishing...' : 'Simulate API Publishing'}
                   </button>
                   <a 
-                    href="http://localhost:3456" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                    href="/playground" 
                     className="btn btn-outline"
                   >
-                    Launch Live Server App
+                    Launch Live App
                   </a>
                 </div>
               </div>
@@ -124,7 +121,7 @@ export default function PlaygroundModal({ isOpen, onClose }) {
                   <label>Note Text</label>
                   <textarea 
                     rows={4} 
-                    defaultValue="Checking out Substack Agent automation tools! 🚀" 
+                    defaultValue="Checking out Substack Agent automation tools!" 
                   />
                 </div>
                 <div className="form-group">

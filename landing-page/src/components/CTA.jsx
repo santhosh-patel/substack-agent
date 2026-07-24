@@ -22,7 +22,7 @@ export default function CTA({ onOpenPlayground }) {
             </a>
 
             <button onClick={onOpenPlayground} className="btn btn-outline btn-lg">
-              Interactive Modal Demo
+              Quick Modal Preview
             </button>
 
             <a 
