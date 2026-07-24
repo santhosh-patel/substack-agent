@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import './FAQ.css';
 
 const faqs = [
@@ -28,6 +29,12 @@ const faqs = [
 ];
 
 export default function FAQ() {
+  const [openIndex, setOpenIndex] = useState(null);
+
+  const toggle = (index) => {
+    setOpenIndex((prev) => (prev === index ? null : index));
+  };
+
   return (
     <section className="faq-section" id="faq">
       <div className="container">
@@ -38,13 +45,48 @@ export default function FAQ() {
           </h2>
         </div>
 
-        <div className="faq-grid">
-          {faqs.map((faq, i) => (
-            <div className="faq-card animate-in" key={i} style={{ transitionDelay: `${i * 50}ms` }}>
-              <h3 className="faq-q">{faq.q}</h3>
-              <p className="faq-a">{faq.a}</p>
-            </div>
-          ))}
+        <div className="faq-list">
+          {faqs.map((faq, i) => {
+            const isOpen = openIndex === i;
+            return (
+              <div
+                className={`faq-item animate-in ${isOpen ? 'is-open' : ''}`}
+                key={i}
+                style={{ transitionDelay: `${i * 50}ms` }}
+              >
+                <button
+                  type="button"
+                  className="faq-trigger"
+                  onClick={() => toggle(i)}
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${i}`}
+                >
+                  <span className="faq-q">{faq.q}</span>
+                  <span className="faq-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path
+                        d="M4 6l4 4 4-4"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </button>
+                <div
+                  id={`faq-answer-${i}`}
+                  className="faq-answer"
+                  role="region"
+                  aria-hidden={!isOpen}
+                >
+                  <div className="faq-answer-inner">
+                    <p className="faq-a">{faq.a}</p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
