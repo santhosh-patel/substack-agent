@@ -1,15 +1,15 @@
 import './ToolsGrid.css';
 
 const tools = [
-  { name: 'publish_newsletter', desc: 'Draft or publish live and email subscribers' },
-  { name: 'publish_note', desc: 'Short updates with optional link cards' },
-  { name: 'post_comment', desc: 'Comment on any post by URL or ID' },
-  { name: 'automate_comments', desc: 'AI scans, matches by keyword, and comments' },
-  { name: 'schedule_post', desc: 'Queue posts with recurring schedules' },
-  { name: 'list_newsletters', desc: 'Browse recent newsletters' },
-  { name: 'list_notes', desc: 'Browse recent notes and engagement' },
-  { name: 'list_comments', desc: 'View full comment history' },
-  { name: 'list_schedules', desc: 'View the scheduled post queue' },
+  { name: 'publish_newsletter', category: 'Publishing', desc: 'Draft or publish newsletters directly to subscriber inboxes' },
+  { name: 'publish_note', category: 'Engagement', desc: 'Post short notes to Substack feed with optional link attachments' },
+  { name: 'post_comment', category: 'Engagement', desc: 'Add comments to any Substack post by URL or numerical post ID' },
+  { name: 'automate_comments', category: 'AI Automation', desc: 'Scan target profile, match posts by keyword, and reply with AI' },
+  { name: 'schedule_post', category: 'Scheduling', desc: 'Queue newsletter drafts or live posts with recurring cron settings' },
+  { name: 'list_newsletters', category: 'Content Query', desc: 'Fetch recent newsletter archive posts and metadata' },
+  { name: 'list_notes', category: 'Content Query', desc: 'Query published notes history and subscriber like counts' },
+  { name: 'list_comments', category: 'Content Query', desc: 'Review automated comment log and activity history' },
+  { name: 'list_schedules', category: 'Scheduling', desc: 'View current scheduled publishing queue status' },
 ];
 
 export default function ToolsGrid() {
@@ -17,22 +17,35 @@ export default function ToolsGrid() {
     <section className="tools-grid-section" id="tools">
       <div className="container">
         <div className="section-header">
-          <span className="section-badge">MCP Tools</span>
+          <span className="section-badge">MCP Specification</span>
           <h2 className="section-title">
-            9 tools your AI<br /><span className="gradient-text">can call natively</span>
+            9 Native <span className="brand-gradient">Agent Tools</span>
           </h2>
           <p className="section-subtitle">
-            Each tool is available through MCP, HTTP API, and the web dashboard.
+            Exposed via Model Context Protocol and OpenAPI specifications.
           </p>
         </div>
 
-        <div className="tools-table">
-          {tools.map((tool, i) => (
-            <div className="tool-row animate-in" key={tool.name} style={{ transitionDelay: `${i * 50}ms` }}>
-              <div className="tool-name"><code>{tool.name}</code></div>
-              <div className="tool-desc">{tool.desc}</div>
-            </div>
-          ))}
+        <div className="tools-grid-container">
+          <div className="tools-header-row">
+            <span>TOOL NAME</span>
+            <span>CATEGORY</span>
+            <span>DESCRIPTION</span>
+          </div>
+
+          <div className="tools-rows">
+            {tools.map((t, i) => (
+              <div className="tool-row-item animate-in" key={t.name} style={{ transitionDelay: `${i * 40}ms` }}>
+                <div className="col-name">
+                  <code>{t.name}</code>
+                </div>
+                <div className="col-cat">
+                  <span className="cat-pill">{t.category}</span>
+                </div>
+                <div className="col-desc">{t.desc}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
