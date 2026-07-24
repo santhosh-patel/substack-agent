@@ -20,7 +20,7 @@ On Vercel:
 
 ## Vercel Cron setup
 
-`vercel.json` includes:
+This repo does **not** ship a `crons` block in `vercel.json` — many Vercel plans reject cron config at deploy time. If your plan supports Vercel Cron, add it in the Vercel dashboard or your own `vercel.json` override:
 
 ```json
 {
@@ -30,6 +30,8 @@ On Vercel:
   }]
 }
 ```
+
+Alternatively use an **external cron** (GitHub Actions, cron-job.org, Railway cron, etc.) to `POST` the endpoint below on your schedule.
 
 Set `CRON_SECRET` (or reuse `API_SECRET`) in Vercel env. Cron requests must include:
 
