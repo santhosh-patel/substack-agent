@@ -1,14 +1,16 @@
+/* ─── How It Works ─── */
+
 .how-it-works {
   padding: var(--section-pad) 0;
   background: var(--bg-page);
   width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .steps-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: clamp(14px, 2.5vw, 24px);
   width: 100%;
   min-width: 0;
 }
@@ -17,14 +19,13 @@
   background: var(--bg-page);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 28px;
+  padding: clamp(20px, 3.5vw, 28px);
   display: flex;
   flex-direction: column;
   width: 100%;
   min-width: 0;
   max-width: 100%;
-  box-sizing: border-box;
-  transition: all var(--duration) var(--ease);
+  transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
 }
 
 .step-card:hover {
@@ -48,7 +49,7 @@
 }
 
 .step-heading {
-  font-size: 18px;
+  font-size: clamp(16px, 2.5vw, 18px);
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 8px;
@@ -56,7 +57,7 @@
 }
 
 .step-desc {
-  font-size: 14px;
+  font-size: clamp(13px, 2vw, 14px);
   color: var(--text-secondary);
   line-height: 1.55;
   margin-bottom: 20px;
@@ -68,51 +69,28 @@
   background: var(--bg-dark);
   border: 1px solid var(--border-dark);
   border-radius: var(--radius-sm);
-  padding: 14px;
+  padding: clamp(10px, 2vw, 14px);
   width: 100%;
   min-width: 0;
-  max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 
 .step-code-box pre {
   margin: 0;
-  width: 100%;
-  min-width: 0;
   overflow-x: auto;
 }
 
 .step-code-box code {
-  font-size: 12px;
+  font-size: clamp(11px, 1.8vw, 12px);
   line-height: 1.5;
   color: #A3E635;
   white-space: pre-wrap;
   word-break: break-word;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 640px) {
   .steps-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
-  }
-}
-
-@media (max-width: 640px) {
-  .step-card {
-    padding: 20px 16px;
-  }
-  .step-heading {
-    font-size: 16px;
-  }
-  .step-desc {
-    font-size: 13.5px;
-    margin-bottom: 16px;
-  }
-  .step-code-box {
-    padding: 10px 12px;
-  }
-  .step-code-box code {
-    font-size: 11.5px;
   }
 }

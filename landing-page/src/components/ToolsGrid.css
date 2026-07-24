@@ -1,10 +1,12 @@
+/* ─── Tools Grid ─── */
+
 .tools-grid-section {
   padding: var(--section-pad) 0;
   background: var(--bg-subtle);
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .tools-grid-container {
@@ -15,15 +17,13 @@
   box-shadow: var(--shadow-sm);
   width: 100%;
   min-width: 0;
-  max-width: 100%;
-  box-sizing: border-box;
 }
 
 .tools-header-row {
   display: grid;
-  grid-template-columns: 220px 140px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 220px) minmax(0, 140px) minmax(0, 1fr);
   gap: 16px;
-  padding: 14px 24px;
+  padding: 14px clamp(16px, 3vw, 24px);
   background: var(--bg-subtle);
   border-bottom: 1px solid var(--border);
   font-size: 11px;
@@ -36,38 +36,29 @@
 
 .tool-row-item {
   display: grid;
-  grid-template-columns: 220px 140px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 220px) minmax(0, 140px) minmax(0, 1fr);
   gap: 16px;
   align-items: center;
-  padding: 16px 24px;
+  padding: clamp(14px, 2.5vw, 16px) clamp(16px, 3vw, 24px);
   border-bottom: 1px solid var(--border-subtle);
   transition: background 0.15s ease;
   width: 100%;
   min-width: 0;
 }
 
-.tool-row-item:last-child {
-  border-bottom: none;
-}
+.tool-row-item:last-child { border-bottom: none; }
+.tool-row-item:hover { background: var(--bg-subtle); }
 
-.tool-row-item:hover {
-  background: var(--bg-subtle);
-}
-
-.col-name {
-  min-width: 0;
-}
+.col-name { min-width: 0; }
 
 .col-name code {
-  font-size: 13.5px;
+  font-size: clamp(12.5px, 2vw, 13.5px);
   font-weight: 600;
   color: var(--text-primary);
   word-break: break-word;
 }
 
-.col-cat {
-  min-width: 0;
-}
+.col-cat { min-width: 0; }
 
 .cat-pill {
   font-size: 11px;
@@ -81,28 +72,20 @@
 }
 
 .col-desc {
-  font-size: 14px;
+  font-size: clamp(13px, 2vw, 14px);
   color: var(--text-secondary);
   word-break: break-word;
   min-width: 0;
 }
 
 @media (max-width: 768px) {
-  .tools-header-row {
-    display: none;
-  }
+  .tools-header-row { display: none; }
+
   .tool-row-item {
     display: flex;
     flex-direction: column;
     gap: 6px;
     align-items: flex-start;
     padding: 14px 16px;
-  }
-  .col-name code {
-    font-size: 13px;
-  }
-  .col-desc {
-    font-size: 13px;
-    line-height: 1.5;
   }
 }
