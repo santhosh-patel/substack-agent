@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import TrustBar from './components/TrustBar';
+import DeploymentModes from './components/DeploymentModes';
 import Features from './components/Features';
 import Integrations from './components/Integrations';
 import HowItWorks from './components/HowItWorks';
@@ -34,14 +35,17 @@ export default function App() {
   return (
     <>
       <Navbar />
-      <Hero />
-      <TrustBar />
-      <Features />
-      <Integrations />
-      <HowItWorks />
-      <ToolsGrid />
-      <CTA />
-      <FAQ />
+      <main id="main-content">
+        <Hero />
+        <TrustBar />
+        <DeploymentModes />
+        <Features />
+        <Integrations />
+        <HowItWorks />
+        <ToolsGrid />
+        <CTA />
+        <FAQ />
+      </main>
       <Footer />
     </>
   );

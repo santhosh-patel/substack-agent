@@ -109,6 +109,18 @@
   margin: 0;
 }
 
+.faq-help {
+  text-align: center;
+  margin-top: 28px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.faq-help a {
+  color: var(--primary);
+  font-weight: 600;
+}
+
 @media (max-width: 480px) {
   .faq-list {
     gap: 8px;

@@ -39,6 +39,11 @@
   color: var(--text-secondary);
   line-height: 1.6;
   word-break: break-word;
+  margin-bottom: 16px;
+}
+
+.footer-cta {
+  display: inline-flex;
 }
 
 .footer-links {

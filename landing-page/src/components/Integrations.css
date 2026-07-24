@@ -188,6 +188,17 @@
   border-radius: var(--radius-full);
 }
 
+.integration-next-step {
+  margin-top: 16px;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+}
+
+.integration-next-step a {
+  color: var(--primary);
+  font-weight: 600;
+}
+
 /* Stack layout on tablet/mobile */
 @media (max-width: 900px) {
   .integration-wrapper {

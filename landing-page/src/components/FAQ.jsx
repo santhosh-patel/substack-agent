@@ -88,6 +88,17 @@ export default function FAQ() {
             );
           })}
         </div>
+
+        <p className="faq-help">
+          Still stuck?{' '}
+          <a href="https://github.com/santhosh-patel/substack-agent/issues" target="_blank" rel="noopener noreferrer">
+            Open a GitHub issue
+          </a>{' '}
+          or read the{' '}
+          <a href="https://github.com/santhosh-patel/substack-agent#readme" target="_blank" rel="noopener noreferrer">
+            setup guide
+          </a>.
+        </p>
       </div>
     </section>
   );

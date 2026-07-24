@@ -114,6 +114,12 @@ export default function Integrations() {
                 <span className="tag-pill" key={h}>{h}</span>
               ))}
             </div>
+
+            {copied && (
+              <p className="integration-next-step">
+                Snippet copied — <a href="/playground">open the playground</a> to try it live.
+              </p>
+            )}
           </div>
         </div>
       </div>
