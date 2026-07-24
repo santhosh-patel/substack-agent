@@ -123,6 +123,21 @@ Set `SUBSTACK_SID`, `SUBSTACK_PUB_URL`, and `API_SECRET` in your deployment envi
 
 ---
 
+## Security model
+
+Substack Agent has two API surfaces with different auth expectations:
+
+| Surface | Routes | Auth | Best for |
+|---------|--------|------|----------|
+| **Tools API** | `/api/tools/*` | `Authorization: Bearer <API_SECRET>` | Production integrations, n8n, GPTs |
+| **Dashboard API** | `/api/*` (connect, publish, schedule, etc.) | None | Local `npm run dev` only |
+
+The playground UI stores your session cookie and AI keys in browser `localStorage` and sends the cookie to your server on connect. See [SECURITY.md](SECURITY.md) for full details.
+
+**Do not** expose the dashboard API publicly without additional auth if your server has a live Substack session configured.
+
+---
+
 ## Contributing
 
 Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines and [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

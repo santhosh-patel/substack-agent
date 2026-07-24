@@ -116,6 +116,10 @@
         </div>
         <div class="card-body">
 
+          <div class="security-callout" role="note">
+            <strong>Security notice:</strong> Your <code>connect.sid</code> cookie grants full access to your Substack account. It is stored in this browser and sent to your Substack Agent server when you connect. AI keys are also saved locally. Treat both like passwords.
+          </div>
+
           <!-- Substack Connection -->
           <div class="settings-section">
             <div class="settings-section-title">Substack Account</div>
@@ -129,6 +133,15 @@
                 </button>
               </div>
               <span class="field-hint">Saved locally in this browser</span>
+              <details class="cookie-guide">
+                <summary>How to get connect.sid</summary>
+                <ol>
+                  <li>Log in at <a href="https://substack.com" target="_blank" rel="noopener noreferrer">substack.com</a></li>
+                  <li>Open DevTools → Application → Cookies → substack.com</li>
+                  <li>Copy the value of <code>connect.sid</code></li>
+                  <li>Paste above, then click Test → Connect</li>
+                </ol>
+              </details>
             </div>
 
             <div class="form-group">

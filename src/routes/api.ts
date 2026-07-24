@@ -48,6 +48,7 @@ const marked = new Marked();
 // Returns only non-secret flags and defaults — never expose SID or API keys to the browser.
 router.get('/config', (_req: Request, res: Response) => {
   res.json({
+    deploymentMode: process.env.VERCEL === '1' ? 'vercel' : 'local',
     hasSubstackSid: Boolean(process.env.SUBSTACK_SID),
     publicationUrl: process.env.SUBSTACK_PUB_URL || process.env.PUBLICATION_URL || '',
     hasGroqApiKey: Boolean(process.env.GROQ_API_KEY),

@@ -16,11 +16,11 @@ const faqs = [
   },
   {
     q: 'Which AI models can I use for automated comment generation?',
-    a: 'You can configure Groq (e.g. Llama 3.3 70B), Google Gemini (e.g. Gemini 1.5 Pro/Flash), or OpenAI models by supplying your API key in the environment variables.',
+    a: 'You can configure Groq (e.g. Llama 3.3 70B), Google Gemini (e.g. Gemini 2.5 Flash), OpenAI, or OpenRouter models by supplying your API key in the playground settings or environment variables.',
   },
   {
     q: 'Is it safe to store my SUBSTACK_SID session cookie?',
-    a: 'Your session cookie is stored strictly in your local .env file or Vercel environment variables. It is never logged, tracked, or transmitted outside of official Substack API endpoints.',
+    a: 'Your connect.sid cookie is equivalent to your Substack password. In the playground, it is saved in browser localStorage and sent to your Substack Agent server when you connect. In MCP/API mode, store it in .env or Vercel env vars only. Never share it publicly — rotate immediately if exposed.',
   },
   {
     q: 'Can I integrate Substack Agent into n8n or Zapier workflows?',
