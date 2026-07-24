@@ -9,17 +9,6 @@ const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
 const getStoredSettings = (...args) => PG.getStoredSettings(...args);
 const MODELS = PG.MODELS;
 
-import PG from './pg.js';
-import './state.js';
-const showToast = (...args) => PG.showToast(...args);
-const setButtonLoading = (...args) => PG.setButtonLoading(...args);
-const escapeHtml = (...args) => PG.escapeHtml(...args);
-const getStoredSid = (...args) => PG.getStoredSid(...args);
-const getStoredApiKey = (...args) => PG.getStoredApiKey(...args);
-const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
-const getStoredSettings = (...args) => PG.getStoredSettings(...args);
-const MODELS = PG.MODELS;
-
 async function loadConfigFromBackend() {
   try {
     const res = await fetch('/api/config');
@@ -130,11 +119,11 @@ function updateOnboardingChecklist() {
   );
   const hasPublished = (JSON.parse(localStorage.getItem('substack_publish_history') || '[]')).length > 0;
 
-  step1?.classList.toggle('is-done', PG.PG.isConnected || hasSid);
+  step1?.classList.toggle('is-done', PG.isConnected || hasSid);
   step2?.classList.toggle('is-done', hasAiKey);
   step3?.classList.toggle('is-done', hasPublished);
 
-  if (PG.PG.isConnected && hasAiKey && hasPublished) {
+  if (PG.isConnected && hasAiKey && hasPublished) {
     localStorage.setItem(ONBOARDING_KEY, 'done');
     const panel = document.getElementById('onboardingChecklist');
     if (panel) panel.hidden = true;
@@ -194,8 +183,8 @@ function saveSettings() {
 
 
 function scheduleApiKeySave() {
-  clearTimeout(PG.PG.apiKeySaveTimer);
-  PG.PG.apiKeySaveTimer = setTimeout(() => {
+  clearTimeout(PG.apiKeySaveTimer);
+  PG.apiKeySaveTimer = setTimeout(() => {
     const keyVal = document.getElementById('aiKey')?.value.trim();
     if (keyVal) saveApiKey({ silent: true });
   }, 600);
@@ -264,7 +253,7 @@ function saveApiKey(options = {}) {
 function updateModelOptions() {
   const provider = document.getElementById('provider').value;
   const modelSelect = document.getElementById('model');
-  const models = MODELS[provider] || [];
+  const models = PG.MODELS[provider] || [];
 
   modelSelect.innerHTML = '';
   models.forEach((m) => {
@@ -308,10 +297,16 @@ async function handleConnect(options = {}) {
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.error || 'Connection failed');
+      const errText = data.error || 'Connection failed';
+      const isSessionError = res.status === 401 || /401|session|cookie|authentication|expired/i.test(errText);
+      throw new Error(
+        isSessionError
+          ? 'Substack session expired — refresh your connect.sid cookie from DevTools and reconnect.'
+          : errText
+      );
     }
 
-    PG.PG.isConnected = true;
+    PG.isConnected = true;
     updateConnectionBadge(data.profile);
     document.getElementById('publishBtn').disabled = false;
     saveSettings();
@@ -320,11 +315,12 @@ async function handleConnect(options = {}) {
     }
     updateOnboardingChecklist();
   } catch (err) {
-    PG.PG.isConnected = false;
+    PG.isConnected = false;
     updateConnectionBadge(null);
     document.getElementById('publishBtn').disabled = true;
     if (!auto) {
-      showToast(err.message, 'error');
+      const isSessionError = /session|cookie|401|authentication|expired/i.test(err.message);
+      showToast(err.message, isSessionError ? 'warning' : 'error');
     } else {
       console.warn('Auto-reconnect failed:', err.message);
       showToast('Saved session could not be restored. Update connect.sid and click Connect.', 'warning');
@@ -342,7 +338,7 @@ function updateConnectionBadge(profile) {
   const subLink = document.getElementById('profileSubLink');
   const discBtn = document.getElementById('disconnectBtn');
 
-  PG.PG.currentProfile = profile;
+  PG.currentProfile = profile;
 
   if (profile) {
     badge.className = 'profile-card connected';
@@ -450,7 +446,7 @@ async function handleDisconnect() {
     const res = await fetch('/api/disconnect', { method: 'POST' });
     if (!res.ok) throw new Error('Failed to disconnect from server');
 
-    PG.PG.isConnected = false;
+    PG.isConnected = false;
     updateConnectionBadge(null);
     document.getElementById('publishBtn').disabled = true;
 
@@ -637,20 +633,27 @@ async function testSubstackSession() {
     const data = await res.json();
 
     if (!res.ok || !data.success) {
-      throw new Error(data.error || 'Session test failed');
+      const errText = data.error || 'Session test failed';
+      const isSessionError = res.status === 401 || /401|session|cookie|authentication|expired/i.test(errText);
+      throw new Error(
+        isSessionError
+          ? 'Substack session expired — refresh your connect.sid cookie from DevTools and reconnect.'
+          : errText
+      );
     }
 
     saveSettings();
-    PG.PG.isConnected = true;
+    PG.isConnected = true;
     updateConnectionBadge(data.profile);
     const publishBtn = document.getElementById('publishBtn');
     if (publishBtn) publishBtn.disabled = false;
 
     showToast(`Session OK — connected as ${data.profile.name} (@${data.profile.slug})`, 'success');
   } catch (err) {
-    PG.PG.isConnected = false;
+    PG.isConnected = false;
     updateConnectionBadge(null);
-    showToast(err.message, 'error');
+    const isSessionError = /session|cookie|401|authentication|expired/i.test(err.message);
+    showToast(err.message, isSessionError ? 'warning' : 'error');
   } finally {
     setButtonLoading(btn, false, 'Test');
   }
@@ -715,37 +718,6 @@ async function testSchedAiKey() {
     buttonId: 'testSchedAiKeyBtn',
   });
 }
-
-PG.loadConfigFromBackend = loadConfigFromBackend;
-PG.applyDeploymentMode = applyDeploymentMode;
-PG.initOnboardingChecklist = initOnboardingChecklist;
-PG.updateOnboardingChecklist = updateOnboardingChecklist;
-PG.restorePersistedSession = restorePersistedSession;
-PG.loadSavedSettings = loadSavedSettings;
-PG.saveSettings = saveSettings;
-PG.scheduleApiKeySave = scheduleApiKeySave;
-PG.loadApiKeyForProvider = loadApiKeyForProvider;
-PG.saveApiKey = saveApiKey;
-PG.updateModelOptions = updateModelOptions;
-PG.handleConnect = handleConnect;
-PG.updateConnectionBadge = updateConnectionBadge;
-PG.updateSimulatedPreviewHeader = updateSimulatedPreviewHeader;
-PG.handleDisconnect = handleDisconnect;
-PG.loadSystemPromptForTab = loadSystemPromptForTab;
-PG.saveSystemPrompt = saveSystemPrompt;
-PG.resetSystemPrompt = resetSystemPrompt;
-PG.toggleSidebar = toggleSidebar;
-PG.openSidebarAndFocusSid = openSidebarAndFocusSid;
-PG.toggleTheme = toggleTheme;
-PG.updateThemeToggleIcon = updateThemeToggleIcon;
-PG.loadPublishHistory = loadPublishHistory;
-PG.addPostToHistory = addPostToHistory;
-PG.updatePublishButtonLabel = updatePublishButtonLabel;
-PG.testSubstackSession = testSubstackSession;
-PG.testAiKey = testAiKey;
-PG.testSchedAiKey = testSchedAiKey;
-PG.ONBOARDING_KEY = ONBOARDING_KEY;
-{};
 
 PG.loadConfigFromBackend = loadConfigFromBackend;
 PG.applyDeploymentMode = applyDeploymentMode;

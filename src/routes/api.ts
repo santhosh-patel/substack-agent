@@ -47,10 +47,13 @@ const marked = new Marked();
 // ─── GET /api/config ───
 // Returns only non-secret flags and defaults — never expose SID or API keys to the browser.
 router.get('/config', (_req: Request, res: Response) => {
+  const isVercel = process.env.VERCEL === '1';
+  const isProduction = process.env.NODE_ENV === 'production';
   res.json({
-    deploymentMode: process.env.VERCEL === '1' ? 'vercel' : 'local',
+    deploymentMode: isVercel ? 'vercel' : isProduction ? 'production' : 'local',
     hasSubstackSid: Boolean(process.env.SUBSTACK_SID),
     publicationUrl: process.env.SUBSTACK_PUB_URL || process.env.PUBLICATION_URL || '',
+    toolsApiBaseUrl: process.env.TOOLS_API_BASE_URL || (isVercel && process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/tools` : null),
     hasGroqApiKey: Boolean(process.env.GROQ_API_KEY),
     hasGeminiApiKey: Boolean(process.env.GEMINI_API_KEY),
     hasOpenAiApiKey: Boolean(process.env.OPENAI_API_KEY),

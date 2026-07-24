@@ -17,7 +17,6 @@ const setButtonLoading = (...args) => PG.setButtonLoading(...args);
 const getStoredApiKey = (...args) => PG.getStoredApiKey(...args);
 const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
 const getStoredSid = (...args) => PG.getStoredSid(...args);
-const PG.isConnected = PG.PG.isConnected;
 const addPostToHistory = (...args) => PG.addPostToHistory(...args);
 const updateOnboardingChecklist = (...args) => PG.updateOnboardingChecklist(...args);
 const updatePreviewMetadata = (...args) => PG.updatePreviewMetadata(...args);

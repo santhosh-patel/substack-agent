@@ -188,7 +188,6 @@ function togglePasswordVisibility(inputId, btnEl) {
   }
 }
 
-let PG.schedulerPollingInterval = null;
 
 async function runSilentQueueCheck() {
   const indicator = document.getElementById('pollingIndicator');

@@ -1,9 +1,6 @@
 import PG from './pg.js';
 import './state.js';
-const escapeHtml = (...args) => PG.escapeHtml(...args);
-
-import PG from './pg.js';
-import './state.js';
+import './ui.js';
 const escapeHtml = (...args) => PG.escapeHtml(...args);
 
 const SETTINGS_STORAGE_KEY = 'substack_settings';
@@ -42,16 +39,17 @@ function hasBackendApiKey(provider) {
   };
   return Boolean(window.backendConfig[flags[provider]]);
 }
+
 function addToInputHistory(inputId, value) {
   if (!value) return;
   const historyKey = `history_${inputId}`;
   let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-  
+
   history = history.filter(item => item !== value);
   history.unshift(value);
-  
+
   if (history.length > 10) history.pop();
-  
+
   localStorage.setItem(historyKey, JSON.stringify(history));
   updateDatalist(inputId);
 }
@@ -61,7 +59,7 @@ function updateDatalist(inputId) {
   const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
   const datalist = document.getElementById(`${inputId}-history`);
   if (!datalist) return;
-  
+
   datalist.innerHTML = history.map(val => `<option value="${escapeHtml(val)}"></option>`).join('');
 }
 
@@ -70,8 +68,7 @@ function loadAllInputHistories() {
   inputIds.forEach(id => updateDatalist(id));
 }
 
-// ─── Scheduler tab logic ───
-
+PG.SETTINGS_STORAGE_KEY = SETTINGS_STORAGE_KEY;
 PG.getStoredSettings = getStoredSettings;
 PG.getStoredSid = getStoredSid;
 PG.getStoredApiKey = getStoredApiKey;
@@ -79,15 +76,4 @@ PG.hasBackendApiKey = hasBackendApiKey;
 PG.addToInputHistory = addToInputHistory;
 PG.updateDatalist = updateDatalist;
 PG.loadAllInputHistories = loadAllInputHistories;
-PG.SETTINGS_STORAGE_KEY = SETTINGS_STORAGE_KEY;
-{};
-
-PG.getStoredSettings = getStoredSettings;
-PG.getStoredSid = getStoredSid;
-PG.getStoredApiKey = getStoredApiKey;
-PG.hasBackendApiKey = hasBackendApiKey;
-PG.addToInputHistory = addToInputHistory;
-PG.updateDatalist = updateDatalist;
-PG.loadAllInputHistories = loadAllInputHistories;
-PG.SETTINGS_STORAGE_KEY = SETTINGS_STORAGE_KEY;
 export {};

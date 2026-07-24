@@ -14,7 +14,6 @@ const setButtonLoading = (...args) => PG.setButtonLoading(...args);
 const escapeHtml = (...args) => PG.escapeHtml(...args);
 const getStoredApiKey = (...args) => PG.getStoredApiKey(...args);
 const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
-const PG.isConnected = PG.PG.isConnected;
 
 // ─── Comment Automation ───
 
@@ -58,7 +57,7 @@ async function runCommentAutomation() {
   const stopBtn = document.getElementById('stopCommentAutoBtn');
   const logsEl = document.getElementById('commentLogs');
 
-  if (!PG.PG.isConnected) {
+  if (!PG.isConnected) {
     showToast('Please connect your Substack account first', 'error');
     return;
   }
@@ -90,7 +89,7 @@ async function runCommentAutomation() {
   setButtonLoading(runBtn, true, 'Running…');
   stopBtn.disabled = false;
 
-  PG.PG.commentAutomationAbortController = new AbortController();
+  PG.commentAutomationAbortController = new AbortController();
 
   try {
     appendCommentLog(`[Client] Sending automation request to backend...`, 'info');
@@ -106,7 +105,7 @@ async function runCommentAutomation() {
         model,
         apiKey
       }),
-      signal: PG.PG.commentAutomationAbortController.signal
+      signal: PG.commentAutomationAbortController.signal
     });
 
     const data = await res.json();
@@ -154,7 +153,7 @@ async function runCommentAutomation() {
   } finally {
     setButtonLoading(runBtn, false, '<i data-lucide="play"></i> Run Automation');
     stopBtn.disabled = true;
-    PG.PG.commentAutomationAbortController = null;
+    PG.commentAutomationAbortController = null;
     if (consoleTitleState) {
       consoleTitleState.className = 'console-title-text console-idle';
     }
@@ -162,8 +161,8 @@ async function runCommentAutomation() {
 }
 
 function stopCommentAutomation() {
-  if (PG.PG.commentAutomationAbortController) {
-    PG.PG.commentAutomationAbortController.abort();
+  if (PG.commentAutomationAbortController) {
+    PG.commentAutomationAbortController.abort();
   }
 }
 
