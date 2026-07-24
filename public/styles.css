@@ -55,7 +55,7 @@
   --transition: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-bounce: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 
-  --sticky-header-height: 64px;
+  --sticky-header-height: 120px; /* top navbar (56) + app header */
   --sticky-gap: 10px;
 }
 
@@ -169,31 +169,30 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   position: sticky;
-  top: 0;
+  top: 56px;
   z-index: 200;
   margin-bottom: 24px;
-  padding: 12px 0;
+  padding: 10px 0;
   background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
-  gap: 16px;
+  gap: 10px 12px;
   min-width: 0;
 }
 
-.app-logo {
+.app-header-start,
+.app-header-actions {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 }
 
-.app-logo-image {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-  flex-shrink: 0;
-  display: block;
+.app-header-actions {
+  margin-left: auto;
 }
 
 .btn-sidebar-toggle {
@@ -207,6 +206,14 @@ body::before {
   justify-content: center;
   color: var(--text-secondary);
   transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.btn-theme-toggle {
+  border-radius: 50%;
+  padding: 8px;
+  width: 36px;
+  height: 36px;
 }
 
 .btn-sidebar-toggle:hover {
@@ -230,6 +237,15 @@ body::before {
   border: 1px solid var(--border);
   padding: 4px;
   border-radius: var(--radius-pill);
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.app-nav::-webkit-scrollbar {
+  display: none;
 }
 
 .nav-btn {
@@ -245,6 +261,8 @@ body::before {
   border: none;
   cursor: pointer;
   transition: all var(--transition);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .nav-btn:hover {
@@ -261,6 +279,7 @@ body::before {
 .nav-btn i {
   width: 15px;
   height: 15px;
+  flex-shrink: 0;
 }
 
 /* ─── Connection Profile Badge ─── */
@@ -1113,6 +1132,26 @@ input::placeholder, textarea::placeholder {
 }
 
 /* Responsive */
+@media (max-width: 960px) {
+  .nav-btn {
+    padding: 8px 10px;
+  }
+
+  .nav-btn-label {
+    display: none;
+  }
+
+  .profile-info {
+    max-width: 110px;
+  }
+
+  .profile-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
 @media (max-width: 900px) {
   .main-grid {
     flex-direction: column;
@@ -1129,6 +1168,51 @@ input::placeholder, textarea::placeholder {
   }
   .post-meta {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --sticky-header-height: 148px; /* wrapped app header on small screens */
+  }
+
+  .app-container {
+    padding: 8px 12px 32px;
+  }
+
+  .app-header {
+    top: 56px;
+    row-gap: 8px;
+    margin-bottom: 16px;
+    padding: 8px 0;
+  }
+
+  .app-header-start {
+    order: 1;
+  }
+
+  .app-header-actions {
+    order: 2;
+  }
+
+  .app-nav {
+    order: 3;
+    flex: 1 1 100%;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .profile-card {
+    padding: 4px 8px 4px 4px;
+    gap: 6px;
+  }
+
+  .profile-info {
+    max-width: 88px;
+  }
+
+  .profile-link {
+    display: none !important;
   }
 }
 /* ═══════════════════════════════════════════════════════

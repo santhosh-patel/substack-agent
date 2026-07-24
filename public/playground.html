@@ -11,7 +11,7 @@
 <body>
 
   <!-- ─── Top Main Navigation Bar (Links to Landing Page) ─── -->
-  <header className="playground-top-navbar" class="playground-top-navbar">
+  <header class="playground-top-navbar">
     <div class="playground-top-nav-container">
       <a href="/" class="playground-nav-brand">
         <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
@@ -58,11 +58,10 @@
 
     <!-- ─── Substack App Bar ─── -->
     <header class="app-header">
-      <div class="app-logo">
-        <button class="btn-sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Toggle Settings">
+      <div class="app-header-start">
+        <button class="btn-sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Toggle Settings" aria-label="Toggle settings">
           <i data-lucide="sidebar"></i>
         </button>
-        <img src="/assets/logo.png" alt="Substack Auto" class="app-logo-image" width="36" height="36" />
       </div>
 
       <!-- Navigation Tabs -->
@@ -84,9 +83,9 @@
         </button>
       </nav>
 
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <button class="btn-sidebar-toggle" id="themeToggleBtn" onclick="toggleTheme()" title="Switch to Light Mode" style="border-radius: 50%; padding: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-          <i data-lucide="sun" style="width: 18px; height: 18px;"></i>
+      <div class="app-header-actions">
+        <button class="btn-sidebar-toggle btn-theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" title="Switch to Light Mode" aria-label="Toggle theme">
+          <i data-lucide="sun"></i>
         </button>
 
         <!-- Connection Profile Card -->
