@@ -1,14 +1,23 @@
+import PG from './pg.js';
+import './state.js';
+const showToast = (...args) => PG.showToast(...args);
+const appendSchedulerLog = (...args) => PG.appendSchedulerLog(...args);
+const renderSchedulerApiLogs = (...args) => PG.renderSchedulerApiLogs(...args);
+const loadSchedules = (...args) => PG.loadSchedules(...args);
+const loadHistory = (...args) => PG.loadHistory(...args);
+const classifySchedulerLogType = (...args) => PG.classifySchedulerLogType(...args);
+
       dot.style.boxShadow = type === 'error' ? '0 0 6px var(--error)' : '0 0 6px var(--success)';
     }
   }
 }
 
-export function renderSchedulerApiLogs(logs) {
+function renderSchedulerApiLogs(logs) {
   if (!Array.isArray(logs) || logs.length === 0) return;
   logs.forEach(log => appendSchedulerLog(log, classifySchedulerLogType(log)));
 }
 
-export function clearSchedulerLogs() {
+function clearSchedulerLogs() {
   const logsEl = document.getElementById('schedulerLogs');
   const stateEl = document.getElementById('schedulerConsoleState');
   if (logsEl) logsEl.textContent = SCHEDULER_LOG_PLACEHOLDER;
@@ -22,7 +31,7 @@ export function clearSchedulerLogs() {
   }
 }
 
-export async function copySchedulerLogs() {
+async function copySchedulerLogs() {
   const logsEl = document.getElementById('schedulerLogs');
   if (!logsEl) return;
   const text = logsEl.innerText.trim();
@@ -54,7 +63,7 @@ window.runManualCron = runManualCron;
 window.clearSchedulerLogs = clearSchedulerLogs;
 window.copySchedulerLogs = copySchedulerLogs;
 
-export function togglePasswordVisibility(inputId, btnEl) {
+function togglePasswordVisibility(inputId, btnEl) {
   const input = document.getElementById(inputId);
   if (!input) return;
   const icon = btnEl.querySelector('i');
@@ -76,9 +85,9 @@ export function togglePasswordVisibility(inputId, btnEl) {
   }
 }
 
-let schedulerPollingInterval = null;
+let PG.schedulerPollingInterval = null;
 
-export async function runSilentQueueCheck() {
+async function runSilentQueueCheck() {
   const indicator = document.getElementById('pollingIndicator');
   
   if (indicator) {
@@ -115,8 +124,8 @@ export async function runSilentQueueCheck() {
   }
 }
 
-export function startSchedulerPolling() {
-  if (schedulerPollingInterval) return;
+function startSchedulerPolling() {
+  if (PG.schedulerPollingInterval) return;
   
   const endpointEl = document.getElementById('cronEndpointSnippet');
   if (endpointEl) {
@@ -128,7 +137,7 @@ export function startSchedulerPolling() {
   // Initial run
   runSilentQueueCheck();
   
-  schedulerPollingInterval = setInterval(runSilentQueueCheck, 60 * 1000);
+  PG.schedulerPollingInterval = setInterval(runSilentQueueCheck, 60 * 1000);
   
   const statusEl = document.getElementById('pollingStatus');
   if (statusEl) {
@@ -136,10 +145,10 @@ export function startSchedulerPolling() {
   }
 }
 
-export function stopSchedulerPolling() {
-  if (schedulerPollingInterval) {
-    clearInterval(schedulerPollingInterval);
-    schedulerPollingInterval = null;
+function stopSchedulerPolling() {
+  if (PG.schedulerPollingInterval) {
+    clearInterval(PG.schedulerPollingInterval);
+    PG.schedulerPollingInterval = null;
   }
   const statusEl = document.getElementById('pollingStatus');
   if (statusEl) {
@@ -147,7 +156,7 @@ export function stopSchedulerPolling() {
   }
 }
 
-export function toggleSchedSearchFields() {
+function toggleSchedSearchFields() {
   const enableSearch = document.getElementById('schedEnableSearch').checked;
   const bodyLabel = document.getElementById('schedBodyLabel');
   const bodyTextarea = document.getElementById('schedBody');
@@ -187,7 +196,7 @@ export function toggleSchedSearchFields() {
   }
 }
 
-export function syncSchedApiKeyFromStorage() {
+function syncSchedApiKeyFromStorage() {
   const schedApiKey = document.getElementById('schedApiKey');
   if (!schedApiKey || schedApiKey.dataset.userEdited === 'true') return;
 
@@ -201,7 +210,7 @@ export function syncSchedApiKeyFromStorage() {
   }
 }
 
-export function updateSchedModelOptions() {
+function updateSchedModelOptions() {
   const provider = document.getElementById('schedProvider').value;
   const modelSelect = document.getElementById('schedModel');
   
@@ -234,3 +243,15 @@ window.startSchedulerPolling = startSchedulerPolling;
 window.stopSchedulerPolling = stopSchedulerPolling;
 window.toggleSchedSearchFields = toggleSchedSearchFields;
 window.updateSchedModelOptions = updateSchedModelOptions;
+
+PG.renderSchedulerApiLogs = renderSchedulerApiLogs;
+PG.clearSchedulerLogs = clearSchedulerLogs;
+PG.copySchedulerLogs = copySchedulerLogs;
+PG.togglePasswordVisibility = togglePasswordVisibility;
+PG.runSilentQueueCheck = runSilentQueueCheck;
+PG.startSchedulerPolling = startSchedulerPolling;
+PG.stopSchedulerPolling = stopSchedulerPolling;
+PG.toggleSchedSearchFields = toggleSchedSearchFields;
+PG.syncSchedApiKeyFromStorage = syncSchedApiKeyFromStorage;
+PG.updateSchedModelOptions = updateSchedModelOptions;
+export {};

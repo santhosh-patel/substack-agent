@@ -1,3 +1,15 @@
+import PG from './pg.js';
+import './state.js';
+const loadSystemPromptForTab = (...args) => PG.loadSystemPromptForTab(...args);
+const loadHistory = (...args) => PG.loadHistory(...args);
+const loadNotes = (...args) => PG.loadNotes(...args);
+const loadSchedules = (...args) => PG.loadSchedules(...args);
+const updateSchedModelOptions = (...args) => PG.updateSchedModelOptions(...args);
+const syncSchedApiKeyFromStorage = (...args) => PG.syncSchedApiKeyFromStorage(...args);
+const dtRefreshTimeWheel = (...args) => PG.dtRefreshTimeWheel(...args);
+const startSchedulerPolling = (...args) => PG.startSchedulerPolling(...args);
+const stopSchedulerPolling = (...args) => PG.stopSchedulerPolling(...args);
+
 // ─── URL Path <-> Tab Mapping ───
 const TAB_TO_PATH = {
   newsletters: '/newsletter',
@@ -11,14 +23,14 @@ const PATH_TO_TAB = Object.fromEntries(
   Object.entries(TAB_TO_PATH).map(([tab, path]) => [path, tab])
 );
 
-export function getTabFromPath(pathname) {
+function getTabFromPath(pathname) {
   // Normalize: strip trailing slash
   const p = pathname.replace(/\/$/, '') || '/';
   return PATH_TO_TAB[p] || 'newsletters';
 }
 
 // ─── Tab Switching ───
-export function switchTab(tabId, skipPush) {
+function switchTab(tabId, skipPush) {
   localStorage.setItem('active_tab', tabId);
 
   // Update URL (pushState) unless this is from popstate or initial load
@@ -84,3 +96,9 @@ export function switchTab(tabId, skipPush) {
     stopSchedulerPolling();
   }
 }
+
+PG.getTabFromPath = getTabFromPath;
+PG.switchTab = switchTab;
+PG.TAB_TO_PATH = TAB_TO_PATH;
+PG.PATH_TO_TAB = PATH_TO_TAB;
+export {};

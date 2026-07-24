@@ -1,4 +1,24 @@
-export function toggleSchedulerFields() {
+import PG from './pg.js';
+import './state.js';
+const showToast = (...args) => PG.showToast(...args);
+const setButtonLoading = (...args) => PG.setButtonLoading(...args);
+const escapeHtml = (...args) => PG.escapeHtml(...args);
+const showAppConfirm = (...args) => PG.showAppConfirm(...args);
+const getStoredApiKey = (...args) => PG.getStoredApiKey(...args);
+const getStoredSid = (...args) => PG.getStoredSid(...args);
+const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
+const getSelectLabel = (...args) => PG.getSelectLabel(...args);
+const testAiKey = (...args) => PG.testAiKey(...args);
+const isTwiceDailyRecurrence = (...args) => PG.isTwiceDailyRecurrence(...args);
+const getTwiceDailyTimes = (...args) => PG.getTwiceDailyTimes(...args);
+const computeTwiceDailyInitialIso = (...args) => PG.computeTwiceDailyInitialIso(...args);
+const formatMinutesLabel = (...args) => PG.formatMinutesLabel(...args);
+const formatRecurrenceTimesLabel = (...args) => PG.formatRecurrenceTimesLabel(...args);
+const formatScheduleDueLabel = (...args) => PG.formatScheduleDueLabel(...args);
+const dtBuildSelectedDate = (...args) => PG.dtBuildSelectedDate(...args);
+const MODELS = PG.MODELS;
+
+function toggleSchedulerFields() {
   const postType = document.getElementById('schedPostType').value;
   const newsFields = document.getElementById('schedNewsletterFields');
   const noteFields = document.getElementById('schedNoteFields');
@@ -17,31 +37,31 @@ export function toggleSchedulerFields() {
   toggleSchedSearchFields();
 }
 
-export function parseTimeInputToMinutes(value) {
+function parseTimeInputToMinutes(value) {
   if (!value || typeof value !== 'string') return null;
   const [hours, minutes] = value.split(':').map(Number);
   if (Number.isNaN(hours) || Number.isNaN(minutes)) return null;
   return hours * 60 + minutes;
 }
 
-export function formatMinutesLabel(minutes) {
+function formatMinutesLabel(minutes) {
   if (!Number.isFinite(minutes)) return '';
   const date = new Date();
   date.setHours(Math.floor(minutes / 60), minutes % 60, 0, 0);
   return date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
 }
 
-export function isTwiceDailyRecurrence() {
+function isTwiceDailyRecurrence() {
   return document.getElementById('schedRecurrence')?.value === 'twice_daily';
 }
 
-export function getTwiceDailyTimes() {
+function getTwiceDailyTimes() {
   const firstMinutes = dtState.selectedMinutes;
   const secondMinutes = parseTimeInputToMinutes(document.getElementById('schedSecondTime')?.value);
   return { firstMinutes, secondMinutes };
 }
 
-export function computeTwiceDailyInitialIso() {
+function computeTwiceDailyInitialIso() {
   const { firstMinutes, secondMinutes } = getTwiceDailyTimes();
   if (!Number.isFinite(firstMinutes) || !Number.isFinite(secondMinutes)) return null;
   if (firstMinutes === secondMinutes) return null;
@@ -68,7 +88,7 @@ export function computeTwiceDailyInitialIso() {
   return tomorrow.toISOString();
 }
 
-export function toggleRecurrenceFields() {
+function toggleRecurrenceFields() {
   const twiceDaily = isTwiceDailyRecurrence();
   const secondGroup = document.getElementById('schedSecondTimeGroup');
   const dateLabel = document.getElementById('schedDateTimeLabel');
@@ -82,12 +102,12 @@ export function toggleRecurrenceFields() {
   dtUpdateSummary();
 }
 
-export function formatRecurrenceTimesLabel(times) {
+function formatRecurrenceTimesLabel(times) {
   if (!Array.isArray(times) || times.length !== 2) return '';
   return `${formatMinutesLabel(times[0])} and ${formatMinutesLabel(times[1])}`;
 }
 
-export function formatScheduleDueLabel(scheduledAt, status) {
+function formatScheduleDueLabel(scheduledAt, status) {
   if (status === 'failed') {
     return `Last scheduled: ${new Date(scheduledAt).toLocaleString()}`;
   }
@@ -113,7 +133,7 @@ export function formatScheduleDueLabel(scheduledAt, status) {
   return `Next run: ${when}`;
 }
 
-export function getScheduleIsoTime() {
+function getScheduleIsoTime() {
   if (isTwiceDailyRecurrence()) {
     return computeTwiceDailyInitialIso();
   }
@@ -124,7 +144,7 @@ export function getScheduleIsoTime() {
   return new Date(raw).toISOString();
 }
 
-export async function confirmSendScheduleNow(btn) {
+async function confirmSendScheduleNow(btn) {
   if (!btn) return;
 
   const id = btn.dataset.scheduleId;
@@ -166,7 +186,7 @@ export async function confirmSendScheduleNow(btn) {
   sendScheduleNow(id, btn);
 }
 
-export async function sendScheduleNow(id, btn) {
+async function sendScheduleNow(id, btn) {
   appendSchedulerLog(`Send now requested for schedule ${id}…`, 'highlight');
   if (btn) setButtonLoading(btn, true, 'Sending…');
 
@@ -216,7 +236,7 @@ export async function sendScheduleNow(id, btn) {
   }
 }
 
-export async function loadSchedules() {
+async function loadSchedules() {
   const container = document.getElementById('schedulesQueueList');
   if (!container) return;
 
@@ -349,21 +369,21 @@ export async function loadSchedules() {
   }
 }
 
-export function getSelectLabel(selectId, value) {
+function getSelectLabel(selectId, value) {
   const select = document.getElementById(selectId);
   if (!select) return value;
   const option = Array.from(select.options).find((opt) => opt.value === value);
   return option ? option.textContent.trim() : value;
 }
 
-export function truncateScheduleText(text, max = 160) {
+function truncateScheduleText(text, max = 160) {
   if (!text) return '';
   const normalized = text.replace(/\s+/g, ' ').trim();
   if (normalized.length <= max) return normalized;
   return `${normalized.slice(0, max).trim()}…`;
 }
 
-export function buildScheduleConfirmHtml(details) {
+function buildScheduleConfirmHtml(details) {
   const rows = [];
 
   const addRow = (label, value) => {
@@ -408,7 +428,7 @@ export function buildScheduleConfirmHtml(details) {
   return `<div class="schedule-confirm-details">${rows.join('')}</div>`;
 }
 
-export async function confirmSchedulePost(details) {
+async function confirmSchedulePost(details) {
   return showAppConfirm({
     title: 'Confirm scheduled post',
     messageHtml: buildScheduleConfirmHtml(details),
@@ -418,7 +438,7 @@ export async function confirmSchedulePost(details) {
   });
 }
 
-export async function handleCreateSchedule() {
+async function handleCreateSchedule() {
   const postType = document.getElementById('schedPostType').value;
   const title = document.getElementById('schedTitle').value.trim();
   const subtitle = document.getElementById('schedSubtitle').value.trim();
@@ -588,7 +608,7 @@ export async function handleCreateSchedule() {
   }
 }
 
-export async function toggleScheduleState(id) {
+async function toggleScheduleState(id) {
   try {
     const res = await fetch(`/api/schedule/${id}/toggle`, { method: 'POST' });
     const data = await res.json();
@@ -602,7 +622,7 @@ export async function toggleScheduleState(id) {
   }
 }
 
-export async function deleteScheduleItem(id) {
+async function deleteScheduleItem(id) {
   const confirmed = confirm('Are you sure you want to delete this scheduled post?');
   if (!confirmed) return;
 
@@ -618,7 +638,7 @@ export async function deleteScheduleItem(id) {
   }
 }
 
-export async function retryScheduleItem(id, btnEl) {
+async function retryScheduleItem(id, btnEl) {
   if (btnEl) setButtonLoading(btnEl, true, 'Retrying…');
 
   try {
@@ -671,7 +691,7 @@ export async function retryScheduleItem(id, btnEl) {
   }
 }
 
-export async function runManualCron() {
+async function runManualCron() {
   appendSchedulerLog('Manual queue check triggered…', 'highlight');
   try {
     const res = await fetch('/api/cron/process-schedules');
@@ -705,7 +725,7 @@ export async function runManualCron() {
   }
 }
 
-export function updateSchedulerStats(schedules) {
+function updateSchedulerStats(schedules) {
   const pendingEl = document.getElementById('schedStatPending');
   const pausedEl = document.getElementById('schedStatPaused');
   const failedEl = document.getElementById('schedStatFailed');
@@ -733,7 +753,7 @@ export function updateSchedulerStats(schedules) {
 
 const SCHEDULER_LOG_PLACEHOLDER = 'Waiting for scheduler activity. Trigger a queue check or wait for automatic polling…';
 
-export function classifySchedulerLogType(message) {
+function classifySchedulerLogType(message) {
   const msg = message.toLowerCase();
   if (msg.includes('error') || msg.includes('failed') || msg.includes('fatal')) return 'error';
   if (msg.includes('success') || msg.includes('finished processing') || msg.includes('processed')) return 'success';
@@ -742,7 +762,7 @@ export function classifySchedulerLogType(message) {
   return 'info';
 }
 
-export function appendSchedulerLog(message, type = 'info') {
+function appendSchedulerLog(message, type = 'info') {
   const logsEl = document.getElementById('schedulerLogs');
   const stateEl = document.getElementById('schedulerConsoleState');
   if (!logsEl) return;
@@ -774,3 +794,277 @@ export function appendSchedulerLog(message, type = 'info') {
     const dot = stateEl.querySelector('span');
     if (dot) {
       dot.style.background = type === 'error' ? 'var(--error)' : 'var(--success)';
+      dot.style.boxShadow = type === 'error' ? '0 0 6px var(--error)' : '0 0 6px var(--success)';
+    }
+  }
+}
+
+function renderSchedulerApiLogs(logs) {
+  if (!Array.isArray(logs) || logs.length === 0) return;
+  logs.forEach(log => appendSchedulerLog(log, classifySchedulerLogType(log)));
+}
+
+function clearSchedulerLogs() {
+  const logsEl = document.getElementById('schedulerLogs');
+  const stateEl = document.getElementById('schedulerConsoleState');
+  if (logsEl) logsEl.textContent = SCHEDULER_LOG_PLACEHOLDER;
+  if (stateEl) {
+    stateEl.className = 'console-title-text console-idle';
+    const dot = stateEl.querySelector('span');
+    if (dot) {
+      dot.style.background = '';
+      dot.style.boxShadow = '';
+    }
+  }
+}
+
+async function copySchedulerLogs() {
+  const logsEl = document.getElementById('schedulerLogs');
+  if (!logsEl) return;
+  const text = logsEl.innerText.trim();
+  if (!text || text === SCHEDULER_LOG_PLACEHOLDER) {
+    showToast('No logs to copy yet', 'info');
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast('Scheduler logs copied to clipboard', 'success');
+  } catch {
+    showToast('Could not copy logs', 'error');
+  }
+}
+
+window.toggleSchedulerFields = toggleSchedulerFields;
+window.toggleRecurrenceFields = toggleRecurrenceFields;
+window.loadSchedules = loadSchedules;
+window.handleCreateSchedule = handleCreateSchedule;
+window.toggleScheduleState = toggleScheduleState;
+window.deleteScheduleItem = deleteScheduleItem;
+window.retryScheduleItem = retryScheduleItem;
+window.testSubstackSession = testSubstackSession;
+window.testAiKey = testAiKey;
+window.testSchedAiKey = testSchedAiKey;
+window.confirmSendScheduleNow = confirmSendScheduleNow;
+window.sendScheduleNow = sendScheduleNow;
+window.runManualCron = runManualCron;
+window.clearSchedulerLogs = clearSchedulerLogs;
+window.copySchedulerLogs = copySchedulerLogs;
+
+function togglePasswordVisibility(inputId, btnEl) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  const icon = btnEl.querySelector('i');
+  
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (icon) {
+      icon.setAttribute('data-lucide', 'eye-off');
+    }
+  } else {
+    input.type = 'password';
+    if (icon) {
+      icon.setAttribute('data-lucide', 'eye');
+    }
+  }
+  
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+}
+
+let PG.schedulerPollingInterval = null;
+
+async function runSilentQueueCheck() {
+  const indicator = document.getElementById('pollingIndicator');
+  
+  if (indicator) {
+    indicator.style.backgroundColor = 'var(--accent)';
+    indicator.style.boxShadow = '0 0 8px var(--accent)';
+  }
+  
+  try {
+    const res = await fetch('/api/cron/process-schedules');
+    const data = await res.json();
+    if (res.ok && data.processedCount > 0) {
+      renderSchedulerApiLogs(data.logs);
+      appendSchedulerLog(`Auto-poll processed ${data.processedCount} due post(s).`, 'success');
+      showToast(`Automatically processed ${data.processedCount} due scheduled post(s)!`, 'success');
+      await loadSchedules();
+      if (document.getElementById('view-history')?.style.display !== 'none') {
+        loadHistory();
+      }
+    } else if (res.ok) {
+      await loadSchedules();
+    } else {
+      appendSchedulerLog(`Auto-poll failed: ${data.error || res.statusText}`, 'error');
+    }
+  } catch (err) {
+    console.error('Silent queue check failed:', err);
+    appendSchedulerLog(`Auto-poll error: ${err.message}`, 'error');
+  } finally {
+    setTimeout(() => {
+      if (indicator) {
+        indicator.style.backgroundColor = 'var(--text-muted)';
+        indicator.style.boxShadow = 'none';
+      }
+    }, 1000);
+  }
+}
+
+function startSchedulerPolling() {
+  if (PG.schedulerPollingInterval) return;
+  
+  const endpointEl = document.getElementById('cronEndpointSnippet');
+  if (endpointEl) {
+    endpointEl.textContent = `${window.location.origin}/api/cron/process-schedules`;
+  }
+
+  appendSchedulerLog('Scheduler polling started (every 60s).', 'info');
+  
+  // Initial run
+  runSilentQueueCheck();
+  
+  PG.schedulerPollingInterval = setInterval(runSilentQueueCheck, 60 * 1000);
+  
+  const statusEl = document.getElementById('pollingStatus');
+  if (statusEl) {
+    statusEl.style.display = 'flex';
+  }
+}
+
+function stopSchedulerPolling() {
+  if (PG.schedulerPollingInterval) {
+    clearInterval(PG.schedulerPollingInterval);
+    PG.schedulerPollingInterval = null;
+  }
+  const statusEl = document.getElementById('pollingStatus');
+  if (statusEl) {
+    statusEl.style.display = 'none';
+  }
+}
+
+function toggleSchedSearchFields() {
+  const enableSearch = document.getElementById('schedEnableSearch').checked;
+  const bodyLabel = document.getElementById('schedBodyLabel');
+  const bodyTextarea = document.getElementById('schedBody');
+  const postType = document.getElementById('schedPostType').value;
+  const titleGroup = document.getElementById('schedTitleGroup');
+  const subtitleGroup = document.getElementById('schedSubtitleGroup');
+  const searchHelp = document.getElementById('schedSearchHelpText');
+
+  if (enableSearch) {
+    if (postType === 'newsletter') {
+      bodyLabel.textContent = 'Research Topic & Writing Guidelines';
+      bodyTextarea.placeholder = 'e.g. Latest AI agent news — write an engaging post with a hook, specific details, and a strong builder takeaway…';
+      if (titleGroup) titleGroup.style.display = 'none';
+      if (subtitleGroup) subtitleGroup.style.display = 'none';
+      if (searchHelp) {
+        searchHelp.textContent = 'AI searches the web at run time, then writes the title, subtitle, and post from your guidelines.';
+      }
+    } else {
+      bodyLabel.textContent = 'Research Topic / Keywords';
+      bodyTextarea.placeholder = 'e.g. SpaceX Mars Launch updates';
+      if (titleGroup) titleGroup.style.display = 'none';
+      if (subtitleGroup) subtitleGroup.style.display = 'none';
+    }
+  } else {
+    if (titleGroup) titleGroup.style.display = '';
+    if (subtitleGroup) subtitleGroup.style.display = '';
+    if (searchHelp) {
+      searchHelp.textContent = 'Turn on to let AI search the web and generate content at schedule time.';
+    }
+    if (postType === 'newsletter') {
+      bodyLabel.textContent = 'Content / Body (Supports Markdown for Newsletters)';
+      bodyTextarea.placeholder = 'Write post content here...';
+    } else {
+      bodyLabel.textContent = 'Content / Body';
+      bodyTextarea.placeholder = 'Write post content here...';
+    }
+  }
+}
+
+function syncSchedApiKeyFromStorage() {
+  const schedApiKey = document.getElementById('schedApiKey');
+  if (!schedApiKey || schedApiKey.dataset.userEdited === 'true') return;
+
+  const schedProvider = document.getElementById('schedProvider')?.value || '';
+  const mainProvider = document.getElementById('provider')?.value || 'groq';
+  const provider = schedProvider || mainProvider;
+  const storedKey = getStoredApiKey(provider);
+  if (storedKey) {
+    schedApiKey.value = storedKey;
+    schedApiKey.placeholder = 'Using key from Settings (saved with schedule on submit)';
+  }
+}
+
+function updateSchedModelOptions() {
+  const provider = document.getElementById('schedProvider').value;
+  const modelSelect = document.getElementById('schedModel');
+  
+  modelSelect.innerHTML = '';
+  
+  // Add default option
+  const defaultOpt = document.createElement('option');
+  defaultOpt.value = '';
+  defaultOpt.textContent = '(Use System Default)';
+  modelSelect.appendChild(defaultOpt);
+  
+  if (!provider) {
+    syncSchedApiKeyFromStorage();
+    return;
+  }
+  
+  const models = MODELS[provider] || [];
+  models.forEach((m) => {
+    const opt = document.createElement('option');
+    opt.value = m.value;
+    opt.textContent = m.label;
+    modelSelect.appendChild(opt);
+  });
+
+  syncSchedApiKeyFromStorage();
+}
+
+window.togglePasswordVisibility = togglePasswordVisibility;
+window.startSchedulerPolling = startSchedulerPolling;
+window.stopSchedulerPolling = stopSchedulerPolling;
+window.toggleSchedSearchFields = toggleSchedSearchFields;
+window.updateSchedModelOptions = updateSchedModelOptions;
+
+PG.toggleSchedulerFields = toggleSchedulerFields;
+PG.parseTimeInputToMinutes = parseTimeInputToMinutes;
+PG.formatMinutesLabel = formatMinutesLabel;
+PG.isTwiceDailyRecurrence = isTwiceDailyRecurrence;
+PG.getTwiceDailyTimes = getTwiceDailyTimes;
+PG.computeTwiceDailyInitialIso = computeTwiceDailyInitialIso;
+PG.toggleRecurrenceFields = toggleRecurrenceFields;
+PG.formatRecurrenceTimesLabel = formatRecurrenceTimesLabel;
+PG.formatScheduleDueLabel = formatScheduleDueLabel;
+PG.getScheduleIsoTime = getScheduleIsoTime;
+PG.confirmSendScheduleNow = confirmSendScheduleNow;
+PG.sendScheduleNow = sendScheduleNow;
+PG.loadSchedules = loadSchedules;
+PG.getSelectLabel = getSelectLabel;
+PG.truncateScheduleText = truncateScheduleText;
+PG.buildScheduleConfirmHtml = buildScheduleConfirmHtml;
+PG.confirmSchedulePost = confirmSchedulePost;
+PG.handleCreateSchedule = handleCreateSchedule;
+PG.toggleScheduleState = toggleScheduleState;
+PG.deleteScheduleItem = deleteScheduleItem;
+PG.retryScheduleItem = retryScheduleItem;
+PG.runManualCron = runManualCron;
+PG.updateSchedulerStats = updateSchedulerStats;
+PG.classifySchedulerLogType = classifySchedulerLogType;
+PG.appendSchedulerLog = appendSchedulerLog;
+PG.renderSchedulerApiLogs = renderSchedulerApiLogs;
+PG.clearSchedulerLogs = clearSchedulerLogs;
+PG.copySchedulerLogs = copySchedulerLogs;
+PG.togglePasswordVisibility = togglePasswordVisibility;
+PG.runSilentQueueCheck = runSilentQueueCheck;
+PG.startSchedulerPolling = startSchedulerPolling;
+PG.stopSchedulerPolling = stopSchedulerPolling;
+PG.toggleSchedSearchFields = toggleSchedSearchFields;
+PG.syncSchedApiKeyFromStorage = syncSchedApiKeyFromStorage;
+PG.updateSchedModelOptions = updateSchedModelOptions;
+PG.SCHEDULER_LOG_PLACEHOLDER = SCHEDULER_LOG_PLACEHOLDER;
+export {};

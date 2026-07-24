@@ -1,7 +1,15 @@
-// ─── Comment Automation ───
-let commentAutomationAbortController = null;
+import PG from './pg.js';
+import './state.js';
+const showToast = (...args) => PG.showToast(...args);
+const setButtonLoading = (...args) => PG.setButtonLoading(...args);
+const escapeHtml = (...args) => PG.escapeHtml(...args);
+const getStoredApiKey = (...args) => PG.getStoredApiKey(...args);
+const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
+const isConnected = PG.isConnected;
 
-export function appendCommentLog(message, type = 'info') {
+// ─── Comment Automation ───
+
+function appendCommentLog(message, type = 'info') {
   const logsEl = document.getElementById('commentLogs');
   if (!logsEl) return;
 
@@ -28,7 +36,7 @@ export function appendCommentLog(message, type = 'info') {
   logsEl.scrollTop = logsEl.scrollHeight;
 }
 
-export async function runCommentAutomation() {
+async function runCommentAutomation() {
   const target = document.getElementById('commentTarget').value.trim();
   const keyword = document.getElementById('commentKeyword').value.trim();
   const commentInstruction = document.getElementById('commentPrompt').value.trim();
@@ -41,7 +49,7 @@ export async function runCommentAutomation() {
   const stopBtn = document.getElementById('stopCommentAutoBtn');
   const logsEl = document.getElementById('commentLogs');
 
-  if (!isConnected) {
+  if (!PG.isConnected) {
     showToast('Please connect your Substack account first', 'error');
     return;
   }
@@ -73,7 +81,7 @@ export async function runCommentAutomation() {
   setButtonLoading(runBtn, true, 'Running…');
   stopBtn.disabled = false;
 
-  commentAutomationAbortController = new AbortController();
+  PG.commentAutomationAbortController = new AbortController();
 
   try {
     appendCommentLog(`[Client] Sending automation request to backend...`, 'info');
@@ -89,7 +97,7 @@ export async function runCommentAutomation() {
         model,
         apiKey
       }),
-      signal: commentAutomationAbortController.signal
+      signal: PG.commentAutomationAbortController.signal
     });
 
     const data = await res.json();
@@ -137,17 +145,22 @@ export async function runCommentAutomation() {
   } finally {
     setButtonLoading(runBtn, false, '<i data-lucide="play"></i> Run Automation');
     stopBtn.disabled = true;
-    commentAutomationAbortController = null;
+    PG.commentAutomationAbortController = null;
     if (consoleTitleState) {
       consoleTitleState.className = 'console-title-text console-idle';
     }
   }
 }
 
-export function stopCommentAutomation() {
-  if (commentAutomationAbortController) {
-    commentAutomationAbortController.abort();
+function stopCommentAutomation() {
+  if (PG.commentAutomationAbortController) {
+    PG.commentAutomationAbortController.abort();
   }
 }
 
 // ─── Newsletters Listing ───
+
+PG.appendCommentLog = appendCommentLog;
+PG.runCommentAutomation = runCommentAutomation;
+PG.stopCommentAutomation = stopCommentAutomation;
+export {};

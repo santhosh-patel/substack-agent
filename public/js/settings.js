@@ -1,4 +1,15 @@
-export async function loadConfigFromBackend() {
+import PG from './pg.js';
+import './state.js';
+const showToast = (...args) => PG.showToast(...args);
+const setButtonLoading = (...args) => PG.setButtonLoading(...args);
+const escapeHtml = (...args) => PG.escapeHtml(...args);
+const getStoredSid = (...args) => PG.getStoredSid(...args);
+const getStoredApiKey = (...args) => PG.getStoredApiKey(...args);
+const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
+const getStoredSettings = (...args) => PG.getStoredSettings(...args);
+const MODELS = PG.MODELS;
+
+async function loadConfigFromBackend() {
   try {
     const res = await fetch('/api/config');
     if (!res.ok) return;
@@ -21,22 +32,46 @@ export async function loadConfigFromBackend() {
   }
 }
 
-export function applyDeploymentMode(config) {
+function applyDeploymentMode(config) {
   const isVercel = config.deploymentMode === 'vercel';
+  const isProduction = config.deploymentMode === 'production' || isVercel;
+  const toolsApiUrl = config.toolsApiBaseUrl || null;
 
   const deployBanner = document.getElementById('deploymentBanner');
   if (deployBanner) {
-    deployBanner.hidden = !isVercel;
+    if (isVercel) {
+      deployBanner.hidden = false;
+      deployBanner.innerHTML =
+        '<strong>Local dashboard vs deployed Tools API:</strong> This playground uses unauthenticated <code>/api/*</code> routes. ' +
+        'For GPTs, n8n, or remote agents, use the Bearer-protected Tools API at your domain. ' +
+        'Scheduler queue data is ephemeral on Vercel — run <code>npm run dev</code> locally for full scheduling. ' +
+        '<a href="/docs/deployment/scheduler-cron" target="_blank" rel="noopener">Scheduler docs</a>';
+    } else if (isProduction && toolsApiUrl) {
+      deployBanner.hidden = false;
+      deployBanner.innerHTML =
+        '<strong>Deployed instance:</strong> Playground <code>/api/*</code> routes are for local dashboard use. ' +
+        `External integrations should call the Tools API at <code>${escapeHtml(toolsApiUrl)}</code> with Bearer auth.`;
+    } else {
+      deployBanner.hidden = true;
+    }
   }
 
   const serverSidBanner = document.getElementById('serverSidBanner');
   if (serverSidBanner) {
-    serverSidBanner.hidden = !(config.hasSubstackSid && isVercel);
+    serverSidBanner.hidden = !(config.hasSubstackSid && isProduction);
   }
 
   const schedBanner = document.getElementById('schedulerDeployBanner');
   if (schedBanner) {
-    schedBanner.hidden = !isVercel;
+    if (isVercel) {
+      schedBanner.hidden = false;
+      schedBanner.innerHTML =
+        '<strong>Vercel scheduler limits:</strong> Queue data may be lost on cold starts. ' +
+        'Use local <code>npm run dev</code>, or set up external cron with durable storage. ' +
+        '<a href="/docs/deployment/scheduler-cron" target="_blank" rel="noopener">Read scheduler setup</a>';
+    } else {
+      schedBanner.hidden = true;
+    }
   }
 
   if (isVercel) {
@@ -44,12 +79,17 @@ export function applyDeploymentMode(config) {
       el.disabled = true;
       el.title = 'Scheduling requires local npm run dev or durable storage + external cron on Vercel';
     });
+  } else {
+    document.querySelectorAll('.scheduler-create-action').forEach((el) => {
+      el.disabled = false;
+      el.title = '';
+    });
   }
 }
 
-export const ONBOARDING_KEY = 'onboarding_checklist_v1';
+const ONBOARDING_KEY = 'onboarding_checklist_v1';
 
-export function initOnboardingChecklist() {
+function initOnboardingChecklist() {
   const panel = document.getElementById('onboardingChecklist');
   if (!panel) return;
 
@@ -67,7 +107,7 @@ export function initOnboardingChecklist() {
   });
 }
 
-export function updateOnboardingChecklist() {
+function updateOnboardingChecklist() {
   const step1 = document.getElementById('onboardStep1');
   const step2 = document.getElementById('onboardStep2');
   const step3 = document.getElementById('onboardStep3');
@@ -79,18 +119,18 @@ export function updateOnboardingChecklist() {
   );
   const hasPublished = (JSON.parse(localStorage.getItem('substack_publish_history') || '[]')).length > 0;
 
-  step1?.classList.toggle('is-done', isConnected || hasSid);
+  step1?.classList.toggle('is-done', PG.isConnected || hasSid);
   step2?.classList.toggle('is-done', hasAiKey);
   step3?.classList.toggle('is-done', hasPublished);
 
-  if (isConnected && hasAiKey && hasPublished) {
+  if (PG.isConnected && hasAiKey && hasPublished) {
     localStorage.setItem(ONBOARDING_KEY, 'done');
     const panel = document.getElementById('onboardingChecklist');
     if (panel) panel.hidden = true;
   }
 }
 
-export async function restorePersistedSession() {
+async function restorePersistedSession() {
   const localSid = getStoredSid();
   if (localSid) {
     const sidInput = document.getElementById('sid');
@@ -106,7 +146,7 @@ export async function restorePersistedSession() {
   }
 }
 
-export function loadSavedSettings() {
+function loadSavedSettings() {
   const saved = localStorage.getItem(SETTINGS_STORAGE_KEY);
   if (!saved) {
     updateModelOptions();
@@ -131,7 +171,7 @@ export function loadSavedSettings() {
   }
 }
 
-export function saveSettings() {
+function saveSettings() {
   const settings = {
     pubUrl: document.getElementById('pubUrl').value,
     sid: document.getElementById('sid').value.trim(),
@@ -141,17 +181,16 @@ export function saveSettings() {
   localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
 }
 
-let apiKeySaveTimer = null;
 
-export function scheduleApiKeySave() {
-  clearTimeout(apiKeySaveTimer);
-  apiKeySaveTimer = setTimeout(() => {
+function scheduleApiKeySave() {
+  clearTimeout(PG.apiKeySaveTimer);
+  PG.apiKeySaveTimer = setTimeout(() => {
     const keyVal = document.getElementById('aiKey')?.value.trim();
     if (keyVal) saveApiKey({ silent: true });
   }, 600);
 }
 
-export function loadApiKeyForProvider() {
+function loadApiKeyForProvider() {
   const provider = document.getElementById('provider').value;
   const keyInput = document.getElementById('aiKey');
   const modelSelect = document.getElementById('model');
@@ -191,7 +230,7 @@ export function loadApiKeyForProvider() {
   }
 }
 
-export function saveApiKey(options = {}) {
+function saveApiKey(options = {}) {
   const { silent = false } = options;
   const provider = document.getElementById('provider').value;
   const keyInput = document.getElementById('aiKey');
@@ -211,7 +250,7 @@ export function saveApiKey(options = {}) {
 }
 
 // ─── Model Dropdown ───
-export function updateModelOptions() {
+function updateModelOptions() {
   const provider = document.getElementById('provider').value;
   const modelSelect = document.getElementById('model');
   const models = MODELS[provider] || [];
@@ -229,7 +268,7 @@ export function updateModelOptions() {
 }
 
 // ─── Connect to Substack ───
-export async function handleConnect(options = {}) {
+async function handleConnect(options = {}) {
   const { auto = false } = options;
   const sid = getStoredSid();
   const pubUrl = document.getElementById('pubUrl').value.trim();
@@ -261,7 +300,7 @@ export async function handleConnect(options = {}) {
       throw new Error(data.error || 'Connection failed');
     }
 
-    isConnected = true;
+    PG.isConnected = true;
     updateConnectionBadge(data.profile);
     document.getElementById('publishBtn').disabled = false;
     saveSettings();
@@ -270,7 +309,7 @@ export async function handleConnect(options = {}) {
     }
     updateOnboardingChecklist();
   } catch (err) {
-    isConnected = false;
+    PG.isConnected = false;
     updateConnectionBadge(null);
     document.getElementById('publishBtn').disabled = true;
     if (!auto) {
@@ -285,14 +324,14 @@ export async function handleConnect(options = {}) {
     }
   }
 }
-export function updateConnectionBadge(profile) {
+function updateConnectionBadge(profile) {
   const badge = document.getElementById('connectionBadge');
   const text = document.getElementById('connectionText');
   const avatar = document.getElementById('profileAvatar');
   const subLink = document.getElementById('profileSubLink');
   const discBtn = document.getElementById('disconnectBtn');
 
-  currentProfile = profile;
+  PG.currentProfile = profile;
 
   if (profile) {
     badge.className = 'profile-card connected';
@@ -347,7 +386,7 @@ export function updateConnectionBadge(profile) {
   }
 }
 
-export function updateSimulatedPreviewHeader(profile) {
+function updateSimulatedPreviewHeader(profile) {
   const pubLogo = document.getElementById('previewPubLogo');
   const pubName = document.getElementById('previewPubName');
   const authorAvatar = document.getElementById('previewAuthorAvatar');
@@ -392,7 +431,7 @@ export function updateSimulatedPreviewHeader(profile) {
   }
 }
 
-export async function handleDisconnect() {
+async function handleDisconnect() {
   const confirmed = confirm('Are you sure you want to disconnect your Substack account?');
   if (!confirmed) return;
 
@@ -400,7 +439,7 @@ export async function handleDisconnect() {
     const res = await fetch('/api/disconnect', { method: 'POST' });
     if (!res.ok) throw new Error('Failed to disconnect from server');
 
-    isConnected = false;
+    PG.isConnected = false;
     updateConnectionBadge(null);
     document.getElementById('publishBtn').disabled = true;
 
@@ -413,7 +452,7 @@ export async function handleDisconnect() {
     showToast(err.message, 'error');
   }
 }
-export function loadSystemPromptForTab(tabId) {
+function loadSystemPromptForTab(tabId) {
   const textarea = document.getElementById('systemPrompt');
   if (!textarea) return;
 
@@ -428,7 +467,7 @@ export function loadSystemPromptForTab(tabId) {
   }
 }
 
-export function saveSystemPrompt() {
+function saveSystemPrompt() {
   const value = document.getElementById('systemPrompt').value;
   if (activeSystemPromptTab === 'newsletters') {
     localStorage.setItem('substack_system_prompt_newsletter', value);
@@ -437,7 +476,7 @@ export function saveSystemPrompt() {
   }
 }
 
-export function resetSystemPrompt() {
+function resetSystemPrompt() {
   if (!window.backendConfig) return;
   if (activeSystemPromptTab === 'newsletters') {
     document.getElementById('systemPrompt').value = window.backendConfig.defaultSystemPrompt;
@@ -450,14 +489,14 @@ export function resetSystemPrompt() {
 }
 
 // ─── Sidebar Collapsing ───
-export function toggleSidebar() {
+function toggleSidebar() {
   const grid = document.querySelector('.main-grid');
   if (!grid) return;
   const isCollapsed = grid.classList.toggle('sidebar-collapsed');
   localStorage.setItem('sidebar_collapsed', isCollapsed);
 }
 
-export function openSidebarAndFocusSid() {
+function openSidebarAndFocusSid() {
   const grid = document.querySelector('.main-grid');
   if (grid && grid.classList.contains('sidebar-collapsed')) {
     grid.classList.remove('sidebar-collapsed');
@@ -472,13 +511,13 @@ export function openSidebarAndFocusSid() {
 }
 
 // ─── Theme Toggling ───
-export function toggleTheme() {
+function toggleTheme() {
   const isLight = document.body.classList.toggle('light-theme');
   localStorage.setItem('app_theme', isLight ? 'light' : 'dark');
   updateThemeToggleIcon(isLight);
 }
 
-export function updateThemeToggleIcon(isLight) {
+function updateThemeToggleIcon(isLight) {
   const btn = document.getElementById('themeToggleBtn');
   if (!btn) return;
   if (isLight) {
@@ -494,7 +533,7 @@ export function updateThemeToggleIcon(isLight) {
 }
 
 // ─── Publish History ───
-export function loadPublishHistory() {
+function loadPublishHistory() {
   const historyList = document.getElementById('newsletterHistoryList');
   if (!historyList) return;
 
@@ -521,7 +560,7 @@ export function loadPublishHistory() {
   }
 }
 
-export function addPostToHistory(title, url) {
+function addPostToHistory(title, url) {
   const history = JSON.parse(localStorage.getItem('substack_publish_history') || '[]');
   const date = new Date().toLocaleDateString(undefined, { 
     month: 'short', 
@@ -541,7 +580,7 @@ export function addPostToHistory(title, url) {
   updateOnboardingChecklist();
 }
 
-export function updatePublishButtonLabel() {
+function updatePublishButtonLabel() {
   const btn = document.getElementById('publishBtn');
   const toggle = document.getElementById('draftToggle');
   if (!btn || !toggle) return;
@@ -563,7 +602,7 @@ export function updatePublishButtonLabel() {
     lucide.createIcons();
   }
 }
-export async function testSubstackSession() {
+async function testSubstackSession() {
   const sid = getStoredSid();
   const pubUrl = document.getElementById('pubUrl')?.value.trim();
   const btn = document.getElementById('testSidBtn');
@@ -591,14 +630,14 @@ export async function testSubstackSession() {
     }
 
     saveSettings();
-    isConnected = true;
+    PG.isConnected = true;
     updateConnectionBadge(data.profile);
     const publishBtn = document.getElementById('publishBtn');
     if (publishBtn) publishBtn.disabled = false;
 
     showToast(`Session OK — connected as ${data.profile.name} (@${data.profile.slug})`, 'success');
   } catch (err) {
-    isConnected = false;
+    PG.isConnected = false;
     updateConnectionBadge(null);
     showToast(err.message, 'error');
   } finally {
@@ -606,7 +645,7 @@ export async function testSubstackSession() {
   }
 }
 
-export async function testAiKey(options = {}) {
+async function testAiKey(options = {}) {
   const { providerOverride, modelOverride, keyOverride, buttonId = 'testAiKeyBtn' } = options;
   const provider = providerOverride || document.getElementById('provider')?.value;
   const model = modelOverride || document.getElementById('model')?.value;
@@ -648,7 +687,7 @@ export async function testAiKey(options = {}) {
   }
 }
 
-export async function testSchedAiKey() {
+async function testSchedAiKey() {
   const schedProviderVal = document.getElementById('schedProvider')?.value || '';
   const mainProvider = document.getElementById('provider')?.value || 'groq';
   const provider = schedProviderVal || mainProvider;
@@ -665,3 +704,34 @@ export async function testSchedAiKey() {
     buttonId: 'testSchedAiKeyBtn',
   });
 }
+
+PG.loadConfigFromBackend = loadConfigFromBackend;
+PG.applyDeploymentMode = applyDeploymentMode;
+PG.initOnboardingChecklist = initOnboardingChecklist;
+PG.updateOnboardingChecklist = updateOnboardingChecklist;
+PG.restorePersistedSession = restorePersistedSession;
+PG.loadSavedSettings = loadSavedSettings;
+PG.saveSettings = saveSettings;
+PG.scheduleApiKeySave = scheduleApiKeySave;
+PG.loadApiKeyForProvider = loadApiKeyForProvider;
+PG.saveApiKey = saveApiKey;
+PG.updateModelOptions = updateModelOptions;
+PG.handleConnect = handleConnect;
+PG.updateConnectionBadge = updateConnectionBadge;
+PG.updateSimulatedPreviewHeader = updateSimulatedPreviewHeader;
+PG.handleDisconnect = handleDisconnect;
+PG.loadSystemPromptForTab = loadSystemPromptForTab;
+PG.saveSystemPrompt = saveSystemPrompt;
+PG.resetSystemPrompt = resetSystemPrompt;
+PG.toggleSidebar = toggleSidebar;
+PG.openSidebarAndFocusSid = openSidebarAndFocusSid;
+PG.toggleTheme = toggleTheme;
+PG.updateThemeToggleIcon = updateThemeToggleIcon;
+PG.loadPublishHistory = loadPublishHistory;
+PG.addPostToHistory = addPostToHistory;
+PG.updatePublishButtonLabel = updatePublishButtonLabel;
+PG.testSubstackSession = testSubstackSession;
+PG.testAiKey = testAiKey;
+PG.testSchedAiKey = testSchedAiKey;
+PG.ONBOARDING_KEY = ONBOARDING_KEY;
+export {};

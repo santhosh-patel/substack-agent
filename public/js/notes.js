@@ -1,4 +1,14 @@
-export async function handleGenerateNote() {
+import PG from './pg.js';
+import './state.js';
+const showToast = (...args) => PG.showToast(...args);
+const setButtonLoading = (...args) => PG.setButtonLoading(...args);
+const getStoredApiKey = (...args) => PG.getStoredApiKey(...args);
+const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
+const isConnected = PG.isConnected;
+const addToInputHistory = (...args) => PG.addToInputHistory(...args);
+const escapeHtml = (...args) => PG.escapeHtml(...args);
+
+async function handleGenerateNote() {
   const topic = document.getElementById('noteTopic').value.trim();
   const provider = document.getElementById('provider').value;
   const model = document.getElementById('model').value;
@@ -55,7 +65,7 @@ export async function handleGenerateNote() {
 }
 
 // ─── Publish Note to Substack ───
-export async function handlePublishNote() {
+async function handlePublishNote() {
   const body = document.getElementById('noteBody').value.trim();
   const link = document.getElementById('noteLink').value.trim();
   const btn = document.getElementById('publishNoteBtn');
@@ -65,7 +75,7 @@ export async function handlePublishNote() {
     return;
   }
 
-  if (!isConnected) {
+  if (!PG.isConnected) {
     showToast('Connect to Substack first', 'error');
     openSidebarAndFocusSid();
     return;
@@ -111,7 +121,7 @@ export async function handlePublishNote() {
 }
 
 // ─── Live Note Markdown Preview ───
-export function updateNotePreview() {
+function updateNotePreview() {
   const md = document.getElementById('noteBody').value;
   const previewEl = document.getElementById('notePreview');
   const link = document.getElementById('noteLink').value.trim();
@@ -144,11 +154,11 @@ export function updateNotePreview() {
 }
 
 // ─── Notes Listing ───
-export async function loadNotes() {
+async function loadNotes() {
   const btn = document.getElementById('loadNotesBtn');
   const listEl = document.getElementById('notesList');
 
-  if (!isConnected) {
+  if (!PG.isConnected) {
     showToast('Please connect your Substack account first', 'error');
     return;
   }
@@ -208,3 +218,9 @@ export async function loadNotes() {
   }
 }
 
+
+PG.handleGenerateNote = handleGenerateNote;
+PG.handlePublishNote = handlePublishNote;
+PG.updateNotePreview = updateNotePreview;
+PG.loadNotes = loadNotes;
+export {};

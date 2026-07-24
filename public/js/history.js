@@ -1,4 +1,15 @@
-export async function loadHistory() {
+import PG from './pg.js';
+import './state.js';
+const showToast = (...args) => PG.showToast(...args);
+const setButtonLoading = (...args) => PG.setButtonLoading(...args);
+const escapeHtml = (...args) => PG.escapeHtml(...args);
+const getStoredSid = (...args) => PG.getStoredSid(...args);
+const isConnected = PG.isConnected;
+const switchTab = (...args) => PG.switchTab(...args);
+const handleGenerate = (...args) => PG.handleGenerate(...args);
+const handleGenerateNote = (...args) => PG.handleGenerateNote(...args);
+
+async function loadHistory() {
   const btn = document.getElementById('loadHistoryBtn');
   const listEl = document.getElementById('historyList');
 
@@ -11,7 +22,7 @@ export async function loadHistory() {
   let publications = [];
   let errors = [];
 
-  if (!isConnected) {
+  if (!PG.isConnected) {
     try {
       const res = await fetch('/api/publications/history');
       if (res.ok) {
@@ -31,7 +42,7 @@ export async function loadHistory() {
       errors.push('Publications');
     }
 
-    allHistoryItems = dedupeHistoryItems(publications);
+    PG.allHistoryItems = dedupeHistoryItems(publications);
     filterAndRenderHistory();
     setButtonLoading(btn, false, '<i data-lucide="rotate-ccw"></i> Fetch History');
 
@@ -128,7 +139,7 @@ export async function loadHistory() {
   }
 
   // Merge all items, dedupe by URL, prefer scheduled/local entries
-  allHistoryItems = dedupeHistoryItems([...publications, ...newsletters, ...notes, ...comments]);
+  PG.allHistoryItems = dedupeHistoryItems([...publications, ...newsletters, ...notes, ...comments]);
 
   if (errors.length > 0) {
     showToast(`Failed to load: ${errors.join(', ')}`, 'warning');
@@ -140,7 +151,7 @@ export async function loadHistory() {
   setButtonLoading(btn, false, '<i data-lucide="rotate-ccw"></i> Fetch History');
 }
 
-export function dedupeHistoryItems(items) {
+function dedupeHistoryItems(items) {
   const seen = new Set();
   const merged = [];
 
@@ -154,7 +165,7 @@ export function dedupeHistoryItems(items) {
   return merged;
 }
 
-export function filterAndRenderHistory() {
+function filterAndRenderHistory() {
   const listEl = document.getElementById('historyList');
   const typeFilter = document.getElementById('historyTypeFilter').value;
   const sortOrder = document.getElementById('historySort').value;
@@ -163,7 +174,7 @@ export function filterAndRenderHistory() {
   if (!listEl) return;
 
   // 1. Edgecase: Disconnect state display
-  if (!isConnected && allHistoryItems.length === 0) {
+  if (!PG.isConnected && PG.allHistoryItems.length === 0) {
     listEl.innerHTML = `
       <div class="history-empty" style="padding: 40px 20px; display: flex; flex-direction: column; align-items: center; gap: 16px;">
         <i data-lucide="shield-alert" style="width: 44px; height: 44px; color: var(--text-muted);"></i>
@@ -181,7 +192,7 @@ export function filterAndRenderHistory() {
   }
 
   // 2. Filter list of items
-  let items = allHistoryItems;
+  let items = PG.allHistoryItems;
   if (typeFilter === 'scheduled') {
     items = items.filter(item => item.source === 'scheduled');
   } else if (typeFilter !== 'all') {
@@ -307,7 +318,7 @@ export function filterAndRenderHistory() {
 }
 
 // ─── History Helpers ───
-export function copyHistoryLink(url) {
+function copyHistoryLink(url) {
   if (!url) return;
   navigator.clipboard.writeText(url).then(() => {
     showToast('Link copied to clipboard!', 'success');
@@ -322,7 +333,7 @@ export function copyHistoryLink(url) {
   });
 }
 
-export function toggleBodyText(id) {
+function toggleBodyText(id) {
   const shortEl = document.getElementById(`body-short-${id}`);
   const fullEl = document.getElementById(`body-full-${id}`);
   const btn = document.getElementById(`btn-toggle-${id}`);
@@ -344,8 +355,8 @@ export function toggleBodyText(id) {
   }
 }
 
-export function reuseHistoryItem(id) {
-  const item = allHistoryItems.find(i => i.id === id);
+function reuseHistoryItem(id) {
+  const item = PG.allHistoryItems.find(i => i.id === id);
   if (!item) {
     showToast('Template item not found', 'error');
     return;
@@ -376,3 +387,11 @@ export function reuseHistoryItem(id) {
   }
 }
 
+
+PG.loadHistory = loadHistory;
+PG.dedupeHistoryItems = dedupeHistoryItems;
+PG.filterAndRenderHistory = filterAndRenderHistory;
+PG.copyHistoryLink = copyHistoryLink;
+PG.toggleBodyText = toggleBodyText;
+PG.reuseHistoryItem = reuseHistoryItem;
+export {};

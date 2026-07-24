@@ -1,5 +1,17 @@
+import PG from './pg.js';
+import './state.js';
+const showToast = (...args) => PG.showToast(...args);
+const setButtonLoading = (...args) => PG.setButtonLoading(...args);
+const getStoredApiKey = (...args) => PG.getStoredApiKey(...args);
+const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
+const getStoredSid = (...args) => PG.getStoredSid(...args);
+const isConnected = PG.isConnected;
+const addPostToHistory = (...args) => PG.addPostToHistory(...args);
+const updateOnboardingChecklist = (...args) => PG.updateOnboardingChecklist(...args);
+const updatePreviewMetadata = (...args) => PG.updatePreviewMetadata(...args);
+
 // ─── Generate Post with AI ───
-export async function handleGenerate() {
+async function handleGenerate() {
   const topic = document.getElementById('topic').value.trim();
   const provider = document.getElementById('provider').value;
   const model = document.getElementById('model').value;
@@ -72,7 +84,7 @@ export async function handleGenerate() {
 }
 
 // ─── Publish to Substack ───
-export async function handlePublish() {
+async function handlePublish() {
   const title = document.getElementById('postTitle').value.trim();
   const subtitle = document.getElementById('postSubtitle').value.trim();
   const body = document.getElementById('editor').value.trim();
@@ -126,7 +138,7 @@ export async function handlePublish() {
 }
 
 // ─── Live Markdown Preview ───
-export function updatePreview() {
+function updatePreview() {
   const md = document.getElementById('editor').value;
   const previewEl = document.getElementById('preview');
 
@@ -142,7 +154,7 @@ export function updatePreview() {
   updatePreviewMetadata();
 }
 
-export function updatePreviewMetadata() {
+function updatePreviewMetadata() {
   const title = document.getElementById('postTitle').value.trim();
   const subtitle = document.getElementById('postSubtitle').value.trim();
   
@@ -162,3 +174,9 @@ export function updatePreviewMetadata() {
   }
 }
 
+
+PG.handleGenerate = handleGenerate;
+PG.handlePublish = handlePublish;
+PG.updatePreview = updatePreview;
+PG.updatePreviewMetadata = updatePreviewMetadata;
+export {};

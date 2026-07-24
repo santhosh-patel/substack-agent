@@ -1,4 +1,7 @@
-export function initMacConsoleHighlight() {
+import PG from './pg.js';
+import './state.js';
+
+function initMacConsoleHighlight() {
   document.querySelectorAll('.mac-console').forEach((el) => {
     el.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -11,7 +14,7 @@ export function initMacConsoleHighlight() {
     document.querySelectorAll('.mac-console.is-active').forEach((node) => node.classList.remove('is-active'));
   });
 }
-export function setButtonLoading(btn, loading, text) {
+function setButtonLoading(btn, loading, text) {
   if (loading) {
     btn.disabled = true;
     btn.innerHTML = `<span class="spinner"></span> ${text}`;
@@ -25,7 +28,7 @@ export function setButtonLoading(btn, loading, text) {
 }
 
 // ─── Toast System ───
-export function showToast(message, type = 'info') {
+function showToast(message, type = 'info') {
   const container = document.getElementById('toastContainer');
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
@@ -64,13 +67,13 @@ export function showToast(message, type = 'info') {
   dismissTimeout = setTimeout(dismissToast, 30000);
 }
 
-export function escapeHtml(str) {
+function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
 }
 
-export function showAppConfirm({
+function showAppConfirm({
   title = 'Confirm',
   message = '',
   messageHtml = '',
@@ -148,7 +151,7 @@ export function showAppConfirm({
 // ─── System Prompt Handling ───
 let activeSystemPromptTab = 'newsletters';
 
-export function loadSystemPromptForTab(tabId) {
+function loadSystemPromptForTab(tabId) {
   const textarea = document.getElementById('systemPrompt');
   if (!textarea) return;
 
@@ -163,7 +166,7 @@ export function loadSystemPromptForTab(tabId) {
   }
 }
 
-export function saveSystemPrompt() {
+function saveSystemPrompt() {
   const value = document.getElementById('systemPrompt').value;
   if (activeSystemPromptTab === 'newsletters') {
     localStorage.setItem('substack_system_prompt_newsletter', value);
@@ -172,7 +175,7 @@ export function saveSystemPrompt() {
   }
 }
 
-export function resetSystemPrompt() {
+function resetSystemPrompt() {
   if (!window.backendConfig) return;
   if (activeSystemPromptTab === 'newsletters') {
     document.getElementById('systemPrompt').value = window.backendConfig.defaultSystemPrompt;
@@ -185,14 +188,14 @@ export function resetSystemPrompt() {
 }
 
 // ─── Sidebar Collapsing ───
-export function toggleSidebar() {
+function toggleSidebar() {
   const grid = document.querySelector('.main-grid');
   if (!grid) return;
   const isCollapsed = grid.classList.toggle('sidebar-collapsed');
   localStorage.setItem('sidebar_collapsed', isCollapsed);
 }
 
-export function openSidebarAndFocusSid() {
+function openSidebarAndFocusSid() {
   const grid = document.querySelector('.main-grid');
   if (grid && grid.classList.contains('sidebar-collapsed')) {
     grid.classList.remove('sidebar-collapsed');
@@ -207,14 +210,14 @@ export function openSidebarAndFocusSid() {
 }
 
 // ─── Theme Toggling ───
-export function toggleTheme() {
+function toggleTheme() {
   const isLight = document.body.classList.toggle('light-theme');
   localStorage.setItem('app_theme', isLight ? 'light' : 'dark');
   updateThemeToggleIcon(isLight);
 }
 
-export function updateThemeToggleIcon(isLight) {
-export function togglePasswordVisibility(inputId, btnEl) {
+function updateThemeToggleIcon(isLight) {
+function togglePasswordVisibility(inputId, btnEl) {
   const input = document.getElementById(inputId);
   if (!input) return;
   const icon = btnEl.querySelector('i');
@@ -235,3 +238,18 @@ export function togglePasswordVisibility(inputId, btnEl) {
     window.lucide.createIcons();
   }
 }
+
+PG.initMacConsoleHighlight = initMacConsoleHighlight;
+PG.setButtonLoading = setButtonLoading;
+PG.showToast = showToast;
+PG.escapeHtml = escapeHtml;
+PG.showAppConfirm = showAppConfirm;
+PG.loadSystemPromptForTab = loadSystemPromptForTab;
+PG.saveSystemPrompt = saveSystemPrompt;
+PG.resetSystemPrompt = resetSystemPrompt;
+PG.toggleSidebar = toggleSidebar;
+PG.openSidebarAndFocusSid = openSidebarAndFocusSid;
+PG.toggleTheme = toggleTheme;
+PG.updateThemeToggleIcon = updateThemeToggleIcon;
+PG.togglePasswordVisibility = togglePasswordVisibility;
+export {};

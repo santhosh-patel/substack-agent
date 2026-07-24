@@ -1,6 +1,10 @@
-export const SETTINGS_STORAGE_KEY = 'substack_settings';
+import PG from './pg.js';
+import './state.js';
+const escapeHtml = (...args) => PG.escapeHtml(...args);
 
-export function getStoredSettings() {
+const SETTINGS_STORAGE_KEY = 'substack_settings';
+
+function getStoredSettings() {
   try {
     return JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) || '{}');
   } catch {
@@ -8,14 +12,14 @@ export function getStoredSettings() {
   }
 }
 
-export function getStoredSid() {
+function getStoredSid() {
   const sidInput = document.getElementById('sid');
   const fromInput = sidInput ? sidInput.value.trim() : '';
   if (fromInput) return fromInput;
   return getStoredSettings().sid || '';
 }
 
-export function getStoredApiKey(provider) {
+function getStoredApiKey(provider) {
   const providerVal = provider || document.getElementById('provider')?.value;
   const keyInput = document.getElementById('aiKey');
   const fromInput = keyInput ? keyInput.value.trim() : '';
@@ -24,7 +28,7 @@ export function getStoredApiKey(provider) {
   return localStorage.getItem(`substack_apikey_${providerVal}`) || '';
 }
 
-export function hasBackendApiKey(provider) {
+function hasBackendApiKey(provider) {
   if (!window.backendConfig) return false;
   const flags = {
     groq: 'hasGroqApiKey',
@@ -34,7 +38,7 @@ export function hasBackendApiKey(provider) {
   };
   return Boolean(window.backendConfig[flags[provider]]);
 }
-export function addToInputHistory(inputId, value) {
+function addToInputHistory(inputId, value) {
   if (!value) return;
   const historyKey = `history_${inputId}`;
   let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
@@ -48,7 +52,7 @@ export function addToInputHistory(inputId, value) {
   updateDatalist(inputId);
 }
 
-export function updateDatalist(inputId) {
+function updateDatalist(inputId) {
   const historyKey = `history_${inputId}`;
   const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
   const datalist = document.getElementById(`${inputId}-history`);
@@ -57,9 +61,19 @@ export function updateDatalist(inputId) {
   datalist.innerHTML = history.map(val => `<option value="${escapeHtml(val)}"></option>`).join('');
 }
 
-export function loadAllInputHistories() {
+function loadAllInputHistories() {
   const inputIds = ['topic', 'commentTarget', 'commentKeyword', 'noteTopic', 'noteLink'];
   inputIds.forEach(id => updateDatalist(id));
 }
 
 // ─── Scheduler tab logic ───
+
+PG.getStoredSettings = getStoredSettings;
+PG.getStoredSid = getStoredSid;
+PG.getStoredApiKey = getStoredApiKey;
+PG.hasBackendApiKey = hasBackendApiKey;
+PG.addToInputHistory = addToInputHistory;
+PG.updateDatalist = updateDatalist;
+PG.loadAllInputHistories = loadAllInputHistories;
+PG.SETTINGS_STORAGE_KEY = SETTINGS_STORAGE_KEY;
+export {};

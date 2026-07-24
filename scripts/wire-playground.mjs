@@ -4,53 +4,57 @@ import path from 'path';
 
 const dir = path.join(process.cwd(), 'public/js');
 
-function wrap(name, body, extra = '') {
-  return `import PG from './pg.js';\nimport './state.js';\n${extra}\n${body.replace(/\bisConnected\b/g, 'PG.isConnected').replace(/\ballHistoryItems\b/g, 'PG.allHistoryItems').replace(/\bcommentAutomationAbortController\b/g, 'PG.commentAutomationAbortController').replace(/\bschedulerPollingInterval\b/g, 'PG.schedulerPollingInterval').replace(/\bapiKeySaveTimer\b/g, 'PG.apiKeySaveTimer').replace(/\bcurrentProfile\b/g, 'PG.currentProfile')}\n\nconst _exp = {${Object.entries(PG_exports[name] || {}).map(([k, v]) => `${k}: ${v}`).join(', ')}};\nObject.assign(PG, _exp);\nexport {};\n`;
-}
+const STATE_VARS = [
+  'isConnected', 'allHistoryItems', 'commentAutomationAbortController',
+  'schedulerPollingInterval', 'apiKeySaveTimer', 'currentProfile',
+];
 
-const PG_exports = {
-  models: { MODELS: 'MODELS' },
-  ui: { initMacConsoleHighlight: 'initMacConsoleHighlight', setButtonLoading: 'setButtonLoading', showToast: 'showToast', escapeHtml: 'escapeHtml', showAppConfirm: 'showAppConfirm', togglePasswordVisibility: 'togglePasswordVisibility' },
-  storage: { SETTINGS_STORAGE_KEY: 'SETTINGS_STORAGE_KEY', getStoredSettings: 'getStoredSettings', getStoredSid: 'getStoredSid', getStoredApiKey: 'getStoredApiKey', hasBackendApiKey: 'hasBackendApiKey', addToInputHistory: 'addToInputHistory', updateDatalist: 'updateDatalist', loadAllInputHistories: 'loadAllInputHistories' },
+const FILE_DEPS = {
+  'models.js': [],
+  'ui.js': [],
+  'storage.js': ['escapeHtml'],
+  'settings.js': ['showToast', 'setButtonLoading', 'escapeHtml', 'getStoredSid', 'getStoredApiKey', 'hasBackendApiKey', 'getStoredSettings', 'MODELS'],
+  'publish.js': ['showToast', 'setButtonLoading', 'getStoredApiKey', 'hasBackendApiKey', 'getStoredSid', 'isConnected', 'addPostToHistory', 'updateOnboardingChecklist', 'updatePreviewMetadata'],
+  'tabs.js': ['loadSystemPromptForTab', 'loadHistory', 'loadNotes', 'loadSchedules', 'updateSchedModelOptions', 'syncSchedApiKeyFromStorage', 'dtRefreshTimeWheel', 'startSchedulerPolling', 'stopSchedulerPolling'],
+  'comments.js': ['showToast', 'setButtonLoading', 'escapeHtml', 'getStoredApiKey', 'hasBackendApiKey', 'isConnected'],
+  'history.js': ['showToast', 'setButtonLoading', 'escapeHtml', 'getStoredSid', 'isConnected', 'switchTab', 'handleGenerate', 'handleGenerateNote'],
+  'notes.js': ['showToast', 'setButtonLoading', 'getStoredApiKey', 'hasBackendApiKey', 'isConnected', 'addToInputHistory', 'escapeHtml'],
+  'scheduler-core.js': ['showToast', 'setButtonLoading', 'escapeHtml', 'showAppConfirm', 'getStoredApiKey', 'getStoredSid', 'hasBackendApiKey', 'getSelectLabel', 'testAiKey', 'isTwiceDailyRecurrence', 'getTwiceDailyTimes', 'computeTwiceDailyInitialIso', 'formatMinutesLabel', 'formatRecurrenceTimesLabel', 'formatScheduleDueLabel', 'dtBuildSelectedDate', 'MODELS'],
+  'datetime.js': ['showToast', 'isTwiceDailyRecurrence', 'computeTwiceDailyInitialIso', 'getTwiceDailyTimes', 'formatMinutesLabel'],
+  'scheduler-polling.js': ['showToast', 'appendSchedulerLog', 'renderSchedulerApiLogs', 'loadSchedules', 'loadHistory', 'classifySchedulerLogType'],
 };
 
-// Simpler: prepend PG import and replace state vars, assign all exports to PG at end
-function processFile(file, deps = '') {
+function processFile(file) {
   let body = fs.readFileSync(path.join(dir, file), 'utf-8');
   body = body.replace(/^export /gm, '');
-  body = body.replace(/\bisConnected\b/g, 'PG.isConnected');
-  body = body.replace(/\ballHistoryItems\b/g, 'PG.allHistoryItems');
-  body = body.replace(/\bcommentAutomationAbortController\b/g, 'PG.commentAutomationAbortController');
-  body = body.replace(/\bschedulerPollingInterval\b/g, 'PG.schedulerPollingInterval');
-  body = body.replace(/\bapiKeySaveTimer\b/g, 'PG.apiKeySaveTimer');
-  body = body.replace(/\bcurrentProfile\b/g, 'PG.currentProfile');
+
+  for (const v of STATE_VARS) {
+    body = body.replace(new RegExp(`\\b${v}\\b`, 'g'), `PG.${v}`);
+  }
 
   const fnExports = [...body.matchAll(/^(?:async )?function (\w+)/gm)].map((m) => m[1]);
   const constExports = [...body.matchAll(/^const (\w+) =/gm)].map((m) => m[1]);
-  const exports = [...new Set([...fnExports, ...constExports.filter((n) => n === 'MODELS' || n === 'SETTINGS_STORAGE_KEY' || n.startsWith('TAB_') || n.startsWith('PATH_') || n.startsWith('ONBOARDING') || n.startsWith('SCHEDULER_') || n.startsWith('DT_') || n === 'dtState')])];
+  const allConsts = constExports.filter((n) => /^[A-Z]/.test(n) || n === 'dtState');
+  const exports = [...new Set([...fnExports, ...allConsts])];
+
+  const deps = FILE_DEPS[file] || [];
+  const depLines = deps.map((d) => {
+    if (STATE_VARS.includes(d)) return `const ${d} = PG.${d};`;
+    return `const ${d} = (...args) => PG.${d}(...args);`;
+  }).join('\n');
 
   const assign = exports.map((n) => `PG.${n} = ${n};`).join('\n');
-
-  const header = `import PG from './pg.js';\n${deps}\n`;
-  fs.writeFileSync(path.join(dir, file), `${header}${body}\n${assign}\nexport {};\n`);
+  const header = `import PG from './pg.js';\nimport './state.js';\n${depLines ? depLines + '\n' : ''}`;
+  fs.writeFileSync(path.join(dir, file), `${header}\n${body}\n${assign}\nexport {};\n`);
 }
 
 const order = [
-  ['models.js', "import './state.js';"],
-  ['ui.js', "import './state.js';"],
-  ['storage.js', "import './state.js';\nimport './ui.js';"],
-  ['settings.js', "import './state.js';\nimport './models.js';\nimport './ui.js';\nimport './storage.js';"],
-  ['publish.js', "import './state.js';\nimport './models.js';\nimport './ui.js';\nimport './storage.js';\nimport './settings.js';"],
-  ['tabs.js', "import './state.js';\nimport './ui.js';\nimport './settings.js';"],
-  ['comments.js', "import './state.js';\nimport './ui.js';\nimport './storage.js';\nimport './settings.js';"],
-  ['history.js', "import './state.js';\nimport './ui.js';\nimport './storage.js';\nimport './settings.js';"],
-  ['notes.js', "import './state.js';\nimport './ui.js';\nimport './storage.js';\nimport './settings.js';\nimport './publish.js';"],
-  ['scheduler-core.js', "import './state.js';\nimport './models.js';\nimport './ui.js';\nimport './storage.js';\nimport './settings.js';"],
-  ['datetime.js', "import './state.js';\nimport './ui.js';\nimport './scheduler-core.js';"],
-  ['scheduler-polling.js', "import './state.js';\nimport './ui.js';\nimport './settings.js';\nimport './scheduler-core.js';"],
+  'models.js', 'ui.js', 'storage.js', 'settings.js', 'publish.js',
+  'tabs.js', 'comments.js', 'history.js', 'notes.js',
+  'scheduler-core.js', 'datetime.js', 'scheduler-polling.js',
 ];
 
-for (const [file, deps] of order) {
-  if (fs.existsSync(path.join(dir, file))) processFile(file, deps);
+for (const file of order) {
+  if (fs.existsSync(path.join(dir, file))) processFile(file);
 }
-console.log('Wired playground modules');
+console.log('Wired', order.length, 'playground modules');
