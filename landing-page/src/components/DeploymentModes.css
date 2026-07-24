@@ -1,0 +1,53 @@
+.deployment-modes {
+  padding: var(--section-pad) 0;
+  background: var(--bg-subtle);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  width: 100%;
+  overflow-x: clip;
+}
+
+.modes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: clamp(14px, 2.5vw, 20px);
+}
+
+.mode-card {
+  background: var(--bg-page);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: clamp(20px, 3vw, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.mode-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.mode-command {
+  display: block;
+  font-size: 12px;
+  background: var(--bg-dark);
+  color: #E2E8F0;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  word-break: break-word;
+}
+
+.mode-best,
+.mode-limits {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.mode-cta {
+  margin-top: auto;
+  align-self: flex-start;
+}

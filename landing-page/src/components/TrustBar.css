@@ -19,6 +19,30 @@
   flex-wrap: wrap;
 }
 
+.trust-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.trust-stars {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+  padding: 4px 10px;
+  background: var(--primary-light);
+  border-radius: var(--radius-full);
+}
+
+.trust-license {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
 .trust-title {
   font-size: 11px;
   font-weight: 600;
