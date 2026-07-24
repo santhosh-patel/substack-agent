@@ -18,17 +18,41 @@ Optional: `GROQ_API_KEY`, `GEMINI_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KE
 
 1. Clone the repo and install dependencies (see [Install](/docs/getting-started/install)).
 2. Set the environment variables on your host.
-3. Start the server with Node 18+:
+3. Build and start with Node 18+:
 
 ```bash
-npm run dev
+npm install
+npm run build
+NODE_ENV=production npm start
 ```
 
-On most platforms, point the process manager or platform config at the same entry (`src/server.ts` via `npm run dev` or your host’s Node start command).
+For local development with hot reload, use `npm run dev` instead.
 
-## Call your Tools API
+## Verify deployment
 
 Replace `your-domain` with your deployment URL:
+
+```bash
+curl -s "https://your-domain/api/tools/health" \
+  -H "Authorization: Bearer $API_SECRET"
+```
+
+Expected response:
+
+```json
+{
+  "success": true,
+  "data": {
+    "version": "2.0.0",
+    "connected": true,
+    "publication": "yourname.substack.com"
+  }
+}
+```
+
+If `connected` is `false`, check `SUBSTACK_SID` and `SUBSTACK_PUB_URL` in your host environment.
+
+## Call your Tools API
 
 ```bash
 curl -X POST "https://your-domain/api/tools/publish-newsletter" \
@@ -42,6 +66,28 @@ curl -X POST "https://your-domain/api/tools/publish-newsletter" \
 - **Base path:** `/api/tools/*`
 
 Use your domain with n8n, Custom GPT Actions, Zapier HTTP nodes, or any OpenAPI-aware agent.
+
+## Docker
+
+```bash
+docker build -t substack-agent .
+docker run -p 3456:3456 \
+  -e NODE_ENV=production \
+  -e SUBSTACK_SID=... \
+  -e SUBSTACK_PUB_URL=yourname.substack.com \
+  -e API_SECRET=... \
+  substack-agent
+```
+
+## Railway / Render / Fly
+
+General steps (no one-click buttons):
+
+1. Connect this GitHub repo to your platform.
+2. Set build command: `npm run build`
+3. Set start command: `npm start`
+4. Add env vars: `SUBSTACK_SID`, `SUBSTACK_PUB_URL`, `API_SECRET`, `NODE_ENV=production`
+5. Run the health check curl above against your assigned domain.
 
 ## Public dashboard risk
 

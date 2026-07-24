@@ -1,0 +1,9 @@
+node_modules
+landing-page/node_modules
+.env
+.env.*
+.git
+.cursor
+docs/superpowers
+*.md
+!README.md

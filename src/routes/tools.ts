@@ -20,6 +20,7 @@ import {
   ensureHttpClientPatched,
   getGotScraping,
   getPubHostname,
+  checkConnectionHealth,
 } from '../lib/substack-client.js';
 import { analyzeAndGenerateComment } from '../ai/generate.js';
 import fs from 'fs';
@@ -27,6 +28,25 @@ import path from 'path';
 import { addSchedule, getSchedules } from '../lib/storage.js';
 
 const router = Router();
+
+const APP_VERSION = '2.0.0';
+
+// ─── GET /api/tools/health ───
+router.get('/health', async (_req: Request, res: Response) => {
+  try {
+    const connected = await checkConnectionHealth();
+    res.json({
+      success: true,
+      data: {
+        version: APP_VERSION,
+        connected,
+        publication: connected ? getPubHostname() : null,
+      },
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message || 'Health check failed' });
+  }
+});
 
 // ─── Helper ───
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
