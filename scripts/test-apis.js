@@ -47,6 +47,7 @@ async function runTests() {
   const env = loadEnv();
   const sid = env.SUBSTACK_SID;
   const pubUrl = env.SUBSTACK_PUB_URL || env.PUBLICATION_URL;
+  const apiSecret = process.env.API_SECRET || env.API_SECRET;
 
   if (!sid) {
     console.log(`${colors.yellow}Warning: SUBSTACK_SID not found in .env. Connection tests will fail.${colors.reset}\n`);
@@ -149,6 +150,32 @@ async function runTests() {
       }
     }
   ];
+
+  if (apiSecret) {
+    tests.unshift({
+      name: 'GET /api/tools/health (Bearer auth)',
+      run: async () => {
+        const res = await fetch(`${BASE_URL}/api/tools/health`, {
+          headers: { Authorization: `Bearer ${apiSecret}` },
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(`Status ${res.status}: ${JSON.stringify(data)}`);
+        if (typeof data.data?.connected !== 'boolean') {
+          throw new Error('Health response missing connected flag');
+        }
+        return `Health OK — version ${data.data.version}, connected=${data.data.connected}`;
+      },
+    });
+  } else {
+    tests.unshift({
+      name: 'GET /api/tools/health rejects unauthenticated',
+      run: async () => {
+        const res = await fetch(`${BASE_URL}/api/tools/health`);
+        if (res.status !== 401) throw new Error(`Expected 401, got ${res.status}`);
+        return 'Unauthenticated request correctly rejected';
+      },
+    });
+  }
 
   let passed = 0;
   let failed = 0;

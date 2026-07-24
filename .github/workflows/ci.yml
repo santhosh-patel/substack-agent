@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    env:
+      API_SECRET: ci-test-secret
+      NODE_ENV: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install landing-page dependencies
+        run: npm ci
+        working-directory: landing-page
+
+      - name: Build landing and docs bundle
+        run: npm run build
+
+      - name: Verify public assets
+        run: |
+          test -f public/index.html
+          ls public/assets/index-*.js | wc -l | grep -q '^[1-9]'
+
+      - name: Start server
+        run: |
+          npm start &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:3456/api/config && break
+            sleep 1
+          done
+
+      - name: Auth and health tests
+        run: API_SECRET=ci-test-secret node scripts/test-auth.js
+
+      - name: API smoke tests
+        run: node scripts/test-apis.js
+        env:
+          API_SECRET: ci-test-secret

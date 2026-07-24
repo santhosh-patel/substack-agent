@@ -8,8 +8,9 @@ const methods = [
     step: 'Method 01',
     title: 'MCP Protocol Server',
     subtitle: 'Native agent tool-calling for Claude Desktop & Cursor',
-    desc: 'Run the MCP server locally or over stdio. Claude gets 9 native tools to publish, comment, and browse your Substack publication.',
-    code: `{
+    desc: 'Run MCP locally via stdio, or connect remotely at https://your-domain/api/mcp with Bearer auth. Claude gets 9 native tools to publish, comment, and browse your Substack publication.',
+    code: `// Local stdio (Claude Desktop / Cursor)
+{
   "mcpServers": {
     "substack": {
       "command": "npx",
@@ -20,8 +21,12 @@ const methods = [
       }
     }
   }
-}`,
-    highlights: ['Stdio Transport', 'Claude Desktop', 'Cursor IDE', 'No Server Setup'],
+}
+
+// Remote HTTP (deployed instance)
+// URL: https://your-domain/api/mcp
+// Header: Authorization: Bearer YOUR_API_SECRET`,
+    highlights: ['Stdio or HTTP', 'Claude Desktop', 'Cursor IDE', 'Remote at your domain'],
   },
   {
     id: 'api',
@@ -55,6 +60,7 @@ Content-Type: application/json
 export default function Integrations() {
   const [activeMethod, setActiveMethod] = useState('mcp');
   const [copied, setCopied] = useState(false);
+  const [copyToast, setCopyToast] = useState('');
 
   const current = methods.find((m) => m.id === activeMethod);
 
@@ -62,7 +68,11 @@ export default function Integrations() {
     if (!current) return;
     navigator.clipboard.writeText(current.code);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopyToast('Snippet copied to clipboard');
+    setTimeout(() => {
+      setCopied(false);
+      setCopyToast('');
+    }, 2000);
   };
 
   return (
@@ -101,10 +111,11 @@ export default function Integrations() {
                 <h3 className="card-heading">{current.title}</h3>
                 <p className="card-sub">{current.subtitle}</p>
               </div>
-              <button className="btn btn-outline btn-sm copy-btn" onClick={handleCopy}>
+              <button className="btn btn-outline btn-sm copy-btn" onClick={handleCopy} aria-live="polite">
                 {copied ? 'Copied!' : 'Copy snippet'}
               </button>
             </div>
+            {copyToast && <p className="copy-toast" role="status">{copyToast}</p>}
 
             <p className="card-description">{current.desc}</p>
 

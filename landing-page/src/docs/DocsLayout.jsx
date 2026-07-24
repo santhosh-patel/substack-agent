@@ -1,20 +1,36 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import rehypeHighlight from 'rehype-highlight';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { docsNav, docsHref, findPageByPath, getAdjacentPages, GITHUB_EDIT_BASE } from './nav';
-import { getDocContent } from './content';
+import { docsNav, docsHref, findPageByPath, getAdjacentPages, flatPages, GITHUB_EDIT_BASE } from './nav';
+import { getDocContent, getDocSearchIndex } from './content';
 import MacWindow from '../components/MacWindow';
-import 'highlight.js/styles/atom-one-dark.css';
 import './DocsLayout.css';
 
 export default function DocsLayout() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const [rehypePlugins, setRehypePlugins] = useState([]);
+
+  useEffect(() => {
+    Promise.all([
+      import('rehype-highlight'),
+      import('highlight.js/styles/atom-one-dark.css'),
+    ]).then(([rehypeHighlight]) => {
+      setRehypePlugins([rehypeHighlight.default]);
+    });
+  }, []);
+
+  const docSearchIndex = useMemo(() => {
+    const bodies = Object.fromEntries(getDocSearchIndex().map((d) => [d.file, d.body]));
+    return flatPages.map((page) => ({
+      ...page,
+      body: bodies[page.file] || '',
+    }));
+  }, []);
 
   const currentPage = findPageByPath(location.pathname);
   const { prev, next } = getAdjacentPages(location.pathname);
@@ -22,17 +38,30 @@ export default function DocsLayout() {
   const filteredNav = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return docsNav;
+
+    const matchingFiles = new Set(
+      docSearchIndex
+        .filter(
+          (entry) =>
+            entry.title.toLowerCase().includes(q) ||
+            entry.section.toLowerCase().includes(q) ||
+            entry.body.toLowerCase().includes(q)
+        )
+        .map((entry) => entry.file)
+    );
+
     return docsNav
       .map((section) => ({
         ...section,
         items: section.items.filter(
           (item) =>
             item.title.toLowerCase().includes(q) ||
-            section.title.toLowerCase().includes(q)
+            section.title.toLowerCase().includes(q) ||
+            matchingFiles.has(item.file)
         ),
       }))
       .filter((section) => section.items.length > 0);
-  }, [search]);
+  }, [search, docSearchIndex]);
 
   return (
     <>
@@ -159,7 +188,7 @@ function DocsPageContent({ page }) {
       <div className="docs-markdown">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
-          rehypePlugins={[rehypeHighlight]}
+          rehypePlugins={rehypePlugins}
           components={{
             pre({ children, ...props }) {
               return (

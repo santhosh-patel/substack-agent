@@ -31,6 +31,23 @@ const router = Router();
 
 const APP_VERSION = '2.0.0';
 
+function sessionErrorPayload(error?: string) {
+  const msg = error || 'Substack session not connected';
+  const expired = /401|session|cookie|authentication|expired|invalid/i.test(msg);
+  return {
+    success: false,
+    error: expired
+      ? 'Substack session expired or invalid. Refresh SUBSTACK_SID (connect.sid) and retry.'
+      : msg,
+    code: expired ? 'SESSION_EXPIRED' : 'NOT_CONNECTED',
+  };
+}
+
+function respondConnectionError(res: Response, conn: { success: boolean; error?: string }) {
+  const payload = sessionErrorPayload(conn.error);
+  res.status(payload.code === 'SESSION_EXPIRED' ? 401 : 503).json(payload);
+}
+
 // ─── GET /api/tools/health ───
 router.get('/health', async (_req: Request, res: Response) => {
   try {
@@ -209,7 +226,7 @@ router.post('/publish-newsletter', async (req: Request, res: Response) => {
   try {
     const conn = await ensureConnected();
     if (!conn.success) {
-      res.status(401).json({ success: false, error: conn.error });
+      respondConnectionError(res, conn);
       return;
     }
 
@@ -295,7 +312,7 @@ router.post('/publish-note', async (req: Request, res: Response) => {
   try {
     const conn = await ensureConnected();
     if (!conn.success) {
-      res.status(401).json({ success: false, error: conn.error });
+      respondConnectionError(res, conn);
       return;
     }
 
@@ -347,7 +364,7 @@ router.post('/comment', async (req: Request, res: Response) => {
   try {
     const conn = await ensureConnected();
     if (!conn.success) {
-      res.status(401).json({ success: false, error: conn.error });
+      respondConnectionError(res, conn);
       return;
     }
 
@@ -463,7 +480,7 @@ router.post('/automate-comments', async (req: Request, res: Response) => {
   try {
     const conn = await ensureConnected();
     if (!conn.success) {
-      res.status(401).json({ success: false, error: conn.error });
+      respondConnectionError(res, conn);
       return;
     }
 
@@ -644,7 +661,7 @@ router.get('/list-newsletters', async (_req: Request, res: Response) => {
   try {
     const conn = await ensureConnected();
     if (!conn.success) {
-      res.status(401).json({ success: false, error: conn.error });
+      respondConnectionError(res, conn);
       return;
     }
 
@@ -677,7 +694,7 @@ router.get('/list-notes', async (_req: Request, res: Response) => {
   try {
     const conn = await ensureConnected();
     if (!conn.success) {
-      res.status(401).json({ success: false, error: conn.error });
+      respondConnectionError(res, conn);
       return;
     }
 
