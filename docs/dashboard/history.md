@@ -1,32 +1,38 @@
 # History
 
-The **History** tab aggregates publication activity from multiple sources.
+The **History** tab is a unified view of what Substack Agent and Substack know about your recent activity.
 
-## Three data sources
+## Data sources
 
-| Source | Location | Description |
-|--------|----------|-------------|
-| **Browser drafts** | Newsletters tab bottom panel | `localStorage` publish history (last 15 items) |
-| **App history** | History tab after Fetch | Server-side publication log |
-| **Substack archive** | History tab after Fetch | Pulled from Substack API |
+| Source | Where it lives | What it shows |
+|--------|----------------|---------------|
+| **Browser drafts** | Newsletters tab panel | Last ~15 publishes stored in `localStorage` |
+| **App history** | Server after Fetch | Actions logged by Substack Agent |
+| **Substack archive** | Fetched from API | Your publication's recent posts |
 
-## Using History tab
+The Newsletters tab bottom panel is **client-only** for quick reference. History tab merges server + archive data.
 
-1. Connect to Substack
+## Using the History tab
+
+1. **Connect** to Substack in Settings
 2. Click **Fetch History**
-3. Filter by type (newsletter, note, comment)
-4. Search by title or content
-5. Sort by date
+3. **Filter** by type: newsletter, note, comment
+4. **Search** by title or body text
+5. **Sort** by date
+6. **Reuse** an item to pre-fill editors (where supported)
 
-## Why sources differ
+## API routes
 
-Newsletter tab history is client-only for quick reference. The History tab merges server records with fetched Substack archive data.
+| Route | Purpose |
+|-------|---------|
+| `GET /api/publications/history` | Server-side publication log |
+| `GET /api/newsletters` | Substack archive fetch |
 
-## API
+## Vercel note
 
-- `GET /api/publications/history` — server publication history
-- `GET /api/newsletters` — Substack archive fetch
+History persistence on serverless hosts may be limited — local `npm run dev` gives the most reliable History experience.
 
-## Next steps
+## Related
 
 - [Newsletters](/docs/dashboard/newsletters)
+- [Comments](/docs/dashboard/comments)

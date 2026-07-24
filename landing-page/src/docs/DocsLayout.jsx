@@ -146,7 +146,12 @@ export default function DocsLayout() {
 }
 
 function slugifyHeading(text) {
-  return String(text)
+  const plain = typeof text === 'string'
+    ? text
+    : Array.isArray(text)
+      ? text.map((c) => (typeof c === 'string' ? c : '')).join('')
+      : String(text ?? '');
+  return plain
     .toLowerCase()
     .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-')

@@ -1,11 +1,11 @@
 # Cursor Integration
 
-Add Substack Agent as an MCP server in Cursor.
+Use Substack Agent tools inside Cursor via **local stdio MCP** or **remote HTTP MCP** on your deployed domain.
 
-## Setup
+## Option A — Local stdio (recommended for development)
 
-1. Open **Cursor Settings** → **MCP** (or edit MCP config file)
-2. Add server entry:
+1. Open **Cursor Settings** → **MCP**
+2. Add a server entry:
 
 ```json
 {
@@ -24,14 +24,45 @@ Add Substack Agent as an MCP server in Cursor.
 
 3. Restart Cursor or reload MCP servers
 
-## Usage
+Use an **absolute path** to `src/mcp-server.ts` on your machine.
 
-In Agent or Chat mode, ask Cursor to use Substack tools:
+## Option B — Remote MCP (deployed instance)
 
-- "Use publish_newsletter to draft a post about..."
-- "List my scheduled posts"
+If Substack Agent runs at your domain with `API_SECRET` and `SUBSTACK_SID`:
 
-## Next steps
+```json
+{
+  "mcpServers": {
+    "substack-remote": {
+      "url": "https://your-domain/api/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_API_SECRET"
+      }
+    }
+  }
+}
+```
+
+Full guide: [Remote MCP](/docs/mcp/remote).
+
+## Usage in chat
+
+Ask Cursor Agent to call tools explicitly:
+
+- "Use `publish_newsletter` to draft a post about…"
+- "Call `list_schedules` to show my queue"
+- "Post a note with `publish_note`"
+
+## Troubleshooting
+
+| Issue | Fix |
+|-------|-----|
+| Tools not listed | Restart Cursor; verify absolute path (stdio) or URL + Bearer (remote) |
+| Auth errors | Refresh `SUBSTACK_SID` — [Session cookie](/docs/getting-started/session-cookie) |
+| Stdio crash | Run `npm run mcp` in terminal to read stderr |
+
+## Related
 
 - [MCP setup](/docs/mcp/setup)
 - [Tools reference](/docs/mcp/tools)
+- [Troubleshooting](/docs/troubleshooting)
