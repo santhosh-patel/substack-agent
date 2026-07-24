@@ -219,6 +219,52 @@ img { max-width: 100%; display: block; }
 
 @media (max-width: 768px) {
   :root {
-    --section-pad: 70px;
+    --section-pad: 64px;
+  }
+  .container {
+    padding: 0 20px;
+  }
+  .btn {
+    min-height: 40px;
+  }
+  .btn-lg {
+    min-height: 46px;
+    padding: 12px 20px;
   }
 }
+
+@media (max-width: 480px) {
+  :root {
+    --section-pad: 48px;
+  }
+  .container {
+    padding: 0 16px;
+  }
+  .section-header {
+    margin-bottom: 36px;
+  }
+  .section-title {
+    font-size: clamp(24px, 7vw, 32px);
+  }
+  .section-subtitle {
+    font-size: 14.5px;
+  }
+}
+
+/* Custom Sleek Scrollbar for Code Blocks */
+pre::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+pre::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+pre::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+pre::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+

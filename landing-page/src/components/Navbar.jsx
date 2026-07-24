@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import './Navbar.css';
 
-export default function Navbar() {
+export default function Navbar({ onOpenPlayground }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -10,6 +10,25 @@ export default function Navbar() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileOpen]);
+
+  const handlePlaygroundClick = (e) => {
+    if (onOpenPlayground) {
+      e.preventDefault();
+      setMobileOpen(false);
+      onOpenPlayground();
+    }
+  };
 
   return (
     <header className={`navbar-wrapper ${scrolled ? 'is-scrolled' : ''}`}>
@@ -24,19 +43,28 @@ export default function Navbar() {
           <span>Substack Agent</span>
         </a>
 
+        {mobileOpen && (
+          <div className="nav-backdrop" onClick={() => setMobileOpen(false)} />
+        )}
+
         <div className={`nav-menu ${mobileOpen ? 'is-open' : ''}`}>
           <a href="#features" onClick={() => setMobileOpen(false)}>Features</a>
           <a href="#integrations" onClick={() => setMobileOpen(false)}>Integrations</a>
           <a href="#how-it-works" onClick={() => setMobileOpen(false)}>How It Works</a>
           <a href="#tools" onClick={() => setMobileOpen(false)}>Tools</a>
           <a href="#faq" onClick={() => setMobileOpen(false)}>FAQ</a>
+          <button onClick={handlePlaygroundClick} className="btn btn-primary nav-mobile-cta">
+            Try in Playground
+          </button>
         </div>
 
         <div className="nav-actions">
-          <a href="/playground" className="btn btn-primary nav-cta">Try in Playground</a>
+          <button onClick={handlePlaygroundClick} className="btn btn-primary nav-cta">
+            Try in Playground
+          </button>
 
           <button 
-            className="mobile-toggle" 
+            className={`mobile-toggle ${mobileOpen ? 'is-active' : ''}`} 
             onClick={() => setMobileOpen(!mobileOpen)} 
             aria-label="Toggle menu"
           >
@@ -48,3 +76,4 @@ export default function Navbar() {
     </header>
   );
 }
+
