@@ -426,6 +426,7 @@ async function handleConnect(options = {}) {
     if (!auto) {
       showToast(`Connected as ${data.profile.name} (@${data.profile.slug})`, 'success');
     }
+    updateOnboardingChecklist();
   } catch (err) {
     isConnected = false;
     updateConnectionBadge(null);
