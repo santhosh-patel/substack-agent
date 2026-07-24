@@ -1023,3 +1023,337 @@ input::placeholder, textarea::placeholder {
     grid-template-columns: 1fr;
   }
 }
+/* ═══════════════════════════════════════════════════════
+   SCHEDULER & CALENDAR PICKER STYLES
+   ═══════════════════════════════════════════════════════ */
+
+.scheduler-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Date Time Picker Container */
+.form-group-datetime {
+  margin-bottom: 20px;
+}
+
+.dt-picker {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  margin-top: 8px;
+}
+
+.dt-picker-summary {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+}
+
+.dt-picker-grid {
+  display: grid;
+  grid-template-columns: 1fr 160px;
+  gap: 20px;
+  align-items: start;
+}
+
+.dt-picker-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+/* Calendar Date Section */
+.dt-picker-date {
+  display: flex;
+  flex-direction: column;
+}
+
+.dt-picker-month-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.dt-picker-month-display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.dt-picker-month-chevron {
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+}
+
+.dt-picker-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.dt-picker-nav-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: all 0.15s ease;
+}
+
+.dt-picker-nav-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-focus);
+}
+
+.dt-picker-nav-btn i {
+  width: 14px;
+  height: 14px;
+}
+
+.dt-picker-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.dt-picker-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.dt-picker-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  border: 1px solid transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dt-picker-day:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.dt-picker-day.selected {
+  background: var(--primary);
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+.dt-picker-day.today {
+  border-color: var(--primary);
+}
+
+.dt-picker-day.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Time Picker Section */
+.dt-picker-time {
+  display: flex;
+  flex-direction: column;
+}
+
+.dt-time-wheel {
+  max-height: 200px;
+  overflow-y: auto;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dt-time-item {
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dt-time-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.dt-time-item.selected {
+  background: var(--text-primary);
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+/* Footer Buttons */
+.dt-picker-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.dt-picker-cancel {
+  background: none;
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.dt-picker-cancel:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.dt-picker-confirm {
+  background: var(--primary);
+  border: none;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+
+.dt-picker-confirm:hover {
+  background: var(--accent-hover);
+}
+
+/* Quick Schedule Buttons */
+.schedule-datetime-quick {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.schedule-datetime-quick-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.schedule-datetime-quick-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: rgba(255, 103, 25, 0.3);
+}
+
+.schedule-datetime-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.schedule-datetime-tz {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+}
+
+/* Toggle Switches */
+.toggle {
+  width: 36px;
+  height: 20px;
+  appearance: none;
+  background: var(--border);
+  border-radius: 100px;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s ease;
+}
+
+.toggle:checked {
+  background: var(--primary);
+}
+
+.toggle::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggle:checked::before {
+  transform: translateX(16px);
+}
+
+/* Prompt Preset Chips */
+.schedule-prompt-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .dt-picker-grid {
+    grid-template-columns: 1fr;
+  }
+  .scheduler-meta-grid {
+    grid-template-columns: 1fr;
+  }
+}
