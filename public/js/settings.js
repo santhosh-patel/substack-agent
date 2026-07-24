@@ -747,6 +747,5 @@ PG.updatePublishButtonLabel = updatePublishButtonLabel;
 PG.testSubstackSession = testSubstackSession;
 PG.testAiKey = testAiKey;
 PG.testSchedAiKey = testSchedAiKey;
-PG.MODELS = MODELS;
 PG.ONBOARDING_KEY = ONBOARDING_KEY;
 export {};
