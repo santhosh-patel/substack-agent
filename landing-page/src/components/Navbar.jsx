@@ -14,7 +14,7 @@ export default function Navbar({ onOpenPlayground }) {
   return (
     <header className={`navbar-wrapper ${scrolled ? 'is-scrolled' : ''}`}>
       <nav className="navbar-container container">
-        <a href="#" className="nav-brand">
+        <a href="/" className="nav-brand">
           <div className="brand-icon">
             <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
               <rect width="28" height="28" rx="6" fill="#FF6719" />
@@ -33,13 +33,13 @@ export default function Navbar({ onOpenPlayground }) {
         </div>
 
         <div className="nav-actions">
-          <button onClick={onOpenPlayground} className="btn btn-outline nav-playground-btn">
+          <a href="/playground" className="btn btn-outline nav-playground-btn">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
             Playground
-          </button>
-          <a href="#get-started" className="btn btn-primary nav-cta">Get Started</a>
+          </a>
+          <a href="/playground" className="btn btn-primary nav-cta">Try in Playground</a>
 
           <button 
             className="mobile-toggle" 

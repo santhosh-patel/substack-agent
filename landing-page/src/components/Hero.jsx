@@ -27,25 +27,16 @@ export default function Hero({ onOpenPlayground }) {
         </p>
 
         <div className="hero-cta">
-          <button onClick={onOpenPlayground} className="btn btn-accent btn-lg" id="cta-hero-playground">
+          <a href="/playground" className="btn btn-accent btn-lg" id="cta-hero-playground">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
             Try in Playground
-          </button>
-
-          <a 
-            href="http://localhost:3456" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="btn btn-outline btn-lg" 
-            id="cta-hero-app"
-          >
-            Launch Automation App
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
-            </svg>
           </a>
+
+          <button onClick={onOpenPlayground} className="btn btn-outline btn-lg" id="cta-hero-demo">
+            Quick Interactive Demo
+          </button>
 
           <a 
             href="https://github.com/santhosh-patel/substack-agent" 
