@@ -2,28 +2,28 @@ import './FAQ.css';
 
 const faqs = [
   {
-    q: 'Is Substack Agent free?',
-    a: "Yes, completely. It's open source under the MIT license. You can use, modify, and deploy it however you want — no strings attached.",
+    q: 'Is Substack Agent free & open source?',
+    a: 'Yes. It is published under the MIT license. You can deploy it locally, host it on Vercel, or include it in proprietary agent pipelines without restrictions.',
   },
   {
-    q: 'Does Substack have an official API?',
-    a: "Not a public one for publishing, commenting, or notes. Substack Agent bridges that gap by using session-based authentication to interact with Substack's internal APIs reliably.",
+    q: 'How does it communicate with Substack without an official API?',
+    a: 'Substack Agent uses session-based authentication via your connect.sid cookie. It handles session maintenance, header spoofing, and ProseMirror JSON translation transparently.',
   },
   {
-    q: 'Is my session cookie safe?',
-    a: 'Your connect.sid cookie stays in your .env file and is never sent anywhere except Substack. If you deploy to Vercel, it lives in your environment variables. Treat it like a password and never commit it to git.',
+    q: 'How do I use Substack Agent with Claude Desktop or Cursor?',
+    a: 'Add the substack entry to your mcpServers config in claude_desktop_config.json or Cursor settings pointing to src/mcp-server.ts. Claude will automatically detect all 9 available tools.',
   },
   {
-    q: 'What AI providers are supported?',
-    a: 'Groq, Google Gemini, and OpenAI. You can use any model from these providers for content generation and comment automation. Just provide your API key in the environment variables.',
+    q: 'Which AI models can I use for automated comment generation?',
+    a: 'You can configure Groq (e.g. Llama 3.3 70B), Google Gemini (e.g. Gemini 1.5 Pro/Flash), or OpenAI models by supplying your API key in the environment variables.',
   },
   {
-    q: 'Can I deploy this to production?',
-    a: 'Absolutely. The HTTP API is designed for Vercel deployment out of the box. Run vercel to deploy, set your env vars, and you have a production API for Substack automation.',
+    q: 'Is it safe to store my SUBSTACK_SID session cookie?',
+    a: 'Your session cookie is stored strictly in your local .env file or Vercel environment variables. It is never logged, tracked, or transmitted outside of official Substack API endpoints.',
   },
   {
-    q: "What's the difference between MCP and HTTP API?",
-    a: "MCP (Model Context Protocol) gives AI assistants like Claude native tool access — they can call Substack functions directly from chat. The HTTP API is for any service that can make web requests: GPTs, n8n workflows, Zapier, or your own backend code.",
+    q: 'Can I integrate Substack Agent into n8n or Zapier workflows?',
+    a: 'Yes. Deploy the REST API endpoints to Vercel and use standard HTTP Request nodes with Bearer authorization.',
   },
 ];
 
@@ -32,20 +32,18 @@ export default function FAQ() {
     <section className="faq-section" id="faq">
       <div className="container">
         <div className="section-header">
-          <span className="section-badge">FAQ</span>
+          <span className="section-badge">Questions</span>
           <h2 className="section-title">
-            Frequently asked<br /><span className="gradient-text">questions</span>
+            Frequently Asked <span className="brand-gradient">Questions</span>
           </h2>
         </div>
 
-        <div className="faq-list">
+        <div className="faq-grid">
           {faqs.map((faq, i) => (
-            <details className="faq-item animate-in" key={i} id={`faq-${i + 1}`} style={{ transitionDelay: `${i * 60}ms` }}>
-              <summary>{faq.q}</summary>
-              <div className="faq-answer">
-                <p>{faq.a}</p>
-              </div>
-            </details>
+            <div className="faq-card animate-in" key={i} style={{ transitionDelay: `${i * 50}ms` }}>
+              <h3 className="faq-q">{faq.q}</h3>
+              <p className="faq-a">{faq.a}</p>
+            </div>
           ))}
         </div>
       </div>
