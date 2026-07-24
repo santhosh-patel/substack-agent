@@ -14,7 +14,7 @@
   "scripts": {
     "dev": "npx tsx watch src/server.ts",
     "start": "tsx src/server.ts",
-    "build:landing": "cd landing-page && npm run build && rm -f ../public/assets/index-* && cp dist/index.html ../public/index.html && cp -r dist/assets/* ../public/assets/",
+    "build:landing": "cd landing-page && npm run build && rm -f ../public/assets/index-* ../public/assets/DocsLayout-* ../public/assets/rolldown-runtime-* ../public/assets/lib-* ../public/assets/rehype-highlight-* ../public/assets/atom-one-dark-* && cp dist/index.html ../public/index.html && cp -f dist/favicon.svg dist/icons.svg ../public/ && cp -r dist/assets/* ../public/assets/",
     "build": "npm run build:landing",
     "mcp": "npx tsx src/mcp-server.ts",
     "test:api": "node scripts/test-apis.js",

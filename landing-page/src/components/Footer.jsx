@@ -26,11 +26,11 @@ export default function Footer() {
           <div className="footer-links">
             <div className="link-group">
               <span className="group-title">PRODUCT</span>
-              <a href="#features">Features</a>
-              <a href="#integrations">Integrations</a>
-              <a href="#deployment-modes">Deployment Modes</a>
-              <a href="#how-it-works">How It Works</a>
-              <a href="#tools">MCP Tools</a>
+              <a href="/#features">Features</a>
+              <a href="/#integrations">Integrations</a>
+              <a href="/#deployment-modes">Deployment Modes</a>
+              <a href="/#how-it-works">How It Works</a>
+              <a href="/#tools">MCP Tools</a>
               <a href="/playground">Playground</a>
             </div>
 

@@ -2,20 +2,20 @@ import { useState, useEffect } from 'react';
 import './Navbar.css';
 
 const DESKTOP_LINKS = [
-  { label: 'Features', href: '#features' },
-  { label: 'Integrations', href: '#integrations' },
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: 'Tools', href: '#tools' },
+  { label: 'Features', href: '/#features' },
+  { label: 'Integrations', href: '/#integrations' },
+  { label: 'How It Works', href: '/#how-it-works' },
+  { label: 'Tools', href: '/#tools' },
   { label: 'Docs', href: '/docs' },
-  { label: 'FAQ', href: '#faq' },
+  { label: 'FAQ', href: '/#faq' },
 ];
 
 const MOBILE_LINKS = [
-  { label: 'Features', href: '#features' },
-  { label: 'Integrations', href: '#integrations' },
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: 'Tools', href: '#tools' },
-  { label: 'FAQ', href: '#faq' },
+  { label: 'Features', href: '/#features' },
+  { label: 'Integrations', href: '/#integrations' },
+  { label: 'How It Works', href: '/#how-it-works' },
+  { label: 'Tools', href: '/#tools' },
+  { label: 'FAQ', href: '/#faq' },
 ];
 
 const RESOURCE_LINKS = [

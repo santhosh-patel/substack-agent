@@ -13,16 +13,6 @@ export default function DocsLayout() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const [rehypePlugins, setRehypePlugins] = useState([]);
-
-  useEffect(() => {
-    Promise.all([
-      import('rehype-highlight'),
-      import('highlight.js/styles/atom-one-dark.css'),
-    ]).then(([rehypeHighlight]) => {
-      setRehypePlugins([rehypeHighlight.default]);
-    });
-  }, []);
 
   const docSearchIndex = useMemo(() => {
     const bodies = Object.fromEntries(getDocSearchIndex().map((d) => [d.file, d.body]));
@@ -119,7 +109,7 @@ export default function DocsLayout() {
         </aside>
 
         <main className="docs-main" id="docs-content">
-          <DocsPageContent page={currentPage} rehypePlugins={rehypePlugins} />
+          <DocsPageContent page={currentPage} />
           <div className="docs-pager">
             {prev ? (
               <Link to={docsHref(prev.path)} className="docs-pager-link docs-pager-prev">
@@ -167,10 +157,28 @@ function extractHeadings(markdown) {
   }));
 }
 
-function DocsPageContent({ page, rehypePlugins }) {
+function DocsPageContent({ page }) {
+  const [rehypePlugins, setRehypePlugins] = useState([]);
   const content = getDocContent(page.file);
   const editUrl = `${GITHUB_EDIT_BASE}/${page.file}`;
   const headings = useMemo(() => extractHeadings(content), [content]);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([
+      import('rehype-highlight'),
+      import('highlight.js/styles/atom-one-dark.css'),
+    ])
+      .then(([rehypeHighlight]) => {
+        if (!cancelled) setRehypePlugins([rehypeHighlight.default]);
+      })
+      .catch(() => {
+        // Syntax highlighting is optional; docs should still render.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   if (!content) {
     return (
