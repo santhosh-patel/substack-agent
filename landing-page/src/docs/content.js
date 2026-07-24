@@ -22,3 +22,11 @@ export function getDocContent(file) {
 export function getLoadedDocFiles() {
   return Object.keys(contentByFile);
 }
+
+/** Flat index for sidebar full-text search */
+export function getDocSearchIndex() {
+  return Object.entries(contentByFile).map(([file, body]) => ({
+    file,
+    body: typeof body === 'string' ? body : '',
+  }));
+}

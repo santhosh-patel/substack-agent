@@ -35,6 +35,7 @@ export const docsNav = [
     title: 'MCP Server',
     items: [
       { title: 'Setup', path: 'mcp/setup', file: 'mcp/setup.md', modes: ['MCP'] },
+      { title: 'Remote MCP (HTTP)', path: 'mcp/remote', file: 'mcp/remote.md', modes: ['MCP', 'Tools API'] },
       { title: 'Tools Reference', path: 'mcp/tools', file: 'mcp/tools.md', modes: ['MCP'] },
       { title: 'Limitations', path: 'mcp/limitations', file: 'mcp/limitations.md', modes: ['MCP'] },
     ],
