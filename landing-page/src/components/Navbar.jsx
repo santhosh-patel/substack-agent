@@ -59,6 +59,7 @@ export default function Navbar() {
             className={`mobile-toggle ${mobileOpen ? 'is-active' : ''}`} 
             onClick={() => setMobileOpen(!mobileOpen)} 
             aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
           >
             <span></span>
             <span></span>

@@ -7,6 +7,9 @@ import Features from './components/Features';
 import Integrations from './components/Integrations';
 import HowItWorks from './components/HowItWorks';
 import ToolsGrid from './components/ToolsGrid';
+import UseCases from './components/UseCases';
+import Comparison from './components/Comparison';
+import DeployCTA from './components/DeployCTA';
 import CTA from './components/CTA';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
@@ -34,6 +37,7 @@ export default function App() {
 
   return (
     <>
+      <a href="#main-content" className="skip-link">Skip to content</a>
       <Navbar />
       <main id="main-content">
         <Hero />
@@ -43,6 +47,9 @@ export default function App() {
         <Integrations />
         <HowItWorks />
         <ToolsGrid />
+        <UseCases />
+        <Comparison />
+        <DeployCTA />
         <CTA />
         <FAQ />
       </main>
