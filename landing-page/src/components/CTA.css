@@ -92,9 +92,27 @@
 
 @media (max-width: 640px) {
   .cta-card {
-    padding: 40px 20px;
+    padding: 32px 16px;
+    border-radius: var(--radius-lg);
+  }
+  .cta-subheading {
+    font-size: 14.5px;
+    margin-bottom: 24px;
   }
   .cta-actions {
     flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .cta-actions .btn {
+    width: 100%;
+  }
+  .cta-terminal pre {
+    padding: 12px 14px;
+  }
+  .cta-terminal code {
+    font-size: 11.5px;
   }
 }
+
