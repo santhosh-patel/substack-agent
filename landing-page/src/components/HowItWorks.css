@@ -74,5 +74,26 @@
 @media (max-width: 900px) {
   .steps-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 }
+
+@media (max-width: 640px) {
+  .step-card {
+    padding: 20px 16px;
+  }
+  .step-heading {
+    font-size: 16px;
+  }
+  .step-desc {
+    font-size: 13.5px;
+    margin-bottom: 16px;
+  }
+  .step-code-box {
+    padding: 10px 12px;
+  }
+  .step-code-box code {
+    font-size: 11.5px;
+  }
+}
+
