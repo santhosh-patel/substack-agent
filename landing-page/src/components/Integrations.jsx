@@ -26,8 +26,8 @@ const methods = [
     id: 'api',
     step: 'Method 02',
     title: 'REST HTTP API',
-    subtitle: 'Deployable on Vercel for n8n, GPTs & Custom Workflows',
-    desc: 'Fully typed OpenAPI 3.0 endpoints. Call `/api/tools/*` from n8n automation pipelines, custom GPTs, Zapier, or backend webhooks.',
+    subtitle: 'Deployable on any Node host for n8n, GPTs & custom workflows',
+    desc: 'Fully typed OpenAPI 3.0 endpoints. Call `/api/tools/*` on your domain from n8n, custom GPTs, Zapier, or backend webhooks.',
     code: `POST /api/tools/publish-newsletter
 Authorization: Bearer $API_SECRET
 Content-Type: application/json
@@ -37,7 +37,7 @@ Content-Type: application/json
   "body": "Markdown newsletter body here...",
   "isDraft": false
 }`,
-    highlights: ['Vercel Ready', 'OpenAPI Schema', 'n8n & Zapier', 'Bearer Auth'],
+    highlights: ['Any Host', 'OpenAPI Schema', 'n8n & Zapier', 'Bearer Auth'],
   },
   {
     id: 'dashboard',

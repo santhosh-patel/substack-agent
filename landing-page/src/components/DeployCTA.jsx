@@ -8,9 +8,9 @@ export default function DeployCTA() {
       <div className="container">
         <div className="deploy-card animate-in">
           <span className="section-badge">Deploy</span>
-          <h2 className="section-title">Deploy the Tools API to Vercel</h2>
+          <h2 className="section-title">Deploy the Tools API anywhere</h2>
           <p className="deploy-subtitle">
-            Host stateless tool endpoints for n8n, GPTs, and webhooks. Use local <code>npm run dev</code> for the full dashboard and scheduler.
+            Host the OpenAPI tools endpoints on any Node host. Then use your domain with agents, automations, and MCP-style tool clients (n8n, custom GPTs, webhooks). Keep local <code>npm run mcp</code> / <code>npm run dev</code> for Claude Desktop and the full dashboard.
           </p>
 
           <div className="deploy-env-checklist">
@@ -24,18 +24,20 @@ export default function DeployCTA() {
 
           <div className="deploy-actions">
             <a
-              href="https://vercel.com/new/clone?repository-url=https://github.com/santhosh-patel/substack-agent"
+              href="https://github.com/santhosh-patel/substack-agent#deploy"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-accent btn-lg"
             >
-              Deploy to Vercel
+              Deployment docs
             </a>
             <a
-              href="/docs/deployment/vercel"
+              href="https://github.com/santhosh-patel/substack-agent"
+              target="_blank"
+              rel="noopener noreferrer"
               className="btn btn-outline btn-lg"
             >
-              Deployment docs
+              GitHub
             </a>
           </div>
         </div>

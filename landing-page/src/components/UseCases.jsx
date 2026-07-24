@@ -13,7 +13,7 @@ const cases = [
   },
   {
     title: 'Automation Engineer',
-    desc: 'Deploy the REST tools API to Vercel and wire n8n, Zapier, or custom GPTs with Bearer auth.',
+    desc: 'Deploy the REST tools API anywhere and wire n8n, Zapier, or custom GPTs to your domain with Bearer auth.',
     tags: ['REST API', 'n8n', 'OpenAPI'],
   },
 ];

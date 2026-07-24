@@ -12,9 +12,9 @@ const modes = [
   {
     id: 'api',
     title: 'Deployed Tools API',
-    command: 'vercel + API_SECRET',
+    command: 'any Node host + API_SECRET',
     bestFor: 'n8n, GPTs, webhooks, production automations',
-    limits: 'Stateless tool calls only. Bearer auth required in production.',
+    limits: 'Stateless tool calls only. Bearer auth required in production. Point clients at your domain.',
     cta: { label: 'View OpenAPI', href: '/openapi.json' },
   },
   {
@@ -22,7 +22,7 @@ const modes = [
     title: 'Local MCP Server',
     command: 'npm run mcp',
     bestFor: 'Claude Desktop, Cursor, chat-native workflows',
-    limits: 'Stdio transport. Runs locally — not hosted on Vercel.',
+    limits: 'Stdio transport. Runs locally alongside your MCP client.',
     cta: { label: 'GitHub Setup', href: 'https://github.com/santhosh-patel/substack-agent#2-mcp-server' },
   },
 ];
