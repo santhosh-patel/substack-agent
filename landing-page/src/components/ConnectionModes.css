@@ -1,0 +1,40 @@
+.connection-modes {
+  padding: var(--section-pad) 0;
+  background: var(--bg-page);
+  border-top: 1px solid var(--border);
+}
+
+.connection-modes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 16px;
+}
+
+.connection-mode-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  background: var(--bg-subtle);
+}
+
+.connection-mode-card h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.connection-mode-card code {
+  display: block;
+  font-size: 12px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  background: var(--mac-body);
+  color: var(--mac-code-text);
+  border-radius: var(--radius-sm);
+  word-break: break-word;
+}
+
+.connection-mode-card p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
