@@ -14,6 +14,7 @@ All notable changes to Substack Agent.
 - FAQ accordion, responsive CSS rewrite
 
 ### Changed
+- Deploy messaging reframed as any-host Tools API; use your domain with agents and automations (Vercel optional)
 - Removed simulated playground modal; all CTAs route to `/playground`
 - Updated security documentation for localStorage behavior
 - Hero showcase status relabeled to "Example"

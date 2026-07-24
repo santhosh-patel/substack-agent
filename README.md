@@ -9,7 +9,7 @@ Connect Substack to Claude, Cursor, ChatGPT, and n8n — publish newsletters, po
 | Mode | Command | Docs |
 |------|---------|------|
 | **Local Dashboard** | `npm run dev` → `/playground` | [Dashboard guide](/docs/dashboard/overview) |
-| **Tools API** | Deploy + `API_SECRET` | [Tools API](/docs/api/overview) |
+| **Tools API** | Deploy anywhere + `API_SECRET` | [Deploy guide](/docs/deployment/deploy) |
 | **MCP Server** | `npm run mcp` | [MCP setup](/docs/mcp/setup) |
 
 Full documentation: browse [`docs/`](docs/index.md) in this repo, or visit **`/docs`** when the app is running locally or deployed.

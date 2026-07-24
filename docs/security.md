@@ -39,4 +39,5 @@ Do **not** file public GitHub issues for security vulnerabilities. Email the rep
 ## Related
 
 - [Session cookie guide](/docs/getting-started/session-cookie)
-- [Vercel deployment risks](/docs/deployment/vercel)
+- [Deploy the Tools API](/docs/deployment/deploy)
+- [Vercel-specific notes](/docs/deployment/vercel)

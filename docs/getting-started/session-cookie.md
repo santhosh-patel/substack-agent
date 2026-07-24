@@ -16,7 +16,7 @@ Substack Agent authenticates using your browser **`connect.sid`** session cookie
 |----------|-----------|
 | Playground settings | Saved in browser `localStorage` |
 | `.env` file | Local server / MCP / API auto-connect |
-| Vercel env vars | Deployed server auto-connect |
+| Host environment variables | Deployed server auto-connect |
 
 When you click **Connect** in the playground, the cookie is sent to **your Substack Agent server** (`POST /api/connect`).
 

@@ -4,11 +4,11 @@ Use Substack Agent as a Custom GPT Action via OpenAPI.
 
 ## Steps
 
-1. **Deploy** Substack Agent to Vercel with `API_SECRET`, `SUBSTACK_SID`, `SUBSTACK_PUB_URL`
+1. **Deploy** Substack Agent to any Node host with `API_SECRET`, `SUBSTACK_SID`, and `SUBSTACK_PUB_URL` — see [Deploy the Tools API](/docs/deployment/deploy)
 2. Open **ChatGPT** → **Explore GPTs** → **Create**
 3. In **Actions** → **Import from URL**:
    ```
-   https://your-app.vercel.app/openapi.json
+   https://your-domain/openapi.json
    ```
 4. Set **Authentication** → **API Key** → **Bearer** → paste your `API_SECRET`
 5. Save and test

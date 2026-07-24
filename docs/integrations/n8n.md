@@ -4,7 +4,7 @@ Call Substack Agent Tools API from n8n workflows.
 
 ## Prerequisites
 
-- Deployed Substack Agent on Vercel (or local tunnel)
+- Deployed Substack Agent on any Node host (or local tunnel)
 - `API_SECRET` configured
 - `SUBSTACK_SID` and `SUBSTACK_PUB_URL` in deployment env
 
@@ -13,7 +13,7 @@ Call Substack Agent Tools API from n8n workflows.
 | Setting | Value |
 |---------|-------|
 | Method | POST |
-| URL | `https://your-app.vercel.app/api/tools/publish-newsletter` |
+| URL | `https://your-domain/api/tools/publish-newsletter` |
 | Authentication | Header Auth |
 | Header Name | `Authorization` |
 | Header Value | `Bearer YOUR_API_SECRET` |
@@ -35,5 +35,5 @@ See [Tools API Endpoints](/docs/api/endpoints) for publish-note, automate-commen
 
 ## Next steps
 
-- [Deploy to Vercel](/docs/deployment/vercel)
+- [Deploy the Tools API](/docs/deployment/deploy)
 - [OpenAPI](/docs/api/openapi)

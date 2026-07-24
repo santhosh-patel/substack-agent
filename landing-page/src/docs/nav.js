@@ -52,7 +52,8 @@ export const docsNav = [
     title: 'Deployment',
     items: [
       { title: 'Deployment Modes', path: 'deployment/modes', file: 'deployment/modes.md', modes: [] },
-      { title: 'Vercel', path: 'deployment/vercel', file: 'deployment/vercel.md', modes: ['Tools API'] },
+      { title: 'Deploy Tools API', path: 'deployment/deploy', file: 'deployment/deploy.md', modes: ['Tools API'] },
+      { title: 'Vercel (optional)', path: 'deployment/vercel', file: 'deployment/vercel.md', modes: ['Tools API'] },
       { title: 'Scheduler & Cron', path: 'deployment/scheduler-cron', file: 'deployment/scheduler-cron.md', modes: ['Local Dashboard'] },
     ],
   },

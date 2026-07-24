@@ -13,7 +13,7 @@ All variables from `.env.example`:
 
 | Variable | Description |
 |----------|-------------|
-| `API_SECRET` | Bearer token for `/api/tools/*` — **required on Vercel** |
+| `API_SECRET` | Bearer token for `/api/tools/*` — **required in production** |
 
 ## AI providers (optional)
 

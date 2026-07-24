@@ -24,9 +24,7 @@ export default function DeployCTA() {
 
           <div className="deploy-actions">
             <a
-              href="https://github.com/santhosh-patel/substack-agent#deploy"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/docs/deployment/deploy"
               className="btn btn-accent btn-lg"
             >
               Deployment docs

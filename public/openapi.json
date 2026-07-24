@@ -11,7 +11,7 @@
   "servers": [
     {
       "url": "{baseUrl}",
-      "description": "Your deployment URL (Vercel, localhost, etc.)",
+      "description": "Your deployment URL (any Node host, localhost, etc.)",
       "variables": {
         "baseUrl": {
           "default": "http://localhost:3456"
