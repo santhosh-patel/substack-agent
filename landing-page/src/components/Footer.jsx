@@ -37,9 +37,9 @@ export default function Footer() {
             <div className="link-group">
               <span className="group-title">RESOURCES</span>
               <a href="https://github.com/santhosh-patel/substack-agent" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
-              <a href="https://github.com/santhosh-patel/substack-agent#readme" target="_blank" rel="noopener noreferrer">Documentation</a>
+              <a href="/docs">Documentation</a>
               <a href="/openapi.json" target="_blank" rel="noopener noreferrer">OpenAPI Spec</a>
-              <a href="https://github.com/santhosh-patel/substack-agent/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Changelog</a>
+              <a href="/docs/changelog">Changelog</a>
               <a href="https://github.com/santhosh-patel/substack-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>
             </div>
 

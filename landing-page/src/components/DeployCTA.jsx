@@ -32,9 +32,7 @@ export default function DeployCTA() {
               Deploy to Vercel
             </a>
             <a
-              href="https://github.com/santhosh-patel/substack-agent#deploy"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/docs/deployment/vercel"
               className="btn btn-outline btn-lg"
             >
               Deployment docs

@@ -95,8 +95,12 @@ export default function FAQ() {
             Open a GitHub issue
           </a>{' '}
           or read the{' '}
-          <a href="https://github.com/santhosh-patel/substack-agent#readme" target="_blank" rel="noopener noreferrer">
+          <a href="/docs/getting-started/session-cookie">
             setup guide
+          </a>{' '}
+          or read the full{' '}
+          <a href="/docs">
+            documentation
           </a>.
         </p>
       </div>
