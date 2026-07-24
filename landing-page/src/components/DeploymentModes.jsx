@@ -1,0 +1,64 @@
+import './DeploymentModes.css';
+
+const modes = [
+  {
+    id: 'local',
+    title: 'Local Dashboard',
+    command: 'npm run dev',
+    bestFor: 'Full UI, scheduling, AI compose, history',
+    limits: 'Runs on localhost:3456. Best experience for hands-on publishing.',
+    cta: { label: 'Open Playground', href: '/playground' },
+  },
+  {
+    id: 'api',
+    title: 'Deployed Tools API',
+    command: 'vercel + API_SECRET',
+    bestFor: 'n8n, GPTs, webhooks, production automations',
+    limits: 'Stateless tool calls only. Bearer auth required in production.',
+    cta: { label: 'View OpenAPI', href: '/openapi.json' },
+  },
+  {
+    id: 'mcp',
+    title: 'Local MCP Server',
+    command: 'npm run mcp',
+    bestFor: 'Claude Desktop, Cursor, chat-native workflows',
+    limits: 'Stdio transport. Runs locally — not hosted on Vercel.',
+    cta: { label: 'GitHub Setup', href: 'https://github.com/santhosh-patel/substack-agent#2-mcp-server' },
+  },
+];
+
+export default function DeploymentModes() {
+  return (
+    <section className="deployment-modes" id="deployment-modes">
+      <div className="container">
+        <div className="section-header">
+          <span className="section-badge">Deployment</span>
+          <h2 className="section-title">
+            Three ways to <span className="brand-gradient">run Substack Agent</span>
+          </h2>
+          <p className="section-subtitle">
+            Pick the mode that matches your workflow. Each has different capabilities and limits.
+          </p>
+        </div>
+
+        <div className="modes-grid">
+          {modes.map((mode, i) => (
+            <div className="mode-card animate-in" key={mode.id} style={{ transitionDelay: `${i * 60}ms` }}>
+              <h3 className="mode-title">{mode.title}</h3>
+              <code className="mode-command">{mode.command}</code>
+              <p className="mode-best"><strong>Best for:</strong> {mode.bestFor}</p>
+              <p className="mode-limits"><strong>Limits:</strong> {mode.limits}</p>
+              <a
+                href={mode.cta.href}
+                className="btn btn-outline btn-sm mode-cta"
+                {...(mode.cta.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              >
+                {mode.cta.label}
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

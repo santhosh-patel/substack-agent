@@ -1002,6 +1002,7 @@ function addPostToHistory(title, url) {
 
   localStorage.setItem('substack_publish_history', JSON.stringify(history));
   loadPublishHistory();
+  updateOnboardingChecklist();
 }
 
 function updatePublishButtonLabel() {
