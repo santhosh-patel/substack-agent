@@ -17,7 +17,7 @@ export default function Hero({ onOpenPlayground }) {
         </div>
 
         <h1 className="hero-title">
-          Automate your Substack publication<br />
+          Automate your Substack publication<br className="desktop-only-br" />
           <span className="gradient-text">with native AI agent workflows</span>
         </h1>
 

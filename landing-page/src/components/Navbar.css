@@ -97,6 +97,25 @@
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
+.nav-mobile-cta {
+  display: none;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.nav-backdrop {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 998;
+  animation: fadeIn 0.2s ease;
+}
+
 @media (max-width: 768px) {
   .nav-menu {
     display: none;
@@ -111,17 +130,53 @@
     right: 0;
     background: var(--bg-page);
     border-bottom: 1px solid var(--border);
-    padding: 20px 24px;
-    gap: 16px;
-    align-items: flex-start;
-    box-shadow: var(--shadow-md);
+    padding: 20px 24px 28px;
+    gap: 12px;
+    align-items: stretch;
+    box-shadow: var(--shadow-lg);
+    z-index: 999;
+    animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .nav-github-btn {
+  .nav-menu.is-open a {
+    font-size: 15px;
+    font-weight: 500;
+    padding: 10px 0;
+    width: 100%;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .nav-mobile-cta {
+    display: inline-flex;
+    margin-top: 6px;
+  }
+
+  .nav-cta {
     display: none;
   }
 
   .mobile-toggle {
     display: flex;
   }
+
+  .mobile-toggle.is-active span:nth-child(1) {
+    transform: translateY(3.25px) rotate(45deg);
+  }
+
+  .mobile-toggle.is-active span:nth-child(2) {
+    transform: translateY(-3.25px) rotate(-45deg);
+  }
 }
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
