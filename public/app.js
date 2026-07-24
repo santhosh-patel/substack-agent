@@ -488,10 +488,11 @@ async function handleGenerate() {
   }
 
   try {
+    const useWebSearch = document.getElementById('composeUseWebSearch')?.checked ?? true;
     const res = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ topic, provider, model, apiKey, systemPrompt, useWebSearch: true }),
+      body: JSON.stringify({ topic, provider, model, apiKey, systemPrompt, useWebSearch }),
     });
 
     const data = await res.json();

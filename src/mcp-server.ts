@@ -182,7 +182,7 @@ async function resolveTargetInfo(target: string) {
 const server = new Server(
   {
     name: 'substack-automation',
-    version: '1.0.0',
+    version: '2.0.0',
   },
   {
     capabilities: {
