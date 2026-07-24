@@ -1,8 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './Hero.css';
 
 export default function Hero() {
   const [activeTab, setActiveTab] = useState('mcp');
+  const [showcaseActive, setShowcaseActive] = useState(false);
+
+  useEffect(() => {
+    if (!showcaseActive) return undefined;
+
+    const onDocumentClick = () => setShowcaseActive(false);
+    document.addEventListener('click', onDocumentClick);
+    return () => document.removeEventListener('click', onDocumentClick);
+  }, [showcaseActive]);
 
   return (
     <section className="hero" id="hero">
@@ -54,12 +63,19 @@ export default function Hero() {
       </div>
 
       <div className="container hero-showcase-container">
-        <div className="showcase-card">
+        <div
+          className={`showcase-card ${showcaseActive ? 'is-active' : ''}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowcaseActive(true);
+          }}
+          role="presentation"
+        >
           <div className="showcase-header">
-            <div className="window-dots">
-              <span className="dot" />
-              <span className="dot" />
-              <span className="dot" />
+            <div className="mac-window-traffic" aria-hidden="true">
+              <span className="mac-dot mac-dot-close" />
+              <span className="mac-dot mac-dot-minimize" />
+              <span className="mac-dot mac-dot-maximize" />
             </div>
               <div className="showcase-tabs" role="tablist" aria-label="Integration examples">
               <button 
