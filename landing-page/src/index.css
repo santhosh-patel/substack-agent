@@ -91,6 +91,12 @@ html {
   overflow-x: clip;
 }
 
+@media (max-width: 768px) {
+  html {
+    scroll-padding-top: 72px;
+  }
+}
+
 body {
   font-family: var(--font);
   background: var(--bg-page);

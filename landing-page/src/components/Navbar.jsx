@@ -36,19 +36,57 @@ export default function Navbar() {
         </a>
 
         {mobileOpen && (
-          <div className="nav-backdrop" onClick={() => setMobileOpen(false)} />
+          <div
+            className="nav-backdrop"
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
+          />
         )}
 
-        <div className={`nav-menu ${mobileOpen ? 'is-open' : ''}`}>
-          <a href="#features" onClick={() => setMobileOpen(false)}>Features</a>
-          <a href="#integrations" onClick={() => setMobileOpen(false)}>Integrations</a>
-          <a href="#how-it-works" onClick={() => setMobileOpen(false)}>How It Works</a>
-          <a href="#tools" onClick={() => setMobileOpen(false)}>Tools</a>
-          <a href="#faq" onClick={() => setMobileOpen(false)}>FAQ</a>
-          <a href="/docs" onClick={() => setMobileOpen(false)}>Docs</a>
-          <a href="/playground" className="btn btn-primary nav-mobile-cta" onClick={() => setMobileOpen(false)}>
-            Try in Playground
-          </a>
+        <div
+          className={`nav-menu ${mobileOpen ? 'is-open' : ''}`}
+          id="mobile-nav"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+          aria-hidden={!mobileOpen}
+        >
+          <div className="nav-mobile-scroll">
+            <p className="nav-mobile-label">Product</p>
+            <a href="#features" className="nav-mobile-link" onClick={() => setMobileOpen(false)}>
+              Features
+            </a>
+            <a href="#integrations" className="nav-mobile-link" onClick={() => setMobileOpen(false)}>
+              Integrations
+            </a>
+            <a href="#how-it-works" className="nav-mobile-link" onClick={() => setMobileOpen(false)}>
+              How It Works
+            </a>
+            <a href="#tools" className="nav-mobile-link" onClick={() => setMobileOpen(false)}>
+              Tools
+            </a>
+            <a href="#faq" className="nav-mobile-link" onClick={() => setMobileOpen(false)}>
+              FAQ
+            </a>
+
+            <p className="nav-mobile-label">Resources</p>
+            <a href="/docs" className="nav-mobile-link" onClick={() => setMobileOpen(false)}>
+              Documentation
+            </a>
+            <a href="/playground" className="nav-mobile-link" onClick={() => setMobileOpen(false)}>
+              Playground
+            </a>
+          </div>
+
+          <div className="nav-mobile-footer">
+            <a
+              href="/playground"
+              className="btn btn-primary nav-mobile-cta"
+              onClick={() => setMobileOpen(false)}
+            >
+              Try in Playground
+            </a>
+          </div>
         </div>
 
         <div className="nav-actions">
