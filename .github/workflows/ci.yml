@@ -53,7 +53,6 @@ jobs:
     needs: lint-build
     env:
       API_SECRET: ci-test-secret
-      NODE_ENV: production
       PORT: 3456
 
     steps:
@@ -76,6 +75,8 @@ jobs:
         run: npm run build
 
       - name: Start Express server
+        env:
+          NODE_ENV: production
         run: |
           npm start &
           echo $! > /tmp/substack-agent.pid

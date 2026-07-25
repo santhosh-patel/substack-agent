@@ -12,7 +12,7 @@
   },
   "type": "module",
   "scripts": {
-    "postinstall": "npm ci --prefix landing-page --no-audit --no-fund",
+    "postinstall": "npm ci --prefix landing-page --include=dev --no-audit --no-fund",
     "dev": "npx tsx watch src/server.ts",
     "start": "tsx src/server.ts",
     "build:landing": "npm run build --prefix landing-page && node scripts/sync-landing-dist.mjs",
