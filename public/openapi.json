@@ -3,7 +3,7 @@
   "info": {
     "title": "Substack Automation Tools API",
     "description": "AI-callable tool endpoints for automating Substack operations \u2014 publish newsletters, post notes, comment on posts, and list content. Designed for Claude MCP, N8N, ChatGPT GPTs, and any OpenAPI-aware AI agent.",
-    "version": "1.0.1",
+    "version": "1.0.4",
     "contact": {
       "name": "Substack Automation"
     }

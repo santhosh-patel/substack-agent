@@ -29,7 +29,7 @@ import { addSchedule, getSchedules } from '../lib/storage.js';
 
 const router = Router();
 
-const APP_VERSION = '1.0.1';
+const APP_VERSION = '1.0.4';
 
 function sessionErrorPayload(error?: string) {
   const msg = error || 'Substack session not connected';

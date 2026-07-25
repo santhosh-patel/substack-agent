@@ -5,7 +5,9 @@ All notable changes to Substack Agent are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.1] — 2026-07-24
+Versions use patch releases under `1.0.x` (`1.0.1`, `1.0.2`, `1.0.3`, …).
+
+## [1.0.4] — 2026-07-24
 
 ### Added
 - Docs link in the landing navbar (desktop); absolute `/#section` links so Features/Integrations work from `/docs`
@@ -33,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Stale hashed landing chunks left in `public/assets` after rebuilds
 - GitHub Actions build failures on unsupported Node 18 / pre-20.19 runtimes
 
-## [2.2.0] — 2026
+## [1.0.3] — 2026
 
 ### Added
 - GitHub Actions CI: build, auth tests, API smoke tests
@@ -45,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - CONTRIBUTING documents changelog sync process for releases
 
-## [2.1.0] — 2026
+## [1.0.2] — 2026
 
 ### Added
 - Remote MCP over HTTP at `/api/mcp` (Streamable HTTP, Bearer auth)
@@ -61,7 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Playground deployment banners (dashboard vs Tools API vs scheduler limits)
 - Removed Vercel `crons` from `vercel.json` (optional external cron documented)
 
-## [2.0.0] — 2026
+## [1.0.1] — 2026
 
 ### Added
 - In-app documentation site at `/docs`
