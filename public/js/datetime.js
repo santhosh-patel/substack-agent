@@ -491,6 +491,7 @@ window.dtQuickSchedule = dtQuickSchedule;
 window.dtQuickScheduleTomorrow = dtQuickScheduleTomorrow;
 window.dtSelectPromptPreset = dtSelectPromptPreset;
 
+PG.dtState = dtState;
 PG.dtPad = dtPad;
 PG.dtDateFromState = dtDateFromState;
 PG.dtSetStateFromDate = dtSetStateFromDate;

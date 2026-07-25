@@ -9,16 +9,6 @@ const switchTab = (...args) => PG.switchTab(...args);
 const handleGenerate = (...args) => PG.handleGenerate(...args);
 const handleGenerateNote = (...args) => PG.handleGenerateNote(...args);
 
-import PG from './pg.js';
-import './state.js';
-const showToast = (...args) => PG.showToast(...args);
-const setButtonLoading = (...args) => PG.setButtonLoading(...args);
-const escapeHtml = (...args) => PG.escapeHtml(...args);
-const getStoredSid = (...args) => PG.getStoredSid(...args);
-const switchTab = (...args) => PG.switchTab(...args);
-const handleGenerate = (...args) => PG.handleGenerate(...args);
-const handleGenerateNote = (...args) => PG.handleGenerateNote(...args);
-
 async function loadHistory() {
   const btn = document.getElementById('loadHistoryBtn');
   const listEl = document.getElementById('historyList');
@@ -397,14 +387,6 @@ function reuseHistoryItem(id) {
   }
 }
 
-
-PG.loadHistory = loadHistory;
-PG.dedupeHistoryItems = dedupeHistoryItems;
-PG.filterAndRenderHistory = filterAndRenderHistory;
-PG.copyHistoryLink = copyHistoryLink;
-PG.toggleBodyText = toggleBodyText;
-PG.reuseHistoryItem = reuseHistoryItem;
-{};
 
 PG.loadHistory = loadHistory;
 PG.dedupeHistoryItems = dedupeHistoryItems;

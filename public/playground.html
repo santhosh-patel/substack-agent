@@ -155,7 +155,14 @@
         </div>
         <div class="card-body">
 
-          <div class="security-callout" role="note">
+          <div class="security-callout" id="securityCallout" role="note">
+            <button
+              type="button"
+              class="security-callout-dismiss"
+              id="securityCalloutDismiss"
+              aria-label="Dismiss security notice"
+              title="Dismiss security notice"
+            >×</button>
             <strong>Security notice:</strong> Your <code>connect.sid</code> cookie grants full access to your Substack account. It is stored in this browser and sent to your Substack Agent server when you connect. AI keys are also saved locally. Treat both like passwords.
           </div>
 

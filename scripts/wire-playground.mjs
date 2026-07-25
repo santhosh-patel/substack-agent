@@ -14,19 +14,24 @@ const FILE_DEPS = {
   'ui.js': [],
   'storage.js': ['escapeHtml'],
   'settings.js': ['showToast', 'setButtonLoading', 'escapeHtml', 'getStoredSid', 'getStoredApiKey', 'hasBackendApiKey', 'getStoredSettings', 'MODELS'],
-  'publish.js': ['showToast', 'setButtonLoading', 'getStoredApiKey', 'hasBackendApiKey', 'getStoredSid', 'isConnected', 'addPostToHistory', 'updateOnboardingChecklist', 'updatePreviewMetadata'],
+  'publish.js': ['showToast', 'setButtonLoading', 'getStoredApiKey', 'hasBackendApiKey', 'getStoredSid', 'isConnected', 'addPostToHistory', 'updateOnboardingChecklist'],
   'tabs.js': ['loadSystemPromptForTab', 'loadHistory', 'loadNotes', 'loadSchedules', 'updateSchedModelOptions', 'syncSchedApiKeyFromStorage', 'dtRefreshTimeWheel', 'startSchedulerPolling', 'stopSchedulerPolling'],
   'comments.js': ['showToast', 'setButtonLoading', 'escapeHtml', 'getStoredApiKey', 'hasBackendApiKey', 'isConnected'],
   'history.js': ['showToast', 'setButtonLoading', 'escapeHtml', 'getStoredSid', 'isConnected', 'switchTab', 'handleGenerate', 'handleGenerateNote'],
   'notes.js': ['showToast', 'setButtonLoading', 'getStoredApiKey', 'hasBackendApiKey', 'isConnected', 'addToInputHistory', 'escapeHtml'],
-  'scheduler-core.js': ['showToast', 'setButtonLoading', 'escapeHtml', 'showAppConfirm', 'getStoredApiKey', 'getStoredSid', 'hasBackendApiKey', 'getSelectLabel', 'testAiKey', 'isTwiceDailyRecurrence', 'getTwiceDailyTimes', 'computeTwiceDailyInitialIso', 'formatMinutesLabel', 'formatRecurrenceTimesLabel', 'formatScheduleDueLabel', 'dtBuildSelectedDate', 'MODELS'],
+  'scheduler-core.js': ['showToast', 'setButtonLoading', 'escapeHtml', 'showAppConfirm', 'getStoredApiKey', 'getStoredSid', 'hasBackendApiKey', 'testAiKey', 'dtBuildSelectedDate', 'MODELS'],
   'datetime.js': ['showToast', 'isTwiceDailyRecurrence', 'computeTwiceDailyInitialIso', 'getTwiceDailyTimes', 'formatMinutesLabel'],
-  'scheduler-polling.js': ['showToast', 'appendSchedulerLog', 'renderSchedulerApiLogs', 'loadSchedules', 'loadHistory', 'classifySchedulerLogType'],
+  'scheduler-polling.js': ['showToast', 'loadSchedules', 'loadHistory'],
 };
 
+function stripExistingWire(body) {
+  let stripped = body.replace(/^import PG from '\.\/pg\.js';\nimport '\.\/state\.js';\n(?:const [\w]+ = .*\n)*/m, '');
+  stripped = stripped.replace(/\n(?:PG\.\w+ = \w+;\n)+export \{\};\n?$/m, '\n');
+  return stripped.replace(/^export /gm, '');
+}
+
 function processFile(file) {
-  let body = fs.readFileSync(path.join(dir, file), 'utf-8');
-  body = body.replace(/^export /gm, '');
+  let body = stripExistingWire(fs.readFileSync(path.join(dir, file), 'utf-8'));
 
   for (const v of STATE_VARS) {
     body = body.replace(new RegExp(`\\b${v}\\b`, 'g'), `PG.${v}`);
@@ -37,7 +42,7 @@ function processFile(file) {
   const allConsts = constExports.filter((n) => /^[A-Z]/.test(n) || n === 'dtState');
   const exports = [...new Set([...fnExports, ...allConsts])];
 
-  const deps = FILE_DEPS[file] || [];
+  const deps = (FILE_DEPS[file] || []).filter((dep) => !fnExports.includes(dep));
   const depLines = deps.map((d) => {
     if (STATE_VARS.includes(d)) return `const ${d} = PG.${d};`;
     return `const ${d} = (...args) => PG.${d}(...args);`;

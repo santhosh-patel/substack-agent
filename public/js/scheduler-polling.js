@@ -1,11 +1,10 @@
 import PG from './pg.js';
 import './state.js';
 const showToast = (...args) => PG.showToast(...args);
-const appendSchedulerLog = (...args) => PG.appendSchedulerLog(...args);
-const renderSchedulerApiLogs = (...args) => PG.renderSchedulerApiLogs(...args);
+const escapeHtml = (...args) => PG.escapeHtml(...args);
 const loadSchedules = (...args) => PG.loadSchedules(...args);
 const loadHistory = (...args) => PG.loadHistory(...args);
-const classifySchedulerLogType = (...args) => PG.classifySchedulerLogType(...args);
+const MODELS = PG.MODELS;
 
 async function runManualCron() {
   appendSchedulerLog('Manual queue check triggered…', 'highlight');
@@ -149,45 +148,6 @@ async function copySchedulerLogs() {
     showToast('Could not copy logs', 'error');
   }
 }
-
-window.toggleSchedulerFields = toggleSchedulerFields;
-window.toggleRecurrenceFields = toggleRecurrenceFields;
-window.loadSchedules = loadSchedules;
-window.handleCreateSchedule = handleCreateSchedule;
-window.toggleScheduleState = toggleScheduleState;
-window.deleteScheduleItem = deleteScheduleItem;
-window.retryScheduleItem = retryScheduleItem;
-window.testSubstackSession = testSubstackSession;
-window.testAiKey = testAiKey;
-window.testSchedAiKey = testSchedAiKey;
-window.confirmSendScheduleNow = confirmSendScheduleNow;
-window.sendScheduleNow = sendScheduleNow;
-window.runManualCron = runManualCron;
-window.clearSchedulerLogs = clearSchedulerLogs;
-window.copySchedulerLogs = copySchedulerLogs;
-
-function togglePasswordVisibility(inputId, btnEl) {
-  const input = document.getElementById(inputId);
-  if (!input) return;
-  const icon = btnEl.querySelector('i');
-  
-  if (input.type === 'password') {
-    input.type = 'text';
-    if (icon) {
-      icon.setAttribute('data-lucide', 'eye-off');
-    }
-  } else {
-    input.type = 'password';
-    if (icon) {
-      icon.setAttribute('data-lucide', 'eye');
-    }
-  }
-  
-  if (window.lucide) {
-    window.lucide.createIcons();
-  }
-}
-
 
 async function runSilentQueueCheck() {
   const indicator = document.getElementById('pollingIndicator');
@@ -340,12 +300,6 @@ function updateSchedModelOptions() {
   syncSchedApiKeyFromStorage();
 }
 
-window.togglePasswordVisibility = togglePasswordVisibility;
-window.startSchedulerPolling = startSchedulerPolling;
-window.stopSchedulerPolling = stopSchedulerPolling;
-window.toggleSchedSearchFields = toggleSchedSearchFields;
-window.updateSchedModelOptions = updateSchedModelOptions;
-
 PG.runManualCron = runManualCron;
 PG.updateSchedulerStats = updateSchedulerStats;
 PG.classifySchedulerLogType = classifySchedulerLogType;
@@ -353,7 +307,6 @@ PG.appendSchedulerLog = appendSchedulerLog;
 PG.renderSchedulerApiLogs = renderSchedulerApiLogs;
 PG.clearSchedulerLogs = clearSchedulerLogs;
 PG.copySchedulerLogs = copySchedulerLogs;
-PG.togglePasswordVisibility = togglePasswordVisibility;
 PG.runSilentQueueCheck = runSilentQueueCheck;
 PG.startSchedulerPolling = startSchedulerPolling;
 PG.stopSchedulerPolling = stopSchedulerPolling;

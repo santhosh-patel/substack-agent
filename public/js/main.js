@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await PG.loadConfigFromBackend();
   PG.loadPublishHistory();
   PG.initOnboardingChecklist();
+  PG.initSecurityCallout();
 
   if (!PG.getStoredSid() && !window.backendConfig?.hasSubstackSid) {
     const grid = document.querySelector('.main-grid');

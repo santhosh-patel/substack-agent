@@ -10,18 +10,6 @@ const dtRefreshTimeWheel = (...args) => PG.dtRefreshTimeWheel(...args);
 const startSchedulerPolling = (...args) => PG.startSchedulerPolling(...args);
 const stopSchedulerPolling = (...args) => PG.stopSchedulerPolling(...args);
 
-import PG from './pg.js';
-import './state.js';
-const loadSystemPromptForTab = (...args) => PG.loadSystemPromptForTab(...args);
-const loadHistory = (...args) => PG.loadHistory(...args);
-const loadNotes = (...args) => PG.loadNotes(...args);
-const loadSchedules = (...args) => PG.loadSchedules(...args);
-const updateSchedModelOptions = (...args) => PG.updateSchedModelOptions(...args);
-const syncSchedApiKeyFromStorage = (...args) => PG.syncSchedApiKeyFromStorage(...args);
-const dtRefreshTimeWheel = (...args) => PG.dtRefreshTimeWheel(...args);
-const startSchedulerPolling = (...args) => PG.startSchedulerPolling(...args);
-const stopSchedulerPolling = (...args) => PG.stopSchedulerPolling(...args);
-
 // ─── URL Path <-> Tab Mapping ───
 const TAB_TO_PATH = {
   newsletters: '/newsletter',
@@ -108,12 +96,6 @@ function switchTab(tabId, skipPush) {
     stopSchedulerPolling();
   }
 }
-
-PG.getTabFromPath = getTabFromPath;
-PG.switchTab = switchTab;
-PG.TAB_TO_PATH = TAB_TO_PATH;
-PG.PATH_TO_TAB = PATH_TO_TAB;
-{};
 
 PG.getTabFromPath = getTabFromPath;
 PG.switchTab = switchTab;

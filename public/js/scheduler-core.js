@@ -7,15 +7,11 @@ const showAppConfirm = (...args) => PG.showAppConfirm(...args);
 const getStoredApiKey = (...args) => PG.getStoredApiKey(...args);
 const getStoredSid = (...args) => PG.getStoredSid(...args);
 const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
-const getSelectLabel = (...args) => PG.getSelectLabel(...args);
 const testAiKey = (...args) => PG.testAiKey(...args);
-const isTwiceDailyRecurrence = (...args) => PG.isTwiceDailyRecurrence(...args);
-const getTwiceDailyTimes = (...args) => PG.getTwiceDailyTimes(...args);
-const computeTwiceDailyInitialIso = (...args) => PG.computeTwiceDailyInitialIso(...args);
-const formatMinutesLabel = (...args) => PG.formatMinutesLabel(...args);
-const formatRecurrenceTimesLabel = (...args) => PG.formatRecurrenceTimesLabel(...args);
-const formatScheduleDueLabel = (...args) => PG.formatScheduleDueLabel(...args);
+const appendSchedulerLog = (...args) => PG.appendSchedulerLog(...args);
 const dtBuildSelectedDate = (...args) => PG.dtBuildSelectedDate(...args);
+const dtUpdateSummary = (...args) => PG.dtUpdateSummary(...args);
+const dtDateFromState = (...args) => PG.dtDateFromState(...args);
 const MODELS = PG.MODELS;
 
 function toggleSchedulerFields() {
@@ -56,7 +52,7 @@ function isTwiceDailyRecurrence() {
 }
 
 function getTwiceDailyTimes() {
-  const firstMinutes = dtState.selectedMinutes;
+  const firstMinutes = PG.dtState?.selectedMinutes;
   const secondMinutes = parseTimeInputToMinutes(document.getElementById('schedSecondTime')?.value);
   return { firstMinutes, secondMinutes };
 }

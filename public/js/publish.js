@@ -8,18 +8,6 @@ const getStoredSid = (...args) => PG.getStoredSid(...args);
 const isConnected = PG.isConnected;
 const addPostToHistory = (...args) => PG.addPostToHistory(...args);
 const updateOnboardingChecklist = (...args) => PG.updateOnboardingChecklist(...args);
-const updatePreviewMetadata = (...args) => PG.updatePreviewMetadata(...args);
-
-import PG from './pg.js';
-import './state.js';
-const showToast = (...args) => PG.showToast(...args);
-const setButtonLoading = (...args) => PG.setButtonLoading(...args);
-const getStoredApiKey = (...args) => PG.getStoredApiKey(...args);
-const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
-const getStoredSid = (...args) => PG.getStoredSid(...args);
-const addPostToHistory = (...args) => PG.addPostToHistory(...args);
-const updateOnboardingChecklist = (...args) => PG.updateOnboardingChecklist(...args);
-const updatePreviewMetadata = (...args) => PG.updatePreviewMetadata(...args);
 
 // ─── Generate Post with AI ───
 async function handleGenerate() {
@@ -185,12 +173,6 @@ function updatePreviewMetadata() {
   }
 }
 
-
-PG.handleGenerate = handleGenerate;
-PG.handlePublish = handlePublish;
-PG.updatePreview = updatePreview;
-PG.updatePreviewMetadata = updatePreviewMetadata;
-{};
 
 PG.handleGenerate = handleGenerate;
 PG.handlePublish = handlePublish;

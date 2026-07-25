@@ -88,6 +88,22 @@ function applyDeploymentMode(config) {
 }
 
 const ONBOARDING_KEY = 'onboarding_checklist_v1';
+const SECURITY_CALLOUT_KEY = 'security_callout_dismissed_v1';
+
+function initSecurityCallout() {
+  const callout = document.getElementById('securityCallout');
+  if (!callout) return;
+
+  if (localStorage.getItem(SECURITY_CALLOUT_KEY) === 'true') {
+    callout.hidden = true;
+    return;
+  }
+
+  document.getElementById('securityCalloutDismiss')?.addEventListener('click', () => {
+    localStorage.setItem(SECURITY_CALLOUT_KEY, 'true');
+    callout.hidden = true;
+  });
+}
 
 function initOnboardingChecklist() {
   const panel = document.getElementById('onboardingChecklist');
@@ -471,69 +487,7 @@ async function handleDisconnect() {
     showToast(err.message, 'error');
   }
 }
-function loadSystemPromptForTab(tabId) {
-  const textarea = document.getElementById('systemPrompt');
-  if (!textarea) return;
-
-  if (tabId === 'newsletters') {
-    activeSystemPromptTab = 'newsletters';
-    const custom = localStorage.getItem('substack_system_prompt_newsletter');
-    textarea.value = custom !== null ? custom : (window.backendConfig?.defaultSystemPrompt || '');
-  } else if (tabId === 'notes') {
-    activeSystemPromptTab = 'notes';
-    const custom = localStorage.getItem('substack_system_prompt_note');
-    textarea.value = custom !== null ? custom : (window.backendConfig?.defaultNoteSystemPrompt || '');
-  }
-}
-
-function saveSystemPrompt() {
-  const value = document.getElementById('systemPrompt').value;
-  if (activeSystemPromptTab === 'newsletters') {
-    localStorage.setItem('substack_system_prompt_newsletter', value);
-  } else if (activeSystemPromptTab === 'notes') {
-    localStorage.setItem('substack_system_prompt_note', value);
-  }
-}
-
-function resetSystemPrompt() {
-  if (!window.backendConfig) return;
-  if (activeSystemPromptTab === 'newsletters') {
-    document.getElementById('systemPrompt').value = window.backendConfig.defaultSystemPrompt;
-    localStorage.removeItem('substack_system_prompt_newsletter');
-  } else if (activeSystemPromptTab === 'notes') {
-    document.getElementById('systemPrompt').value = window.backendConfig.defaultNoteSystemPrompt;
-    localStorage.removeItem('substack_system_prompt_note');
-  }
-  showToast('System prompt reset to default', 'info');
-}
-
-// ─── Sidebar Collapsing ───
-function toggleSidebar() {
-  const grid = document.querySelector('.main-grid');
-  if (!grid) return;
-  const isCollapsed = grid.classList.toggle('sidebar-collapsed');
-  localStorage.setItem('sidebar_collapsed', String(isCollapsed));
-  if (typeof PG.syncSidebarToggleUi === 'function') {
-    PG.syncSidebarToggleUi(isCollapsed);
-  }
-}
-
-function openSidebarAndFocusSid() {
-  const grid = document.querySelector('.main-grid');
-  if (grid && grid.classList.contains('sidebar-collapsed')) {
-    grid.classList.remove('sidebar-collapsed');
-    localStorage.setItem('sidebar_collapsed', 'false');
-    if (typeof PG.syncSidebarToggleUi === 'function') {
-      PG.syncSidebarToggleUi(false);
-    }
-  }
-  const sidInput = document.getElementById('sid');
-  if (sidInput) {
-    sidInput.focus();
-    sidInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-  showToast('Reconnect: paste your Substack connect.sid, then Test → Connect.', 'info');
-}
+const loadSystemPromptForTab = (...args) => PG.loadSystemPromptForTab(...args);
 
 // ─── Publish History ───
 function loadPublishHistory() {
@@ -720,6 +674,7 @@ async function testSchedAiKey() {
 PG.loadConfigFromBackend = loadConfigFromBackend;
 PG.applyDeploymentMode = applyDeploymentMode;
 PG.initOnboardingChecklist = initOnboardingChecklist;
+PG.initSecurityCallout = initSecurityCallout;
 PG.updateOnboardingChecklist = updateOnboardingChecklist;
 PG.restorePersistedSession = restorePersistedSession;
 PG.loadSavedSettings = loadSavedSettings;
@@ -732,11 +687,6 @@ PG.handleConnect = handleConnect;
 PG.updateConnectionBadge = updateConnectionBadge;
 PG.updateSimulatedPreviewHeader = updateSimulatedPreviewHeader;
 PG.handleDisconnect = handleDisconnect;
-PG.loadSystemPromptForTab = loadSystemPromptForTab;
-PG.saveSystemPrompt = saveSystemPrompt;
-PG.resetSystemPrompt = resetSystemPrompt;
-PG.toggleSidebar = toggleSidebar;
-PG.openSidebarAndFocusSid = openSidebarAndFocusSid;
 PG.loadPublishHistory = loadPublishHistory;
 PG.addPostToHistory = addPostToHistory;
 PG.updatePublishButtonLabel = updatePublishButtonLabel;

@@ -7,14 +7,6 @@ const getStoredApiKey = (...args) => PG.getStoredApiKey(...args);
 const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
 const isConnected = PG.isConnected;
 
-import PG from './pg.js';
-import './state.js';
-const showToast = (...args) => PG.showToast(...args);
-const setButtonLoading = (...args) => PG.setButtonLoading(...args);
-const escapeHtml = (...args) => PG.escapeHtml(...args);
-const getStoredApiKey = (...args) => PG.getStoredApiKey(...args);
-const hasBackendApiKey = (...args) => PG.hasBackendApiKey(...args);
-
 // ─── Comment Automation ───
 
 function appendCommentLog(message, type = 'info') {
@@ -167,11 +159,6 @@ function stopCommentAutomation() {
 }
 
 // ─── Newsletters Listing ───
-
-PG.appendCommentLog = appendCommentLog;
-PG.runCommentAutomation = runCommentAutomation;
-PG.stopCommentAutomation = stopCommentAutomation;
-{};
 
 PG.appendCommentLog = appendCommentLog;
 PG.runCommentAutomation = runCommentAutomation;
