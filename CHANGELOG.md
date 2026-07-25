@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Versions use patch releases under `1.0.x` (`1.0.1`, `1.0.2`, `1.0.3`, …).
 
+## [1.0.5] — 2026-07-25
+
+### Added
+- Hover tooltips on playground controls (nav, settings, compose, comments, notes, scheduler, history, and dynamic queue/history actions)
+- Clickable “Reconnect” profile card when disconnected (opens Settings and focuses the session cookie field)
+
+### Changed
+- Settings sidebar toggle uses a settings gear icon; close button and collapsed sidebar styles restored
+- Web search enable/disable redesigned as a themed feature toggle (compose + scheduler)
+- Removed light/dark theme switch from the playground
+
+### Fixed
+- Settings sidebar close button not collapsing the panel
+
 ## [1.0.4] — 2026-07-24
 
 ### Added
