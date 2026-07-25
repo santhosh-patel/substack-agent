@@ -43,7 +43,7 @@ Expected response:
 {
   "success": true,
   "data": {
-    "version": "1.0.4",
+    "version": "1.1.0",
     "connected": true,
     "publication": "yourname.substack.com"
   }

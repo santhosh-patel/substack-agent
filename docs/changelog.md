@@ -3,7 +3,7 @@
 All notable changes to **Substack Agent** are documented in this file.
 
 - **Format:** [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
-- **Versioning:** [Semantic Versioning](https://semver.org/spec/v2.0.0.html) (`1.0.x` patch releases)
+- **Versioning:** [Semantic Versioning](https://semver.org/spec/v2.0.0.html) (`1.0.x` patches, `1.x.0` minors)
 - **Mirror:** [`docs/changelog.md`](docs/changelog.md) must stay identical (enforced by `npm run ci:static`)
 
 ## How entries are organized
@@ -21,6 +21,37 @@ Within a section, bullets are grouped by **area** (subheading) and written for e
 | **Tooling** | Maintainer scripts (`scripts/wire-playground.mjs`, etc.) |
 
 Bullets cite files, routes, env keys, or runtime behavior where useful. User-facing impact is implied by the technical change.
+
+---
+
+## [1.1.0] — 2026-07-25
+
+> Release engineering, changelog structure, and contributor workflow documentation.
+
+### Added
+
+#### CI / Build — Release tags
+- **Annotated git tags** `v1.0.0` … `v1.0.6` on `main` — monotonic on git history; enables GitHub compare URLs in the changelog footer (`compare/v1.0.5...v1.0.6`, etc.).
+- **`release/1.0.6` branch** — maintenance branch pointing at `v1.0.6` for hotfixes.
+
+| Tag | Commit | Scope |
+|-----|--------|--------|
+| `v1.0.0` | `e23b5a5` | MCP server, Tools API, playground |
+| `v1.0.1` | `35088e4` | `/docs`, onboarding, scheduling API |
+| `v1.0.2` | `9fc5a6f` | Remote MCP HTTP, `public/js/` ES modules |
+| `v1.0.3` | `bcb4752` | CI static checks, docs search |
+| `v1.0.4` | `10b8abe` | Node 20.19+, landing asset sync |
+| `v1.0.5` | `d8fd1b5` | Playground tooltips, reconnect, sidebar UX |
+| `v1.0.6` | `bb7567c` | Security callout, fullscreen preview, JS bundle fixes |
+
+#### Maintainer docs
+- **`CONTRIBUTING.md` rewrite** — fork/upstream workflow, branch naming (`feat/`, `fix/`, `bug/`, `docs/`, `chore/`, etc.), PR steps from fork, issue templates (bug vs feature), changelog rules, semver release/tag process for maintainers.
+
+### Changed
+
+#### Maintainer docs
+- **Changelog format** — area-scoped subheadings, technical bullets, compare-link footer; preamble documents structure and mirror requirement (`CHANGELOG.md` ↔ `docs/changelog.md`).
+- **Package version** — `1.1.0` in `package.json`, `APP_VERSION` (`src/routes/tools.ts`), MCP server metadata (`src/mcp/create-server.ts`), `public/openapi.json`.
 
 ---
 
@@ -246,6 +277,7 @@ Bullets cite files, routes, env keys, or runtime behavior where useful. User-fac
 
 ---
 
+[1.1.0]: https://github.com/santhosh-patel/substack-agent/compare/v1.0.6...v1.1.0
 [1.0.6]: https://github.com/santhosh-patel/substack-agent/compare/v1.0.5...v1.0.6
 [1.0.5]: https://github.com/santhosh-patel/substack-agent/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/santhosh-patel/substack-agent/compare/v1.0.3...v1.0.4
