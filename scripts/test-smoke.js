@@ -3,15 +3,9 @@
  * Requires a running server (default http://localhost:3456).
  * Usage: API_SECRET=... node scripts/test-smoke.js
  */
-const BASE_URL = process.env.TEST_BASE_URL || 'http://localhost:3456';
-const API_SECRET = process.env.API_SECRET || process.env.TEST_API_SECRET;
+import { BASE_URL, runTestSuite } from './test-helpers.js';
 
-const colors = {
-  reset: '\x1b[0m',
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  bold: '\x1b[1m',
-};
+const API_SECRET = process.env.API_SECRET || process.env.TEST_API_SECRET;
 
 async function expectStatus(url, status, init) {
   const res = await fetch(url, init);
@@ -91,6 +85,17 @@ async function run() {
       },
     },
     {
+      name: 'Dashboard routes reject missing Substack session',
+      run: async () => {
+        for (const path of ['/api/newsletters', '/api/notes', '/api/profile']) {
+          const res = await fetch(`${BASE_URL}${path}`);
+          if (res.status !== 401) {
+            throw new Error(`${path} expected 401 without session, got ${res.status}`);
+          }
+        }
+      },
+    },
+    {
       name: 'GET /api/tools/health auth matrix',
       run: async () => {
         const noAuth = await fetch(`${BASE_URL}/api/tools/health`);
@@ -139,24 +144,11 @@ async function run() {
     },
   ];
 
-  console.log(`${colors.bold}HTTP smoke tests${colors.reset} (${BASE_URL})\n`);
-  let passed = 0;
-  let failed = 0;
+  const { failed } = await runTestSuite({
+    title: `HTTP smoke tests (${BASE_URL})`,
+    tests,
+  });
 
-  for (const test of tests) {
-    process.stdout.write(`${test.name} … `);
-    try {
-      await test.run();
-      console.log(`${colors.green}PASS${colors.reset}`);
-      passed++;
-    } catch (err) {
-      console.log(`${colors.red}FAIL${colors.reset}`);
-      console.log(`  ${colors.red}${err.message}${colors.reset}`);
-      failed++;
-    }
-  }
-
-  console.log(`\n${colors.bold}${passed} passed, ${failed} failed${colors.reset}`);
   process.exit(failed > 0 ? 1 : 0);
 }
 
