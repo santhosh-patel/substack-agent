@@ -279,9 +279,17 @@
                   <i data-lucide="sparkles"></i> Generate
                 </button>
               </div>
-              <label class="compose-option" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-size: 13px; color: var(--text-secondary); cursor: pointer;">
-                <input type="checkbox" id="composeUseWebSearch" checked />
-                Enable web search for generation
+              <label class="feature-toggle" for="composeUseWebSearch">
+                <span class="feature-toggle-copy">
+                  <span class="feature-toggle-title">
+                    <i data-lucide="globe" aria-hidden="true"></i>
+                    Web search
+                  </span>
+                  <span class="feature-toggle-hint">
+                    When on, AI researches the topic on the web before writing the title, subtitle, and post.
+                  </span>
+                </span>
+                <input type="checkbox" class="toggle" id="composeUseWebSearch" checked />
               </label>
 
               <!-- Title + Subtitle -->
@@ -623,27 +631,26 @@
               </div>
 
               <!-- Internet Research & Custom AI Settings -->
-              <div style="background-color: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); padding: 16px; border-radius: var(--radius-md); margin-bottom: 20px;">
-                <!-- Toggle Switch for Auto Search -->
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                  <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <label for="schedEnableSearch" style="margin-bottom: 0; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                      <i data-lucide="search" style="width: 16px; height: 16px; color: var(--accent);"></i>
-                      Enable Internet Research / Web Search
-                    </label>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);" id="schedSearchHelpText">
+              <div class="feature-panel">
+                <label class="feature-toggle" for="schedEnableSearch">
+                  <span class="feature-toggle-copy">
+                    <span class="feature-toggle-title">
+                      <i data-lucide="globe" aria-hidden="true"></i>
+                      Web search
+                    </span>
+                    <span class="feature-toggle-hint" id="schedSearchHelpText">
                       AI searches the web at run time, then writes the title, subtitle, and post from your guidelines.
                     </span>
-                  </div>
+                  </span>
                   <input type="checkbox" class="toggle" id="schedEnableSearch" onchange="toggleSchedSearchFields()" checked />
-                </div>
+                </label>
 
                 <!-- Custom AI settings -->
-                <details style="margin-top: 10px; border-top: 1px dashed var(--border); padding-top: 12px;" id="schedAiCustomizer">
-                  <summary style="font-size: 0.8rem; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 6px; user-select: none;">
-                    <i data-lucide="sliders" style="width: 14px; height: 14px;"></i>
-                    <span>Customize AI Settings for this Schedule (Optional)</span>
-                    <i data-lucide="chevron-down" style="width: 14px; height: 14px; margin-left: auto;"></i>
+                <details class="feature-panel-details" id="schedAiCustomizer">
+                  <summary class="feature-panel-summary">
+                    <i data-lucide="sliders" aria-hidden="true"></i>
+                    <span>Customize AI for this schedule (optional)</span>
+                    <i data-lucide="chevron-down" class="feature-panel-chevron" aria-hidden="true"></i>
                   </summary>
                   
                   <div class="post-meta" style="margin-top: 16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
