@@ -59,6 +59,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     PG.syncSidebarToggleUi(Boolean(grid?.classList.contains('sidebar-collapsed')));
   }
 
+  const connectionBadge = document.getElementById('connectionBadge');
+  if (connectionBadge) {
+    const openReconnect = (e) => {
+      if (!connectionBadge.classList.contains('is-actionable')) return;
+      if (e.target.closest('a, button')) return;
+      e.preventDefault();
+      PG.openSidebarAndFocusSid();
+    };
+    connectionBadge.addEventListener('click', openReconnect);
+    connectionBadge.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') openReconnect(e);
+    });
+  }
+
   if (window.lucide) {
     lucide.createIcons();
   }

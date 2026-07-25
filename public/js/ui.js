@@ -193,7 +193,7 @@ function syncSidebarToggleUi(isCollapsed) {
   const closeBtn = document.getElementById('sidebarClose');
   if (openBtn) {
     openBtn.setAttribute('aria-expanded', String(!isCollapsed));
-    openBtn.title = isCollapsed ? 'Open settings' : 'Hide settings';
+    openBtn.title = isCollapsed ? 'Open settings' : 'Close settings';
   }
   if (closeBtn) {
     closeBtn.setAttribute('aria-expanded', String(!isCollapsed));
@@ -220,7 +220,7 @@ function openSidebarAndFocusSid() {
     sidInput.focus();
     sidInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
-  showToast('Please paste your Substack SID cookie value to connect.', 'info');
+  showToast('Reconnect: paste your Substack connect.sid, then Test → Connect.', 'info');
 }
 
 function togglePasswordVisibility(inputId, btnEl) {

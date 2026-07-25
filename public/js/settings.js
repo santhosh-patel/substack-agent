@@ -336,13 +336,18 @@ function updateConnectionBadge(profile) {
   const text = document.getElementById('connectionText');
   const avatar = document.getElementById('profileAvatar');
   const subLink = document.getElementById('profileSubLink');
+  const action = document.getElementById('profileAction');
   const discBtn = document.getElementById('disconnectBtn');
 
   PG.currentProfile = profile;
 
   if (profile) {
     badge.className = 'profile-card connected';
+    badge.removeAttribute('role');
+    badge.removeAttribute('tabindex');
+    badge.setAttribute('aria-label', profile.name || 'Connected');
     text.textContent = profile.name || 'Connected';
+    if (action) action.hidden = true;
 
     const initials = (profile.name || '')
       .split(' ')
@@ -374,10 +379,17 @@ function updateConnectionBadge(profile) {
     // Update dynamic fields in simulated Substack previews
     updateSimulatedPreviewHeader(profile);
   } else {
-    badge.className = 'profile-card disconnected';
-    badge.title = 'Not connected';
-    avatar.title = 'Not connected';
+    badge.className = 'profile-card disconnected is-actionable';
+    badge.setAttribute('role', 'button');
+    badge.setAttribute('tabindex', '0');
+    badge.setAttribute('aria-label', 'Not connected — click to reconnect');
+    badge.title = 'Click to reconnect';
+    avatar.title = 'Click to reconnect';
     text.textContent = 'Not connected';
+    if (action) {
+      action.hidden = false;
+      action.textContent = 'Reconnect';
+    }
     avatar.textContent = '?';
     avatar.style.background = 'var(--bg-hover)';
     avatar.style.color = 'var(--text-secondary)';
@@ -520,7 +532,7 @@ function openSidebarAndFocusSid() {
     sidInput.focus();
     sidInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
-  showToast('Please paste your Substack SID cookie value to connect.', 'info');
+  showToast('Reconnect: paste your Substack connect.sid, then Test → Connect.', 'info');
 }
 
 // ─── Publish History ───

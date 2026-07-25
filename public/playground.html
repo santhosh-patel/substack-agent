@@ -64,12 +64,12 @@
           class="btn-sidebar-toggle"
           id="sidebarToggle"
           onclick="toggleSidebar()"
-          title="Hide settings"
+          title="Open settings"
           aria-label="Toggle settings panel"
           aria-controls="settingsPanel"
           aria-expanded="true"
         >
-          <i data-lucide="panel-left"></i>
+          <i data-lucide="settings"></i>
         </button>
       </div>
 
@@ -94,13 +94,21 @@
 
       <div class="app-header-actions">
         <!-- Connection Profile Card -->
-        <div class="profile-card disconnected" id="connectionBadge">
+        <div
+          class="profile-card disconnected is-actionable"
+          id="connectionBadge"
+          role="button"
+          tabindex="0"
+          title="Click to reconnect"
+          aria-label="Not connected — click to reconnect"
+        >
           <div class="profile-avatar" id="profileAvatar">?</div>
           <div class="profile-info">
             <div class="profile-name" id="connectionText">Not connected</div>
+            <span class="profile-action" id="profileAction">Reconnect</span>
             <a class="profile-link" id="profileSubLink" href="#" target="_blank" style="display: none;">View Site</a>
           </div>
-          <button class="profile-disconnect-btn" id="disconnectBtn" onclick="handleDisconnect()" title="Disconnect session" style="display: none;">
+          <button type="button" class="profile-disconnect-btn" id="disconnectBtn" onclick="event.stopPropagation(); handleDisconnect()" title="Disconnect session" style="display: none;">
             <i data-lucide="log-out"></i>
           </button>
         </div>

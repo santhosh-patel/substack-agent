@@ -295,6 +295,20 @@ body::before {
   color: var(--success);
 }
 
+.profile-card.is-actionable {
+  cursor: pointer;
+}
+
+.profile-card.is-actionable:hover {
+  border-color: rgba(255, 103, 25, 0.45);
+  background: var(--accent-glow);
+}
+
+.profile-card.is-actionable:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .profile-avatar {
   width: 24px;
   height: 24px;
@@ -308,10 +322,23 @@ body::before {
   font-weight: 700;
 }
 
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+
 .profile-name {
   font-size: 12.5px;
   font-weight: 600;
   color: var(--text-primary);
+}
+
+.profile-action {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
 }
 
 .profile-link {
