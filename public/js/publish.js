@@ -173,9 +173,41 @@ function updatePreviewMetadata() {
   }
 }
 
+function openPreviewFullscreen() {
+  const source = document.getElementById('substackPreviewWrap');
+  const overlay = document.getElementById('previewFullscreenOverlay');
+  const target = document.getElementById('previewFullscreenContent');
+  if (!source || !overlay || !target) return;
+
+  target.innerHTML = source.innerHTML;
+  overlay.hidden = false;
+  overlay.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('preview-fullscreen-open');
+  if (window.lucide) lucide.createIcons();
+  document.getElementById('previewFullscreenClose')?.focus();
+}
+
+function closePreviewFullscreen() {
+  const overlay = document.getElementById('previewFullscreenOverlay');
+  if (!overlay || overlay.hidden) return;
+  overlay.hidden = true;
+  overlay.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('preview-fullscreen-open');
+}
+
+function initPreviewFullscreen() {
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const overlay = document.getElementById('previewFullscreenOverlay');
+    if (overlay && !overlay.hidden) closePreviewFullscreen();
+  });
+}
 
 PG.handleGenerate = handleGenerate;
 PG.handlePublish = handlePublish;
 PG.updatePreview = updatePreview;
 PG.updatePreviewMetadata = updatePreviewMetadata;
+PG.openPreviewFullscreen = openPreviewFullscreen;
+PG.closePreviewFullscreen = closePreviewFullscreen;
+PG.initPreviewFullscreen = initPreviewFullscreen;
 export {};

@@ -326,9 +326,20 @@
                   <textarea class="editor-textarea" id="editor" placeholder="Write your newsletter in Markdown…" oninput="updatePreview()" title="Newsletter body in Markdown — preview updates as you type"></textarea>
                 </div>
                 <div class="editor-pane" style="background: var(--bg-primary);">
-                  <div class="editor-pane-header">Preview</div>
+                  <div class="editor-pane-header editor-pane-header--actions">
+                    <span>Preview</span>
+                    <button
+                      type="button"
+                      class="btn-preview-fullscreen"
+                      onclick="openPreviewFullscreen()"
+                      title="Open fullscreen Substack preview"
+                      aria-label="Open fullscreen Substack preview"
+                    >
+                      <i data-lucide="maximize-2"></i>
+                    </button>
+                  </div>
                   <div style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
-                    <div class="substack-preview-wrap">
+                    <div class="substack-preview-wrap" id="substackPreviewWrap">
                       <!-- Substack Post Header (mockup) -->
                       <div class="substack-preview-header">
                         <div class="substack-preview-pub">
@@ -882,6 +893,27 @@
         </div>
       </main>
 
+    </div>
+  </div>
+
+  <div class="preview-fullscreen-overlay" id="previewFullscreenOverlay" hidden aria-hidden="true">
+    <div class="preview-fullscreen-topbar">
+      <span class="preview-fullscreen-label">Substack preview</span>
+      <button
+        type="button"
+        class="preview-fullscreen-close"
+        id="previewFullscreenClose"
+        onclick="closePreviewFullscreen()"
+        title="Close fullscreen preview"
+        aria-label="Close fullscreen preview"
+      >
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    <div class="preview-fullscreen-scroll">
+      <div class="preview-fullscreen-frame">
+        <div class="substack-preview-wrap substack-preview-wrap--fullscreen" id="previewFullscreenContent"></div>
+      </div>
     </div>
   </div>
 

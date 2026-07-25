@@ -27,7 +27,7 @@ const WINDOW_EXPORTS = [
   'updateSchedModelOptions', 'dtNavigateMonth', 'dtSelectDay', 'dtSelectTime',
   'dtConfirm', 'dtCancel', 'dtQuickSchedule', 'dtQuickScheduleTomorrow',
   'dtSelectPromptPreset', 'copyHistoryLink', 'toggleBodyText', 'reuseHistoryItem',
-  'loadNotes', 'openSidebarAndFocusSid',
+  'loadNotes', 'openSidebarAndFocusSid', 'openPreviewFullscreen', 'closePreviewFullscreen',
 ];
 
 for (const name of WINDOW_EXPORTS) {
@@ -38,6 +38,7 @@ for (const name of WINDOW_EXPORTS) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   PG.initMacConsoleHighlight();
+  PG.initPreviewFullscreen();
   PG.loadSavedSettings();
   document.body.classList.remove('light-theme');
 
