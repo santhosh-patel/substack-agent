@@ -285,3 +285,65 @@ export function getAdjacentPages(pathname) {
 export function docsHref(path) {
   return path ? `/docs/${path}` : '/docs';
 }
+
+function normalizeDocFilePath(filePath) {
+  const parts = filePath.split('/');
+  const stack = [];
+  for (const part of parts) {
+    if (!part || part === '.') continue;
+    if (part === '..') {
+      stack.pop();
+    } else {
+      stack.push(part);
+    }
+  }
+  return stack.join('/');
+}
+
+/** Map markdown hrefs (repo-relative or file-relative) to /docs routes in the SPA. */
+export function resolveMarkdownHref(href, currentFile) {
+  if (!href) return { type: 'external', href: '#' };
+
+  if (href.startsWith('#')) {
+    return { type: 'hash', href };
+  }
+
+  if (/^(https?:|mailto:|tel:)/.test(href)) {
+    return { type: 'external', href };
+  }
+
+  if (href === '/docs' || href.startsWith('/docs/')) {
+    return { type: 'internal', to: href };
+  }
+
+  // /playground, /openapi.json, etc.
+  if (href.startsWith('/')) {
+    return { type: 'external', href };
+  }
+
+  const hashIndex = href.indexOf('#');
+  const filePart = hashIndex === -1 ? href : href.slice(0, hashIndex);
+  const hash = hashIndex === -1 ? '' : href.slice(hashIndex);
+
+  if (filePart.endsWith('.md')) {
+    let targetFile = filePart;
+
+    if (targetFile.startsWith('docs/')) {
+      targetFile = targetFile.slice('docs/'.length);
+    } else if (currentFile) {
+      const dir = currentFile.includes('/')
+        ? currentFile.slice(0, currentFile.lastIndexOf('/'))
+        : '';
+      targetFile = normalizeDocFilePath(dir ? `${dir}/${targetFile}` : targetFile);
+    }
+
+    const page = flatPages.find((p) => p.file === targetFile);
+    const routePath = page
+      ? page.path
+      : targetFile.replace(/\.md$/, '').replace(/\/index$/, '');
+
+    return { type: 'internal', to: `${docsHref(routePath)}${hash}` };
+  }
+
+  return { type: 'external', href };
+}

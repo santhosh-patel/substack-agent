@@ -4,7 +4,15 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { docsNav, docsHref, findPageByPath, getAdjacentPages, flatPages, GITHUB_EDIT_BASE } from './nav';
+import {
+  docsNav,
+  docsHref,
+  findPageByPath,
+  getAdjacentPages,
+  flatPages,
+  GITHUB_EDIT_BASE,
+  resolveMarkdownHref,
+} from './nav';
 import { getDocContent, getDocSearchIndex } from './content';
 import MacWindow from '../components/MacWindow';
 import './DocsLayout.css';
@@ -247,6 +255,21 @@ function DocsPageContent({ page }) {
                   <MacWindow className="mac-window-docs">
                     <pre {...props}>{children}</pre>
                   </MacWindow>
+                );
+              },
+              a({ href, children, ...props }) {
+                const resolved = resolveMarkdownHref(href, page.file);
+                if (resolved.type === 'internal') {
+                  return (
+                    <Link to={resolved.to} {...props}>
+                      {children}
+                    </Link>
+                  );
+                }
+                return (
+                  <a href={resolved.href} {...props}>
+                    {children}
+                  </a>
                 );
               },
             }}
