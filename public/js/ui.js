@@ -223,30 +223,6 @@ function openSidebarAndFocusSid() {
   showToast('Please paste your Substack SID cookie value to connect.', 'info');
 }
 
-// ─── Theme Toggling ───
-function toggleTheme() {
-  const isLight = document.body.classList.toggle('light-theme');
-  localStorage.setItem('app_theme', isLight ? 'light' : 'dark');
-  updateThemeToggleIcon(isLight);
-}
-
-function updateThemeToggleIcon(isLight) {
-  const btn = document.getElementById('themeToggleBtn');
-  if (!btn) return;
-  if (isLight) {
-    btn.innerHTML = '<i data-lucide="moon"></i>';
-    btn.title = 'Switch to dark mode';
-    btn.setAttribute('aria-label', 'Switch to dark mode');
-  } else {
-    btn.innerHTML = '<i data-lucide="sun"></i>';
-    btn.title = 'Switch to light mode';
-    btn.setAttribute('aria-label', 'Switch to light mode');
-  }
-  if (window.lucide) {
-    window.lucide.createIcons();
-  }
-}
-
 function togglePasswordVisibility(inputId, btnEl) {
   const input = document.getElementById(inputId);
   if (!input) return;
@@ -276,7 +252,5 @@ PG.resetSystemPrompt = resetSystemPrompt;
 PG.toggleSidebar = toggleSidebar;
 PG.syncSidebarToggleUi = syncSidebarToggleUi;
 PG.openSidebarAndFocusSid = openSidebarAndFocusSid;
-PG.toggleTheme = toggleTheme;
-PG.updateThemeToggleIcon = updateThemeToggleIcon;
 PG.togglePasswordVisibility = togglePasswordVisibility;
 export {};

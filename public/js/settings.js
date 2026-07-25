@@ -523,28 +523,6 @@ function openSidebarAndFocusSid() {
   showToast('Please paste your Substack SID cookie value to connect.', 'info');
 }
 
-// ─── Theme Toggling ───
-function toggleTheme() {
-  const isLight = document.body.classList.toggle('light-theme');
-  localStorage.setItem('app_theme', isLight ? 'light' : 'dark');
-  updateThemeToggleIcon(isLight);
-}
-
-function updateThemeToggleIcon(isLight) {
-  const btn = document.getElementById('themeToggleBtn');
-  if (!btn) return;
-  if (isLight) {
-    btn.innerHTML = `<i data-lucide="moon" style="width: 18px; height: 18px;"></i>`;
-    btn.title = "Switch to Dark Mode";
-  } else {
-    btn.innerHTML = `<i data-lucide="sun" style="width: 18px; height: 18px;"></i>`;
-    btn.title = "Switch to Light Mode";
-  }
-  if (window.lucide) {
-    lucide.createIcons();
-  }
-}
-
 // ─── Publish History ───
 function loadPublishHistory() {
   const historyList = document.getElementById('newsletterHistoryList');
@@ -745,8 +723,6 @@ PG.saveSystemPrompt = saveSystemPrompt;
 PG.resetSystemPrompt = resetSystemPrompt;
 PG.toggleSidebar = toggleSidebar;
 PG.openSidebarAndFocusSid = openSidebarAndFocusSid;
-PG.toggleTheme = toggleTheme;
-PG.updateThemeToggleIcon = updateThemeToggleIcon;
 PG.loadPublishHistory = loadPublishHistory;
 PG.addPostToHistory = addPostToHistory;
 PG.updatePublishButtonLabel = updatePublishButtonLabel;

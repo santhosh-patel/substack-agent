@@ -14,7 +14,7 @@ import './datetime.js';
 import './scheduler-polling.js';
 
 const WINDOW_EXPORTS = [
-  'initMacConsoleHighlight', 'toggleSidebar', 'toggleTheme', 'handleDisconnect',
+  'initMacConsoleHighlight', 'toggleSidebar', 'handleDisconnect',
   'handleConnect', 'togglePasswordVisibility', 'testSubstackSession', 'testAiKey',
   'saveApiKey', 'resetSystemPrompt', 'handleGenerate', 'handlePublish',
   'runCommentAutomation', 'stopCommentAutomation', 'handleGenerateNote',
@@ -39,12 +39,7 @@ for (const name of WINDOW_EXPORTS) {
 document.addEventListener('DOMContentLoaded', async () => {
   PG.initMacConsoleHighlight();
   PG.loadSavedSettings();
-
-  const savedTheme = localStorage.getItem('app_theme') || 'dark';
-  if (savedTheme === 'light') {
-    document.body.classList.add('light-theme');
-    setTimeout(() => PG.updateThemeToggleIcon(true), 50);
-  }
+  document.body.classList.remove('light-theme');
 
   await PG.loadConfigFromBackend();
   PG.loadPublishHistory();
