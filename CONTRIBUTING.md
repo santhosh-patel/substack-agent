@@ -60,7 +60,6 @@ git push origin main
 
 ```bash
 npm install
-npm install --prefix landing-page
 cp .env.example .env
 # Edit .env — never commit this file
 npm run dev

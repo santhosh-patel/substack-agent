@@ -53,6 +53,11 @@ Bullets cite files, routes, env keys, or runtime behavior where useful. User-fac
 - **Changelog format** — area-scoped subheadings, technical bullets, compare-link footer; preamble documents structure and mirror requirement (`CHANGELOG.md` ↔ `docs/changelog.md`).
 - **Package version** — `1.1.0` in `package.json`, `APP_VERSION` (`src/routes/tools.ts`), MCP server metadata (`src/mcp/create-server.ts`), `public/openapi.json`.
 
+### Fixed
+
+#### CI / Build
+- **`vite: not found` on `npm run build`** — root `npm ci` did not install `landing-page/` deps; added root `postinstall` (`npm ci --prefix landing-page`) and `npx vite build` in `landing-page/package.json`.
+
 ---
 
 ## [1.0.6] — 2026-07-25

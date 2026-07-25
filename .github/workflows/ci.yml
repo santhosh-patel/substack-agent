@@ -32,12 +32,8 @@ jobs:
             package-lock.json
             landing-page/package-lock.json
 
-      - name: Install dependencies (root)
+      - name: Install dependencies (root + landing-page via postinstall)
         run: npm ci
-
-      - name: Install dependencies (landing-page)
-        run: npm ci
-        working-directory: landing-page
 
       - name: TypeScript typecheck (tsc --noEmit)
         run: npm run typecheck
@@ -73,12 +69,8 @@ jobs:
             package-lock.json
             landing-page/package-lock.json
 
-      - name: Install dependencies (root)
+      - name: Install dependencies (root + landing-page via postinstall)
         run: npm ci
-
-      - name: Install dependencies (landing-page)
-        run: npm ci
-        working-directory: landing-page
 
       - name: Vite production build → public/
         run: npm run build
