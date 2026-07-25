@@ -28,6 +28,7 @@ const WINDOW_EXPORTS = [
   'dtConfirm', 'dtCancel', 'dtQuickSchedule', 'dtQuickScheduleTomorrow',
   'dtSelectPromptPreset', 'copyHistoryLink', 'toggleBodyText', 'reuseHistoryItem',
   'loadNotes', 'openSidebarAndFocusSid', 'openPreviewFullscreen', 'closePreviewFullscreen',
+  'dismissSecurityCallout',
 ];
 
 for (const name of WINDOW_EXPORTS) {
@@ -39,13 +40,13 @@ for (const name of WINDOW_EXPORTS) {
 document.addEventListener('DOMContentLoaded', async () => {
   PG.initMacConsoleHighlight();
   PG.initPreviewFullscreen();
+  PG.initOnboardingChecklist();
+  PG.initSecurityCallout();
   PG.loadSavedSettings();
   document.body.classList.remove('light-theme');
 
   await PG.loadConfigFromBackend();
   PG.loadPublishHistory();
-  PG.initOnboardingChecklist();
-  PG.initSecurityCallout();
 
   if (!PG.getStoredSid() && !window.backendConfig?.hasSubstackSid) {
     const grid = document.querySelector('.main-grid');

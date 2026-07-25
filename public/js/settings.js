@@ -90,19 +90,20 @@ function applyDeploymentMode(config) {
 const ONBOARDING_KEY = 'onboarding_checklist_v1';
 const SECURITY_CALLOUT_KEY = 'security_callout_dismissed_v1';
 
+function dismissSecurityCallout() {
+  const callout = document.getElementById('securityCallout');
+  if (!callout) return;
+  localStorage.setItem(SECURITY_CALLOUT_KEY, 'true');
+  callout.hidden = true;
+}
+
 function initSecurityCallout() {
   const callout = document.getElementById('securityCallout');
   if (!callout) return;
 
   if (localStorage.getItem(SECURITY_CALLOUT_KEY) === 'true') {
     callout.hidden = true;
-    return;
   }
-
-  document.getElementById('securityCalloutDismiss')?.addEventListener('click', () => {
-    localStorage.setItem(SECURITY_CALLOUT_KEY, 'true');
-    callout.hidden = true;
-  });
 }
 
 function initOnboardingChecklist() {
@@ -675,6 +676,7 @@ PG.loadConfigFromBackend = loadConfigFromBackend;
 PG.applyDeploymentMode = applyDeploymentMode;
 PG.initOnboardingChecklist = initOnboardingChecklist;
 PG.initSecurityCallout = initSecurityCallout;
+PG.dismissSecurityCallout = dismissSecurityCallout;
 PG.updateOnboardingChecklist = updateOnboardingChecklist;
 PG.restorePersistedSession = restorePersistedSession;
 PG.loadSavedSettings = loadSavedSettings;
