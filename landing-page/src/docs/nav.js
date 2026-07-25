@@ -302,23 +302,23 @@ function normalizeDocFilePath(filePath) {
 
 /** Map markdown hrefs (repo-relative or file-relative) to /docs routes in the SPA. */
 export function resolveMarkdownHref(href, currentFile) {
-  if (!href) return { type: 'external', href: '#' };
+  if (!href) return { type: 'external', href: '#', newTab: false };
 
   if (href.startsWith('#')) {
-    return { type: 'hash', href };
+    return { type: 'hash', href, newTab: false };
   }
 
   if (/^(https?:|mailto:|tel:)/.test(href)) {
-    return { type: 'external', href };
+    return { type: 'external', href, newTab: true };
   }
 
   if (href === '/docs' || href.startsWith('/docs/')) {
-    return { type: 'internal', to: href };
+    return { type: 'internal', to: href, newTab: false };
   }
 
   // /playground, /openapi.json, etc.
   if (href.startsWith('/')) {
-    return { type: 'external', href };
+    return { type: 'external', href, newTab: true };
   }
 
   const hashIndex = href.indexOf('#');
@@ -342,8 +342,12 @@ export function resolveMarkdownHref(href, currentFile) {
       ? page.path
       : targetFile.replace(/\.md$/, '').replace(/\/index$/, '');
 
-    return { type: 'internal', to: `${docsHref(routePath)}${hash}` };
+    return {
+      type: 'internal',
+      to: `${docsHref(routePath)}${hash}`,
+      newTab: true,
+    };
   }
 
-  return { type: 'external', href };
+  return { type: 'external', href, newTab: false };
 }

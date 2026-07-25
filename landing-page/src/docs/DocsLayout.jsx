@@ -259,15 +259,18 @@ function DocsPageContent({ page }) {
               },
               a({ href, children, ...props }) {
                 const resolved = resolveMarkdownHref(href, page.file);
+                const newTabProps = resolved.newTab
+                  ? { target: '_blank', rel: 'noopener noreferrer' }
+                  : {};
                 if (resolved.type === 'internal') {
                   return (
-                    <Link to={resolved.to} {...props}>
+                    <Link to={resolved.to} {...newTabProps} {...props}>
                       {children}
                     </Link>
                   );
                 }
                 return (
-                  <a href={resolved.href} {...props}>
+                  <a href={resolved.href} {...newTabProps} {...props}>
                     {children}
                   </a>
                 );
