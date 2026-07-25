@@ -13,7 +13,7 @@
   <!-- ─── Top Main Navigation Bar (Links to Landing Page) ─── -->
   <header class="playground-top-navbar">
     <div class="playground-top-nav-container">
-      <a href="/" class="playground-nav-brand">
+      <a href="/" class="playground-nav-brand" title="Back to Substack Agent home">
         <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
           <rect width="28" height="28" rx="6" fill="#FF6719" />
           <path d="M7 7h14v3H7V7zm0 5h14v9L14 17.5 7 21V12z" fill="white" />
@@ -22,16 +22,16 @@
       </a>
 
       <nav class="playground-nav-links">
-        <a href="/">Overview</a>
-        <a href="/#features">Features</a>
-        <a href="/#integrations">Integrations</a>
-        <a href="/#how-it-works">How It Works</a>
-        <a href="/#tools">Tools</a>
-        <a href="/#faq">FAQ</a>
+        <a href="/" title="Go to the product overview">Overview</a>
+        <a href="/#features" title="See what Substack Agent can do">Features</a>
+        <a href="/#integrations" title="AI providers and integrations">Integrations</a>
+        <a href="/#how-it-works" title="How the workflow works">How It Works</a>
+        <a href="/#tools" title="API and MCP tools">Tools</a>
+        <a href="/#faq" title="Frequently asked questions">FAQ</a>
       </nav>
 
       <div class="playground-nav-actions">
-        <a href="https://github.com/santhosh-patel/substack-agent" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+        <a href="https://github.com/santhosh-patel/substack-agent" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" title="Open the Substack Agent GitHub repository">
           GitHub
         </a>
       </div>
@@ -48,8 +48,8 @@
       <h3 class="app-modal-title" id="appConfirmTitle"></h3>
       <p class="app-modal-body" id="appConfirmBody"></p>
       <div class="app-modal-footer">
-        <button type="button" class="app-modal-cancel" id="appConfirmCancel">Cancel</button>
-        <button type="button" class="app-modal-confirm" id="appConfirmOk">Confirm</button>
+        <button type="button" class="app-modal-cancel" id="appConfirmCancel" title="Cancel and close this dialog">Cancel</button>
+        <button type="button" class="app-modal-confirm" id="appConfirmOk" title="Confirm this action">Confirm</button>
       </div>
     </div>
   </div>
@@ -64,7 +64,7 @@
           class="btn-sidebar-toggle"
           id="sidebarToggle"
           onclick="toggleSidebar()"
-          title="Open settings"
+          title="Open or close the Settings sidebar (connection, AI keys, prompts)"
           aria-label="Toggle settings panel"
           aria-controls="settingsPanel"
           aria-expanded="true"
@@ -75,19 +75,19 @@
 
       <!-- Navigation Tabs -->
       <nav class="app-nav" aria-label="Main navigation">
-        <button class="nav-btn active" id="tab-newsletters" onclick="switchTab('newsletters')" aria-label="Newsletters">
+        <button class="nav-btn active" id="tab-newsletters" onclick="switchTab('newsletters')" aria-label="Newsletters" title="Compose and publish newsletters">
           <i data-lucide="file-text"></i><span class="nav-btn-label">Newsletters</span>
         </button>
-        <button class="nav-btn" id="tab-comments" onclick="switchTab('comments')" aria-label="Comments">
+        <button class="nav-btn" id="tab-comments" onclick="switchTab('comments')" aria-label="Comments" title="Automate AI comments on other Substack posts">
           <i data-lucide="message-square"></i><span class="nav-btn-label">Comments</span>
         </button>
-        <button class="nav-btn" id="tab-notes" onclick="switchTab('notes')" aria-label="Notes">
+        <button class="nav-btn" id="tab-notes" onclick="switchTab('notes')" aria-label="Notes" title="Compose and publish short Substack Notes">
           <i data-lucide="sticky-note"></i><span class="nav-btn-label">Notes</span>
         </button>
-        <button class="nav-btn" id="tab-scheduler" onclick="switchTab('scheduler')" aria-label="Scheduler">
+        <button class="nav-btn" id="tab-scheduler" onclick="switchTab('scheduler')" aria-label="Scheduler" title="Schedule one-off or recurring posts">
           <i data-lucide="calendar"></i><span class="nav-btn-label">Scheduler</span>
         </button>
-        <button class="nav-btn" id="tab-history" onclick="switchTab('history')" aria-label="History">
+        <button class="nav-btn" id="tab-history" onclick="switchTab('history')" aria-label="History" title="Browse app history and your Substack archive">
           <i data-lucide="history"></i><span class="nav-btn-label">History</span>
         </button>
       </nav>
@@ -99,16 +99,16 @@
           id="connectionBadge"
           role="button"
           tabindex="0"
-          title="Click to reconnect"
+          title="Open Settings to connect your Substack session"
           aria-label="Not connected — click to reconnect"
         >
           <div class="profile-avatar" id="profileAvatar">?</div>
           <div class="profile-info">
             <div class="profile-name" id="connectionText">Not connected</div>
             <span class="profile-action" id="profileAction">Reconnect</span>
-            <a class="profile-link" id="profileSubLink" href="#" target="_blank" style="display: none;">View Site</a>
+            <a class="profile-link" id="profileSubLink" href="#" target="_blank" style="display: none;" title="Open your Substack publication site">View Site</a>
           </div>
-          <button type="button" class="profile-disconnect-btn" id="disconnectBtn" onclick="event.stopPropagation(); handleDisconnect()" title="Disconnect session" style="display: none;">
+          <button type="button" class="profile-disconnect-btn" id="disconnectBtn" onclick="event.stopPropagation(); handleDisconnect()" title="Disconnect this Substack session from the playground" style="display: none;">
             <i data-lucide="log-out"></i>
           </button>
         </div>
@@ -121,7 +121,7 @@
       <div class="onboarding-panel" id="onboardingChecklist" hidden>
         <div class="onboarding-header">
           <h3>Get started in 3 steps</h3>
-          <button type="button" class="onboarding-dismiss" id="onboardingDismiss" aria-label="Dismiss checklist">×</button>
+          <button type="button" class="onboarding-dismiss" id="onboardingDismiss" aria-label="Dismiss checklist" title="Dismiss this checklist">×</button>
         </div>
         <ol class="onboarding-steps">
           <li id="onboardStep1"><span>Paste <code>connect.sid</code> → Test → Connect</span></li>
@@ -147,7 +147,7 @@
             class="btn-sidebar-close"
             id="sidebarClose"
             onclick="toggleSidebar()"
-            title="Close settings"
+            title="Close the Settings sidebar"
             aria-label="Close settings panel"
           >
             <i data-lucide="x"></i>
@@ -166,14 +166,14 @@
             <div class="form-group">
               <label for="sid">Session cookie (connect.sid)</label>
               <div class="input-password-wrapper">
-                <input type="password" id="sid" placeholder="Paste your cookie value…" autocomplete="off" />
-                <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('sid', this)" title="Toggle visibility">
+                <input type="password" id="sid" placeholder="Paste your cookie value…" autocomplete="off" title="Your Substack connect.sid cookie — grants account access" />
+                <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('sid', this)" title="Show or hide the session cookie">
                   <i data-lucide="eye"></i>
                 </button>
               </div>
               <span class="field-hint">Saved locally in this browser</span>
               <details class="cookie-guide">
-                <summary>How to get connect.sid</summary>
+                <summary title="Step-by-step instructions for finding connect.sid">How to get connect.sid</summary>
                 <ol>
                   <li>Log in at <a href="https://substack.com" target="_blank" rel="noopener noreferrer">substack.com</a></li>
                   <li>Open DevTools → Application → Cookies → substack.com</li>
@@ -181,7 +181,7 @@
                   <li>Paste above, then click Test → Connect</li>
                 </ol>
                 <p style="margin-top: 8px; font-size: 12px;">
-                  <a href="/docs/getting-started/session-cookie">Full session cookie guide →</a>
+                  <a href="/docs/getting-started/session-cookie" title="Open the full session cookie documentation">Full session cookie guide →</a>
                 </p>
               </details>
             </div>
@@ -189,8 +189,8 @@
             <div class="form-group">
               <label for="pubUrl">Publication URL</label>
               <div class="input-password-wrapper">
-                <input type="text" id="pubUrl" placeholder="yoursite.substack.com" />
-                <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('pubUrl', this)" title="Toggle visibility">
+                <input type="text" id="pubUrl" placeholder="yoursite.substack.com" title="Your publication domain, e.g. yoursite.substack.com" />
+                <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('pubUrl', this)" title="Show or hide publication URL">
                   <i data-lucide="eye-off"></i>
                 </button>
               </div>
@@ -198,10 +198,10 @@
 
             <div class="form-group">
               <div class="settings-btn-row">
-                <button type="button" class="btn btn-secondary btn-sm" id="testSidBtn" onclick="testSubstackSession()">
+                <button type="button" class="btn btn-secondary btn-sm" id="testSidBtn" onclick="testSubstackSession()" title="Verify your connect.sid cookie without saving a new connection">
                   Test
                 </button>
-                <button type="button" class="btn btn-primary btn-sm" id="connectBtn" onclick="handleConnect()">
+                <button type="button" class="btn btn-primary btn-sm" id="connectBtn" onclick="handleConnect()" title="Connect this browser session to your Substack account">
                   Connect
                 </button>
               </div>
@@ -216,7 +216,7 @@
 
             <div class="form-group">
               <label for="provider">Provider</label>
-              <select id="provider" onchange="updateModelOptions()">
+              <select id="provider" onchange="updateModelOptions()" title="Choose which AI provider to use for generation">
                 <option value="groq">Groq</option>
                 <option value="gemini">Gemini</option>
                 <option value="openai">OpenAI</option>
@@ -226,23 +226,23 @@
 
             <div class="form-group">
               <label for="model">Model</label>
-              <select id="model"></select>
+              <select id="model" title="Choose the AI model for this provider"></select>
             </div>
 
              <div class="form-group">
               <label for="aiKey">API Key</label>
               <div class="input-password-wrapper" style="margin-bottom: 8px;">
-                <input type="password" id="aiKey" placeholder="Paste your API key…" autocomplete="off" />
-                <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('aiKey', this)" title="Toggle visibility">
+                <input type="password" id="aiKey" placeholder="Paste your API key…" autocomplete="off" title="API key for the selected provider (stored in this browser)" />
+                <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('aiKey', this)" title="Show or hide the API key">
                   <i data-lucide="eye"></i>
                 </button>
               </div>
               <span class="field-hint">Saved locally per provider</span>
               <div class="settings-btn-row" style="margin-top: 8px;">
-                <button type="button" class="btn btn-secondary btn-sm" id="testAiKeyBtn" onclick="testAiKey()" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <button type="button" class="btn btn-secondary btn-sm" id="testAiKeyBtn" onclick="testAiKey()" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;" title="Send a test request to verify this API key works">
                   <i data-lucide="shield-check"></i> Test API Key
                 </button>
-                <button type="button" class="btn btn-secondary btn-sm" id="saveAiKeyBtn" onclick="saveApiKey()" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <button type="button" class="btn btn-secondary btn-sm" id="saveAiKeyBtn" onclick="saveApiKey()" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;" title="Save this API key in browser localStorage for the selected provider">
                   <i data-lucide="save"></i> Save API Key
                 </button>
               </div>
@@ -254,13 +254,13 @@
           <!-- System Prompt Section -->
           <div class="settings-section">
             <details class="prompt-details" id="promptDetails">
-              <summary class="settings-section-title prompt-summary">
+              <summary class="settings-section-title prompt-summary" title="Edit AI writing instructions used when generating content">
                 <span>System Prompt</span>
                 <i data-lucide="chevron-down" class="chevron-icon"></i>
               </summary>
               <div class="form-group" style="margin-top: 12px; display: flex; flex-direction: column;">
-                <textarea id="systemPrompt" class="prompt-textarea" placeholder="AI writing instructions..."></textarea>
-                <button class="btn btn-secondary btn-sm" style="margin-top: 8px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px;" onclick="resetSystemPrompt()">
+                <textarea id="systemPrompt" class="prompt-textarea" placeholder="AI writing instructions..." title="Instructions that shape how the AI writes your content"></textarea>
+                <button class="btn btn-secondary btn-sm" style="margin-top: 8px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px;" onclick="resetSystemPrompt()" title="Restore the default system prompt for the current tab">
                   <i data-lucide="rotate-ccw"></i> Reset to Default
                 </button>
               </div>
@@ -281,13 +281,13 @@
             <div class="card-body">
               <!-- Topic + Generate -->
               <div class="topic-row">
-                <input type="text" id="topic" list="topic-history" placeholder="Topic or angle — AI will search the web and write title, subtitle, and post" />
+                <input type="text" id="topic" list="topic-history" placeholder="Topic or angle — AI will search the web and write title, subtitle, and post" title="Describe the topic or angle for AI generation" />
                 <datalist id="topic-history"></datalist>
-                <button class="btn btn-secondary" id="generateBtn" onclick="handleGenerate()">
+                <button class="btn btn-secondary" id="generateBtn" onclick="handleGenerate()" title="Generate title, subtitle, and post body with AI">
                   <i data-lucide="sparkles"></i> Generate
                 </button>
               </div>
-              <label class="feature-toggle" for="composeUseWebSearch">
+              <label class="feature-toggle" for="composeUseWebSearch" title="Turn web research on or off for AI generation">
                 <span class="feature-toggle-copy">
                   <span class="feature-toggle-title">
                     <i data-lucide="globe" aria-hidden="true"></i>
@@ -297,18 +297,18 @@
                     When on, AI researches the topic on the web before writing the title, subtitle, and post.
                   </span>
                 </span>
-                <input type="checkbox" class="toggle" id="composeUseWebSearch" checked />
+                <input type="checkbox" class="toggle" id="composeUseWebSearch" checked title="Enable web search during generation" />
               </label>
 
               <!-- Title + Subtitle -->
               <div class="post-meta">
                 <div class="form-group">
                   <label for="postTitle">Title</label>
-                  <input type="text" id="postTitle" placeholder="Newsletter title" />
+                  <input type="text" id="postTitle" placeholder="Newsletter title" title="Newsletter title shown on Substack" />
                 </div>
                 <div class="form-group">
                   <label for="postSubtitle">Subtitle</label>
-                  <input type="text" id="postSubtitle" placeholder="Brief subtitle (optional)" />
+                  <input type="text" id="postSubtitle" placeholder="Brief subtitle (optional)" title="Optional subtitle under the title" />
                 </div>
               </div>
 
@@ -316,7 +316,7 @@
               <div class="editor-container">
                 <div class="editor-pane">
                   <div class="editor-pane-header">Markdown</div>
-                  <textarea class="editor-textarea" id="editor" placeholder="Write your newsletter in Markdown…" oninput="updatePreview()"></textarea>
+                  <textarea class="editor-textarea" id="editor" placeholder="Write your newsletter in Markdown…" oninput="updatePreview()" title="Newsletter body in Markdown — preview updates as you type"></textarea>
                 </div>
                 <div class="editor-pane" style="background: var(--bg-primary);">
                   <div class="editor-pane-header">Preview</div>
@@ -331,7 +331,7 @@
                             <span class="substack-preview-pub-sub">Substack</span>
                           </div>
                         </div>
-                        <button class="substack-subscribe-btn">Subscribe</button>
+                        <button class="substack-subscribe-btn" type="button" title="Preview only — not a real Subscribe button">Subscribe</button>
                       </div>
                       <div class="substack-preview-body">
                         <h1 class="substack-preview-title" id="previewTitle">Post Title</h1>
@@ -361,11 +361,11 @@
 
               <!-- Publish Bar -->
               <div class="publish-bar">
-                <div class="draft-toggle">
-                  <input type="checkbox" class="toggle" id="draftToggle" />
+                <div class="draft-toggle" title="When on, publish as a draft instead of going live">
+                  <input type="checkbox" class="toggle" id="draftToggle" title="Save as draft on Substack" />
                   <label for="draftToggle" style="margin-bottom: 0; cursor: pointer;">Save as Draft</label>
                 </div>
-                <button class="btn btn-success btn-lg" id="publishBtn" onclick="handlePublish()" disabled>
+                <button class="btn btn-success btn-lg" id="publishBtn" onclick="handlePublish()" disabled title="Publish this newsletter to your Substack (or save as draft if toggled)">
                   <i data-lucide="send"></i> Publish to Substack
                 </button>
               </div>
@@ -400,26 +400,26 @@
               <div class="post-meta" style="margin-bottom: 16px;">
                 <div class="form-group">
                   <label for="commentTarget">Target Account (ID, slug, or URL)</label>
-                  <input type="text" id="commentTarget" list="commentTarget-history" placeholder="e.g. @username, 1234567, or name.substack.com" />
+                  <input type="text" id="commentTarget" list="commentTarget-history" placeholder="e.g. @username, 1234567, or name.substack.com" title="Substack profile or publication to scan for posts" />
                   <datalist id="commentTarget-history"></datalist>
                 </div>
                 <div class="form-group">
                   <label for="commentKeyword">Keyword / Match Phrase</label>
-                  <input type="text" id="commentKeyword" list="commentKeyword-history" placeholder="e.g. AI writing, startup advice" />
+                  <input type="text" id="commentKeyword" list="commentKeyword-history" placeholder="e.g. AI writing, startup advice" title="Only comment on posts that match this keyword or phrase" />
                   <datalist id="commentKeyword-history"></datalist>
                 </div>
               </div>
 
               <div class="form-group" style="margin-bottom: 24px;">
                 <label for="commentPrompt">Comment Generation Instructions (Optional)</label>
-                <textarea id="commentPrompt" style="min-height: 80px;" placeholder="Instructions for the AI, e.g. 'Congratulate them, keep it casual, and ask a relevant question.'"></textarea>
+                <textarea id="commentPrompt" style="min-height: 80px;" placeholder="Instructions for the AI, e.g. 'Congratulate them, keep it casual, and ask a relevant question.'" title="Optional style guide for how AI should write comments"></textarea>
               </div>
 
               <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 24px;">
-                <button class="btn btn-primary" id="runCommentAutoBtn" onclick="runCommentAutomation()">
+                <button class="btn btn-primary" id="runCommentAutoBtn" onclick="runCommentAutomation()" title="Scan the target account and post AI-written comments on matching posts">
                   <i data-lucide="play"></i> Run Automation
                 </button>
-                <button class="btn btn-secondary" id="stopCommentAutoBtn" onclick="stopCommentAutomation()" disabled>
+                <button class="btn btn-secondary" id="stopCommentAutoBtn" onclick="stopCommentAutomation()" disabled title="Cancel the browser request for this automation run">
                   <i data-lucide="square"></i> Stop
                 </button>
               </div>
@@ -438,7 +438,7 @@
                   <span></span> Automation Logs
                 </div>
                 <div class="console-actions-wrap">
-                  <button class="console-btn" style="display: flex; align-items: center; gap: 4px;" title="Clear console" onclick="document.getElementById('commentLogs').innerHTML = 'Ready to start automation logs...'; document.getElementById('consoleTitleState').className = 'console-title-text console-idle';">
+                  <button class="console-btn" style="display: flex; align-items: center; gap: 4px;" title="Clear automation log output" onclick="document.getElementById('commentLogs').innerHTML = 'Ready to start automation logs...'; document.getElementById('consoleTitleState').className = 'console-title-text console-idle';">
                     <i data-lucide="trash-2" style="width: 13px; height: 13px;"></i> Clear
                   </button>
                 </div>
@@ -458,9 +458,9 @@
             <div class="card-body">
               <!-- Topic + Generate -->
               <div class="topic-row">
-                <input type="text" id="noteTopic" list="noteTopic-history" placeholder="Enter a topic… e.g. 'Writing advice for beginners'" />
+                <input type="text" id="noteTopic" list="noteTopic-history" placeholder="Enter a topic… e.g. 'Writing advice for beginners'" title="Topic for AI to turn into a short note" />
                 <datalist id="noteTopic-history"></datalist>
-                <button class="btn btn-secondary" id="generateNoteBtn" onclick="handleGenerateNote()">
+                <button class="btn btn-secondary" id="generateNoteBtn" onclick="handleGenerateNote()" title="Generate note text with AI from the topic">
                   <i data-lucide="sparkles"></i> Generate
                 </button>
               </div>
@@ -469,11 +469,11 @@
               <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 16px;">
                 <div class="form-group" style="margin-bottom: 0;">
                   <label for="noteBody">Note Body</label>
-                  <textarea class="editor-textarea" id="noteBody" style="min-height: 120px;" placeholder="Write your Substack Note here… (under 500 chars is recommended)" oninput="updateNotePreview()"></textarea>
+                  <textarea class="editor-textarea" id="noteBody" style="min-height: 120px;" placeholder="Write your Substack Note here… (under 500 chars is recommended)" oninput="updateNotePreview()" title="Note text that will be published to Substack Notes"></textarea>
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
                   <label for="noteLink">Link Attachment (Optional)</label>
-                  <input type="text" id="noteLink" list="noteLink-history" placeholder="https://example.com/some-link" />
+                  <input type="text" id="noteLink" list="noteLink-history" placeholder="https://example.com/some-link" title="Optional URL attached to the note" />
                   <datalist id="noteLink-history"></datalist>
                 </div>
               </div>
@@ -507,7 +507,7 @@
 
               <!-- Publish Note Bar -->
               <div class="publish-bar" style="margin-top: 24px;">
-                <button class="btn btn-success btn-lg" id="publishNoteBtn" onclick="handlePublishNote()">
+                <button class="btn btn-success btn-lg" id="publishNoteBtn" onclick="handlePublishNote()" title="Publish this note to your Substack">
                   <i data-lucide="send"></i> Publish Note
                 </button>
               </div>
@@ -518,7 +518,7 @@
           <div class="card" style="margin-top: 32px;">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
               <h2><i data-lucide="history" class="header-icon"></i> Published Notes</h2>
-              <button class="btn btn-secondary btn-sm" id="loadNotesBtn" onclick="loadNotes()">
+              <button class="btn btn-secondary btn-sm" id="loadNotesBtn" onclick="loadNotes()" title="Load your published notes from Substack">
                 <i data-lucide="rotate-ccw"></i> Fetch Notes
               </button>
             </div>
@@ -548,14 +548,14 @@
               <div class="scheduler-meta-grid scheduler-meta-grid--top">
                 <div class="form-group">
                   <label for="schedPostType">Post Type</label>
-                  <select id="schedPostType" onchange="toggleSchedulerFields()">
+                  <select id="schedPostType" onchange="toggleSchedulerFields()" title="Choose newsletter or short note for this schedule">
                     <option value="newsletter">Newsletter Post</option>
                     <option value="note">Short Note</option>
                   </select>
                 </div>
                 <div class="form-group">
                   <label for="schedRecurrence">Recurrence Pattern</label>
-                  <select id="schedRecurrence" onchange="toggleRecurrenceFields()">
+                  <select id="schedRecurrence" onchange="toggleRecurrenceFields()" title="How often this post should run">
                     <option value="once">Once (One-off)</option>
                     <option value="daily">Everyday (Daily)</option>
                     <option value="twice_daily">Twice a Day</option>
@@ -567,7 +567,7 @@
 
               <div class="form-group form-group-datetime">
                 <label id="schedDateTimeLabel">Scheduled Date &amp; Time</label>
-                <div class="dt-picker" id="dtPicker">
+                <div class="dt-picker" id="dtPicker" title="Pick the date and time when this post should publish">
                   <div class="dt-picker-summary" id="dtPickerSummary">Select date and time</div>
                   <div class="dt-picker-grid">
                     <div class="dt-picker-date">
@@ -578,10 +578,10 @@
                           <i data-lucide="chevron-down" class="dt-picker-month-chevron"></i>
                         </div>
                         <div class="dt-picker-nav">
-                          <button type="button" class="dt-picker-nav-btn" onclick="dtNavigateMonth(-1)" aria-label="Previous month">
+                          <button type="button" class="dt-picker-nav-btn" onclick="dtNavigateMonth(-1)" aria-label="Previous month" title="Previous month">
                             <i data-lucide="chevron-left"></i>
                           </button>
-                          <button type="button" class="dt-picker-nav-btn" onclick="dtNavigateMonth(1)" aria-label="Next month">
+                          <button type="button" class="dt-picker-nav-btn" onclick="dtNavigateMonth(1)" aria-label="Next month" title="Next month">
                             <i data-lucide="chevron-right"></i>
                           </button>
                         </div>
@@ -593,19 +593,19 @@
                     </div>
                     <div class="dt-picker-time">
                       <div class="dt-picker-section-title">Select Time</div>
-                      <div class="dt-time-wheel" id="dtTimeList" aria-label="Time picker"></div>
+                      <div class="dt-time-wheel" id="dtTimeList" aria-label="Time picker" title="Scroll to choose a time"></div>
                     </div>
                   </div>
                   <div class="dt-picker-footer">
-                    <button type="button" class="dt-picker-cancel" onclick="dtCancel()">Cancel</button>
-                    <button type="button" class="dt-picker-confirm" onclick="dtConfirm()">Confirm</button>
+                    <button type="button" class="dt-picker-cancel" onclick="dtCancel()" title="Discard date/time changes">Cancel</button>
+                    <button type="button" class="dt-picker-confirm" onclick="dtConfirm()" title="Apply the selected date and time">Confirm</button>
                   </div>
                 </div>
                 <div class="schedule-datetime-quick">
-                  <button type="button" class="schedule-datetime-quick-btn" onclick="dtQuickSchedule(30)">In 30 min</button>
-                  <button type="button" class="schedule-datetime-quick-btn" onclick="dtQuickSchedule(60)">In 1 hour</button>
-                  <button type="button" class="schedule-datetime-quick-btn" onclick="dtQuickSchedule(180)">In 3 hours</button>
-                  <button type="button" class="schedule-datetime-quick-btn" onclick="dtQuickScheduleTomorrow(9, 0)">Tomorrow 9 AM</button>
+                  <button type="button" class="schedule-datetime-quick-btn" onclick="dtQuickSchedule(30)" title="Set schedule to 30 minutes from now">In 30 min</button>
+                  <button type="button" class="schedule-datetime-quick-btn" onclick="dtQuickSchedule(60)" title="Set schedule to 1 hour from now">In 1 hour</button>
+                  <button type="button" class="schedule-datetime-quick-btn" onclick="dtQuickSchedule(180)" title="Set schedule to 3 hours from now">In 3 hours</button>
+                  <button type="button" class="schedule-datetime-quick-btn" onclick="dtQuickScheduleTomorrow(9, 0)" title="Set schedule to tomorrow at 9:00 AM">Tomorrow 9 AM</button>
                 </div>
                 <p class="schedule-datetime-meta">
                   <span id="dtRelative" class="schedule-datetime-hint"></span>
@@ -616,7 +616,7 @@
 
               <div class="form-group sched-second-time-group" id="schedSecondTimeGroup" hidden>
                 <label for="schedSecondTime">Second Time of Day</label>
-                <input type="time" id="schedSecondTime" value="18:00" step="60" onchange="dtUpdateSummary()" oninput="dtUpdateSummary()" />
+                <input type="time" id="schedSecondTime" value="18:00" step="60" onchange="dtUpdateSummary()" oninput="dtUpdateSummary()" title="Second daily run time when using Twice a Day" />
                 <span class="field-hint">Posts run at the first time above and again at this second time each day.</span>
               </div>
 
@@ -624,23 +624,23 @@
               <div id="schedNewsletterFields" class="post-meta" style="margin-bottom: 16px;">
                 <div class="form-group" id="schedTitleGroup">
                   <label for="schedTitle" id="schedTitleLabel">Title</label>
-                  <input type="text" id="schedTitle" placeholder="Newsletter title" />
+                  <input type="text" id="schedTitle" placeholder="Newsletter title" title="Title for the scheduled newsletter (or leave blank if AI generates it)" />
                 </div>
                 <div class="form-group" id="schedSubtitleGroup">
                   <label for="schedSubtitle">Subtitle</label>
-                  <input type="text" id="schedSubtitle" placeholder="Brief subtitle (optional)" />
+                  <input type="text" id="schedSubtitle" placeholder="Brief subtitle (optional)" title="Optional subtitle for the scheduled newsletter" />
                 </div>
               </div>
 
               <!-- Note Link Field -->
               <div id="schedNoteFields" class="form-group" style="margin-bottom: 16px; display: none;">
                 <label for="schedNoteLink">Link Attachment (Optional)</label>
-                <input type="text" id="schedNoteLink" placeholder="https://example.com/some-link" />
+                <input type="text" id="schedNoteLink" placeholder="https://example.com/some-link" title="Optional URL attached to the scheduled note" />
               </div>
 
               <!-- Internet Research & Custom AI Settings -->
               <div class="feature-panel">
-                <label class="feature-toggle" for="schedEnableSearch">
+                <label class="feature-toggle" for="schedEnableSearch" title="Turn web research on or off when this schedule runs">
                   <span class="feature-toggle-copy">
                     <span class="feature-toggle-title">
                       <i data-lucide="globe" aria-hidden="true"></i>
@@ -650,12 +650,12 @@
                       AI searches the web at run time, then writes the title, subtitle, and post from your guidelines.
                     </span>
                   </span>
-                  <input type="checkbox" class="toggle" id="schedEnableSearch" onchange="toggleSchedSearchFields()" checked />
+                  <input type="checkbox" class="toggle" id="schedEnableSearch" onchange="toggleSchedSearchFields()" checked title="Enable web search at scheduled run time" />
                 </label>
 
                 <!-- Custom AI settings -->
                 <details class="feature-panel-details" id="schedAiCustomizer">
-                  <summary class="feature-panel-summary">
+                  <summary class="feature-panel-summary" title="Override provider, model, key, or prompt for this schedule only">
                     <i data-lucide="sliders" aria-hidden="true"></i>
                     <span>Customize AI for this schedule (optional)</span>
                     <i data-lucide="chevron-down" class="feature-panel-chevron" aria-hidden="true"></i>
@@ -664,7 +664,7 @@
                   <div class="post-meta" style="margin-top: 16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
                     <div class="form-group">
                       <label for="schedProvider">AI Provider</label>
-                      <select id="schedProvider" onchange="updateSchedModelOptions()" style="background-color: var(--bg-input); border: 1px solid var(--border); padding: 8px 12px; border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.9rem;">
+                      <select id="schedProvider" onchange="updateSchedModelOptions()" style="background-color: var(--bg-input); border: 1px solid var(--border); padding: 8px 12px; border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.9rem;" title="AI provider for this schedule (blank = Settings default)">
                         <option value="">(Use System Default)</option>
                         <option value="groq">Groq</option>
                         <option value="gemini">Gemini</option>
@@ -675,7 +675,7 @@
 
                     <div class="form-group">
                       <label for="schedModel">AI Model</label>
-                      <select id="schedModel" style="background-color: var(--bg-input); border: 1px solid var(--border); padding: 8px 12px; border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.9rem;">
+                      <select id="schedModel" style="background-color: var(--bg-input); border: 1px solid var(--border); padding: 8px 12px; border-radius: var(--radius-md); color: var(--text-primary); font-size: 0.9rem;" title="AI model for this schedule (blank = Settings default)">
                         <option value="">(Use System Default)</option>
                       </select>
                     </div>
@@ -684,13 +684,13 @@
                   <div class="form-group" style="margin-top: 12px;">
                     <label for="schedApiKey">API Key for scheduled runs</label>
                     <div class="input-password-wrapper">
-                      <input type="password" id="schedApiKey" placeholder="Auto-filled from Settings, or paste override…" autocomplete="off" oninput="this.dataset.userEdited='true'" />
-                      <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('schedApiKey', this)" title="Toggle visibility">
+                      <input type="password" id="schedApiKey" placeholder="Auto-filled from Settings, or paste override…" autocomplete="off" oninput="this.dataset.userEdited='true'" title="API key stored with the schedule so cron can generate without your browser" />
+                      <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('schedApiKey', this)" title="Show or hide the API key">
                         <i data-lucide="eye"></i>
                       </button>
                     </div>
                     <div class="settings-btn-row" style="margin-top: 8px;">
-                      <button type="button" class="btn btn-secondary btn-sm" id="testSchedAiKeyBtn" onclick="testSchedAiKey()" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                      <button type="button" class="btn btn-secondary btn-sm" id="testSchedAiKeyBtn" onclick="testSchedAiKey()" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;" title="Verify this API key works before scheduling">
                         <i data-lucide="shield-check"></i> Test Key
                       </button>
                     </div>
@@ -699,7 +699,7 @@
 
                   <div class="form-group" style="margin-top: 12px;">
                     <label for="schedSystemPrompt">Custom System Prompt instructions (Optional)</label>
-                    <textarea id="schedSystemPrompt" style="min-height: 80px; font-size: 0.85rem;" placeholder="Leave blank to use the default voice: brief, human, first-person takes from a Full Stack AI Engineer perspective…"></textarea>
+                    <textarea id="schedSystemPrompt" style="min-height: 80px; font-size: 0.85rem;" placeholder="Leave blank to use the default voice: brief, human, first-person takes from a Full Stack AI Engineer perspective…" title="Optional writing voice for this schedule only"></textarea>
                   </div>
                 </details>
               </div>
@@ -710,23 +710,23 @@
                   <label for="schedBody" id="schedBodyLabel" style="margin-bottom: 0;">Research Topic Description / Writing Guidelines</label>
                   <!-- Prompt Preset Chips -->
                   <div style="display: flex; gap: 6px; flex-wrap: wrap;" class="schedule-prompt-chips">
-                    <button type="button" class="schedule-datetime-quick-btn" onclick="dtSelectPromptPreset('brief')" style="font-size: 0.72rem; padding: 4px 10px;">Brief Take</button>
-                    <button type="button" class="schedule-datetime-quick-btn" onclick="dtSelectPromptPreset('builder')" style="font-size: 0.72rem; padding: 4px 10px;">Builder Insight</button>
-                    <button type="button" class="schedule-datetime-quick-btn" onclick="dtSelectPromptPreset('default')" style="font-size: 0.72rem; padding: 4px 10px;">Default</button>
-                    <button type="button" class="schedule-datetime-quick-btn" onclick="dtSelectPromptPreset('reaction')" style="font-size: 0.72rem; padding: 4px 10px;">Quick Reaction</button>
+                    <button type="button" class="schedule-datetime-quick-btn" onclick="dtSelectPromptPreset('brief')" style="font-size: 0.72rem; padding: 4px 10px;" title="Short, punchy take preset">Brief Take</button>
+                    <button type="button" class="schedule-datetime-quick-btn" onclick="dtSelectPromptPreset('builder')" style="font-size: 0.72rem; padding: 4px 10px;" title="Builder / engineer insight preset">Builder Insight</button>
+                    <button type="button" class="schedule-datetime-quick-btn" onclick="dtSelectPromptPreset('default')" style="font-size: 0.72rem; padding: 4px 10px;" title="Default writing guidelines preset">Default</button>
+                    <button type="button" class="schedule-datetime-quick-btn" onclick="dtSelectPromptPreset('reaction')" style="font-size: 0.72rem; padding: 4px 10px;" title="Quick reaction-style preset">Quick Reaction</button>
                   </div>
                 </div>
                 <input type="hidden" id="schedPresetMode" value="" />
-                <textarea class="editor-textarea" id="schedBody" style="min-height: 180px;" placeholder="e.g. Latest on AI agents — engaging post with hook, specific news details, and a strong close for builders…"></textarea>
+                <textarea class="editor-textarea" id="schedBody" style="min-height: 180px;" placeholder="e.g. Latest on AI agents — engaging post with hook, specific news details, and a strong close for builders…" title="Topic and writing guidelines used when the schedule runs"></textarea>
               </div>
 
               <!-- Save as Draft Toggle + Action Buttons -->
               <div class="publish-bar" style="margin-top: 16px;">
-                <div class="draft-toggle" id="schedDraftToggleWrap">
-                  <input type="checkbox" class="toggle" id="schedDraftToggle" checked />
+                <div class="draft-toggle" id="schedDraftToggleWrap" title="When on, newsletters are saved as drafts instead of publishing live">
+                  <input type="checkbox" class="toggle" id="schedDraftToggle" checked title="Save scheduled newsletters as drafts" />
                   <label for="schedDraftToggle" style="margin-bottom: 0; cursor: pointer;">Save as Draft (Newsletters only)</label>
                 </div>
-                <button class="btn btn-success scheduler-create-action" id="schedSubmitBtn" onclick="handleCreateSchedule()">
+                <button class="btn btn-success scheduler-create-action" id="schedSubmitBtn" onclick="handleCreateSchedule()" title="Add this post to the schedule queue">
                   <i data-lucide="calendar"></i> Schedule Post
                 </button>
               </div>
@@ -738,16 +738,16 @@
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
               <h2 style="margin: 0; display: flex; align-items: center; gap: 8px;">
                 <i data-lucide="clock" class="header-icon"></i> Scheduled Queue
-                <span id="pollingStatus" style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal; margin-left: 8px; display: flex; align-items: center; gap: 4px;">
+                <span id="pollingStatus" style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal; margin-left: 8px; display: flex; align-items: center; gap: 4px;" title="Automatically refreshes the queue every 60 seconds">
                   <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background-color: var(--text-muted);" id="pollingIndicator"></span>
                   Active polling (60s)
                 </span>
               </h2>
               <div style="display: flex; gap: 8px;">
-                <button class="btn btn-secondary btn-sm" onclick="runManualCron()" style="padding: 6px 12px; display: flex; align-items: center; gap: 6px;">
+                <button class="btn btn-secondary btn-sm" onclick="runManualCron()" style="padding: 6px 12px; display: flex; align-items: center; gap: 6px;" title="Run the cron job now to process due scheduled posts">
                   <i data-lucide="play-circle"></i> Trigger Queue Check
                 </button>
-                <button class="btn btn-secondary btn-sm" onclick="loadSchedules()" style="padding: 6px 12px; display: flex; align-items: center; gap: 6px;">
+                <button class="btn btn-secondary btn-sm" onclick="loadSchedules()" style="padding: 6px 12px; display: flex; align-items: center; gap: 6px;" title="Reload the scheduled queue from the server">
                   <i data-lucide="rotate-ccw"></i> Refresh List
                 </button>
               </div>
@@ -765,7 +765,7 @@
               <h2 style="margin: 0; display: flex; align-items: center; gap: 8px;">
                 <i data-lucide="terminal" class="header-icon"></i> Scheduler Inspector
               </h2>
-              <button class="btn btn-secondary btn-sm" onclick="clearSchedulerLogs()" style="padding: 6px 12px; display: flex; align-items: center; gap: 6px;">
+              <button class="btn btn-secondary btn-sm" onclick="clearSchedulerLogs()" style="padding: 6px 12px; display: flex; align-items: center; gap: 6px;" title="Clear scheduler inspector log output">
                 <i data-lucide="trash-2"></i> Clear Logs
               </button>
             </div>
@@ -808,7 +808,7 @@
                   <span></span> Processing Logs
                 </div>
                 <div class="console-actions-wrap">
-                  <button class="console-btn" style="display: flex; align-items: center; gap: 4px;" title="Copy logs" onclick="copySchedulerLogs()">
+                  <button class="console-btn" style="display: flex; align-items: center; gap: 4px;" title="Copy scheduler logs to clipboard" onclick="copySchedulerLogs()">
                     <i data-lucide="copy" style="width: 13px; height: 13px;"></i> Copy
                   </button>
                 </div>
@@ -826,7 +826,7 @@
               <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                 <h2 style="margin: 0; display: flex; align-items: center; gap: 8px;"><i data-lucide="history" class="header-icon"></i> History</h2>
                 <span class="history-source-label">App history + Substack archive</span>
-                <button class="btn btn-secondary btn-sm" id="loadHistoryBtn" onclick="loadHistory()" style="padding: 6px 14px;">
+                <button class="btn btn-secondary btn-sm" id="loadHistoryBtn" onclick="loadHistory()" style="padding: 6px 14px;" title="Load app history and your Substack archive">
                   <i data-lucide="rotate-ccw"></i> Fetch History
                 </button>
               </div>
@@ -835,7 +835,7 @@
               <div style="display: flex; gap: 12px; flex-wrap: wrap; width: 100%; align-items: center;">
                 <!-- Search Box -->
                 <div style="position: relative; flex: 1; min-width: 200px;">
-                  <input type="text" id="historySearch" placeholder="Search title, content, or tags..." style="padding: 10px 16px 10px 38px; font-size: 0.84rem; width: 100%; border-radius: var(--radius-md); background: var(--bg-input); border: 1px solid var(--border);" oninput="filterAndRenderHistory()" />
+                  <input type="text" id="historySearch" placeholder="Search title, content, or tags..." style="padding: 10px 16px 10px 38px; font-size: 0.84rem; width: 100%; border-radius: var(--radius-md); background: var(--bg-input); border: 1px solid var(--border);" oninput="filterAndRenderHistory()" title="Filter history by title, content, or tags" />
                   <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--text-muted); pointer-events: none;"></i>
                 </div>
                 
@@ -843,7 +843,7 @@
                 <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                   <div style="display: flex; align-items: center; gap: 6px;">
                     <label for="historyTypeFilter" style="margin: 0; font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">Type</label>
-                    <select id="historyTypeFilter" class="form-select select-sm" style="width: auto; padding: 8px 36px 8px 12px; font-size: 0.82rem; border-radius: var(--radius-md); background-color: var(--bg-input); border: 1px solid var(--border);" onchange="filterAndRenderHistory()">
+                    <select id="historyTypeFilter" class="form-select select-sm" style="width: auto; padding: 8px 36px 8px 12px; font-size: 0.82rem; border-radius: var(--radius-md); background-color: var(--bg-input); border: 1px solid var(--border);" onchange="filterAndRenderHistory()" title="Show only one content type">
                       <option value="all">All Types</option>
                       <option value="newsletter">Newsletters</option>
                       <option value="note">Notes</option>
@@ -854,7 +854,7 @@
 
                   <div style="display: flex; align-items: center; gap: 6px;">
                     <label for="historySort" style="margin: 0; font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">Sort</label>
-                    <select id="historySort" class="form-select select-sm" style="width: auto; padding: 8px 36px 8px 12px; font-size: 0.82rem; border-radius: var(--radius-md); background-color: var(--bg-input); border: 1px solid var(--border);" onchange="filterAndRenderHistory()">
+                    <select id="historySort" class="form-select select-sm" style="width: auto; padding: 8px 36px 8px 12px; font-size: 0.82rem; border-radius: var(--radius-md); background-color: var(--bg-input); border: 1px solid var(--border);" onchange="filterAndRenderHistory()" title="Sort history by date">
                       <option value="newest">Newest First</option>
                       <option value="oldest">Oldest First</option>
                     </select>

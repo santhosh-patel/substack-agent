@@ -266,10 +266,10 @@ function filterAndRenderHistory() {
       : '';
     const hasPublicUrl = item.url && !item.url.startsWith('schedule://');
     const viewActions = hasPublicUrl ? `
-            <a href="${escapeHtml(item.url)}" target="_blank" class="btn btn-secondary btn-sm" title="Open on Substack" style="padding: 4px 8px; font-size: 0.72rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 4px; text-decoration: none; border-color: var(--border);">
+            <a href="${escapeHtml(item.url)}" target="_blank" class="btn btn-secondary btn-sm" title="Open this item on Substack" style="padding: 4px 8px; font-size: 0.72rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 4px; text-decoration: none; border-color: var(--border);">
               <i data-lucide="external-link" style="width: 12px; height: 12px; stroke-width: 2.2px;"></i> View
             </a>
-            <button class="btn btn-secondary btn-sm" onclick="copyHistoryLink('${escapeHtml(item.url)}')" title="Copy Link" style="padding: 4px 8px; font-size: 0.72rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 4px; border-color: var(--border);">
+            <button class="btn btn-secondary btn-sm" onclick="copyHistoryLink('${escapeHtml(item.url)}')" title="Copy the Substack link to clipboard" style="padding: 4px 8px; font-size: 0.72rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 4px; border-color: var(--border);">
               <i data-lucide="copy" style="width: 12px; height: 12px; stroke-width: 2.2px;"></i> Link
             </button>
     ` : '';
@@ -281,7 +281,7 @@ function filterAndRenderHistory() {
     const displayBody = longBody ? `
       <span class="history-item-body-short" id="body-short-${item.id}">${escapeHtml(shortBody)}</span>
       <span class="history-item-body-full" id="body-full-${item.id}" style="display: none;">${escapeHtml(item.body)}</span>
-      <button class="btn-text-toggle" onclick="toggleBodyText('${item.id}')" id="btn-toggle-${item.id}" style="background: transparent; border: none; color: var(--accent); font-size: 0.76rem; cursor: pointer; padding: 0; margin-top: 4px; display: inline-flex; align-items: center; gap: 4px; font-weight: 600;">Read More <i data-lucide="chevron-down" style="width: 12px; height: 12px;"></i></button>
+      <button class="btn-text-toggle" onclick="toggleBodyText('${item.id}')" id="btn-toggle-${item.id}" title="Expand or collapse the full body text" style="background: transparent; border: none; color: var(--accent); font-size: 0.76rem; cursor: pointer; padding: 0; margin-top: 4px; display: inline-flex; align-items: center; gap: 4px; font-weight: 600;">Read More <i data-lucide="chevron-down" style="width: 12px; height: 12px;"></i></button>
     ` : `<span>${escapeHtml(item.body)}</span>`;
 
     return `
@@ -298,7 +298,7 @@ function filterAndRenderHistory() {
           <!-- Actions bar (CTAs) -->
           <div style="display: flex; align-items: center; gap: 8px;">
             ${viewActions}
-            <button class="btn btn-primary btn-sm" onclick="reuseHistoryItem('${escapeHtml(item.id)}')" title="Load into Composer" style="padding: 4px 8px; font-size: 0.72rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 4px; background: var(--accent); color: var(--bg-primary);">
+            <button class="btn btn-primary btn-sm" onclick="reuseHistoryItem('${escapeHtml(item.id)}')" title="Load this content into the composer to edit and republish" style="padding: 4px 8px; font-size: 0.72rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 4px; background: var(--accent); color: var(--bg-primary);">
               <i data-lucide="refresh-cw" style="width: 12px; height: 12px; stroke-width: 2.2px;"></i> Reuse
             </button>
           </div>

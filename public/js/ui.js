@@ -44,7 +44,7 @@ function showToast(message, type = 'info') {
   toast.innerHTML = `
     <i data-lucide="${iconName}" class="toast-icon"></i>
     <span class="toast-message">${escapeHtml(message)}</span>
-    <button class="toast-close" title="Close">&times;</button>
+    <button class="toast-close" title="Dismiss this notification">&times;</button>
   `;
 
   const closeBtn = toast.querySelector('.toast-close');

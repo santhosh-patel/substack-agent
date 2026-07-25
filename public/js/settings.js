@@ -383,8 +383,8 @@ function updateConnectionBadge(profile) {
     badge.setAttribute('role', 'button');
     badge.setAttribute('tabindex', '0');
     badge.setAttribute('aria-label', 'Not connected — click to reconnect');
-    badge.title = 'Click to reconnect';
-    avatar.title = 'Click to reconnect';
+    badge.title = 'Open Settings to connect your Substack session';
+    avatar.title = 'Open Settings to connect your Substack session';
     text.textContent = 'Not connected';
     if (action) {
       action.hidden = false;
@@ -596,9 +596,11 @@ function updatePublishButtonLabel() {
   if (isDraft) {
     btn.innerHTML = '<i data-lucide="file-text"></i> Save as Draft';
     btn.className = 'btn btn-secondary btn-lg';
+    btn.title = 'Save this newsletter as a draft on Substack';
   } else {
     btn.innerHTML = '<i data-lucide="send"></i> Publish to Substack';
     btn.className = 'btn btn-success btn-lg';
+    btn.title = 'Publish this newsletter live to your Substack';
   }
 
   if (window.lucide) {

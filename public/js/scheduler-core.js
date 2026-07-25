@@ -345,15 +345,15 @@ async function loadSchedules() {
               </button>
             ` : ''}
             ${canRetryNow ? `
-              <button class="btn btn-primary btn-sm" onclick="retryScheduleItem('${item.id}', this)" title="Retry this post now" style="display: flex; align-items: center; gap: 4px;">
+              <button class="btn btn-primary btn-sm" onclick="retryScheduleItem('${item.id}', this)" title="Retry publishing this failed schedule now" style="display: flex; align-items: center; gap: 4px;">
                 <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Retry Now
               </button>
             ` : !isFailed ? `
-              <button class="btn btn-secondary btn-sm" onclick="toggleScheduleState('${item.id}')" title="${toggleText} Schedule" style="display: flex; align-items: center; gap: 4px;">
+              <button class="btn btn-secondary btn-sm" onclick="toggleScheduleState('${item.id}')" title="${isPaused ? 'Resume this schedule so it can run again' : 'Pause this schedule without deleting it'}" style="display: flex; align-items: center; gap: 4px;">
                 <i data-lucide="${toggleIcon}" style="width: 14px; height: 14px;"></i> ${toggleText}
               </button>
             ` : ''}
-            <button class="btn btn-secondary btn-sm" style="color: var(--error); border-color: rgba(239, 68, 68, 0.2); display: flex; align-items: center; gap: 4px;" onclick="deleteScheduleItem('${item.id}')" title="Delete Schedule">
+            <button class="btn btn-secondary btn-sm" style="color: var(--error); border-color: rgba(239, 68, 68, 0.2); display: flex; align-items: center; gap: 4px;" onclick="deleteScheduleItem('${item.id}')" title="Remove this item from the schedule queue">
               <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Delete
             </button>
           </div>
