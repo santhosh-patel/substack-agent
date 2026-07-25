@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Versions use patch releases under `1.0.x` (`1.0.1`, `1.0.2`, `1.0.3`, …).
 
+## [1.0.6] — 2026-07-25
+
+### Added
+- Dismissible security notice in Settings (× button; preference saved in the browser)
+- Fullscreen Substack preview in Newsletters compose (expand control, Substack-style reading layout, Escape to close)
+- Scrollable Settings sidebar body when connection, AI keys, and prompts exceed the viewport
+
+### Fixed
+- Playground nav tabs and sidebar toggle not responding (broken ES module bundle from duplicated `wire-playground.mjs` output)
+- Security notice dismiss doing nothing until backend config finished loading
+- `wire-playground.mjs` re-run safety: strips existing wiring headers and avoids aliasing functions defined in the same file
+
 ## [1.0.5] — 2026-07-25
 
 ### Added
