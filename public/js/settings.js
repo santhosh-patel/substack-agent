@@ -500,7 +500,10 @@ function toggleSidebar() {
   const grid = document.querySelector('.main-grid');
   if (!grid) return;
   const isCollapsed = grid.classList.toggle('sidebar-collapsed');
-  localStorage.setItem('sidebar_collapsed', isCollapsed);
+  localStorage.setItem('sidebar_collapsed', String(isCollapsed));
+  if (typeof PG.syncSidebarToggleUi === 'function') {
+    PG.syncSidebarToggleUi(isCollapsed);
+  }
 }
 
 function openSidebarAndFocusSid() {
@@ -508,6 +511,9 @@ function openSidebarAndFocusSid() {
   if (grid && grid.classList.contains('sidebar-collapsed')) {
     grid.classList.remove('sidebar-collapsed');
     localStorage.setItem('sidebar_collapsed', 'false');
+    if (typeof PG.syncSidebarToggleUi === 'function') {
+      PG.syncSidebarToggleUi(false);
+    }
   }
   const sidInput = document.getElementById('sid');
   if (sidInput) {

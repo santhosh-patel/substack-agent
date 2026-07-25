@@ -59,8 +59,17 @@
     <!-- ─── Substack App Bar ─── -->
     <header class="app-header">
       <div class="app-header-start">
-        <button class="btn-sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Toggle Settings" aria-label="Toggle settings">
-          <i data-lucide="sidebar"></i>
+        <button
+          type="button"
+          class="btn-sidebar-toggle"
+          id="sidebarToggle"
+          onclick="toggleSidebar()"
+          title="Hide settings"
+          aria-label="Toggle settings panel"
+          aria-controls="settingsPanel"
+          aria-expanded="true"
+        >
+          <i data-lucide="panel-left"></i>
         </button>
       </div>
 
@@ -126,10 +135,17 @@
       </div>
 
       <!-- ─── Left: Settings Panel ─── -->
-      <aside class="card">
+      <aside class="card" id="settingsPanel">
         <div class="card-header">
           <h2><i data-lucide="sliders-horizontal" class="header-icon"></i> Settings</h2>
-          <button type="button" class="btn-sidebar-close" onclick="toggleSidebar()" title="Collapse Settings">
+          <button
+            type="button"
+            class="btn-sidebar-close"
+            id="sidebarClose"
+            onclick="toggleSidebar()"
+            title="Close settings"
+            aria-label="Close settings panel"
+          >
             <i data-lucide="x"></i>
           </button>
         </div>

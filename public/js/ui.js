@@ -1,9 +1,6 @@
 import PG from './pg.js';
 import './state.js';
 
-import PG from './pg.js';
-import './state.js';
-
 function initMacConsoleHighlight() {
   document.querySelectorAll('.mac-console').forEach((el) => {
     el.addEventListener('click', (e) => {
@@ -191,11 +188,24 @@ function resetSystemPrompt() {
 }
 
 // ─── Sidebar Collapsing ───
+function syncSidebarToggleUi(isCollapsed) {
+  const openBtn = document.getElementById('sidebarToggle');
+  const closeBtn = document.getElementById('sidebarClose');
+  if (openBtn) {
+    openBtn.setAttribute('aria-expanded', String(!isCollapsed));
+    openBtn.title = isCollapsed ? 'Open settings' : 'Hide settings';
+  }
+  if (closeBtn) {
+    closeBtn.setAttribute('aria-expanded', String(!isCollapsed));
+  }
+}
+
 function toggleSidebar() {
   const grid = document.querySelector('.main-grid');
   if (!grid) return;
   const isCollapsed = grid.classList.toggle('sidebar-collapsed');
-  localStorage.setItem('sidebar_collapsed', isCollapsed);
+  localStorage.setItem('sidebar_collapsed', String(isCollapsed));
+  syncSidebarToggleUi(isCollapsed);
 }
 
 function openSidebarAndFocusSid() {
@@ -203,6 +213,7 @@ function openSidebarAndFocusSid() {
   if (grid && grid.classList.contains('sidebar-collapsed')) {
     grid.classList.remove('sidebar-collapsed');
     localStorage.setItem('sidebar_collapsed', 'false');
+    syncSidebarToggleUi(false);
   }
   const sidInput = document.getElementById('sid');
   if (sidInput) {
@@ -220,23 +231,35 @@ function toggleTheme() {
 }
 
 function updateThemeToggleIcon(isLight) {
+  const btn = document.getElementById('themeToggleBtn');
+  if (!btn) return;
+  if (isLight) {
+    btn.innerHTML = '<i data-lucide="moon"></i>';
+    btn.title = 'Switch to dark mode';
+    btn.setAttribute('aria-label', 'Switch to dark mode');
+  } else {
+    btn.innerHTML = '<i data-lucide="sun"></i>';
+    btn.title = 'Switch to light mode';
+    btn.setAttribute('aria-label', 'Switch to light mode');
+  }
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+}
+
 function togglePasswordVisibility(inputId, btnEl) {
   const input = document.getElementById(inputId);
   if (!input) return;
   const icon = btnEl.querySelector('i');
-  
+
   if (input.type === 'password') {
     input.type = 'text';
-    if (icon) {
-      icon.setAttribute('data-lucide', 'eye-off');
-    }
+    if (icon) icon.setAttribute('data-lucide', 'eye-off');
   } else {
     input.type = 'password';
-    if (icon) {
-      icon.setAttribute('data-lucide', 'eye');
-    }
+    if (icon) icon.setAttribute('data-lucide', 'eye');
   }
-  
+
   if (window.lucide) {
     window.lucide.createIcons();
   }
@@ -251,21 +274,7 @@ PG.loadSystemPromptForTab = loadSystemPromptForTab;
 PG.saveSystemPrompt = saveSystemPrompt;
 PG.resetSystemPrompt = resetSystemPrompt;
 PG.toggleSidebar = toggleSidebar;
-PG.openSidebarAndFocusSid = openSidebarAndFocusSid;
-PG.toggleTheme = toggleTheme;
-PG.updateThemeToggleIcon = updateThemeToggleIcon;
-PG.togglePasswordVisibility = togglePasswordVisibility;
-{};
-
-PG.initMacConsoleHighlight = initMacConsoleHighlight;
-PG.setButtonLoading = setButtonLoading;
-PG.showToast = showToast;
-PG.escapeHtml = escapeHtml;
-PG.showAppConfirm = showAppConfirm;
-PG.loadSystemPromptForTab = loadSystemPromptForTab;
-PG.saveSystemPrompt = saveSystemPrompt;
-PG.resetSystemPrompt = resetSystemPrompt;
-PG.toggleSidebar = toggleSidebar;
+PG.syncSidebarToggleUi = syncSidebarToggleUi;
 PG.openSidebarAndFocusSid = openSidebarAndFocusSid;
 PG.toggleTheme = toggleTheme;
 PG.updateThemeToggleIcon = updateThemeToggleIcon;

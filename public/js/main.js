@@ -60,6 +60,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (sidebarCollapsed && grid) {
     grid.classList.add('sidebar-collapsed');
   }
+  if (typeof PG.syncSidebarToggleUi === 'function') {
+    PG.syncSidebarToggleUi(Boolean(grid?.classList.contains('sidebar-collapsed')));
+  }
 
   if (window.lucide) {
     lucide.createIcons();

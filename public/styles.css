@@ -366,6 +366,51 @@ aside.card {
   background: var(--bg-card);
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.main-grid.sidebar-collapsed aside {
+  width: 0;
+  min-width: 0;
+  margin: 0;
+  opacity: 0;
+  transform: translateX(-12px);
+  pointer-events: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.btn-sidebar-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-sidebar-close:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--border-focus, var(--border));
+}
+
+.btn-sidebar-close:focus-visible {
+  outline: 2px solid var(--accent, #FF6719);
+  outline-offset: 2px;
+}
+
+.btn-sidebar-close i {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.25px;
 }
 
 main {
@@ -1158,6 +1203,9 @@ input::placeholder, textarea::placeholder {
   }
   aside {
     width: 100%;
+  }
+  .main-grid.sidebar-collapsed aside {
+    display: none;
   }
   .editor-container {
     grid-template-columns: 1fr;
